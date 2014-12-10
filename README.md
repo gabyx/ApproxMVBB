@@ -156,6 +156,11 @@ The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotT
 </p>
 
 --------------------------
+Performance
+--------------------------
+(to come!)
+
+--------------------------
 Licensing
 --------------------------
 
