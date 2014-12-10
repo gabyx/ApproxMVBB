@@ -56,18 +56,18 @@ or directly be included in an existing C++ project. It includes code for computi
 <p>To build the library, the tests and the example you need the built tool <a href="http://www.cmake.org">cmake</a>.
 This library only depends on the matrix library <a href="http://eigen.tuxfamily.org">Eigen</a> at least version 3. Download it and install it on your system.</p>
 
-<p>Download the latest ApproxMVBB code::</p>
+<p>Download the latest ApproxMVBB code:</p>
 
 <pre><code>$ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
 </code></pre>
 
-<p>Make a build directory and navigate to it::</p>
+<p>Make a build directory and navigate to it:</p>
 
 <pre><code>$ mkdir Build
 $ cd Build
 </code></pre>
 
-<p>Invoke cmake in the Build directory::</p>
+<p>Invoke cmake in the Build directory:</p>
 
 <pre><code>$ cmake ../ApproxMVBB
 </code></pre>
@@ -81,7 +81,7 @@ In the <code>CMakeCache.txt</code> file you can specify what you want to build
 <pre><code>$ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
 </code></pre>
 
-<p>Finally, build and install the project::</p>
+<p>Finally, build and install the project:</p>
 
 <pre><code>$ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
 $ make install
@@ -104,7 +104,7 @@ It should work for Windows as well, but has not been tested.</p>
 
 <p>Please see the <code>example/main.cpp</code> in the source directory.
 Given a point cloud with <code>n=10000</code> points sampled in the unit cube in 3D 
-we compute an approximation of the minimum volume bounding volume by the following calls::</p>
+we compute an approximation of the minimum volume bounding volume by the following calls:</p>
 
 <div class="highlight highlight-C++"><pre>    #<span class="pl-k">include</span> <span class="pl-s1"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
     #<span class="pl-k">include</span> <span class="pl-s1"><span class="pl-pds">"</span>ApproxMVBB/ComputeApproxMVBB.hpp<span class="pl-pds">"</span></span>
@@ -121,7 +121,7 @@ we compute an approximation of the minimum volume bounding volume by the followi
 
 <p>The returned object oriented bounding box <code>oobb</code> contains the lower <code>oobb.m_minPoint</code> and upper point <code>oobb.m_maxPoint</code>
 in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>). This rotation matrix <code>R_KI</code> corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields::</p>
+in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>). This rotation matrix <code>R_KI</code> corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:</p>
 
 <div class="highlight highlight-C++"><pre>    ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  <span class="pl-c">// A_IK * oobb.m_minPoint </span></pre></div>
 
@@ -130,7 +130,7 @@ in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_
 <h2>
 <a id="function-parameters--how-it-works" class="anchor" href="#function-parameters--how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>Function Parameters &amp; How It Works</h2>
 
-<p>The most important function::</p>
+<p>The most important function:</p>
 
 <div class="highlight highlight-C++"><pre>    <span class="pl-en">ApproxMVBB::approximateMVBB</span>(pts, 
                                 epsilon, 
@@ -177,30 +177,39 @@ specified which again optimizes the volume starting from direction <code>g</code
 <h2>
 <a id="building-and-visualizing-the-tests" class="anchor" href="#building-and-visualizing-the-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Visualizing the Tests</h2>
 
-<p>Building and installing the basic tests is done by ::</p>
+<p>Building and installing the basic tests is done by:</p>
 
 <pre><code>$ cd Build
 $ make ApproxMVBBTests
 </code></pre>
 
-<p><strong>Note:</strong>
-To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+<p><strong>Note:</strong></p>
+
+<blockquote>
+<p>To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
 140 million points and some polygonal statue <code>lucy.txt</code> succesfully you need 
 to set the cmake variable <code>ApproxMVBB_TESTS_HIGH_PERFORMANCE</code> to <code>ON</code>
-and additionally initialize the submodule <code>AdditionalFiles</code>
-and copy the file <code>Lucy.txt</code> (~500mb) to the build folder of the tests <code>BUILD/tests/</code></p>
+and additionally initialize the submodule <code>additional</code>:</p>
+
+<pre><code>$ git submodule init
+$ git submodule update
+</code></pre>
+
+<p>and copy the file <code>Lucy.txt</code> (~500mb) to the build folder of the tests <code>BUILD/tests/</code></p>
+</blockquote>
 
 <p>Executing the test application <code>cd tests; ./ApproxMVBBTests</code> will then run the following tests:</p>
 
 <ol>
 <li>Testing the ConvexHull2D for several point clouds in 2D</li>
 <li>Minimal area rectangle tests for several point clouds in 2D</li>
-<li>Testing the diameter computation and calculation of the initial bounding box <code>A</code> (see <code>Function Parameters &amp; How It Works</code>_)
+<li>Testing the diameter computation and calculation of the initial bounding box <code>A</code> 
+(see <a href="Function%20Parameters%20&amp;%20How%20It%20Works">section</a>)
 for point clouds in 3D</li>
 <li>Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box</li>
 </ol>
 
-<p>The output can be visualized with the <code>ipython notebook</code> <code>PlotTestResults.ipynb</code>::</p>
+<p>The output can be visualized with the <code>ipython notebook</code> <code>/tests/python/PlotTestResults.ipynb</code>:</p>
 
 <pre><code>$ cd Build/tests
 $ ipython noteboook
@@ -209,6 +218,13 @@ $ ipython noteboook
 <p align="center">
 <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png">
 </p>
+
+<hr>
+
+<h2>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h2>
+
+<p>(to come!)</p>
 
 <hr>
 
