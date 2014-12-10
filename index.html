@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="ApproxMVBB : Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>ApproxMVBB</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/gabyx/ApproxMVBB">View on GitHub</a>
+
+          <h1 id="project_title">ApproxMVBB</h1>
+          <h2 id="project_tagline">Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/gabyx/ApproxMVBB/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gabyx/ApproxMVBB/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1></h1>
+
+<h1>
+<a id="approxmvbb" class="anchor" href="#approxmvbb" aria-hidden="true"><span class="octicon octicon-link"></span></a>ApproxMVBB</h1>
+
+<hr>
+
+<h2>
+<a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
+
+<p>Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
+Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know.<br>
+However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable 
+and already accurate enough.<br>
+This small library can either be built into a shared object library 
+or directly be included in an existing C++ project. </p>
+
+<p><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" alt="alt text" title="Bunny"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" alt="alt text" title="Cube"></p>
+
+<hr>
+
+<h2>
+<a id="installation--dependencies" class="anchor" href="#installation--dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation &amp; Dependencies</h2>
+
+<p>To build the library, the tests and the example you need the built tool <code>cmake
+&lt;www.cmake.org&gt;</code><em>.
+This library only depends on the matrix library <code>Eigen
+&lt;eigen.tuxfamily.org&gt;</code></em> at least version 3. Download it and install it on your system!</p>
+
+<p>Download the latest ApproxMVBB code::</p>
+
+<pre><code>$ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
+</code></pre>
+
+<p>Make a build directory and navigate to it::</p>
+
+<pre><code>$ mkdir Build
+$ cd Build
+</code></pre>
+
+<p>Invoke cmake in the Build directory::</p>
+
+<pre><code>$ cmake ../ApproxMVBB
+</code></pre>
+
+<p>The cmake script will find Eigen if you installed it in a system wide folder (e.g <code>/usr/local/</code>)
+In the <code>CMakeCache.txt</code> file you can specify what you want to build 
+( <code>ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS</code> )</p>
+
+<p>To install the library and the header files at a specific location <code>/usr/local/include/</code> run cmake with::</p>
+
+<pre><code>$ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
+</code></pre>
+
+<p>Finally, build and install the project::</p>
+
+<pre><code>$ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
+$ make install
+</code></pre>
+
+<p>To build in parallel use the <code>-jN</code> flag in the <code>make</code> commmand, where <code>N</code>denotes the number of parallel threads to use.</p>
+
+<hr>
+
+<h2>
+<a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage</h2>
+
+<p>Please see the <code>example/main.cpp</code> in the source directory.
+Given a point cloud with <code>n=10000</code> points sampled in the unit cube in 3D 
+we compute an approximation of the minimum volume bounding volume by the following calls::</p>
+
+<pre><code>#include &lt;iostream&gt;
+#include "ApproxMVBB/ComputeApproxMVBB.hpp"
+
+int  main( int  argc, char  ** argv ){
+
+      ApproxMVBB::Matrix3Dyn points(3,10000);
+      points.setRandom();
+      ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,500,5,0,5);
+
+      return 0;
+
+}
+</code></pre>
+
+<p>The returned object oriented bounding box <code>oobb</code> contains the lower <code>oobb.m_minPoint</code> and upper point <code>oobb.m_maxPoint</code>
+in theb coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
+in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>).</p>
+
+<hr>
+
+<h2>
+<a id="function-parameters--how-it-works" class="anchor" href="#function-parameters--how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>Function Parameters &amp; How It Works</h2>
+
+<p>The most important function::</p>
+
+<pre><code>ApproxMVBB::approximateMVBB(pts, 
+                            epsilon, 
+                            pointSamples, 
+                            gridSize,
+                            mvbbDiamOptLoops, 
+                            gridSearchOptLoops)
+</code></pre>
+
+<p>computes an approximation of the minimal volume bounding box in the following steps:</p>
+
+<ol>
+<li>
+<strong>An approximation of the diameter</strong> (direction which realizes the diameter: <code>z</code> ) of the points <code>pts</code> is computed. 
+The value <code>epsilon</code> is the absolut tolarance for 
+the approximation of the diameter and has the same units as the points <code>pts</code> (in the example 0.001 meter)</li>
+<li>The points are projected into the plane perpendicular to the direction <code>z</code>
+</li>
+<li>An approximation of the diameter of the projected points in 2D is computed (direction <code>x</code> )</li>
+<li>
+<strong>The initial approximate bounding box</strong> <code>A</code> is computed in the orthogonal frame <code>[x,y,z]</code>
+</li>
+<li>
+<strong>An optional optimization loop</strong> is performed (value <code>mvbbDiamOptLoops</code> specifies how many loops) 
+by computing the minimal volume bounding box over a direction <code>t</code> where the direction <code>t</code> 
+is choosen sequentially from the current optimal bounding box solution.<br>
+</li>
+<li>
+<strong>The initial bounding box</strong> <code>A</code> is used as a tight fit around the points <code>pts</code> 
+to compute a <strong>representative sample</strong> of the point cloud. The value <code>pointSamples</code> 
+defines how many points are used for the exhaustive grid search procedure in the next step</li>
+<li>
+<strong>An exhaustive grid search</strong> (value <code>gridSize</code> specifies the x,y,z dimension of the grid defined by the bounding box <code>A</code>) is performed.
+This search is a trivial loop over all grid directions (see Gill Barequet, and Sariel Har-Peled [1]) to find a even smaller bounding box.
+For each grid direction <code>g</code> the minimal bounding box in this direction is computed. This consists 
+of finding the minimal rectangle of the projected 2D point cloud in the plane perpendicular to direction <code>g</code>.
+For each grid direction another <strong>optional optimization loop</strong> (same as in step 5, value <code>gridSearchOptLoops</code> ) can be 
+specified which again optimizes the volume starting from direction <code>g</code>.</li>
+<li>The final approximation for the mininmal volume bounding box is returned. <img class="emoji" title=":poop:" alt=":poop:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle">
+</li>
+</ol>
+
+<hr>
+
+<h2>
+<a id="building-and-visualizing-the-tests" class="anchor" href="#building-and-visualizing-the-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Visualizing the Tests</h2>
+
+<p>Building and installing the basic tests is done by ::</p>
+
+<pre><code>$ cd Build
+$ make ApproxMVBBTests
+</code></pre>
+
+<p><strong>Note:</strong>
+To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+140 million points and some polygonal statue <code>lucy.txt</code> succesfully you need 
+to set the cmake variable <code>ApproxMVBB_TESTS_HIGH_PERFORMANCE</code> to <code>ON</code>
+and additionally initialize the submodule <code>AdditionalFiles</code>
+and copy the file <code>Lucy.txt</code> (~500mb) to the build folder of the tests <code>BUILD/tests/</code></p>
+
+<p>Executing the test application <code>cd tests; ./ApproxMVBBTests</code> will then run the following tests:</p>
+
+<ol>
+<li>Testing the ConvexHull2D for several point clouds in 2D</li>
+<li>Minimal area rectangle tests for several point clouds in 2D</li>
+<li>Testing the diameter computation and calculation of the initial bounding box <code>A</code> (see <code>Function Parameters &amp; How It Works</code>_)
+for point clouds in 3D</li>
+<li>Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box</li>
+</ol>
+
+<p>The output can be visualized with the <code>ipython notebook</code> <code>PlotTestResults.ipynb</code>::</p>
+
+<pre><code>$ cd Build/tests
+$ ipython noteboook
+</code></pre>
+
+<p align="center">
+<img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png">
+</p>
+
+<hr>
+
+<h2>
+<a id="author-and-acknowledgements" class="anchor" href="#author-and-acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author and Acknowledgements</h2>
+
+<p>ApproxMVBB was written by Gabriel Nützi, with source code from Grégoire Malandain &amp; Jean-Daniel Boissonnat 
+(for the approximation of the diameter of a point cloud)
+and Gill Barequet &amp; Sariel Har-Peled (for the inspiration of the algorithms to compute a minimal volume bounding box)
+(reference to come!)</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">ApproxMVBB maintained by <a href="https://github.com/gabyx">gabyx</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
