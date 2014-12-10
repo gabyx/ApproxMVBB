@@ -5,7 +5,7 @@
 //  Licensed under GNU General Public License 3.0 or later. 
 //  Some rights reserved. See COPYING, README.rst.
 //
-//  @license GPL-3.0+ <http://spdx.org/licenses/GPL-3.0+>
+//  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
 // ========================================================================================
 
 #ifndef ApproxMVBB_TypeDefsPoints_hpp
