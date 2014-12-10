@@ -144,6 +144,12 @@ The output can be visualized with the ``ipython notebook`` ``PlotTestResults.ipy
 <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png"/>
 </p>
 
+--------------------------
+Licensing
+--------------------------
+
+This source code is released under GPL License Version 3.0. (I might change the License to Boost/MIT depending on the owners of the depending source coder, yet to discuss)
+
 ---------------------------
 Author and Acknowledgements
 ---------------------------
