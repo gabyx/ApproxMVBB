@@ -124,19 +124,25 @@ Building and installing the basic tests is done by:
     $ cd Build
     $ make ApproxMVBBTests
     
+  
 **Note:**
-To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
-140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
-to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
-and additionally initialize the submodule ``AdditionalFiles``
-and copy the file ``Lucy.txt`` (~500mb) to the build folder of the tests ``BUILD/tests/``
+> To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+> 140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
+> to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
+> and additionally initialize the submodule ``additional``:
+
+>     $ git submodule init
+>     $ git submodule update
+
+> and copy the file ``Lucy.txt`` (~500mb) to the build folder of the tests ``BUILD/tests/``
 
 
 Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the following tests:
 
 1. Testing the ConvexHull2D for several point clouds in 2D
 2. Minimal area rectangle tests for several point clouds in 2D
-3. Testing the diameter computation and calculation of the initial bounding box ``A`` (see `Function Parameters & How It Works`_)
+3. Testing the diameter computation and calculation of the initial bounding box ``A`` 
+   (see [section](Function Parameters & How It Works))
    for point clouds in 3D
 4. Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box
 
