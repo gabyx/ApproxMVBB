@@ -20,16 +20,16 @@ To build the library, the tests and the example you need the built tool [cmake](
 http://www.cmake.org).
 This library only depends on the matrix library [Eigen](http://eigen.tuxfamily.org) at least version 3. Download it and install it on your system.
 
-Download the latest ApproxMVBB code::
+Download the latest ApproxMVBB code:
 
     $ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
   
-Make a build directory and navigate to it::
+Make a build directory and navigate to it:
 
     $ mkdir Build
     $ cd Build
 
-Invoke cmake in the Build directory::
+Invoke cmake in the Build directory:
 
     $ cmake ../ApproxMVBB
 
@@ -41,7 +41,7 @@ To install the library and the header files at a specific location `/usr/local/i
 
     $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
 
-Finally, build and install the project::
+Finally, build and install the project:
 
     $ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
     $ make install
@@ -59,7 +59,7 @@ Example Usage
 ---------------------------
 Please see the ``example/main.cpp`` in the source directory.
 Given a point cloud with ``n=10000`` points sampled in the unit cube in 3D 
-we compute an approximation of the minimum volume bounding volume by the following calls::
+we compute an approximation of the minimum volume bounding volume by the following calls:
 ```C++
     #include <iostream>
     #include "ApproxMVBB/ComputeApproxMVBB.hpp"
@@ -76,7 +76,7 @@ we compute an approximation of the minimum volume bounding volume by the followi
 ```
 The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint``
 in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields::
+in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
 
 ```C++
     ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
@@ -85,7 +85,7 @@ in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from fra
 ---------------------------
 Function Parameters & How It Works
 ---------------------------
-The most important function::
+The most important function:
 ```C++
     ApproxMVBB::approximateMVBB(pts, 
                                 epsilon, 
@@ -119,7 +119,7 @@ computes an approximation of the minimal volume bounding box in the following st
 ---------------------------
 Building and Visualizing the Tests
 ---------------------------
-Building and installing the basic tests is done by ::
+Building and installing the basic tests is done by:
 
     $ cd Build
     $ make ApproxMVBBTests
@@ -140,7 +140,7 @@ Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the
    for point clouds in 3D
 4. Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box
 
-The output can be visualized with the ``ipython notebook`` ``PlotTestResults.ipynb``::
+The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotTestResults.ipynb``:
 
     $ cd Build/tests
     $ ipython noteboook
