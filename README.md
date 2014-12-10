@@ -131,8 +131,10 @@ Building and installing the basic tests is done by:
 > to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
 > and additionally initialize the submodule ``additional``:
 
+>     $ cd ApproxMVBB
 >     $ git submodule init
 >     $ git submodule update
+>     $ cd addtional/tests/files; cat Lucy* | tar xz 
 
 > and copy the file ``Lucy.txt`` (~500mb) to the build folder of the tests ``BUILD/tests/``
 
