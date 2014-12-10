@@ -58,7 +58,7 @@ Example Usage
 Please see the ``example/main.cpp`` in the source directory.
 Given a point cloud with ``n=10000`` points sampled in the unit cube in 3D 
 we compute an approximation of the minimum volume bounding volume by the following calls::
-
+```C++
     #include <iostream>
     #include "ApproxMVBB/ComputeApproxMVBB.hpp"
 
@@ -71,7 +71,7 @@ we compute an approximation of the minimum volume bounding volume by the followi
           return 0;
           
     }
-
+```
 The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint``
 in theb coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
 in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``).
@@ -80,14 +80,14 @@ in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from fra
 Function Parameters & How It Works
 ---------------------------
 The most important function::
-
+```C++
     ApproxMVBB::approximateMVBB(pts, 
                                 epsilon, 
                                 pointSamples, 
                                 gridSize,
                                 mvbbDiamOptLoops, 
                                 gridSearchOptLoops)
-
+```
 computes an approximation of the minimal volume bounding box in the following steps:
 
 1. **An approximation of the diameter** (direction which realizes the diameter: ``z`` ) of the points ``pts`` is computed. 
