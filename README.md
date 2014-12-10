@@ -17,8 +17,8 @@ or directly be included in an existing C++ project. It includes code for computi
 Installation & Dependencies
 ---------------------------
 To build the library, the tests and the example you need the built tool [cmake](
-www.cmake.org).
-This library only depends on the matrix library [Eigen](eigen.tuxfamily.org) at least version 3. Download it and install it on your system.
+http://www.cmake.org).
+This library only depends on the matrix library [Eigen](http://eigen.tuxfamily.org) at least version 3. Download it and install it on your system.
 
 Download the latest ApproxMVBB code::
 
