@@ -42,11 +42,9 @@
 <a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
 
 <p>Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
-Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know.<br>
-However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable 
-and already accurate enough.<br>
+Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.<br>
 This small library can either be built into a shared object library 
-or directly be included in an existing C++ project. </p>
+or directly be included in an existing C++ project. It includes code for computing the ConvexHull in 2D an the minimal area rectangle of a 2D point cloud as well.</p>
 
 <p><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" alt="alt text" title="Bunny"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" alt="alt text" title="Cube"></p>
 
@@ -102,23 +100,24 @@ $ make install
 Given a point cloud with <code>n=10000</code> points sampled in the unit cube in 3D 
 we compute an approximation of the minimum volume bounding volume by the following calls::</p>
 
-<pre><code>#include &lt;iostream&gt;
-#include "ApproxMVBB/ComputeApproxMVBB.hpp"
+<div class="highlight highlight-C++"><pre>    #<span class="pl-k">include</span> <span class="pl-s1"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
+    #<span class="pl-k">include</span> <span class="pl-s1"><span class="pl-pds">"</span>ApproxMVBB/ComputeApproxMVBB.hpp<span class="pl-pds">"</span></span>
 
-int  main( int  argc, char  ** argv ){
+    <span class="pl-st">int</span>  <span class="pl-en">main</span>( <span class="pl-st">int</span>  argc, <span class="pl-st">char</span>  ** argv ){
 
-      ApproxMVBB::Matrix3Dyn points(3,10000);
-      points.setRandom();
-      ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,500,5,0,5);
+          ApproxMVBB::Matrix3Dyn <span class="pl-vo">points</span>(<span class="pl-c1">3</span>,<span class="pl-c1">10000</span>);
+          points.<span class="pl-s3">setRandom</span>();
+          ApproxMVBB::OOBB oobb = <span class="pl-s3">ApproxMVBB::approximateMVBB</span>(points,<span class="pl-c1">0.001</span>,<span class="pl-c1">500</span>,<span class="pl-c1">5</span>,<span class="pl-c1">0</span>,<span class="pl-c1">5</span>);
 
-      return 0;
+          <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 
-}
-</code></pre>
+    }</pre></div>
 
 <p>The returned object oriented bounding box <code>oobb</code> contains the lower <code>oobb.m_minPoint</code> and upper point <code>oobb.m_maxPoint</code>
-in theb coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>).</p>
+in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
+in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>). This rotation matrix <code>R_KI</code> corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields::</p>
+
+<div class="highlight highlight-C++"><pre>    ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  <span class="pl-c">// A_IK * oobb.m_minPoint </span></pre></div>
 
 <hr>
 
@@ -127,13 +126,12 @@ in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_
 
 <p>The most important function::</p>
 
-<pre><code>ApproxMVBB::approximateMVBB(pts, 
-                            epsilon, 
-                            pointSamples, 
-                            gridSize,
-                            mvbbDiamOptLoops, 
-                            gridSearchOptLoops)
-</code></pre>
+<div class="highlight highlight-C++"><pre>    <span class="pl-en">ApproxMVBB::approximateMVBB</span>(pts, 
+                                epsilon, 
+                                pointSamples, 
+                                gridSize,
+                                mvbbDiamOptLoops, 
+                                gridSearchOptLoops)</pre></div>
 
 <p>computes an approximation of the minimal volume bounding box in the following steps:</p>
 
