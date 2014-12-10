@@ -73,8 +73,12 @@ we compute an approximation of the minimum volume bounding volume by the followi
     }
 ```
 The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint``
-in theb coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``).
+in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
+in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields::
+
+```C++
+    ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
+```
 
 ---------------------------
 Function Parameters & How It Works
