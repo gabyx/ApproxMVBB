@@ -1,0 +1,54 @@
+
+
+#The name of the project ====================================================================
+PROJECT("ApproxMVBBTests")
+
+MARK_AS_ADVANCED( ApproxMVBB_TESTS_HIGH_PERFORMANCE)
+SET(ApproxMVBB_TESTS_HIGH_PERFORMANCE OFF CACHE BOOL "Switch on high-performance tests, these require a lot of RAM and AdditionalFiles need to be in place")
+
+
+# WRITE CONFIGURATION FILE
+configure_file (
+  "${PROJECT_SOURCE_DIR}/include/TestConfig.hpp.in.cmake"
+  ${PROJECT_BINARY_DIR}/include/TestConfig.hpp
+)
+#=========================
+
+
+SET(SOURCE_FILES
+    ${COMMON_SOURCE}
+    src/main.cpp
+)
+
+SET(INCLUDE_FILES
+    ${COMMON_INCLUDE}
+    include/ComputeApproxMVBBTests.hpp
+)
+
+
+#include directories
+set(INCLUDE_DIRS
+    ${EIGEN_INCLUDE_DIR}
+    ${COMMON_INCLUDE_DIR}
+    include/
+    ${PROJECT_BINARY_DIR}/include/
+)
+
+include_directories(${INCLUDE_DIRS})
+
+
+ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
+
+
+file(COPY 
+        ${PROJECT_SOURCE_DIR}/files/Bunny.txt
+        ${PROJECT_SOURCE_DIR}/files/PointsSimulation.txt
+        ${PROJECT_SOURCE_DIR}/files/PointsSimulation2DRectFail.txt
+        ${PROJECT_SOURCE_DIR}/files/PointsSimulationFailMVBB.txt
+        ${PROJECT_SOURCE_DIR}/python/PlotTestResults.ipynb
+        DESTINATION ${PROJECT_BINARY_DIR}
+    )
+
+
+
+

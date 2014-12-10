@@ -1,0 +1,89 @@
+This code has been extracted from 
+http://www-sop.inria.fr/members/Gregoire.Malandain/diameter/
+
+IMPORTANT::==============================================
+The  following code replacements has been made:
+
+estimateDiameterInOneList (and possible all other 3 methods) crashes with all points the same
+since _MaximalSegmentInOneList does not generate a feasible segment (pointers are zero)
+because it compares the newdistance to 0.0 since the squareDiameter was initialized to 0.0
+resulting in never updating the segement!
+
+nice fix is to set the initialization code for ->squareDiameter = 0.0  to lowest number!
+Search: 
+->squareDiameter\s*=\s*(0\.0|0|\.0)
+Replace
+squareDiameter = std::numeric_limits<double>::lowest();
+
+=================================================================
+
+The original read me was:
+
+DESCRIPTION 
+-----------
+
+This is a little package containing code
+for diameter computation of points sets (see references below).
+
+Compiling 
+---------
+% make
+
+Programs
+--------
+'diameter-test' computes the diameter (or an epsilon-approximation)
+   of a points set, that can be randomly picked, or read from a file.
+'gener-points' generates a file from a ramdom distribution. Its output
+   can be read by 'diameter-test'
+
+The '-help' option will provide you with the full options of these
+two programs.
+
+Examples
+--------
+
+% gener-points -dist c -p 100 -dim 4 cube.pts
+generates the file 'cube.pts' that contains 100 points 
+distributed inside a cube in R^4
+
+% diameter-test cube.pts
+computes the diameter of the points contained in file 'cube.pts'
+
+The same can be directly done by
+% diameter-test -dist c -p 100 -dim 4
+
+
+References
+-----------
+
+
+
+@InProceedings{malandain-boissonnat:dgci:2002,
+       author = {Grégoire Malandain and Jean-Daniel Boissonnat},
+       title = {Computing the Diameter of a Point Set},
+       booktitle = {Discrete Geometry for Computer Imagery (DGCI 2002)},
+       OPTpages = {197--208},
+       year = {2002},
+       editor = {A. Braquelaire and J.-O. Lachaud and A. Vialard},
+       volume = {2301},
+       series = {LNCS},
+       address = {Bordeaux, France},
+       publisher = {Springer},
+       note = {also INRIA research report RR-4233},
+       keyword = {computational geometry},
+       postscript = {ftp://ftp-sop.inria.fr/epidaure/Publications/Malandain/dgci-2002.ps.gz},
+       pdf = {ftp://ftp-sop.inria.fr/epidaure/Publications/Malandain/dgci-2002.pdf} 
+       }
+
+@TechReport{Malandain:Boissonnat:RR:2001,
+       author = {Malandain, Grégoire and Boissonnat, Jean-Daniel},
+       title = {Computing the Diameter of a Point Set},
+       institution = {INRIA},
+       year = {2001},
+       type = {Research report},
+       number = {RR-4233},
+       address = {Sophia-Antipolis},
+       month = jul,
+       url = "http://www.inria.fr/rrrt/rr-4233.html",
+       keyword = {computational geometry} 
+       }
