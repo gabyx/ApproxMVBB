@@ -34,7 +34,7 @@ PROJECT(${ApproxMVBBProjectName})
 
 # Get the version of the project
 include(GetGitRevisionDescription)
-git_describe(VERSION --tags --dirty=-dirty)
+git_describe(VERSION)
 MESSAGE(STATUS "ApproxMVBB Version: ${VERSION} extracted from git tags!")
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
