@@ -21,7 +21,6 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE SRC INC INCLUDE_DIRS ROOT_DIR )
         ${ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixDefs.hpp
         ${ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
         ${ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/CPUTimer.hpp
         ${ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
         ${ROOT_DIR}/include/ApproxMVBB/Common/AssertionDebug.hpp
         ${ROOT_DIR}/include/ApproxMVBB/Common/Platform.hpp

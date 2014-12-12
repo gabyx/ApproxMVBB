@@ -1,6 +1,9 @@
 #The CMake Minimum version that is required.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+
+
+
 #Detect Build Type if Debug appears in CMAKE_BINARY_DIR path
 STRING(REGEX MATCH ".*(Debug|debug).*" DEBUG_MATCH ${CMAKE_BINARY_DIR} )
 if(DEBUG_MATCH)
@@ -14,7 +17,11 @@ ENDIF()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
 message(STATUS "Module path is now set to: " ${CMAKE_MODULE_PATH} )
 
+# Load important modules
+include(FirstCMakeRun)
 
+
+#The name of the project ====================================================================
 SET(ApproxMVBBProjectName "ApproxMVBB")
 IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
         SET(ApproxMVBBProjectName  "${ApproxMVBBProjectName}-${PROJECTNAMEPREFIX}")
@@ -22,12 +29,13 @@ ENDIF()
 
 MESSAGE(STATUS "Project name is: " ${ApproxMVBBProjectName})
 
-#The name of the project ====================================================================
 PROJECT(${ApproxMVBBProjectName})
 
 
-
-
+# Get the version of the project
+include(GetGitRevisionDescription)
+git_describe(VERSION --tags --dirty=-dirty)
+MESSAGE(STATUS "ApproxMVBB Version: ${VERSION} extracted from git tags!")
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
@@ -125,9 +133,8 @@ SET(COMMON_INCLUDE_DIR ${COMMON_INCLUDE_DIR} ${PROJECT_BINARY_DIR}/include/)
 
 
 # WRITE CONFIGURATION FILE
-
 SET(ApproxMVBB_CONFIG_FILE ${PROJECT_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
-configure_file (
+configure_file(
   ${PROJECT_SOURCE_DIR}/include/ApproxMVBB/Config/Config.hpp.in.cmake
   ${ApproxMVBB_CONFIG_FILE}
 )

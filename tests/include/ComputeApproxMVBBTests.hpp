@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -16,7 +16,7 @@
 #include "TestConfig.hpp"
 
 #include "ApproxMVBB/ComputeApproxMVBB.hpp"
-#include "ApproxMVBB/Common/CPUTimer.hpp"
+#include "CPUTimer.hpp"
 
 namespace ApproxMVBB{
 namespace TestFunctions{
@@ -471,7 +471,7 @@ public:
             }
             minRectTest(11,t);
         }
-        
+
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
         {
             // generate points
@@ -587,7 +587,7 @@ public:
             applyRandomRotTrans(t);
             diameterTest(5,t,false,10,1);
         }
-        
+
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
         {
@@ -601,7 +601,7 @@ public:
             applyRandomRotTrans(t);
             diameterTest(6,t,false,3,100);
         }
-        
+
         {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,140000000);
@@ -609,7 +609,7 @@ public:
             diameterTest(7,t,false,0,0.01);
         }
 #endif
-      
+
     }
 };
 
@@ -726,7 +726,7 @@ public:
             applyRandomRotTrans(t);
             mvbbTest(3,t,true,0.1);
         }
-        
+
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
         {
