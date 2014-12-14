@@ -11,8 +11,8 @@
 #ifndef ApproxMVBB_OOBB_hpp
 #define ApproxMVBB_OOBB_hpp
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
-#include "ApproxMVBB/AABB.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
+#include ApproxMVBB_AABB_INCLUDE_FILE
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT OOBB{
@@ -20,7 +20,7 @@ public:
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     OOBB() {
         this->reset();

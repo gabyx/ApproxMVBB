@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -13,10 +13,10 @@
 
 #include <string>
 
-#include "ApproxMVBB/Common/AssertionDebug.hpp"
-#include "ApproxMVBB/Common/StaticAssert.hpp"
+#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
+#include ApproxMVBB_StaticAssert_INCLUDE_FILE
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
 #include "ApproxMVBB/Diameter/EstimateDiameter.hpp"
@@ -25,7 +25,7 @@
 namespace ApproxMVBB{
 namespace PointFunctions {
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
     DEFINE_POINTS_CONFIG_TYPES
 
     template<typename Derived>
@@ -131,7 +131,7 @@ namespace PointFunctions {
     template<unsigned int Dimension,typename TVector,typename Derived>
     std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points, const PREC epsilon) {
 
-        STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
+        ApproxMVBB_STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
 
         MatrixBase<Derived> & pp = const_cast< MatrixBase<Derived> &>(points);
 
@@ -160,7 +160,7 @@ namespace PointFunctions {
     class CompareByAngle {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        DEFINE_MATRIX_TYPES
+        ApproxMVBB_DEFINE_MATRIX_TYPES
 
         /** Cosntructor, points is not a temporary, it accepts all sorts of matrix expressions,
         * however the construction of MatrixRef<> might create a temporary but this is stored in m_p!

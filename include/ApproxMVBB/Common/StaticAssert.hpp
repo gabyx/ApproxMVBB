@@ -15,8 +15,8 @@
 #include <type_traits>
 
 namespace ApproxMVBB{
-	#define STATIC_ASSERT(B) static_assert( B , "no message");
-	#define STATIC_ASSERTM(B,COMMENT) static_assert( B , COMMENT);
+	#define ApproxMVBB_STATIC_ASSERT(B) static_assert( B , "no message");
+	#define ApproxMVBB_STATIC_ASSERTM(B,COMMENT) static_assert( B , COMMENT);
 };
 
 

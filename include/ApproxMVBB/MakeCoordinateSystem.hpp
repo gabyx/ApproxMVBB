@@ -13,12 +13,12 @@
 
 #include <cmath>
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
 namespace ApproxMVBB{
 namespace CoordinateSystem {
 
-DEFINE_MATRIX_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES
 
 /**
 * @ingroup Common

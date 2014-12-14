@@ -89,7 +89,7 @@ struct MyMatrixIOFormat {
 /**
 * @brief This macro is used to typedef all custom matrix types which have nothing to do with the system.
 */
-#define DEFINE_MATRIX_TYPES_OF( _PREC_ ) \
+#define ApproxMVBB_DEFINE_MATRIX_TYPES_OF( _PREC_ ) \
    using Matrix44 = typename ApproxMVBB::MyMatrix< _PREC_ >::Matrix44; \
    using Matrix33 = typename ApproxMVBB::MyMatrix< _PREC_ >::Matrix33; \
    using Matrix22 = typename ApproxMVBB::MyMatrix< _PREC_ >::Matrix22; \

@@ -15,7 +15,7 @@
 #include <iostream>
 #include <typeinfo>
 
-#include "ApproxMVBB/Common/Exception.hpp"
+#include ApproxMVBB_Exception_INCLUDE_FILE
 
 #ifndef NDEBUG
 // Debug!
