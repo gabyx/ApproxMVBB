@@ -51,6 +51,7 @@ if(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
     MARK_AS_ADVANCED(FORCE ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INC_INSTALL_DIR )
 endif()
 
+# INSTALLING FILES
 MESSAGE( STATUS "Installing library to " "${ApproxMVBB_LIB_INSTALL_DIR}")
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
 
@@ -73,7 +74,7 @@ install(FILES  ${ApproxMVBB_CONFIG_FILE}
         DESTINATION "${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB/Config"
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
-
+#=========================
 # Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
 SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/ApproxMVBB-config.cmake") 
@@ -82,7 +83,7 @@ configure_file(
   ${ApproxMVBB_CMAKE_CONFIG_FILE} @ONLY
 )
 #=========================
-# Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
+# Generate ApproxMVBB-config-version.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
 SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/ApproxMVBB-config-version.cmake") 
 configure_file(
