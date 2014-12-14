@@ -1,0 +1,86 @@
+# - Find ApproxMVBB Installation
+#
+# Users can set the following variables before calling the module:
+# ApproxMVBB_DIR - The preferred installation prefix for searching for ApproxMVBB. Set by the user.
+#
+# ApproxMVBB_CXX_FLAGS - extra flags for compilation
+# ApproxMVBB_INCLUDE_DIRS - include directories
+# ApproxMVBB_LIBRARY_REL  - Release library
+# ApproxMVBB_LIBRARY_DGB  - Debug library
+# ApproxMVBB_LIBRARIES - libraries to link with
+
+macro(make_library_set PREFIX)
+  if (${PREFIX}_FWK)
+    set(${PREFIX} ${${PREFIX}_FWK})
+  elseif (${PREFIX}_REL AND ${PREFIX}_DBG)
+    set(${PREFIX} optimized ${${PREFIX}_REL} debug ${${PREFIX}_DBG})
+  elseif (${PREFIX}_REL)
+    set(${PREFIX} ${${PREFIX}_REL})
+  elseif (${PREFIX}_DBG)
+    set(${PREFIX} ${${PREFIX}_DBG})
+  endif ()
+endmacro(make_library_set)
+
+
+macro(findpkg_finish PREFIX)
+  # skip if already processed during this run
+  if (NOT ${PREFIX}_FOUND)
+    if ( (NOT "${ARGV1}") AND ${PREFIX}_INCLUDE_DIR AND ${PREFIX}_LIBRARY)
+      set(${PREFIX}_FOUND TRUE )
+      set(${PREFIX}_INCLUDE_DIRS ${${PREFIX}_INCLUDE_DIR})
+      set(${PREFIX}_LIBRARIES ${${PREFIX}_LIBRARY}  )
+      if (NOT ${PREFIX}_FIND_QUIETLY)
+        message(STATUS "Found ${PREFIX}")
+      endif ()
+   elseif ( "${ARGV1}" AND ${PREFIX}_INCLUDE_DIR)
+      set(${PREFIX}_FOUND TRUE)
+      set(${PREFIX}_INCLUDE_DIRS ${${PREFIX}_INCLUDE_DIR} )
+      set(${PREFIX}_LIBRARIES ${${PREFIX}_LIBRARY} )
+      if (NOT ${PREFIX}_FIND_QUIETLY)
+        message(STATUS "Found ${PREFIX}: No Library, only Headers")
+      endif ()
+    else ()
+      if (NOT ${PREFIX}_FIND_QUIETLY)
+        message(STATUS "Could not locate ${PREFIX}")
+      endif ()
+      if (${PREFIX}_FIND_REQUIRED)
+        message(FATAL_ERROR "Required library ${PREFIX} not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake.")
+      endif ()
+    endif ()
+
+    mark_as_advanced(${PREFIX}_INCLUDE_DIR ${PREFIX}_LIBRARY ${PREFIX}_LIBRARY_REL ${PREFIX}_LIBRARY_DBG ${PREFIX}_LIBRARY_FWK)
+  endif ()
+endmacro(findpkg_finish)
+
+
+set( ApproxMVBB_LINK_FLAGS "-std=c++11" CACHE STRING "Build flags when linking with ApproxMVBB")
+
+
+#Find Include Headers
+find_path(ApproxMVBB_INCLUDE_DIR NAMES "@ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER@" HINTS @ApproxMVBB_INC_INSTALL_DIR@ ${ApproxMVBB_DIR} PATH_SUFFIXES ApproxMVBB)
+#message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
+
+#Find libraries in @ApproxMVBB_LIBRARY_INSTALL_PATH@
+find_library(ApproxMVBB_LIBRARY_REL NAMES "@ApproxMVBB_LIBRARY_NAME_REL@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
+find_library(ApproxMVBB_LIBRARY_DBG NAMES "@ApproxMVBB_LIBRARY_NAME_DBG@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
+#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_REL})
+#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_DBG})
+
+make_library_set(ApproxMVBB_LIBRARY)
+findpkg_finish(ApproxMVBB)
+
+include(FindPackageHandleStandardArgs)
+## handle the QUIETLY and REQUIRED arguments
+## if all listed variables are TRUE
+find_package_handle_standard_args(ApproxMVBB DEFAULT_MSG ApproxMVBB_LIBRARY ApproxMVBB_INCLUDE_DIR)
+
+
+
+
+MARK_AS_ADVANCED(
+    ApproxMVBB_CXX_FLAGS
+    ApproxMVBB_INCLUDE_DIRS
+    ApproxMVBB_LIBRARY_REL
+    ApproxMVBB_LIBRARY_DBG
+    ApproxMVBB_LIBRARY
+)

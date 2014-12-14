@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -14,11 +14,11 @@
 #include <string>
 #include <vector>
 
-#include "ApproxMVBB/Common/AssertionDebug.hpp"
+#include "ApproxMVBB/Config/Config.hpp"
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
-
+#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
 #include "ApproxMVBB/AngleFunctions.hpp"
 #include "ApproxMVBB/PointFunctions.hpp"
@@ -31,7 +31,7 @@ namespace ApproxMVBB{
 class APPROXMVBB_EXPORT MinAreaRectangle {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     DEFINE_POINTS_CONFIG_TYPES
 
@@ -43,7 +43,7 @@ public:
     MinAreaRectangle(const MatrixBase<Derived> & points)
         : m_p(points), m_convh(m_p) {
         EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
-        ASSERTMSG( m_p.data() == points.derived().data() ," You store a temporary in a Ref<> which works here, but do you really want this?")
+        ApproxMVBB_ASSERTMSG( m_p.data() == points.derived().data() ," You store a temporary in a Ref<> which works here, but do you really want this?")
     }
 
     struct Box2d {

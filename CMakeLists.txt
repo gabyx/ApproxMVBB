@@ -1,6 +1,9 @@
 #The CMake Minimum version that is required.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+
+
+
 #Detect Build Type if Debug appears in CMAKE_BINARY_DIR path
 STRING(REGEX MATCH ".*(Debug|debug).*" DEBUG_MATCH ${CMAKE_BINARY_DIR} )
 if(DEBUG_MATCH)
@@ -14,20 +17,18 @@ ENDIF()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
 message(STATUS "Module path is now set to: " ${CMAKE_MODULE_PATH} )
 
+# Load important modules
+include(FirstCMakeRun)
 
+
+#The name of the project ====================================================================
 SET(ApproxMVBBProjectName "ApproxMVBB")
 IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
         SET(ApproxMVBBProjectName  "${ApproxMVBBProjectName}-${PROJECTNAMEPREFIX}")
 ENDIF()
 
 MESSAGE(STATUS "Project name is: " ${ApproxMVBBProjectName})
-
-#The name of the project ====================================================================
 PROJECT(${ApproxMVBBProjectName})
-
-
-
-
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
@@ -89,7 +90,7 @@ set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
-SET(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "Debug postfix for library/executable")
+SET(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
 
 
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )
@@ -122,15 +123,11 @@ SET(ApproxMVBB_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/Diameter/inc
 INCLUDE_ALL_ApproxMVBB_SOURCE( COMMON_SOURCE COMMON_INCLUDE COMMON_INCLUDE_DIR "${PROJECT_SOURCE_DIR}")
 SET(COMMON_INCLUDE_DIR ${COMMON_INCLUDE_DIR} ${PROJECT_BINARY_DIR}/include/)
 
-
-
 # WRITE CONFIGURATION FILE
-
+INCLUDE(WriteConfigFile)
+# Set include file macros to our own headers!
 SET(ApproxMVBB_CONFIG_FILE ${PROJECT_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
-configure_file (
-  ${PROJECT_SOURCE_DIR}/include/ApproxMVBB/Config/Config.hpp.in.cmake
-  ${ApproxMVBB_CONFIG_FILE}
-)
+ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${PROJECT_SOURCE_DIR})
 #=========================
 
 if(ApproxMVBB_BUILD_LIBRARY)

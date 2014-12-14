@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -11,18 +11,20 @@
 #ifndef ApproxMVBB_ComputeApproxMVBB_hpp
 #define ApproxMVBB_ComputeApproxMVBB_hpp
 
-
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include "ApproxMVBB/Config/Config.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
+
+#include ApproxMVBB_OOBB_INCLUDE_FILE
 #include "ApproxMVBB/GreatestCommonDivisor.hpp"
 #include "ApproxMVBB/ProjectedPointSet.hpp"
-#include "ApproxMVBB/OOBB.hpp"
+
 
 
 namespace ApproxMVBB {
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
     DEFINE_POINTS_CONFIG_TYPES
 
 /** We are given a point set, and (hopefully) a tight fitting
@@ -40,7 +42,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
 
 
     if(nPoints > points.cols() || nPoints < 2) {
-        ERRORMSG("Wrong arguements!")
+        ApproxMVBB_ERRORMSG("Wrong arguements!")
     }
 
     newPoints.resize(3,nPoints);
@@ -100,7 +102,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     unsigned int k=0;
 
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    ASSERTMSG(halfSampleSize<=nPoints,"?")
+    ApproxMVBB_ASSERTMSG(halfSampleSize<=nPoints,"?")
     for(unsigned int i=0; i<halfSampleSize; ++i) {
         if( topPoints[i] != 0 ) {
             //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));

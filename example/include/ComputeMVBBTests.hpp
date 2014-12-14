@@ -18,7 +18,7 @@
 
 namespace TestFunctions{
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
     DEFINE_POINTS_CONFIG_TYPES
 
 
@@ -28,7 +28,7 @@ namespace TestFunctions{
         std::ofstream l;
         l.open(filePath.c_str());
         if(!l.good()){
-            ERRORMSG("Could not open file: " << filePath << std::endl)
+            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
         }
 
         for(unsigned int i=0; i<v.cols(); i++) {
@@ -42,7 +42,7 @@ namespace TestFunctions{
         std::ofstream l;
         l.open(filePath.c_str());
         if(!l.good()){
-            ERRORMSG("Could not open file: " << filePath << std::endl)
+            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
         }
 
         for(auto & v: c) {
@@ -55,7 +55,7 @@ namespace TestFunctions{
         std::ofstream l;
         l.open(filePath.c_str());
         if(!l.good()){
-            ERRORMSG("Could not open file: " << filePath << std::endl)
+            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
         }
 
         l << oobb.m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
@@ -69,7 +69,7 @@ namespace TestFunctions{
         file.open(filePath.c_str());  //opens .txt file
 
         if (!file.is_open()) { // check file is open, quit if not
-            ERRORMSG("Could not open file: " << filePath)
+            ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
         }
 
         PREC a,b,c;
@@ -88,7 +88,7 @@ namespace TestFunctions{
         file.open(filePath.c_str());  //opens .txt file
 
         if (!file.is_open()) { // check file is open, quit if not
-            ERRORMSG("Could not open file: " << filePath)
+            ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
         }
         PREC a,b;
         Vector2List v;
@@ -143,7 +143,7 @@ namespace TestFunctions{
 class ConvexHullTest {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
     void convexHullTest(unsigned int N, const TMatrix & v) {
@@ -295,7 +295,7 @@ void convexHullTest() {
 class MinAreaRectangleTest {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
 
     template<typename TMatrix>
@@ -491,7 +491,7 @@ void minAreaBoxTest() {
 class DiameterTest {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
     void diameterTest(unsigned int N, const TMatrix & v, bool dump = true, unsigned int optLoops = 10, PREC epsilon = 0.001) {
@@ -616,7 +616,7 @@ void diameterTest() {
 class MVBBTests {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
     void mvbbTest(unsigned int N, const TMatrix & v,

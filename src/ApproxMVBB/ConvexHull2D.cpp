@@ -82,7 +82,7 @@ void ConvexHull2D::compute() {
             continue;
         }
 
-        ASSERTMSG( lPtIdx < m_p.size() && mPtIdx < m_p.size() && currIdx < m_p.size(), "?")
+        ApproxMVBB_ASSERTMSG( lPtIdx < m_p.size() && mPtIdx < m_p.size() && currIdx < m_p.size(), "?")
 
         if( areaSign( m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) > 0) { // if we have a left turn!
             //std::cout << "Left turn: c:" << currIdx << " m:" << mPtIdx << " l: "<< lPtIdx << " sign: " << areaSign( m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) << std::endl;

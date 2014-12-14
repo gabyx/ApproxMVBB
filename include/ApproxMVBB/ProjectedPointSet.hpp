@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -10,21 +10,21 @@
 #ifndef ApproxMVBB_ProjectedPointSet_hpp
 #define ApproxMVBB_ProjectedPointSet_hpp
 
-#include "ApproxMVBB/Common/AssertionDebug.hpp"
+#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
 #include "ApproxMVBB/PointFunctions.hpp"
 #include "ApproxMVBB/MakeCoordinateSystem.hpp"
-#include "ApproxMVBB/OOBB.hpp"
+#include ApproxMVBB_OOBB_INCLUDE_FILE
 #include "ApproxMVBB/MinAreaRectangle.hpp"
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT ProjectedPointSet {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
     DEFINE_POINTS_CONFIG_TYPES
 
     template<typename Derived>
@@ -147,7 +147,7 @@ private:
         using namespace CoordinateSystem;
 
         if(points.cols()==0) {
-            ERRORMSG("Point set empty!");
+            ApproxMVBB_ERRORMSG("Point set empty!");
         }
 
         // Generate Orthonormal Bases
@@ -159,7 +159,7 @@ private:
         m_A_KI.col(1) = yDir;
         m_A_KI.col(2) = m_zDir;
         m_A_KI.transposeInPlace();
-        ASSERTMSG(checkOrthogonality(xDir,yDir,m_zDir,1e-6),
+        ApproxMVBB_ASSERTMSG(checkOrthogonality(xDir,yDir,m_zDir,1e-6),
                   "Not orthogonal: x:"<<xDir.transpose()<< " y: "<< yDir.transpose() << " z: "  << m_zDir.transpose());
 
         // Project Points onto xDir,yDir Halfspace

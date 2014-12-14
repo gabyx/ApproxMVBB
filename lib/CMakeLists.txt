@@ -31,31 +31,76 @@ include_directories(${INCLUDE_DIRS})
 
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCE_FILES} )
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
+)
+set(ApproxMVBB_LIBRARY_NAME_REL "${PROJECT_NAME}")
+set(ApproxMVBB_LIBRARY_NAME_DBG "${PROJECT_NAME}${CMAKE_DEBUG_POSTFIX}")
+set(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "Config/Config.hpp")
 
-# Install stuff 
+# Install stuff (default location is not some where on the system! for safty reasons
+if(FIRST_CMAKE_RUN)
+    SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/../install" CACHE STRING "Install prefix (e.g. /usr/local/)" FORCE)
+endif()
 
-MARK_AS_ADVANCED( CMAKE_INSTALL_PREFIX )
-SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install" CACHE STRING "Install prefix (e.g. /usr/local/)")
+SET(ApproxMVBB_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "Install dir library")
+SET(ApproxMVBB_INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include CACHE STRING "Install dir includes")
+MARK_AS_ADVANCED(ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INCLUDE_INSTALL_DIR )
 
+if(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
+    SET(INSTALL_PREFIX_LAST_VALUE ${CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Last install prefix value")
+    MESSAGE(WARNING "Check install dir! They have been changed!")
+    UNSET(ApproxMVBB_LIB_INSTALL_DIR)
+    UNSET(ApproxMVBB_INCLUDE_INSTALL_DIR)
+    SET(ApproxMVBB_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "Install dir library" FORCE)
+    SET(ApproxMVBB_INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include CACHE STRING "Install dir includes" FORCE)
+    MARK_AS_ADVANCED(FORCE ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INC_INSTALL_DIR )
+endif()
 
-MESSAGE( STATUS "Installing library to " "${CMAKE_INSTALL_PREFIX}/lib")
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "lib/")
+# INSTALLING FILES
+MESSAGE( STATUS "Installing library to " "${ApproxMVBB_LIB_INSTALL_DIR}")
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
 
-MESSAGE( STATUS "Installing include folders:" ${ApproxMVBB_INCLUDE_DIR} " to ${CMAKE_INSTALL_PREFIX}/include")
-install(DIRECTORY  ${ApproxMVBB_INCLUDE_DIR}  DESTINATION "include/"
+MESSAGE( STATUS "Installing include folders:" ${ApproxMVBB_INCLUDE_DIR} " to ${ApproxMVBB_INC_INSTALL_DIR}")
+install(DIRECTORY  ${ApproxMVBB_INCLUDE_DIR}  DESTINATION ${ApproxMVBB_INC_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 
-MESSAGE( STATUS "Installing external include folders:" ${ApproxMVBB_EXTERNAL_INCLUDE_DIR} " to ${CMAKE_INSTALL_PREFIX}/include/ApproxMVBB")
+MESSAGE( STATUS "Installing external include folders:" ${ApproxMVBB_EXTERNAL_INCLUDE_DIR} " to ${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB")
 install(DIRECTORY  ${ApproxMVBB_EXTERNAL_INCLUDE_DIR}
-        DESTINATION "include/ApproxMVBB"
+        DESTINATION "${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB"
         FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 
 
-MESSAGE( STATUS "Installing config file:" ${ApproxMVBB_CONFIG_FILE} " to ${CMAKE_INSTALL_PREFIX}/include/ApproxMVBB/Config")
+MESSAGE( STATUS "Installing config file:" ${ApproxMVBB_CONFIG_FILE} " to ${ApproxMVBB_INCLUDE_INSTALL_DIR}/ApproxMVBB/Config")
 install(FILES  ${ApproxMVBB_CONFIG_FILE}
-        DESTINATION "include/ApproxMVBB/Config"
+        DESTINATION "${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB/Config"
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
+#=========================
+# Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
+SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
+SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config.cmake") 
+configure_file(
+  ${PROJECT_SOURCE_DIR}/approxmvbb-config.cmake.in
+  ${ApproxMVBB_CMAKE_CONFIG_FILE} @ONLY
+)
+#=========================
+# Generate ApproxMVBB-config-version.cmake file which needs to be installed afterwards
+SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
+SET(ApproxMVBB_CMAKE_CONFIG_VERSION_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config-version.cmake") 
+configure_file(
+  ${PROJECT_SOURCE_DIR}/approxmvbb-config-version.cmake.in
+  ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE} @ONLY
+)
+#=========================
+
+
+SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxMVBB_VERSION_STRING})
+ MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
+install(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
+        DESTINATION ${CMAKE_CONFIG_FOLDER}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)

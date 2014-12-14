@@ -13,11 +13,11 @@
 
 #include <cmath>
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 namespace ApproxMVBB{
 namespace AngleFunctions {
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     /** Maps angle to the range [-pi,pi]
     * Sawtooth function as g = f(x+a/2) - a/2 , f = x - floor(x/a)*a , a = 2*pi

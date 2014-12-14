@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -16,15 +16,16 @@
 #include <string>
 #include <sstream>
 
+namespace ApproxMVBB{
+    class Exception : public std::runtime_error {
+    public:
+        Exception(const std::stringstream & ss): std::runtime_error(ss.str()){};
+    private:
 
-class Exception : public std::runtime_error {
-public:
-    Exception(const std::stringstream & ss): std::runtime_error(ss.str()){};
-private:
-
+    };
 };
 
-#define THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw Exception(___s___);}
+#define ApproxMVBB_THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw Exception(___s___);}
 
 
 

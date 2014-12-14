@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -13,14 +13,15 @@
 
 #include <algorithm>
 
-#include "ApproxMVBB/Common/TypeDefs.hpp"
-#include "ApproxMVBB/Common/AssertionDebug.hpp"
+#include "ApproxMVBB/Config/Config.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
+#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT AABB {
 public:
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
@@ -70,13 +71,13 @@ public:
     }
 
     inline void expand(PREC d) {
-        ASSERTMSG(d>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint -= Vector3(d,d,d);
         m_maxPoint += Vector3(d,d,d);
     };
 
     inline void expand(Vector3 d) {
-        ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
         m_minPoint -= d;
         m_maxPoint += d;
     };
@@ -95,7 +96,7 @@ public:
 class APPROXMVBB_EXPORT AABB2d {
 public:
 
-    DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
@@ -150,13 +151,13 @@ public:
     }
 
     inline void expand(PREC d) {
-        ASSERTMSG(d>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint -= Vector2(d,d);
         m_maxPoint += Vector2(d,d);
     };
 
     inline void expand(Vector2 d) {
-        ASSERTMSG(d(0)>=0 && d(1)>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0,"d>=0")
         m_minPoint -= d;
         m_maxPoint += d;
     };
