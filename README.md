@@ -53,6 +53,14 @@ The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxm
 ```cmake
     find_package(ApproxMVBB [version] [Required] )
 ```
+which defines the following variables if ApproxMVBB has been found successfully:
+```cmake
+    ApproxMVBB_CXX_FLAGS    #- extra flags for compilation
+    ApproxMVBB_INCLUDE_DIRS #- include directories
+    ApproxMVBB_LIBRARY_REL  #- Release library
+    ApproxMVBB_LIBRARY_DGB  #- Debug library
+    ApproxMVBB_LIBRARIES    #- libraries to link with
+```    
 If you installed the library into non-system generic location you can set the cmake variable ``$ApproxMVBB_DIR`` before invoking the ``find_library`` command:
 ```cmake
     set(ApproxMVBB_DIR "path/to/installation/lib/cmake")
