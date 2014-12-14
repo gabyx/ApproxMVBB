@@ -34,14 +34,13 @@ PROJECT(${ApproxMVBBProjectName})
 
 # Get the version of the project
 include(GetGitRevisionDescription)
-git_describe(VERSION)
-MESSAGE(STATUS "ApproxMVBB Version: ${VERSION} extracted from git tags!")
-string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" VERSION_MINOR "${VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${VERSION}")
-message("VERSION MAJOR " ${VERSION_MAJOR})
-message("VERSION MAJOR " ${VERSION_MINOR})
-message("VERSION MAJOR " ${VERSION_SHA1})
+git_describe(ApproxMVBB_VERSION)
+string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" ApproxMVBB_VERSION_MAJOR "${ApproxMVBB_VERSION}")
+string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" ApproxMVBB_VERSION_MINOR "${ApproxMVBB_VERSION}")
+string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" ApproxMVBB_VERSION_PATCH "${ApproxMVBB_VERSION}")
+string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" ApproxMVBB_VERSION_SHA1 "${ApproxMVBB_VERSION}")
+set(ApproxMVBB_VERSION_STRING "${ApproxMVBB_VERSION_MAJOR}.${ApproxMVBB_VERSION_MINOR}.${ApproxMVBB_VERSION_PATCH}")
+MESSAGE(STATUS "ApproxMVBB Version: ${ApproxMVBB_VERSION_STRING} extracted from git tags!")
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
@@ -103,7 +102,7 @@ set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
-SET(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "Debug postfix for library/executable")
+SET(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
 
 
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )

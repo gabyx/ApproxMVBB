@@ -31,6 +31,12 @@ include_directories(${INCLUDE_DIRS})
 
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCE_FILES} )
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
+)
+set(ApproxMVBB_LIBRARY_NAME_REL "${PROJECT_NAME}")
+set(ApproxMVBB_LIBRARY_NAME_DBG "${PROJECT_NAME}${CMAKE_DEBUG_POSTFIX}")
+set(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "Config/Config.hpp")
 
 # Install stuff (default location is not some where on the system! for safty reasons
 if(FIRST_CMAKE_RUN)
@@ -77,34 +83,24 @@ install(FILES  ${ApproxMVBB_CONFIG_FILE}
 #=========================
 # Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
-SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/ApproxMVBB-config.cmake") 
+SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config.cmake") 
 configure_file(
-  ${PROJECT_SOURCE_DIR}/ApproxMVBB-config.cmake.in
+  ${PROJECT_SOURCE_DIR}/approxmvbb-config.cmake.in
   ${ApproxMVBB_CMAKE_CONFIG_FILE} @ONLY
 )
 #=========================
 # Generate ApproxMVBB-config-version.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
-SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/ApproxMVBB-config-version.cmake") 
+SET(ApproxMVBB_CMAKE_CONFIG_VERSION_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config-version.cmake") 
 configure_file(
-  ${PROJECT_SOURCE_DIR}/ApproxMVBB-config-version.cmake.in
-  ${ApproxMVBB_CMAKE_CONFIG_FILE} @ONLY
+  ${PROJECT_SOURCE_DIR}/approxmvbb-config-version.cmake.in
+  ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE} @ONLY
 )
 #=========================
 
-#Copy ApproxMVBB-config.cmake script to install folder of library/cmake, but first search an already existing cmake|CMake|cMAke folder
-#find_path(CMAKE_CONFIG_FOLDER NAMES "cmake" "CMake" "cMake" HINTS ${ApproxMVBB_LIB_INSTALL_DIR} NO_DEFAULT_PATH)
-#if(CMAKE_CONFIG_FOLDER)
-    #message(STATUS "Installing config file:" ${ApproxMVBB_CMAKE_CONFIG_FILE} " to existing cmake config folder: ${CMAKE_CONFIG_FOLDER}")
-#else()
-    MESSAGE( STATUS "Installing config file:" ${ApproxMVBB_CMAKE_CONFIG_FILE} " to ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/")
-    SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/)
-#endif()
 
-install(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE}
-        DESTINATION ${CMAKE_CONFIG_FOLDER}
-        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
-
-install(FILES  ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
+SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxMVBB_VERSION_STRING})
+ MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
+install(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
         DESTINATION ${CMAKE_CONFIG_FOLDER}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)

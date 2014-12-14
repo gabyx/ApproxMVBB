@@ -16,6 +16,10 @@
 
 
 namespace ApproxMVBB{
+
+    static const unsigned int VersionMajor =  @ApproxMVBB_VERSION_MAJOR@ ;
+    static const unsigned int VersionMinor =  @ApproxMVBB_VERSION_MINOR@ ;
+    static const unsigned int VersionPatch =  @ApproxMVBB_VERSION_PATCH@ ;
     
     #define ApproxMVBB_AssertionDebug_INCLUDE_FILE          @ApproxMVBB_AssertionDebug_INCLUDE_FILE@
     #define ApproxMVBB_Exception_INCLUDE_FILE               @ApproxMVBB_Exception_INCLUDE_FILE@
