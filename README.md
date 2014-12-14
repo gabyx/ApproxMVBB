@@ -21,31 +21,31 @@ http://www.cmake.org).
 This library only depends on the matrix library [Eigen](http://eigen.tuxfamily.org) at least version 3. Download it and install it on your system.
 
 Download the latest ApproxMVBB code:
-
+```bash
     $ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
-  
+```
 Make a build directory and navigate to it:
-
+```bash
     $ mkdir Build
     $ cd Build
-
+```
 Invoke cmake in the Build directory:
-
+```bash
     $ cmake ../ApproxMVBB
-
+```
 The cmake script will find Eigen if you installed it in a system wide folder (e.g ``/usr/local/``)
 In the `CMakeCache.txt` file you can specify what you want to build 
 ( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
 
 To install the library and the header files at a specific location `/usr/local/include/` run cmake with::
-
+```bash
     $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
-
+```
 Finally, build and install the project:
-
+```bash
     $ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
     $ make install
- 
+``` 
  To build in parallel use the ``-jN`` flag in the `make` commmand, where ``N``denotes the number of parallel threads to use.
 
 **Cmake Find Scripts**
