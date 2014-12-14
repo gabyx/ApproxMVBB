@@ -16,12 +16,13 @@
 #include <string>
 #include <sstream>
 
+namespace ApproxMVBB{
+    class Exception : public std::runtime_error {
+    public:
+        Exception(const std::stringstream & ss): std::runtime_error(ss.str()){};
+    private:
 
-class Exception : public std::runtime_error {
-public:
-    Exception(const std::stringstream & ss): std::runtime_error(ss.str()){};
-private:
-
+    };
 };
 
 #define THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw Exception(___s___);}

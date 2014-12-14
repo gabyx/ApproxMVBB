@@ -138,6 +138,8 @@ SET(COMMON_INCLUDE_DIR ${COMMON_INCLUDE_DIR} ${PROJECT_BINARY_DIR}/include/)
 
 
 # WRITE CONFIGURATION FILE
+
+# Set include file macros to our own headers!
 SET(ApproxMVBB_CONFIG_FILE ${PROJECT_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
 configure_file(
   ${PROJECT_SOURCE_DIR}/include/ApproxMVBB/Config/Config.hpp.in.cmake

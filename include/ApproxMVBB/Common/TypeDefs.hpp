@@ -18,21 +18,16 @@
 
 namespace ApproxMVBB{
 
-
-
-
-
 struct GlobalConfigs {
     using PREC = double;
-};
-
-
-
 };
 
 #define DEFINE_MATRIX_TYPES \
     using PREC = typename ApproxMVBB::GlobalConfigs::PREC; \
     DEFINE_MATRIX_TYPES_OF( ApproxMVBB::GlobalConfigs::PREC )
+
+
+};
 
 
 #endif
