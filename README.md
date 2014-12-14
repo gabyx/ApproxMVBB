@@ -48,6 +48,17 @@ Finally, build and install the project:
  
  To build in parallel use the ``-jN`` flag in the `make` commmand, where ``N``denotes the number of parallel threads to use.
 
+**Cmake Find Scripts**
+The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
+```cmake
+    find_package(ApproxMVBB [version] [Required] )
+```
+If you installed the library into non-system generic location you can set the cmake variable ``$ApproxMVBB_DIR`` before invoking the ``find_library`` command:
+```cmake
+    set(ApproxMVBB_DIR "path/to/installation/lib/cmake")
+    find_package(ApproxMVBB [version] [Required] )
+```
+
 --------------------------
 Supported Platforms
 --------------------------
