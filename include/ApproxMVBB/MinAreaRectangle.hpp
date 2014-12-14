@@ -43,7 +43,7 @@ public:
     MinAreaRectangle(const MatrixBase<Derived> & points)
         : m_p(points), m_convh(m_p) {
         EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
-        ASSERTMSG( m_p.data() == points.derived().data() ," You store a temporary in a Ref<> which works here, but do you really want this?")
+        ApproxMVBB_ASSERTMSG( m_p.data() == points.derived().data() ," You store a temporary in a Ref<> which works here, but do you really want this?")
     }
 
     struct Box2d {

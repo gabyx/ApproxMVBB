@@ -28,19 +28,7 @@ IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
 ENDIF()
 
 MESSAGE(STATUS "Project name is: " ${ApproxMVBBProjectName})
-
 PROJECT(${ApproxMVBBProjectName})
-
-
-# Get the version of the project
-include(GetGitRevisionDescription)
-git_describe(ApproxMVBB_VERSION)
-string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" ApproxMVBB_VERSION_MAJOR "${ApproxMVBB_VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" ApproxMVBB_VERSION_MINOR "${ApproxMVBB_VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" ApproxMVBB_VERSION_PATCH "${ApproxMVBB_VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" ApproxMVBB_VERSION_SHA1 "${ApproxMVBB_VERSION}")
-set(ApproxMVBB_VERSION_STRING "${ApproxMVBB_VERSION_MAJOR}.${ApproxMVBB_VERSION_MINOR}.${ApproxMVBB_VERSION_PATCH}")
-MESSAGE(STATUS "ApproxMVBB Version: ${ApproxMVBB_VERSION_STRING} extracted from git tags!")
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
@@ -135,16 +123,11 @@ SET(ApproxMVBB_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/Diameter/inc
 INCLUDE_ALL_ApproxMVBB_SOURCE( COMMON_SOURCE COMMON_INCLUDE COMMON_INCLUDE_DIR "${PROJECT_SOURCE_DIR}")
 SET(COMMON_INCLUDE_DIR ${COMMON_INCLUDE_DIR} ${PROJECT_BINARY_DIR}/include/)
 
-
-
 # WRITE CONFIGURATION FILE
-
+INCLUDE(WriteConfigFile)
 # Set include file macros to our own headers!
 SET(ApproxMVBB_CONFIG_FILE ${PROJECT_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
-configure_file(
-  ${PROJECT_SOURCE_DIR}/include/ApproxMVBB/Config/Config.hpp.in.cmake
-  ${ApproxMVBB_CONFIG_FILE}
-)
+ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${PROJECT_SOURCE_DIR})
 #=========================
 
 if(ApproxMVBB_BUILD_LIBRARY)

@@ -176,7 +176,7 @@ namespace PointFunctions {
             using namespace PointFunctions;
 
             if( idx1 >= m_p.size() || idx2 >= m_p.size()) {
-                ERRORMSG(":" << idx1 << "," << idx2 << "," << m_p.size()<< std::endl);
+                ApproxMVBB_ERRORMSG(":" << idx1 << "," << idx2 << "," << m_p.size()<< std::endl);
             }
 
             if( idx1 == idx2 || PointFunctions::equal(m_p.col(idx1),m_p.col(idx2))) {

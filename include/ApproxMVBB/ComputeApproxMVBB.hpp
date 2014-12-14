@@ -42,7 +42,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
 
 
     if(nPoints > points.cols() || nPoints < 2) {
-        ERRORMSG("Wrong arguements!")
+        ApproxMVBB_ERRORMSG("Wrong arguements!")
     }
 
     newPoints.resize(3,nPoints);
@@ -102,7 +102,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     unsigned int k=0;
 
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    ASSERTMSG(halfSampleSize<=nPoints,"?")
+    ApproxMVBB_ASSERTMSG(halfSampleSize<=nPoints,"?")
     for(unsigned int i=0; i<halfSampleSize; ++i) {
         if( topPoints[i] != 0 ) {
             //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));

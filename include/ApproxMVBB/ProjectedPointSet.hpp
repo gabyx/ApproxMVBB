@@ -147,7 +147,7 @@ private:
         using namespace CoordinateSystem;
 
         if(points.cols()==0) {
-            ERRORMSG("Point set empty!");
+            ApproxMVBB_ERRORMSG("Point set empty!");
         }
 
         // Generate Orthonormal Bases
@@ -159,7 +159,7 @@ private:
         m_A_KI.col(1) = yDir;
         m_A_KI.col(2) = m_zDir;
         m_A_KI.transposeInPlace();
-        ASSERTMSG(checkOrthogonality(xDir,yDir,m_zDir,1e-6),
+        ApproxMVBB_ASSERTMSG(checkOrthogonality(xDir,yDir,m_zDir,1e-6),
                   "Not orthogonal: x:"<<xDir.transpose()<< " y: "<< yDir.transpose() << " z: "  << m_zDir.transpose());
 
         // Project Points onto xDir,yDir Halfspace

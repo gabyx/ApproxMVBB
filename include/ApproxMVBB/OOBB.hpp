@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -11,6 +11,7 @@
 #ifndef ApproxMVBB_OOBB_hpp
 #define ApproxMVBB_OOBB_hpp
 
+#include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AABB_INCLUDE_FILE
 
@@ -60,13 +61,13 @@ public:
     }
 
     inline void expand(PREC d) {
-        ASSERTMSG(d>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint -= Vector3(d,d,d);
         m_maxPoint += Vector3(d,d,d);
     };
 
     inline void expand(Vector3 d) {
-        ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
         m_minPoint -= d;
         m_maxPoint += d;
     };
@@ -78,7 +79,7 @@ public:
 
     /** Get direction vectors in I Frame */
     inline Vector3 getDirection(unsigned int i){
-        ASSERTMSG(i<3,"Index wrong: " << i)
+        ApproxMVBB_ASSERTMSG(i<3,"Index wrong: " << i)
         Vector3 d; d.setZero(); d(i) = 1.0;
         return m_q_KI * d; // A_IK* d;
     }

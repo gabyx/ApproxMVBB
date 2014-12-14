@@ -13,6 +13,7 @@
 
 #include <algorithm>
 
+#include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
@@ -70,13 +71,13 @@ public:
     }
 
     inline void expand(PREC d) {
-        ASSERTMSG(d>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint -= Vector3(d,d,d);
         m_maxPoint += Vector3(d,d,d);
     };
 
     inline void expand(Vector3 d) {
-        ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
         m_minPoint -= d;
         m_maxPoint += d;
     };
@@ -150,13 +151,13 @@ public:
     }
 
     inline void expand(PREC d) {
-        ASSERTMSG(d>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint -= Vector2(d,d);
         m_maxPoint += Vector2(d,d);
     };
 
     inline void expand(Vector2 d) {
-        ASSERTMSG(d(0)>=0 && d(1)>=0,"d>=0")
+        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0,"d>=0")
         m_minPoint -= d;
         m_maxPoint += d;
     };

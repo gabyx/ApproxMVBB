@@ -24,7 +24,7 @@ void MinAreaRectangle::compute() {
 
     // Generate Convex Hull
     m_convh.compute();
-    ASSERTMSG(m_convh.verifyHull(), "Convex hull not ok!")
+    ApproxMVBB_ASSERTMSG(m_convh.verifyHull(), "Convex hull not ok!")
 
     // Compute Rectangle
     computeRectangle();
@@ -153,7 +153,7 @@ void MinAreaRectangle::findVertex(Caliper & c) {
     } else {
         std::stringstream ss;
         for(auto & a : m_angles){ ss << a <<",";}
-        ERRORMSG("Could not find vertex with angle greater than: "
+        ApproxMVBB_ERRORMSG("Could not find vertex with angle greater than: "
                  << matchAngle << "in angles: " << ss.str());
     }
 }

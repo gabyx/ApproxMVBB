@@ -1,8 +1,8 @@
 ﻿// ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -23,13 +23,13 @@
 	* @brief An Assert Macro to use within C++ code.
 	* @param condition The condition which needs to be truem otherwise an assertion is thrown!
 	*/
-    #define ASSERTMSG(condition , message) { if(!(condition)){ ERRORMSG(message) } }
-    #define WARNINGMSG(condition , message) { if(!(condition)){ ERRORMSG(message) } }
+    #define ApproxMVBB_ASSERTMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
+    #define ApproxMVBB_WARNINGMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
 #else
-   #define ASSERTMSG(condition,message)
-   #define WARNINGMSG(condition,message)
+   #define ApproxMVBB_ASSERTMSG(condition,message)
+   #define ApproxMVBB_WARNINGMSG(condition,message)
 #endif
 
-   #define ERRORMSG( message ) THROWEXCEPTION( message )
+   #define ApproxMVBB_ERRORMSG( message ) ApproxMVBB_THROWEXCEPTION( message )
 
 #endif

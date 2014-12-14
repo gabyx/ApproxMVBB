@@ -26,9 +26,10 @@ namespace ApproxMVBB{
     #ifdef ApproxMVBB_USE_DIFFERENT_HEADERS
         #define ApproxMVBB_AssertionDebug_INCLUDE_FILE          "@ApproxMVBB_AssertionDebug_INCLUDE_FILE@"
         #define ApproxMVBB_Exception_INCLUDE_FILE               "@ApproxMVBB_Exception_INCLUDE_FILE@"
-        #define ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE        "@ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE@"
         #define ApproxMVBB_Platform_INCLUDE_FILE                "@ApproxMVBB_Platform_INCLUDE_FILE@"
         #define ApproxMVBB_StaticAssert_INCLUDE_FILE            "@ApproxMVBB_StaticAssert_INCLUDE_FILE@"
+        
+        #define ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE        "@ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE@"
         #define ApproxMVBB_TypeDefs_INCLUDE_FILE                "@ApproxMVBB_TypeDefs_INCLUDE_FILE@"
         #define ApproxMVBB_AABB_INCLUDE_FILE                    "@ApproxMVBB_AABB_INCLUDE_FILE@"
         #define ApproxMVBB_OOBB_INCLUDE_FILE                    "@ApproxMVBB_OOBB_INCLUDE_FILE@"
