@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -48,13 +48,14 @@ struct MyMatrix {
     using MatrixDiagDyn = Eigen::DiagonalMatrix<PREC, Eigen::Dynamic >               ;
     using MatrixDynDynRow = Eigen::Matrix<PREC, Eigen::Dynamic , Eigen::Dynamic, Eigen::RowMajor>;
 
-    template<unsigned int M>
+    template<int M>
     using MatrixStatDyn = Eigen::Matrix<PREC, M, Eigen::Dynamic >;
-    template<unsigned int N>
+    template<int N>
     using MatrixDynStat = Eigen::Matrix<PREC, Eigen::Dynamic, N >;
 
 
     template<typename Derived> using MatrixBase = Eigen::MatrixBase<Derived>;
+    template<typename Derived> using MatrixDenseBase = Eigen::DenseBase<Derived>;
     template<typename Derived> using ArrayBase  = Eigen::ArrayBase<Derived>;
 
     template<typename EigenType> using MatrixRef = Eigen::Ref<EigenType>;
@@ -102,10 +103,11 @@ struct MyMatrixIOFormat {
    using MatrixDiagDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::MatrixDiagDyn; \
    using MatrixDynDynRow = typename ApproxMVBB::MyMatrix< _PREC_ >::MatrixDynDynRow; \
    \
-   template<unsigned int M> using MatrixStatDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixStatDyn<M>; \
-   template<unsigned int N> using MatrixDynStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDynStat<N>; \
+   template<int M> using MatrixStatDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixStatDyn<M>; \
+   template<int N> using MatrixDynStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDynStat<N>; \
    \
    template<typename Derived> using MatrixBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixBase<Derived>; \
+   template<typename Derived> using MatrixDenseBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDenseBase<Derived>; \
    template<typename Derived> using ArrayBase  = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayBase<Derived>; \
    \
    template<typename EigenType> using MatrixRef = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixRef< EigenType >; \

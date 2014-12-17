@@ -13,6 +13,7 @@
 
 #include <string>
 
+#include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 #include ApproxMVBB_StaticAssert_INCLUDE_FILE
 
@@ -63,7 +64,7 @@ namespace PointFunctions {
                                                 const_cast<double*>(b.data()),
                                                 const_cast<double*>(c.data()));
 
-        return  ( ( f_A < (double)0.0 )?   -1   :   ( (f_A > (double)0.0)? 1 : 0) );
+        return  ( ( f_A < 0.0 )?   -1   :   ( (f_A > 0.0)? 1 : 0) );
 
     }
     /** Get angle measures from x-Axis through point a */
@@ -139,7 +140,7 @@ namespace PointFunctions {
         auto size = pp.cols();
         PREC* * pList = new PREC*[size];
         for(decltype(size) i=0; i<size; ++i) {
-            pList[i] = pp.col(i).data();
+            pList[i] = const_cast<PREC*>(pp.col(i).data());
         }
 
         Diameter::typeSegment pairP;
@@ -162,32 +163,39 @@ namespace PointFunctions {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         ApproxMVBB_DEFINE_MATRIX_TYPES
 
+
+        using PointData = std::pair<unsigned int, bool>;
+
         /** Cosntructor, points is not a temporary, it accepts all sorts of matrix expressions,
         * however the construction of MatrixRef<> might create a temporary but this is stored in m_p!
         */
         template<typename Derived>
         CompareByAngle(const MatrixBase<Derived> & points,
-                       const Vector2 &base ): m_p(points), m_base(base) {
+                       const Vector2 &base,
+                       unsigned int baseIdx,
+                       unsigned int & deletedPoints): m_p(points), m_base(base),m_baseIdx(baseIdx), m_deletedPoints(deletedPoints) {
             EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
         }
 
         /** True if b is positively rotated from a, stricly weak ordering! */
-        bool operator()(const unsigned int & idx1, const unsigned int & idx2 ) {
+        bool operator()(const PointData & point1In,
+                        const PointData & point2In )
+        {
             using namespace PointFunctions;
+            PointData & point1 = const_cast<PointData &>(point1In);
+            PointData & point2 = const_cast<PointData &>(point2In);
+            unsigned int idx1 = point1.first;
+            unsigned int idx2 = point2.first;
 
             if( idx1 >= m_p.size() || idx2 >= m_p.size()) {
                 ApproxMVBB_ERRORMSG(":" << idx1 << "," << idx2 << "," << m_p.size()<< std::endl);
-            }
-
-            if( idx1 == idx2 || PointFunctions::equal(m_p.col(idx1),m_p.col(idx2))) {
-                return false;
             }
 
             // Compare by Area Sign (by ascending positive (z-Axis Rotation) angle in x-y Plane)
             // always  insert the smaller index first , and the larger second (as the function is not completely symmetric!
             if(idx1<idx2) {
                 int sgn = areaSign( m_base, m_p.col(idx1), m_p.col(idx2) );
-                if(sgn != 0) {
+                if(sgn != 0){
                     return (sgn > 0);
                 }
             } else {
@@ -196,12 +204,33 @@ namespace PointFunctions {
                     return (sgn < 0);
                 }
             }
-            // Compare by Length (smaller length first)
-            return (m_p.col(idx1)-m_base).norm() < (m_p.col(idx2)-m_base).norm();
-        }
 
+            // sgn == 0 --> point are collinear
+            // delete closest point to m_base
+
+            // Compute projections in first quadrant (instead of computing norms)
+            int x = static_cast<int>(std::abs(m_p.col(idx1)(0) - m_base(0)) - std::abs(m_p.col(idx2)(0) - m_base(0)));
+            int y = static_cast<int>(std::abs(m_p.col(idx1)(1) - m_base(1)) - std::abs(m_p.col(idx2)(1) - m_base(1)));
+
+            if(  (x<0) || (y<0) ){
+                if(!point1.second){point1.second = true; ++m_deletedPoints;}
+                return true;
+            }else if( (x>0) || (y>0) ) {
+                if(!point2.second){point2.second = true; ++m_deletedPoints;}
+            }
+            else{
+                /** points cooincide */
+                if(idx1<idx2){
+                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
+                }else{
+                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
+                }
+            }
+            return false;
+        }
     private:
-        const Vector2 m_base;
+        unsigned int & m_deletedPoints;
+        const Vector2 m_base; const unsigned int m_baseIdx;
         const MatrixRef<const Matrix2Dyn> m_p;
     };
 

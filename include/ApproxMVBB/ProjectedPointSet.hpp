@@ -10,15 +10,19 @@
 #ifndef ApproxMVBB_ProjectedPointSet_hpp
 #define ApproxMVBB_ProjectedPointSet_hpp
 
-#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
+#include "ApproxMVBB/Config/Config.hpp"
 
+#include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
+
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
 #include "ApproxMVBB/PointFunctions.hpp"
 #include "ApproxMVBB/MakeCoordinateSystem.hpp"
 #include ApproxMVBB_OOBB_INCLUDE_FILE
 #include "ApproxMVBB/MinAreaRectangle.hpp"
+
+#include "TestFunctions.hpp"
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT ProjectedPointSet {
@@ -69,8 +73,8 @@ public:
             aabb.unite(p);
         }
 
-        //        std::cout << "aabb_min: "<<  aabb.m_minPoint.transpose() << std::endl;
-        //        std::cout << "aabb_max: "<< aabb.m_maxPoint.transpose() << std::endl;
+        // std::cout << "aabb_min: "<<  aabb.m_minPoint.transpose() << std::endl;
+        // std::cout << "aabb_max: "<< aabb.m_maxPoint.transpose() << std::endl;
 
         Vector3 M_min;
         M_min.head<2>() = aabb.m_minPoint;
@@ -86,8 +90,8 @@ public:
         A_KM.setIdentity();
         A_KM.block<2,2>(0,0) =  A2_MK.transpose();
 
-        //        std::cout << "M_min: "<< M_min.transpose() << std::endl;
-        //        std::cout << "M_max: "<< M_max.transpose() << std::endl;
+        // std::cout << "M_min: "<< M_min.transpose() << std::endl;
+        // std::cout << "M_max: "<< M_max.transpose() << std::endl;
 
         return OOBB(M_min,M_max, m_A_KI.transpose()*A_KM );
     }
@@ -107,23 +111,42 @@ public:
         project(points);
 
         // compute minimum area rectangle first
+        //std::cout << "Dump points DEBUG:" << std::endl;
+        //TestFunctions::dumpPointsMatrixBinary("DumpedPoints.bin",m_p);
+
+
         MinAreaRectangle mar(m_p);
         mar.compute();
-        auto box = mar.getMinRectangle();
+        auto rect = mar.getMinRectangle();
+
+        //std::cout << "Dump RECT DEBUG:" << std::endl;
+        // Vector2List p;
+        //p.push_back( rect.m_p);
+        //p.push_back( rect.m_p + rect.m_u );
+        //p.push_back( rect.m_p + rect.m_u + rect.m_v );
+        //p.push_back( rect.m_p + rect.m_v );
+        //p.push_back( rect.m_p);
+
+        //TestFunctions::dumpPoints("./MinAreaRectangleTest13" "Out.txt",p);
+
 
         // Box coordinates are in K Frame
 
         Matrix22 A2_KM;
-        A2_KM.col(0) = box.m_u.normalized();
-        A2_KM.col(1) = box.m_v.normalized();
 
-        Vector2 M_p = A2_KM.transpose()*box.m_p;
+        //std::cout << "u:" << rect.m_u.norm() << std::endl;
+        //std::cout << "v:" << rect.m_v.norm() << std::endl;
+
+        A2_KM.col(0) = rect.m_u.normalized();
+        A2_KM.col(1) = rect.m_v.normalized();
+
+        Vector2 M_p = A2_KM.transpose()*rect.m_p;
 
         Vector3 M_min;
         M_min.head<2>() = M_p;
         M_min(2) = m_minZValue;
 
-        Vector3 M_max(box.m_u.norm(), box.m_v.norm(),0.0);
+        Vector3 M_max(rect.m_u.norm(), rect.m_v.norm(),0.0);
         M_max.head<2>() += M_p;
         M_max(2) = m_maxZValue;
 

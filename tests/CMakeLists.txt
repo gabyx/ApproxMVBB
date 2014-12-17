@@ -17,12 +17,14 @@ configure_file (
 
 SET(SOURCE_FILES
     ${COMMON_SOURCE}
-    src/main.cpp
+    ${PROJECT_SOURCE_DIR}/src/TestFunctions.cpp
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 SET(INCLUDE_FILES
     ${COMMON_INCLUDE}
-    include/ComputeApproxMVBBTests.hpp
+    ${PROJECT_SOURCE_DIR}/include/TestFunctions.hpp
+    ${PROJECT_SOURCE_DIR}/include/ComputeApproxMVBBTests.hpp
 )
 
 
