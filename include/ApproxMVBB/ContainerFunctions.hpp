@@ -75,7 +75,7 @@ Iterator moveElementsToBackIf(Iterator b, Iterator  e, Func f) {
 }
 
 
-/** Move element b of consecutive elements a,b to front of the container if Func(a,b) returns true
+/** Move all sequences in [b,e) to the front which fullfill Func(a,b) for two neighbour elements.
 * This function is especially efficient if we have little items which need to move to the front
 * This function respects the order of the elements
 * @return Iterator r  where the range [r,e] is the back part of the vector where Func returned true
@@ -89,22 +89,22 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f) {
     }
 
     Iterator comp = b;
-    Iterator dest = ++b;
+    Iterator write = ++b;
     while  ( b != e ) {
-        if( f(*std::prev(dest), *b ) ) { // *b == std::next(b)  for example
+        if( !f(*comp, *b ) ) {
             ++b;
             continue;
         }
 
-        if(dest!=b) {   // copy only if not at same position!
-            *dest = *b; // copy  value to front (test is not true)
+        if(write!=b) {   // copy only if not at same position!
+            *write = *b; // copy  value to front (test is not true)
         }
         //std::cout << *dest << std::endl;
-        ++dest;
+        comp = write++;
         ++b;
     }
 
-    return dest;
+    return write;
 }
 };
 };

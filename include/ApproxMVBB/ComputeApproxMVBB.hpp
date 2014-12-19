@@ -108,24 +108,23 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     unsigned int k=0;
 
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    ApproxMVBB_ASSERTMSG(halfSampleSize<=nPoints,"?")
     for(unsigned int i=0; i<halfSampleSize; ++i) {
         if( topPoints[i].first != 0 ) {
             // comment in if you want the points top points of the grid
-            //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
-            //a.head<2>()*=dxdyInv.inverse();
-            newPoints.col(k++) =  points.col(topPoints[i].first-1); //    A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+            Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
+            a.head<2>()*=dxdyInv.inverse();
+            newPoints.col(k++) =  /*points.col(topPoints[i].first-1);*/    A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             if(topPoints[i].first != bottomPoints[i].first) {
                 // comment in if you want the bottom points of the grid
-                //Array3 a(i % gridSize,i/gridSize,0);
-                //a.head<2>()*=dxdyInv.inverse();
-                newPoints.col(k++) = points.col(bottomPoints[i].first-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+                Array3 a(i % gridSize,i/gridSize,0);
+                a.head<2>()*=dxdyInv.inverse();
+                newPoints.col(k++) = /*points.col(bottomPoints[i].first-1);*/   A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             }
         }
     }
     // Add random points!
     while( k < nPoints) {
-        newPoints.col(k++) = points.col( dis(gen) );
+        newPoints.col(k++) = Vector3(0,0,0);//points.col( dis(gen) );
     }
 }
 

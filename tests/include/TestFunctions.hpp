@@ -41,6 +41,7 @@ namespace TestFunctions{
         for(unsigned int i=0; i<v.cols(); i++) {
             l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         }
+        l.close();
     }
 
     template<int M>
@@ -53,6 +54,7 @@ namespace TestFunctions{
         }
 
         l.write(reinterpret_cast<const char*>(v.data()), v.size()*sizeof(PREC));
+        l.close();
     }
 
     template<typename Container>
@@ -67,6 +69,7 @@ namespace TestFunctions{
         for(auto & v: c) {
             l << v.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         }
+        l.close();
     }
 
     void dumpOOBB(std::string filePath, OOBB & oobb);
@@ -80,7 +83,7 @@ namespace TestFunctions{
         }
 
        l.read(reinterpret_cast<char*>(v.data()), v.size()*sizeof(PREC));
-
+        l.close();
     }
 
     PointFunctions::Vector3List getPointsFromFile3D(std::string filePath);

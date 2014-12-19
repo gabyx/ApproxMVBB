@@ -1,8 +1,8 @@
 // ========================================================================================
-//  ApproxMVBB 
+//  ApproxMVBB
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
-//  
-//  Licensed under GNU General Public License 3.0 or later. 
+//
+//  Licensed under GNU General Public License 3.0 or later.
 //  Some rights reserved. See COPYING, README.rst.
 //
 //  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
@@ -35,6 +35,8 @@ void MinAreaRectangle::computeRectangle() {
     // Copy Points;
     m_hullIdx = m_convh.getIndices();
     unsigned int nPoints = m_hullIdx.size();
+
+    std::cout << "Convex hull points:" << nPoints << std::endl;
 
     // The below code works for points >= 2
     // Anyway catch the cases n=1 and 2 and return early!

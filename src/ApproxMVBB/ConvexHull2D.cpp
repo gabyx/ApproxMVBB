@@ -24,6 +24,7 @@ void ConvexHull2D::compute() {
 
     // Compute min point p0
     unsigned int position = minPointYX(m_p);
+    std::cout << "min:" << position << std::endl;
     Vector2 base = m_p.col(position);
 
     // Indices into m_p
@@ -33,10 +34,9 @@ void ConvexHull2D::compute() {
 
     //Save p0 as first point in indices list (temporary)
     indicesTemp.emplace_back(position,false);
-
     //Add all indices of points not almostEqual to position
     for(unsigned int i = 0; i<m_p.cols(); ++i) {
-        if( (i != position) && !almostEqual(base,m_p.col(i)) ) {
+        if( (i != position) && !almostEqual(base,m_p.col(i))) {
             indicesTemp.emplace_back(i,false);
         }
     }
@@ -49,84 +49,104 @@ void ConvexHull2D::compute() {
     // Sort by angle
     unsigned int deletedPoints = 0;
     CompareByAngle comp(m_p,base,position,deletedPoints);
-    std::sort( indicesTemp.begin() + 1, indicesTemp.end(), comp );
+    std::sort( indicesTemp.begin()+1, indicesTemp.end(), comp );
+
 
     // copy indices into new array which only consists of the indices which have no delete flag (index == position)
+    std::cout << "Deleted points:" << deletedPoints << " of " << indicesTemp.size() << std::endl;
     std::vector<unsigned int> indices(indicesTemp.size() - deletedPoints);
-    unsigned int k=0;
-    auto s = indicesTemp.size();
+    unsigned int k=0; auto s = indicesTemp.size();
     for(decltype(s) i = 0; i < s; ++i){
         PointData & pp = indicesTemp[i]; if(!pp.second){indices[k++] = pp.first;}
     }
+//
+//    auto d2 = ContainerFunctions::moveConsecutiveToFrontIf(indices.begin(),indices.end(),
+//                                                             [&](const unsigned int idx1, const unsigned int idx2){
+//                                                                return !almostEqual(this->m_p.col(idx1),this->m_p.col(idx2),1e-8);
+//                                                             }
+//                                                             );
+//    std::cout << "Deleted almostEqual: " << std::distance(d2,indices.end()) << std::endl;
+//    indices.resize( std::distance(indices.begin(),d2) );
 
-    // Convex hull consists of only 1,2 or 3 points!
-    if(indices.size() <= 3  ) {
-        m_indicesCH.assign(indices.begin(),indices.end());
-        return;
+
+
+    std::cout << "Graham Scan points: " << indices.size() << std::endl;
+    for(auto & i : indices){
+        ApproxMVBB_ASSERTMSG(i<m_p.cols(),"");
     }
+    unsigned int nPoints  = indices.size();
+    unsigned int lastIdx  = indices[0];
+    unsigned int firstIdx = indices[1];
+    m_indicesCH.push_back( lastIdx  );
+    m_indicesCH.push_back( firstIdx );
 
-//    // DEBUG
-//    {
-//        std::cout << "DUMP Points ConvexHUll DEBUG: points: " <<indices.size()<< std::endl;
-//        Matrix2Dyn pp(2,indices.size());
-//        unsigned int k = 0;
-//        for(auto i : indices){
-//            pp.col(k++) = m_p.col(i);
-//        }
-//        TestFunctions::dumpPointsMatrixBinary("DumpPointsConvexHull.bin",pp);
-//    }
-
-    // Perform Graham Scan over indices
-    // Iterate over point list starting at 1:
-    // Start with triangle p0,p1,p2
-
-    m_indicesCH.push_back( indices[0] );
-    m_indicesCH.push_back( indices[1] );
-    unsigned int lPtIdx  = indices[0];
-    unsigned int mPtIdx  = indices[1];
+    unsigned int lPtIdx  = lastIdx;
+    unsigned int mPtIdx  = firstIdx;
     unsigned int currIdx;
-    unsigned int i = 2; // current point
-    auto size = indices.size();
-    while( i < size) {
-        ApproxMVBB_ASSERTMSG( lPtIdx < m_p.size() && mPtIdx < m_p.size() && currIdx < m_p.size(), "?")
+    unsigned int i = 1; // current point;
 
-        currIdx = indices[i];
+    // skip the first non left turns in the sequence!
+    do{
+            currIdx = indices[++i];
+    }
+    while (( i < nPoints ) && !leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx)));
 
-        if( areaSign( m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) > 0) { // if we have a left turn!
-            //std::cout << "Left turn: c:" << currIdx << " m:" << mPtIdx << " l: "<< lPtIdx << " sign: " << areaSign( m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) << std::endl;
 
-            m_indicesCH.push_back(currIdx); //add currIdx to convex hull list
-            lPtIdx  = mPtIdx;          // last becomes middle
-            mPtIdx  = currIdx;         // middle becomes currIdx
-            ++i;                       // next point
+//    std::cout << "lastIdx point: " <<lastIdx << ","<< m_p.col(lastIdx).transpose() << std::endl;
+//    std::cout << "firstIdx point: " <<firstIdx << ","<< m_p.col(firstIdx).transpose() << std::endl;
+//    std::cout << "currIdx point: " <<currIdx << ","<< m_p.col(currIdx).transpose() << std::endl << "===="<<std::endl;
 
-        } else { // if we have a right turn
-            //std::cout << "Right turn: c:" << currIdx << " m:" << mPtIdx << " l: "<< lPtIdx << " sign: " << areaSign( m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) << std::endl;
-            m_indicesCH.pop_back();    // remove middle point;
 
-            // move triplet back if possible
-            if( m_indicesCH.size() <= 1) { // Degenerate Case if we come back to the beginning
-                m_indicesCH.push_back(currIdx);
-                mPtIdx  = currIdx;
-                ++i;                    // next point
-            } else {
-                // move triplet back
-                mPtIdx = lPtIdx;                      // middle point becomes last
-                lPtIdx = *(++m_indicesCH.rbegin());   // previous of .back();
-            }
-        }
+    if ( i != nPoints )
+    {
+      m_indicesCH.push_back( currIdx );
+      decltype(m_indicesCH.rbegin()) revIter;
+      lPtIdx  = mPtIdx;
+      mPtIdx  = currIdx;
+
+      for ( ++i ; i < nPoints; ++i )
+      {
+          currIdx = indices[i];
+          if ( leftTurn(m_p.col(mPtIdx), m_p.col(currIdx), m_p.col(lastIdx)) )
+          {
+
+//            std::cout << "lastIdx point: " <<lPtIdx << ","<< m_p.col(lPtIdx).transpose() << std::endl;
+//            std::cout << "firstIdx point: " <<mPtIdx << ","<< m_p.col(mPtIdx).transpose() << std::endl;
+//            std::cout << "currIdx point: " <<currIdx << ","<< m_p.col(currIdx).transpose() << std::endl;
+              while ( !leftTurn(m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)) )
+              {
+
+                  //ApproxMVBB_ASSERTMSG(m_indicesCH.size()>2,"");
+                  m_indicesCH.pop_back();
+
+                  if( m_indicesCH.size() <= 1) { // Degenerate Case if we come back to the beginning
+                    m_indicesCH.push_back(currIdx);
+                    mPtIdx  = currIdx;
+                    break;
+                  }else{
+                      mPtIdx = lPtIdx;                      // middle point becomes last
+                      revIter = m_indicesCH.rbegin();
+                      lPtIdx = *(++revIter);                // previous of .back();
+//                      std::cout << "rem: " << lPtIdx << "," << mPtIdx << "," << currIdx << std::endl;
+                  }
+
+              }
+              m_indicesCH.push_back( currIdx );
+              lPtIdx  = mPtIdx;          // last becomes middle
+              mPtIdx  = currIdx;         // middle becomes currIdx
+          }
+      }
 
     }
-
-    //std::cout << "indices End: " << m_indicesCH.size() << std::endl;
 }
+
 
 bool ConvexHull2D::verifyHull() {
     using namespace PointFunctions;
     if(m_indicesCH.size()>2) {
         unsigned int i = 2;
         while( i<m_indicesCH.size()) {
-            if( ! (areaSign( m_p.col(m_indicesCH[i-2]), m_p.col(m_indicesCH[i-1]), m_p.col(m_indicesCH[i])) >= 0) ) { // if this is not a left turn
+            if( ! (orient2d( m_p.col(m_indicesCH[i-2]), m_p.col(m_indicesCH[i-1]), m_p.col(m_indicesCH[i])) >= 0) ) { // if this is not a left turn
                 return false;
             }
             ++i;

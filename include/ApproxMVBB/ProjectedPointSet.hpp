@@ -111,8 +111,8 @@ public:
         project(points);
 
         // compute minimum area rectangle first
-        //std::cout << "Dump points DEBUG:" << std::endl;
-        //TestFunctions::dumpPointsMatrixBinary("DumpedPoints.bin",m_p);
+//        std::cout << "Dump points DEBUG:" << std::endl;
+        TestFunctions::dumpPointsMatrixBinary("DumpedPoints.bin",m_p);
 
 
         MinAreaRectangle mar(m_p);

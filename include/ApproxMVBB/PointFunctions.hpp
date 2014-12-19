@@ -23,6 +23,8 @@
 #include "ApproxMVBB/Diameter/EstimateDiameter.hpp"
 #include "ApproxMVBB/GeometryPredicates/Predicates.hpp"
 
+#include "ApproxMVBB/Common/FloatingPointComparision.hpp"
+
 namespace ApproxMVBB{
 namespace PointFunctions {
 
@@ -44,10 +46,23 @@ namespace PointFunctions {
         std::cout << "Applied Transformation" << std::endl;
     }
 
+
+
     template<typename VecT1, typename VecT2>
-    inline bool almostEqual(const VecT1  & a, const VecT2  & b, PREC eps = 1e-8 ) {
-        return ((a-b).array().abs() <= eps).all();
+    inline bool almostEqualAbs(const VecT1  & a, const VecT2  & b, PREC eps = 1.0e-8 ) {
+          return ((a-b).array().abs() <= eps).all();
     }
+
+    template<typename VecT1, typename VecT2>
+    inline bool almostEqualUlp(const VecT1  & a, const VecT2  & b, PREC eps = 1.0e-8 ) {
+        bool ret = true;
+        for(unsigned int i=0;i<a.size();i++){
+            ret = ret && FloatingPoint<PREC>(a(i)).AlmostEquals(FloatingPoint<PREC>(b(i)));
+        }
+        return ret;
+    }
+
+
     template<typename VecT1, typename VecT2>
     inline bool equal(const VecT1  & a, const VecT2  & b) {
         return (a.array() == b.array()).all();
@@ -55,7 +70,7 @@ namespace PointFunctions {
 
     /** vec1 = b-a and vec2 = c-a */
     template<typename VecT1, typename VecT2, typename VecT3>
-    inline int areaSign(const VecT1  & a, const VecT2  & b, const VecT3  & c) {
+    inline int orient2d(const VecT1  & a, const VecT2  & b, const VecT3  & c) {
         EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT1,2)
         EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT2,2)
         EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT3,2)
@@ -67,6 +82,30 @@ namespace PointFunctions {
         return  ( ( f_A < 0.0 )?   -1   :   ( (f_A > 0.0)? 1 : 0) );
 
     }
+
+    /** vec1 = b-a and vec2 = c-a */
+    template<typename VecT1, typename VecT2, typename VecT3>
+    inline bool leftTurn(const VecT1  & a, const VecT2  & b, const VecT3  & c) {
+        return orient2d(a,b,c) > 0;
+    }
+
+    /** Postcondition: Points need to be collinear */
+    template<typename VecT1, typename VecT2, typename VecT3>
+    inline int collinearAreOrderedAlongLine(const VecT1  & a, const VecT2  & b, const VecT3  & c) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT1,2)
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT2,2)
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT3,2)
+
+          if (a(0) < b(0)) return !(c(0) < b(0));
+          if (b(0) < a(0)) return !(b(0) < c(0));
+          if (a(1) < b(1)) return !(c(1) < b(1));
+          if (b(1) < a(1)) return !(b(1) < c(1));
+          return true; // a==b
+
+    }
+
+
+
     /** Get angle measures from x-Axis through point a */
     template<typename VecT1, typename VecT2>
     inline PREC getAngle(const VecT1  & a, const VecT2 & b) {
@@ -129,6 +168,22 @@ namespace PointFunctions {
         }
         return index;
     }
+
+     /** Traverse first y-Axis then if equal check x-Axis */
+    template<typename Derived>
+    inline unsigned int minPointXY(const MatrixBase<Derived> & points) {
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
+        unsigned int index = 0;
+        for(unsigned int i=1; i<points.cols(); ++i) {
+            if( points(0,i) < points(0,index) ) {
+                index = i;
+            } else if( points(0,i) == points(0,index)  && points(1,i) <  points(1,index) ) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
     template<unsigned int Dimension,typename TVector,typename Derived>
     std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points, const PREC epsilon) {
 
@@ -157,6 +212,54 @@ namespace PointFunctions {
 
     }
 
+    class CompareByXThanY {
+    public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        ApproxMVBB_DEFINE_MATRIX_TYPES
+
+
+        using PointData = std::pair<unsigned int, bool>;
+
+        /** Cosntructor, points is not a temporary, it accepts all sorts of matrix expressions,
+        * however the construction of MatrixRef<> might create a temporary but this is stored in m_p!
+        */
+        template<typename Derived>
+        CompareByXThanY(const MatrixBase<Derived> & points,
+                       unsigned int & deletedPoints): m_p(points), m_deletedPoints(deletedPoints) {
+            EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
+        }
+
+        /** True if b is positively rotated from a, stricly weak ordering! */
+        bool operator()(const PointData & i1In, const PointData & i2In )
+        {
+            using namespace PointFunctions;
+            PointData & i1 = const_cast<PointData&>(i1In);
+            PointData & i2 = const_cast<PointData&>(i2In);
+            unsigned int idx1 = i1.first;
+            unsigned int idx2 = i2.first;
+            const PREC * p1 = m_p.col(idx1).data();
+            const PREC * p2 = m_p.col(idx2).data();
+
+            // if almost equal mark lower idx point delete
+            if(almostEqual(m_p.col(idx1),m_p.col(idx2))){
+                if(idx1<idx2){
+                    if(!i1.second){i1.second = true; ++m_deletedPoints;}
+                }else{
+                    if(!i2.second){i2.second = true; ++m_deletedPoints;}
+                }
+            }
+
+            if( (p1[0] < p2[0]) || (p1[0] == p2[0]  &&  p1[1] < p2[1])){
+                return true;
+            }
+
+            return false;
+        }
+    private:
+        unsigned int & m_deletedPoints;
+        const MatrixRef<const Matrix2Dyn> m_p;
+    };
+
 
     class CompareByAngle {
     public:
@@ -178,7 +281,7 @@ namespace PointFunctions {
         }
 
         /** True if b is positively rotated from a, stricly weak ordering! */
-        bool operator()(const PointData & point1In,
+        int operator()( const PointData & point1In,
                         const PointData & point2In )
         {
             using namespace PointFunctions;
@@ -187,46 +290,38 @@ namespace PointFunctions {
             unsigned int idx1 = point1.first;
             unsigned int idx2 = point2.first;
 
-            if( idx1 >= m_p.size() || idx2 >= m_p.size()) {
-                ApproxMVBB_ERRORMSG(":" << idx1 << "," << idx2 << "," << m_p.size()<< std::endl);
-            }
+//            if(idx1<idx2){
+//                if(almostEqual(m_p.col(idx1),m_p.col(idx2),1e-5)){
+//                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
+//                    return false;
+//                }
+//            }else{
+//                if(almostEqual(m_p.col(idx2),m_p.col(idx1),1e-5)){
+//                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
+//                    return false;
+//                }
+//            }
 
             // Compare by Area Sign (by ascending positive (z-Axis Rotation) angle in x-y Plane)
             // always  insert the smaller index first , and the larger second (as the function is not completely symmetric!
             if(idx1<idx2) {
-                int sgn = areaSign( m_base, m_p.col(idx1), m_p.col(idx2) );
-                if(sgn != 0){
-                    return (sgn > 0);
-                }
+                int sgn = orient2d( m_base, m_p.col(idx1), m_p.col(idx2) );
+                if(sgn != 0){ return (sgn > 0);}
             } else {
-                int sgn = areaSign( m_base, m_p.col(idx2), m_p.col(idx1) );
-                if(sgn != 0) {
-                    return (sgn < 0);
-                }
-            }
+                int sgn = orient2d( m_base, m_p.col(idx2), m_p.col(idx1) );
+                if(sgn != 0) {return (sgn < 0);}
 
-            // sgn == 0 --> point are collinear
-            // delete closest point to m_base
-
-            // Compute projections in first quadrant (instead of computing norms)
-            int x = static_cast<int>(std::abs(m_p.col(idx1)(0) - m_base(0)) - std::abs(m_p.col(idx2)(0) - m_base(0)));
-            int y = static_cast<int>(std::abs(m_p.col(idx1)(1) - m_base(1)) - std::abs(m_p.col(idx2)(1) - m_base(1)));
-
-            if(  (x<0) || (y<0) ){
-                if(!point1.second){point1.second = true; ++m_deletedPoints;}
-                return true;
-            }else if( (x>0) || (y>0) ) {
-                if(!point2.second){point2.second = true; ++m_deletedPoints;}
             }
-            else{
-                /** points cooincide */
-                if(idx1<idx2){
-                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
-                }else{
-                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
-                }
-            }
-            return false;
+            // points are collinear
+
+            if(PointFunctions::equal(m_base, m_p.col(idx1))) return false;
+            if(PointFunctions::equal(m_base, m_p.col(idx2))) return true;
+            if(PointFunctions::equal(m_p.col(idx1), m_p.col(idx2))) return false;
+
+            return collinearAreOrderedAlongLine(m_base,m_p.col(idx2),m_p.col(idx1));
+
+            // Compare by Length (smaller length first)
+            //return (m_p.col(idx1)-m_base).norm() < (m_p.col(idx2)-m_base).norm();
         }
     private:
         unsigned int & m_deletedPoints;

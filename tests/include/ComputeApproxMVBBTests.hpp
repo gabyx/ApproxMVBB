@@ -34,7 +34,8 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        dumpPointsMatrix("./ConvexHullTest" + std::to_string(N) +".txt",v);
+        dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) +".bin",v);
+        dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
 
         std::cout << "\n\nStart ConvexHull Test "+ std::to_string(N) +"" << std::endl;
         START_TIMER(start)
@@ -47,121 +48,124 @@ public:
             std::cerr << "ConvexHull Test "+ std::to_string(N) +" not ok!" << std::endl;
         }
 
+
+
         auto ind = c.getIndices();
+        std::cout << "ConvexHull Points: " << ind.size()  << std::endl;
         unsigned int j = 0;
         ApproxMVBB::Matrix2Dyn qHull(2,ind.size());
         for(auto & i : ind) {
             qHull.col(j++) = v.col(i);
         }
 
+        dumpPointsMatrixBinary("./ConvexHullTest"+ std::to_string(N) +"Out.bin",qHull);
         dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +"Out.txt",qHull);
-
     }
 
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
-        {
-            // generate points
-            ApproxMVBB::Matrix2Dyn t(2,10);
-            t.setRandom();
-            convexHullTest(1,t);
-        }
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,10);
+//            t.setRandom();
+//            convexHullTest(1,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List t;
+//            t.push_back(Vector2(0,0));
+//            t.push_back(Vector2(1,1));
+//            t.push_back(Vector2(2,2));
+//            t.push_back(Vector2(3,3));
+//            t.push_back(Vector2(-1,1));
+//
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//            convexHullTest(2,v);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List t;
+//            t.push_back(Vector2(0,0));
+//            t.push_back(Vector2(1,1));
+//            t.push_back(Vector2(2,2));
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//            convexHullTest(3,v);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List t;
+//            t.push_back(Vector2(0,0));
+//            t.push_back(Vector2(1,1));
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//            convexHullTest(4,v);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List t;
+//            t.push_back(Vector2(0,0));
+//            t.push_back(Vector2(1,1));
+//            t.push_back(Vector2(1,-1));
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//
+//            convexHullTest(4,v);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List t;
+//            t.push_back(Vector2(0,0));
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//
+//            convexHullTest(6,v);
+//        }
+//
+//        {
+//            // generate points  on circle
+//            unsigned int max = 1000;
+//            ApproxMVBB::Matrix2Dyn t(2,max);
+//            for(unsigned int i=0; i<max; i++) {
+//                t.col(i) = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
+//            }
+//
+//            convexHullTest(7,t);
+//        }
+//
+//        {
+//            // generate points
+//            auto t = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
+//            ApproxMVBB::Matrix2Dyn v(2,t.size());
+//            for(unsigned int i = 0; i<t.size(); ++i) {
+//                v.col(i) = t[i];
+//            }
+//            convexHullTest(8,v);
+//
+//        }
 
-        {
-            // generate points
-            Vector2List t;
-            t.push_back(Vector2(0,0));
-            t.push_back(Vector2(1,1));
-            t.push_back(Vector2(2,2));
-            t.push_back(Vector2(3,3));
-            t.push_back(Vector2(-1,1));
-
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-            convexHullTest(2,v);
-        }
-
-        {
-            // generate points
-            Vector2List t;
-            t.push_back(Vector2(0,0));
-            t.push_back(Vector2(1,1));
-            t.push_back(Vector2(2,2));
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-            convexHullTest(3,v);
-        }
-
-        {
-            // generate points
-            Vector2List t;
-            t.push_back(Vector2(0,0));
-            t.push_back(Vector2(1,1));
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-            convexHullTest(4,v);
-        }
-
-        {
-            // generate points
-            Vector2List t;
-            t.push_back(Vector2(0,0));
-            t.push_back(Vector2(1,1));
-            t.push_back(Vector2(1,-1));
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-
-            convexHullTest(4,v);
-        }
-
-        {
-            // generate points
-            Vector2List t;
-            t.push_back(Vector2(0,0));
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-
-            convexHullTest(6,v);
-        }
-
-        {
-            // generate points  on circle
-            unsigned int max = 1000;
-            ApproxMVBB::Matrix2Dyn t(2,max);
-            for(unsigned int i=0; i<max; i++) {
-                t.col(i) = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
-            }
-
-            convexHullTest(7,t);
-        }
-
-        {
-            // generate points
-            auto t = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
-            ApproxMVBB::Matrix2Dyn v(2,t.size());
-            for(unsigned int i = 0; i<t.size(); ++i) {
-                v.col(i) = t[i];
-            }
-            convexHullTest(8,v);
-
-        }
-
-        {
-            // generate points
-            ApproxMVBB::Matrix2Dyn t(2,400);
-            getPointsFromFileBinary("./PointsBadProjection.bin",t);
-
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+//
 //            // Filter points
 //            std::set<unsigned int> i = {0,29,180,
 //                                        212,213,
@@ -179,9 +183,44 @@ public:
 //                                        1,
 //                                        226,196,154,137,30,4};
 //            t = filterPoints(t,i);
-            convexHullTest(9,t);
+//            convexHullTest(9,t);
+//
+//        }
+
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+//
+//            convexHullTest(10,t);
+//
+//        }
+//         {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection2.bin",t);
+//
+//            convexHullTest(11,t);
+//
+//        }
+         {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection3.bin",t);
+
+            convexHullTest(12,t);
 
         }
+
+//         {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,16);
+//            t.setZero();
+//            getPointsFromFileBinary("./PointsBadProjection4.bin",t);
+//
+//            convexHullTest(13,t);
+//
+//        }
 
     }
 };
@@ -206,7 +245,8 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        dumpPointsMatrix("./MinAreaRectangleTest" + std::to_string(N) +".txt",v);
+        dumpPointsMatrixBinary("./MinAreaRectangleTest" + std::to_string(N) +".bin",v);
+        dumpPointsMatrix("./MinAreaRectangleTest"+ std::to_string(N) +".txt",v);
 
         std::cout << "\n\nStart MinAreaRectangle Test "+ std::to_string(N) +"" << std::endl;
         START_TIMER(start)
@@ -219,158 +259,158 @@ public:
         std::cout << "End MinAreaRectangle Test "+ std::to_string(N) +"" << std::endl;
         auto rect = c.getMinRectangle();
 
-        Vector2List p;
-        p.push_back( rect.m_p);
-        p.push_back( rect.m_p + rect.m_u );
-        p.push_back( rect.m_p + rect.m_u + rect.m_v );
-        p.push_back( rect.m_p + rect.m_v );
-        p.push_back( rect.m_p);
+        Matrix2Dyn p(2,5);
+        p.col(0) =  rect.m_p;
+        p.col(1) =  rect.m_p + rect.m_u ;
+        p.col(2) =  rect.m_p + rect.m_u + rect.m_v ;
+        p.col(3) =  rect.m_p + rect.m_v ;
+        p.col(4) =  rect.m_p;
 
-        dumpPoints("./MinAreaRectangleTest"+ std::to_string(N) +"Out.txt",p);
-
+        dumpPointsMatrixBinary("./MinAreaRectangleTest"+ std::to_string(N) +"Out.bin",p);
+        dumpPointsMatrix("./MinAreaRectangleTest"+ std::to_string(N) +"Out.txt",p);
     }
 
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
-        {
-            // generate points
-            ApproxMVBB::Matrix2Dyn t(2,10);
-            t.setRandom();
-            minRectTest(1,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,1));
-            v.push_back(Vector2(2,2));
-            v.push_back(Vector2(3,3));
-            v.push_back(Vector2(-1,1));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(2,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,1));
-            v.push_back(Vector2(2,2));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(3,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,1));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(4,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,1));
-            v.push_back(Vector2(1,-1));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(5,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,1));
-            v.push_back(Vector2(1,1+1e-13));
-            v.push_back(Vector2(2,2));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(6,t);
-        }
-
-        {
-            // generate points  on circle
-            unsigned int max = 100000;
-            Vector2List v(max);
-            for(unsigned int i=0; i<max; i++) {
-                v[i] = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
-            }
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(7,t);
-        }
-
-
-        {
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(1,0));
-
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(8,t);
-        }
-
-        {
-            // generate points
-            Vector2List v;
-
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(9,t);
-        }
-
-        {
-
-            // generate points
-            Vector2List v;
-            v.push_back(Vector2(0,0));
-            v.push_back(Vector2(1,0));
-            v.push_back(Vector2(1,1));
-            v.push_back(Vector2(0,1));
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(10,t);
-        }
-
-
-
-        {
-            // generate points
-            auto v = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(11,t);
-        }
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,10);
+//            t.setRandom();
+//            minRectTest(1,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,1));
+//            v.push_back(Vector2(2,2));
+//            v.push_back(Vector2(3,3));
+//            v.push_back(Vector2(-1,1));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(2,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,1));
+//            v.push_back(Vector2(2,2));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(3,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,1));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(4,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,1));
+//            v.push_back(Vector2(1,-1));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(5,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,1));
+//            v.push_back(Vector2(1,1+1e-13));
+//            v.push_back(Vector2(2,2));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(6,t);
+//        }
+//
+//        {
+//            // generate points  on circle
+//            unsigned int max = 100000;
+//            Vector2List v(max);
+//            for(unsigned int i=0; i<max; i++) {
+//                v[i] = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
+//            }
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(7,t);
+//        }
+//
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(1,0));
+//
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(8,t);
+//        }
+//
+//        {
+//            // generate points
+//            Vector2List v;
+//
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(9,t);
+//        }
+//
+//        {
+//
+//            // generate points
+//            Vector2List v;
+//            v.push_back(Vector2(0,0));
+//            v.push_back(Vector2(1,0));
+//            v.push_back(Vector2(1,1));
+//            v.push_back(Vector2(0,1));
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(10,t);
+//        }
+//
+//
+//
+//        {
+//            // generate points
+//            auto v = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(11,t);
+//        }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
         {
@@ -382,19 +422,33 @@ public:
 #endif
 
 
-        {
-            // generate points
-            ApproxMVBB::Matrix2Dyn t(2,400);
-            getPointsFromFileBinary("./PointsBadProjection.bin",t);
-            minRectTest(13,t);
-        }
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+//            minRectTest(13,t);
+//        }
+//
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection2.bin",t);
+//            minRectTest(14,t);
+//        }
 
         {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,400);
-            getPointsFromFileBinary("./PointsBadProjection2.bin",t);
-            minRectTest(14,t);
+            getPointsFromFileBinary("./PointsBadProjection3.bin",t);
+            minRectTest(15,t);
         }
+
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,10);
+//            getPointsFromFileBinary("./MinRectTest1ConvHull.bin",t);
+//            minRectTest(16,t);
+//        }
 
 
     }
@@ -415,11 +469,13 @@ public:
     ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
-    void diameterTest(unsigned int N, const TMatrix & v, bool dump = true, unsigned int optLoops = 10, PREC epsilon = 0.001) {
+    void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
+                      unsigned int optLoops = 10, PREC epsilon = 0.001) {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
         if(dump) {
+            dumpPointsMatrixBinary("./DiameterTest" + std::to_string(N) +".bin",v);
             dumpPointsMatrix("./DiameterTest" + std::to_string(N) +".txt",v);
         }
 
@@ -445,7 +501,7 @@ public:
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling Test "+ std::to_string(N) << std::endl;
 
-        oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,1);
+        oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
 
         if(!checkPointsInOOBB(v,oobb)){
             std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
@@ -453,9 +509,15 @@ public:
             std::cout << "All points in OOBB!" << std::endl;
         }
 
+
         dumpOOBB("./DiameterTest"+ std::to_string(N) +"Out.txt", oobb);
 
-        dumpPointsMatrix("./DiameterTest"+ std::to_string(N) +"Out2.txt",sampled);
+        dumpPointsMatrixBinary("./DiameterTest"+ std::to_string(N) +"Out2.bin",sampled);
+        dumpPointsMatrix("./DiameterTest" + std::to_string(N) +"Out2.txt",sampled);
+
+        if(oobb.volume() < 0.01){
+            ApproxMVBB_ERRORMSG(" Volume to small")
+        }
 
     }
 
@@ -463,54 +525,54 @@ public:
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
-        {
-            // generate points
-            ApproxMVBB::Matrix3Dyn t(3,500);
-            t.setRandom();
-            diameterTest(1,t);
-        }
-
-        {
-            // generate points
-            ApproxMVBB::Matrix3Dyn t(3,10000);
-            t.setRandom();
-            diameterTest(2,t);
-        }
-
-        {
-            // generate points
-            auto v = getPointsFromFile3D("./PointsSimulation.txt");
-
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            diameterTest(3,t);
-        }
-
-        {
-            // generate points
-            auto v = getPointsFromFile3D("./PointsSimulationFailMVBB.txt");
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            diameterTest(4,t,true,10);
-        }
-
-		{
-            // generate points
-            auto v = getPointsFromFile3D("./Bunny.txt");
-
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            diameterTest(5,t,false,10,1);
-        }
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix3Dyn t(3,500);
+//            t.setRandom();
+//            diameterTest(1,t);
+//        }
+//
+//        {
+//            // generate points
+//            ApproxMVBB::Matrix3Dyn t(3,10000);
+//            t.setRandom();
+//            diameterTest(2,t);
+//        }
+//
+//        {
+//            // generate points
+//            auto v = getPointsFromFile3D("./PointsSimulation.txt");
+//
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            diameterTest(3,t);
+//        }
+//
+//        {
+//            // generate points
+//            auto v = getPointsFromFile3D("./PointsSimulationFailMVBB.txt");
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            diameterTest(4,t,true,10);
+//        }
+//
+//		{
+//            // generate points
+//            auto v = getPointsFromFile3D("./Bunny.txt");
+//
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            diameterTest(5,t,false,10,1);
+//        }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
@@ -535,17 +597,28 @@ public:
 #endif
 
         // Tests 8 - 59
-        for(unsigned int i=0;i<51;i++){
 
-            // generate points
-            auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+        //for(unsigned int k=0;k<1000;k++){
+            for(unsigned int i=0;i<51;i++){
 
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
+                // generate points
+                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+
+                ApproxMVBB::Matrix3Dyn t(3,v.size());
+                for(unsigned int i = 0; i<v.size(); ++i) {
+                    t.col(i) = v[i];
+                }
+                //PointFunctions::applyRandomRotTrans(t);
+                diameterTest(i,t,true,4,0.1);
             }
-            diameterTest(8+i,t,true,6,0.1);
-        }
+        //}
+
+//        {
+//
+//            ApproxMVBB::Matrix2Dyn t(2,400);
+//            getPointsFromFileBinary("./PointsBadProjection3.bin",t);
+//            diameterTest(i,t,true,6,0.1);
+//        }
 
     }
 };
@@ -578,6 +651,7 @@ public:
 
         if(dumpPoints) {
             dumpPointsMatrix("./MVBBTest" + std::to_string(N) +".txt",v);
+            dumpPointsMatrixBinary("./MVBBTest" + std::to_string(N) +".bin",v);
         }
 
         std::cout << "\n\nStart MVBBTest Test "+ std::to_string(N) +"" << std::endl;
@@ -589,6 +663,10 @@ public:
 
 
         dumpOOBB("./MVBBTest"+ std::to_string(N) +"Out.txt", oobb);
+
+        if(oobb.volume() < 0.01){
+            ApproxMVBB_ERRORMSG(" Volume to small")
+        }
 
     }
 
@@ -680,16 +758,20 @@ public:
 #endif
 
          // Tests 9 - 59
-        for(unsigned int i=0;i<51;i++){
+        for(unsigned int k=0;k<10;k++){
+            for(unsigned int i=0;i<51;i++){
 
-            // generate points
-            auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+                // generate points
+                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+                ApproxMVBB::Matrix3Dyn t(3,v.size());
+                for(unsigned int i = 0; i<v.size(); ++i) {
+                    t.col(i) = v[i];
+                }
 
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
+                PointFunctions::applyRandomRotTrans(t);
+
+                mvbbTest(k*51+i,t,true,0.1,400,5,3,6);
             }
-            mvbbTest(8+i,t,true,0.1,400,5,0,6);
         }
 
     }
