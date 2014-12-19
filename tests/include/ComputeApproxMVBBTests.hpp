@@ -12,136 +12,17 @@
 #define ComputeMVBBTests_hpp
 
 #include <fstream>
+#include <set>
+
 
 #include "TestConfig.hpp"
 
 #include "ApproxMVBB/ComputeApproxMVBB.hpp"
+
+#include "TestFunctions.hpp"
 #include "CPUTimer.hpp"
 
 namespace ApproxMVBB{
-namespace TestFunctions{
-
-    ApproxMVBB_DEFINE_MATRIX_TYPES
-    DEFINE_POINTS_CONFIG_TYPES
-
-
-    template<typename Derived>
-    void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived> & v) {
-
-        std::ofstream l;
-        l.open(filePath.c_str());
-        if(!l.good()){
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-        }
-
-        for(unsigned int i=0; i<v.cols(); i++) {
-            l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        }
-    }
-
-    template<typename Container>
-    void dumpPoints(std::string filePath, Container & c) {
-
-        std::ofstream l;
-        l.open(filePath.c_str());
-        if(!l.good()){
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-        }
-
-        for(auto & v: c) {
-            l << v.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        }
-    }
-
-    void dumpOOBB(std::string filePath, OOBB & oobb) {
-
-        std::ofstream l;
-        l.open(filePath.c_str());
-        if(!l.good()){
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-        }
-
-        l << oobb.m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        l << oobb.m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        l << oobb.m_q_KI.matrix().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-    }
-
-    PointFunctions::Vector3List getPointsFromFile3D(std::string filePath) {
-
-        std::ifstream file;            //creates stream myFile
-        file.open(filePath.c_str());  //opens .txt file
-
-        if (!file.is_open()) { // check file is open, quit if not
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
-        }
-
-        PREC a,b,c;
-        Vector3List v;
-        while(file.good()) {
-            file >> a>>b>>c;
-            v.emplace_back(a,b,c);
-        }
-        file.close();
-        return v;
-    }
-
-    Vector2List getPointsFromFile2D(std::string filePath) {
-
-        std::ifstream file;            //creates stream myFile
-        file.open(filePath.c_str());  //opens .txt file
-
-        if (!file.is_open()) { // check file is open, quit if not
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
-        }
-        PREC a,b;
-        Vector2List v;
-        while(file.good()) {
-            file >> a>>b;
-            v.emplace_back(a,b);
-        }
-        file.close();
-        return v;
-    }
-
-    Vector2List generatePoints2D(unsigned int n=4) {
-        Vector2List v;
-        for(unsigned int i=0; i<n; i++) {
-            v.push_back( Vector2::Random() );
-        }
-        return v;
-    }
-
-    Vector3List generatePoints3D(unsigned int n=4) {
-        Vector3List v;
-        for(unsigned int i=0; i<n; i++) {
-            v.push_back( Vector3::Random() );
-        }
-        return v;
-    }
-
-
-    template<typename Derived>
-    bool checkPointsInOOBB(const MatrixBase<Derived> & points, OOBB oobb){
-
-        Matrix33 A_KI  = oobb.m_q_KI.matrix();
-        A_KI.transposeInPlace();
-
-        Vector3 p;
-        bool allInside = true;
-        auto size = points.cols();
-        decltype(size) i = 0;
-        while(i<size && allInside){
-                p = A_KI * points.col(i);
-                allInside &= (   p(0) >= oobb.m_minPoint(0) && p(0) <= oobb.m_maxPoint(0) &&
-                                 p(1) >= oobb.m_minPoint(1) && p(1) <= oobb.m_maxPoint(1) &&
-                                 p(2) >= oobb.m_minPoint(2) && p(2) <= oobb.m_maxPoint(2));
-                ++i;
-        }
-        return allInside;
-    }
-
-};
-
 
 class ConvexHullTest {
 public:
@@ -153,7 +34,8 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        dumpPointsMatrix("./ConvexHullTest" + std::to_string(N) +".txt",v);
+        dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) +".bin",v);
+        dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
 
         std::cout << "\n\nStart ConvexHull Test "+ std::to_string(N) +"" << std::endl;
         START_TIMER(start)
@@ -166,22 +48,24 @@ public:
             std::cerr << "ConvexHull Test "+ std::to_string(N) +" not ok!" << std::endl;
         }
 
+
+
         auto ind = c.getIndices();
+        std::cout << "ConvexHull Points: " << ind.size()  << std::endl;
         unsigned int j = 0;
         ApproxMVBB::Matrix2Dyn qHull(2,ind.size());
         for(auto & i : ind) {
             qHull.col(j++) = v.col(i);
         }
 
+        dumpPointsMatrixBinary("./ConvexHullTest"+ std::to_string(N) +"Out.bin",qHull);
         dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +"Out.txt",qHull);
-
     }
 
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
         {
-            std::cerr << "Convex Hull Test 1 " << std::endl;
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,10);
             t.setRandom();
@@ -189,7 +73,6 @@ public:
         }
 
         {
-            std::cerr << "Convex Hull Test 2 " << std::endl;
             // generate points
             Vector2List t;
             t.push_back(Vector2(0,0));
@@ -206,7 +89,6 @@ public:
         }
 
         {
-            std::cerr << "Convex Hull Test 3 " << std::endl;
             // generate points
             Vector2List t;
             t.push_back(Vector2(0,0));
@@ -220,7 +102,6 @@ public:
         }
 
         {
-            std::cerr << "Convex Hull Test 4 " << std::endl;
             // generate points
             Vector2List t;
             t.push_back(Vector2(0,0));
@@ -233,7 +114,6 @@ public:
         }
 
         {
-            std::cerr << "Convex Hull Test 5 " << std::endl;
             // generate points
             Vector2List t;
             t.push_back(Vector2(0,0));
@@ -248,7 +128,6 @@ public:
         }
 
         {
-            std::cerr << "Convex Hull Test 6 " << std::endl;
             // generate points
             Vector2List t;
             t.push_back(Vector2(0,0));
@@ -262,7 +141,7 @@ public:
 
         {
             // generate points  on circle
-            unsigned int max = 10000;
+            unsigned int max = 1000;
             ApproxMVBB::Matrix2Dyn t(2,max);
             for(unsigned int i=0; i<max; i++) {
                 t.col(i) = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
@@ -282,6 +161,66 @@ public:
 
         }
 
+        {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+
+            // Filter points
+            std::set<unsigned int> i = {0,29,180,
+                                        212,213,
+                                        192,193,
+                                        175,176,
+                                        162,163,
+                                        146,147,
+                                        129,130,
+                                        112,113,
+                                        96,97,
+                                        79,80,
+                                        58,59,
+                                        36,37,
+                                        7,8,
+                                        1,
+                                        226,196,154,137,30,4};
+            t = filterPoints(t,i);
+            convexHullTest(9,t);
+
+        }
+
+        {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+
+            convexHullTest(10,t);
+
+        }
+         {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection2.bin",t);
+
+            convexHullTest(11,t);
+
+        }
+         {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection3.bin",t);
+
+            convexHullTest(12,t);
+
+        }
+
+         {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,16);
+            t.setZero();
+            getPointsFromFileBinary("./PointsBadProjection4.bin",t);
+
+            convexHullTest(13,t);
+
+        }
 
     }
 };
@@ -306,7 +245,8 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        dumpPointsMatrix("./MinAreaRectangleTest" + std::to_string(N) +".txt",v);
+        dumpPointsMatrixBinary("./MinAreaRectangleTest" + std::to_string(N) +".bin",v);
+        dumpPointsMatrix("./MinAreaRectangleTest"+ std::to_string(N) +".txt",v);
 
         std::cout << "\n\nStart MinAreaRectangle Test "+ std::to_string(N) +"" << std::endl;
         START_TIMER(start)
@@ -319,15 +259,15 @@ public:
         std::cout << "End MinAreaRectangle Test "+ std::to_string(N) +"" << std::endl;
         auto rect = c.getMinRectangle();
 
-        Vector2List p;
-        p.push_back( rect.m_p);
-        p.push_back( rect.m_p + rect.m_u );
-        p.push_back( rect.m_p + rect.m_u + rect.m_v );
-        p.push_back( rect.m_p + rect.m_v );
-        p.push_back( rect.m_p);
+        Matrix2Dyn p(2,5);
+        p.col(0) =  rect.m_p;
+        p.col(1) =  rect.m_p + rect.m_u ;
+        p.col(2) =  rect.m_p + rect.m_u + rect.m_v ;
+        p.col(3) =  rect.m_p + rect.m_v ;
+        p.col(4) =  rect.m_p;
 
-        dumpPoints("./MinAreaRectangleTest"+ std::to_string(N) +"Out.txt",p);
-
+        dumpPointsMatrixBinary("./MinAreaRectangleTest"+ std::to_string(N) +"Out.bin",p);
+        dumpPointsMatrix("./MinAreaRectangleTest"+ std::to_string(N) +"Out.txt",p);
     }
 
     void test() {
@@ -481,6 +421,29 @@ public:
         }
 #endif
 
+
+        {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection.bin",t);
+            minRectTest(13,t);
+        }
+
+        {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection2.bin",t);
+            minRectTest(14,t);
+        }
+
+        {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,400);
+            getPointsFromFileBinary("./PointsBadProjection3.bin",t);
+            minRectTest(15,t);
+        }
+
+
     }
 };
 
@@ -499,11 +462,13 @@ public:
     ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
-    void diameterTest(unsigned int N, const TMatrix & v, bool dump = true, unsigned int optLoops = 10, PREC epsilon = 0.001) {
+    void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
+                      unsigned int optLoops = 10, PREC epsilon = 0.001) {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
         if(dump) {
+            dumpPointsMatrixBinary("./DiameterTest" + std::to_string(N) +".bin",v);
             dumpPointsMatrix("./DiameterTest" + std::to_string(N) +".txt",v);
         }
 
@@ -529,9 +494,23 @@ public:
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling Test "+ std::to_string(N) << std::endl;
 
+        oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
+
+        if(!checkPointsInOOBB(v,oobb)){
+            std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
+        }else{
+            std::cout << "All points in OOBB!" << std::endl;
+        }
+
+
         dumpOOBB("./DiameterTest"+ std::to_string(N) +"Out.txt", oobb);
 
-        dumpPointsMatrix("./DiameterTest"+ std::to_string(N) +"Out2.txt",sampled);
+        dumpPointsMatrixBinary("./DiameterTest"+ std::to_string(N) +"Out2.bin",sampled);
+        dumpPointsMatrix("./DiameterTest" + std::to_string(N) +"Out2.txt",sampled);
+
+
+        ApproxMVBB_WARNINGMSG(oobb.volume() < 1e-6,"Volume small: " << oobb.volume() << std::endl)
+
 
     }
 
@@ -608,7 +587,26 @@ public:
             t.setRandom();
             diameterTest(7,t,false,0,0.01);
         }
+
+
 #endif
+
+
+        //  Tests 8 - 59
+        //for(unsigned int k=0;k<3;k++){
+            for(unsigned int i=0;i<51;i++){
+
+                // generate points
+                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+
+                ApproxMVBB::Matrix3Dyn t(3,v.size());
+                for(unsigned int i = 0; i<v.size(); ++i) {
+                    t.col(i) = v[i];
+                }
+                PointFunctions::applyRandomRotTrans(t);
+                diameterTest(/*k*51+*/i+8,t,true,4,0.1);
+            }
+        //}
 
     }
 };
@@ -641,6 +639,7 @@ public:
 
         if(dumpPoints) {
             dumpPointsMatrix("./MVBBTest" + std::to_string(N) +".txt",v);
+            dumpPointsMatrixBinary("./MVBBTest" + std::to_string(N) +".bin",v);
         }
 
         std::cout << "\n\nStart MVBBTest Test "+ std::to_string(N) +"" << std::endl;
@@ -650,8 +649,11 @@ public:
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
         std::cout << "End MVBBTest Test "+ std::to_string(N) + "Out.txt" << std::endl;
 
+        ApproxMVBB_WARNINGMSG(oobb.volume() < 1e-6,"Volume small: " << oobb.volume() << std::endl)
+
 
         dumpOOBB("./MVBBTest"+ std::to_string(N) +"Out.txt", oobb);
+
 
     }
 
@@ -684,7 +686,7 @@ public:
 
 
         }
-
+//
 //        {
 //            Matrix3Dyn vec(3,140000000);
 //            Matrix3Dyn res(3,140000000);
@@ -701,9 +703,9 @@ public:
 //            std::cout << "p:" << vec.col(0)<< std::endl;
 //            std::cout << "Mult Eigen Special: " << count << " sec." << std::endl;
 //        }
-
+//
 //        {
-              // generate points
+//            //   generate points
 //            MatrixDynDyn vec(140000000,3);
 //            MatrixDynDyn A(3,3);
 //            MatrixDynDyn res(140000000,3);
@@ -727,6 +729,14 @@ public:
             mvbbTest(3,t,true,0.1);
         }
 
+
+        {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
+            t.setRandom();
+            mvbbTest(4,t,false,0.01,400,5,0,5);
+        }
+
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
         {
@@ -741,8 +751,24 @@ public:
             mvbbTest(4,t,false,100,400,5,0,5);
         }
 #endif
-    }
 
+         // Tests 9 - 59
+        //for(unsigned int k=0;k<3;k++){
+            for(unsigned int i=0;i<51;i++){
+
+                // generate points
+                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+                ApproxMVBB::Matrix3Dyn t(3,v.size());
+                for(unsigned int i = 0; i<v.size(); ++i) {
+                    t.col(i) = v[i];
+                }
+
+                PointFunctions::applyRandomRotTrans(t);
+                mvbbTest(/*k*51+*/i + 4,t,true,0.1,400,5,3,6);
+            }
+        //}
+
+    }
 
 };
 

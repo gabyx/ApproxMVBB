@@ -44,13 +44,21 @@ namespace ApproxMVBB{
 
         void compute();
 
+        void computeMonotonChain();
+
+
         bool verifyHull();
 
         inline std::vector<unsigned int> & getIndices() {
             return m_indicesCH;
         }
 
+
+
     private:
+
+        void chainHull();
+
         std::vector<unsigned int> m_indicesCH;
         const MatrixRef< const Matrix2Dyn > m_p;
     };

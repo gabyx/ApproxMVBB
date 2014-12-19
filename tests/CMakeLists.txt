@@ -17,12 +17,14 @@ configure_file (
 
 SET(SOURCE_FILES
     ${COMMON_SOURCE}
-    src/main.cpp
+    ${PROJECT_SOURCE_DIR}/src/TestFunctions.cpp
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 SET(INCLUDE_FILES
     ${COMMON_INCLUDE}
-    include/ComputeApproxMVBBTests.hpp
+    ${PROJECT_SOURCE_DIR}/include/TestFunctions.hpp
+    ${PROJECT_SOURCE_DIR}/include/ComputeApproxMVBBTests.hpp
 )
 
 
@@ -39,16 +41,25 @@ include_directories(${INCLUDE_DIRS})
 
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
 
+#file(GLOB testFiles RELATIVE "${PROJECT_SOURCE_DIR}/files/" "*.txt" "*.bin")
+#message(STATUS "Copying test files to 
+#file(COPY 
+        #${testFiles}
+        #DESTINATION ${PROJECT_BINARY_DIR}
+    #)
 
-file(COPY 
-        ${PROJECT_SOURCE_DIR}/files/Bunny.txt
-        ${PROJECT_SOURCE_DIR}/files/PointsSimulation.txt
-        ${PROJECT_SOURCE_DIR}/files/PointsSimulation2DRectFail.txt
-        ${PROJECT_SOURCE_DIR}/files/PointsSimulationFailMVBB.txt
-        ${PROJECT_SOURCE_DIR}/python/PlotTestResults.ipynb
-        DESTINATION ${PROJECT_BINARY_DIR}
-    )
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND 
+          ${CMAKE_COMMAND}
+          -E
+          copy_directory ${PROJECT_SOURCE_DIR}/files/ ${PROJECT_BINARY_DIR}
+)
 
 
-
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND 
+          ${CMAKE_COMMAND}
+          -E
+          copy_directory ${PROJECT_SOURCE_DIR}/python/ ${PROJECT_BINARY_DIR}
+)
 

@@ -17,6 +17,7 @@
 #include ApproxMVBB_Platform_INCLUDE_FILE
 #include ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE
 
+
 namespace ApproxMVBB{
 
 struct GlobalConfigs {
@@ -30,6 +31,8 @@ struct GlobalConfigs {
 
 };
 
+
+#include "ApproxMVBB/TypeDefsPoints.hpp"
 
 #endif
 

@@ -32,13 +32,14 @@ namespace ApproxMVBB {
 *   the point-set. The only guarenteed is that if we use sample of size m,
 *   we get an approximation of quality about 1/\sqrt{m}. Note that we pad
 *   the sample if necessary to get the desired size.
+*   This function changes the oobb and set the z Axis to the greates extent!
 *   @param nPoints needs to be greater or equal than 2
 */
 template<typename Derived>
 APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       const MatrixBase<Derived> & points,
                       const unsigned int nPoints,
-                      OOBB oobb) {
+                      OOBB & oobb) {
 
 
     if(nPoints > points.cols() || nPoints < 2) {
@@ -52,26 +53,28 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     std::uniform_int_distribution<unsigned int> dis(0, points.cols()-1);
 
     //total points = bottomPoints=gridSize^2  + topPoints=gridSize^2
-    unsigned int gridSize = std::min( static_cast<unsigned int>( std::sqrt( static_cast<double>(nPoints) / 2.0 )) , 1U );
+    unsigned int gridSize = std::max( static_cast<unsigned int>( std::sqrt( static_cast<double>(nPoints) / 2.0 )) , 1U );
 
     // Set z-Axis to longest dimension
+    //std::cout << oobb.m_minPoint.transpose() << std::endl;
     oobb.setZAxisLongest();
 
-    Vector3 dirZ = oobb.getDirection(2); // in I Frame
-
     unsigned int halfSampleSize = gridSize*gridSize;
-    std::vector< unsigned int > topPoints(halfSampleSize, 0);    // grid of indices of the top points (1-indexed)
-    std::vector< unsigned int > bottomPoints(halfSampleSize, 0); // grid of indices of the bottom points (1-indexed)
+    std::vector< std::pair<unsigned int , PREC > > topPoints(halfSampleSize,    std::pair<unsigned int,PREC>{} );    // grid of indices of the top points (indexed from 1 )
+    std::vector< std::pair<unsigned int , PREC > > bottomPoints(halfSampleSize, std::pair<unsigned int,PREC>{} ); // grid of indices of the bottom points (indexed from 1 )
 
     using LongInt = long long int;
     MyMatrix<LongInt>::Array2 idx; // Normalized P
+    //std::cout << oobb.extent() << std::endl;
+    //std::cout << oobb.m_minPoint.transpose() << std::endl;
     Array2 dxdyInv =  Array2(gridSize,gridSize) / oobb.extent().head<2>(); // in K Frame;
     Vector3 K_p;
 
     Matrix33 A_KI(oobb.m_q_KI.matrix().transpose());
 
     // Register points in grid
-    for(unsigned int i=0; i<nPoints; ++i) {
+    auto size = points.cols();
+    for(unsigned int i=0; i<size; ++i) {
 
         K_p = A_KI * points.col(i);
         // get x index in grid
@@ -79,21 +82,24 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
         // map to grid
         idx(0) = std::max(   std::min( LongInt(gridSize-1), idx(0)),  0LL   );
         idx(1) = std::max(   std::min( LongInt(gridSize-1), idx(1)),  0LL   );
+        //std::cout << idx.transpose() << std::endl;
+        unsigned int pos = idx(0) + idx(1)*gridSize;
 
         // Register points in grid
         // if z axis of p is > topPoints[pos]  -> set new top point at pos
         // if z axis of p is < bottom[pos]     -> set new bottom point at pos
-        unsigned int pos = idx(0) + idx(1)*gridSize;
-        if( topPoints[pos] == 0) {
-            topPoints[pos] = bottomPoints[pos] = i+1;
+
+        if( topPoints[pos].first == 0) {
+            topPoints[pos].first  = bottomPoints[pos].first  = i+1;
+            topPoints[pos].second = bottomPoints[pos].second = K_p(2);
         } else {
-            PREC Ztop    = points.col(topPoints[pos]).dot(dirZ);
-            PREC Zbottom = points.col(bottomPoints[pos]).dot(dirZ);
-            if( Ztop < K_p(2) ) {
-                topPoints[pos] = i+1;
+            if( topPoints[pos].second < K_p(2) ) {
+                topPoints[pos].first = i+1;
+                topPoints[pos].second = K_p(2);
             }
-            if( Zbottom > K_p(2) ) {
-                bottomPoints[pos] = i+1;
+            if( bottomPoints[pos].second > K_p(2) ) {
+                bottomPoints[pos].first = i+1;
+                bottomPoints[pos].second = K_p(2);
             }
         }
     }
@@ -102,22 +108,23 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     unsigned int k=0;
 
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    ApproxMVBB_ASSERTMSG(halfSampleSize<=nPoints,"?")
     for(unsigned int i=0; i<halfSampleSize; ++i) {
-        if( topPoints[i] != 0 ) {
-            //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
-            //a.head<2>()*=dxdyInv.inverse();
-            newPoints.col(k++) =  points.col(topPoints[i]-1);    //A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
-            if(topPoints[i] != bottomPoints[i]) {
-                //Array3 a(i % gridSize,i/gridSize,0);
-                //a.head<2>()*=dxdyInv.inverse();
-                newPoints.col(k++) = points.col(bottomPoints[i]-1);  //A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+        if( topPoints[i].first != 0 ) {
+            // comment in if you want the points top points of the grid
+//            Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
+//            a.head<2>()*=dxdyInv.inverse();
+            newPoints.col(k++) =  points.col(topPoints[i].first-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+            if(topPoints[i].first != bottomPoints[i].first) {
+                // comment in if you want the bottom points of the grid
+//                Array3 a(i % gridSize,i/gridSize,0);
+//                a.head<2>()*=dxdyInv.inverse();
+                newPoints.col(k++) = points.col(bottomPoints[i].first-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             }
         }
     }
     // Add random points!
     while( k < nPoints) {
-        newPoints.col(k++) = points.col( dis(gen) );
+        newPoints.col(k++) = points.col( dis(gen) ); //= Vector3(0,0,0);//
     }
 }
 
@@ -132,10 +139,13 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
 
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
-
     if( oobb.volume() == 0.0 || times == 0) {
         return oobb;
     }
+
+    // Define the volume lower bound above we accept a new volume as
+    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+
 
 
     bool sameAsCache = true;
@@ -164,12 +174,10 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
         cacheIdx = (cacheIdx + 1) % 3;
 
         //std::cout << "Optimizing dir: " << dir << std::endl;
-
         OOBB o = proj.computeMVBB( dir, points);
 
-        if( o.volume() < oobb.volume()) {
+        if( o.volume() < oobb.volume() && o.volume()>volumeAcceptTol) {
             oobb = o;
-            //std::cout << "Volume: " << o.volume() << " dir: " << dir.transpose()<< std::endl;
         }
     }
 
@@ -193,6 +201,10 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
                                const unsigned int optLoops = 6
                                ) {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
+
+    // Define the volume lower bound above we accept a new volume as
+    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+
     //Get the direction of the input OOBB in I frame:
     Vector3 dir1 = oobb.getDirection(0);
     Vector3 dir2 = oobb.getDirection(1);
@@ -222,7 +234,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
                     res = optimizeMVBB(points,res,optLoops);
                 }
 
-                if(res.volume() < oobb.volume()) {
+                if(res.volume() < oobb.volume() && res.volume()>volumeAcceptTol ) {
                     oobb = res;
                 }
 
