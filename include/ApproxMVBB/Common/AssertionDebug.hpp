@@ -25,7 +25,7 @@
 	* @param condition The condition which needs to be truem otherwise an assertion is thrown!
 	*/
     #define ApproxMVBB_ASSERTMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
-    #define ApproxMVBB_WARNINGMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
+    #define ApproxMVBB_WARNINGMSG(condition , message) { if(!(condition)){ std::cerr << "WARNING: " <<message << std::endl; } }
 #else
    #define ApproxMVBB_ASSERTMSG(condition,message)
    #define ApproxMVBB_WARNINGMSG(condition,message)

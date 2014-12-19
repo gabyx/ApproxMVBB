@@ -25,6 +25,7 @@ namespace TestFunctions{
         l << oobb.m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         l << oobb.m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         l << oobb.m_q_KI.matrix().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+        l.close();
     }
 
 

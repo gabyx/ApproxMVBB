@@ -9,6 +9,8 @@
 // ========================================================================================
 //#include <iterator> // for ostream_iterator
 //#include "TestFunctions.hpp"
+
+
 #include "ApproxMVBB/ConvexHull2D.hpp"
 namespace ApproxMVBB{
 void ConvexHull2D::compute() {
@@ -24,19 +26,18 @@ void ConvexHull2D::compute() {
 
     // Compute min point p0
     unsigned int position = minPointYX(m_p);
-    std::cout << "min:" << position << std::endl;
+//    std::cout << "min:" << position << std::endl;
     Vector2 base = m_p.col(position);
 
     // Indices into m_p
     // first = index into m_p, second =  delete flag!
-    using PointData = std::pair<unsigned int, bool>;
-    std::vector< PointData > indicesTemp;
+    using PointData = std::pair<unsigned int, bool>; std::vector< PointData > indicesTemp;
 
     //Save p0 as first point in indices list (temporary)
     indicesTemp.emplace_back(position,false);
     //Add all indices of points not almostEqual to position
     for(unsigned int i = 0; i<m_p.cols(); ++i) {
-        if( (i != position) && !almostEqual(base,m_p.col(i))) {
+        if( (i != position) && !almostEqualUlp(base,m_p.col(i))) {
             indicesTemp.emplace_back(i,false);
         }
     }
@@ -53,27 +54,29 @@ void ConvexHull2D::compute() {
 
 
     // copy indices into new array which only consists of the indices which have no delete flag (index == position)
-    std::cout << "Deleted points:" << deletedPoints << " of " << indicesTemp.size() << std::endl;
+    //std::cout << "Deleted points:" << deletedPoints << " of " << indicesTemp.size() << std::endl;
     std::vector<unsigned int> indices(indicesTemp.size() - deletedPoints);
     unsigned int k=0; auto s = indicesTemp.size();
     for(decltype(s) i = 0; i < s; ++i){
         PointData & pp = indicesTemp[i]; if(!pp.second){indices[k++] = pp.first;}
     }
-//
-//    auto d2 = ContainerFunctions::moveConsecutiveToFrontIf(indices.begin(),indices.end(),
-//                                                             [&](const unsigned int idx1, const unsigned int idx2){
-//                                                                return !almostEqual(this->m_p.col(idx1),this->m_p.col(idx2),1e-8);
-//                                                             }
-//                                                             );
-//    std::cout << "Deleted almostEqual: " << std::distance(d2,indices.end()) << std::endl;
-//    indices.resize( std::distance(indices.begin(),d2) );
 
+    // Remove almost equal elements
+    auto d2 = ContainerFunctions::moveConsecutiveToFrontIf(indices.begin(),indices.end(),
+                                                             [&](const unsigned int idx1, const unsigned int idx2){
+                                                                return !almostEqualUlp(this->m_p.col(idx1),this->m_p.col(idx2),1e-8);
+                                                             }
+                                                             );
+    //    std::cout << "Deleted almostEqual: " << std::distance(d2,indices.end()) << std::endl;
+    indices.resize( std::distance(indices.begin(),d2) );
 
-
-    std::cout << "Graham Scan points: " << indices.size() << std::endl;
-    for(auto & i : indices){
-        ApproxMVBB_ASSERTMSG(i<m_p.cols(),"");
+    // Convex hull consists of only 1 or 2 points!
+    if(indicesTemp.size() <= 2  ) {
+        for(auto & pa : indicesTemp){ m_indicesCH.emplace_back(pa.first);}  return;
     }
+
+    //    std::cout << "Graham Scan points: " << indices.size() << std::endl;
+
     unsigned int nPoints  = indices.size();
     unsigned int lastIdx  = indices[0];
     unsigned int firstIdx = indices[1];
@@ -86,18 +89,19 @@ void ConvexHull2D::compute() {
     unsigned int i = 1; // current point;
 
     // skip the first non left turns in the sequence!
+//    std::cout << "lastIdx point: " <<lastIdx << ","<< m_p.col(lastIdx).transpose() << std::endl;
+//    std::cout << "firstIdx point: " <<firstIdx << ","<< m_p.col(firstIdx).transpose() << std::endl;
+
     do{
             currIdx = indices[++i];
     }
-    while (( i < nPoints ) && !leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx)));
+    while (( i < nPoints-1 ) && !leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx)));
+
+//    std::cout << "currIdx point: " <<currIdx << std::endl;
+//    std::cout << ","<< m_p.col(currIdx).transpose() << std::endl << "===="<<std::endl;
 
 
-//    std::cout << "lastIdx point: " <<lastIdx << ","<< m_p.col(lastIdx).transpose() << std::endl;
-//    std::cout << "firstIdx point: " <<firstIdx << ","<< m_p.col(firstIdx).transpose() << std::endl;
-//    std::cout << "currIdx point: " <<currIdx << ","<< m_p.col(currIdx).transpose() << std::endl << "===="<<std::endl;
-
-
-    if ( i != nPoints )
+    if ( i < nPoints )
     {
       m_indicesCH.push_back( currIdx );
       decltype(m_indicesCH.rbegin()) revIter;

@@ -212,55 +212,6 @@ namespace PointFunctions {
 
     }
 
-    class CompareByXThanY {
-    public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        ApproxMVBB_DEFINE_MATRIX_TYPES
-
-
-        using PointData = std::pair<unsigned int, bool>;
-
-        /** Cosntructor, points is not a temporary, it accepts all sorts of matrix expressions,
-        * however the construction of MatrixRef<> might create a temporary but this is stored in m_p!
-        */
-        template<typename Derived>
-        CompareByXThanY(const MatrixBase<Derived> & points,
-                       unsigned int & deletedPoints): m_p(points), m_deletedPoints(deletedPoints) {
-            EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,2, Eigen::Dynamic)
-        }
-
-        /** True if b is positively rotated from a, stricly weak ordering! */
-        bool operator()(const PointData & i1In, const PointData & i2In )
-        {
-            using namespace PointFunctions;
-            PointData & i1 = const_cast<PointData&>(i1In);
-            PointData & i2 = const_cast<PointData&>(i2In);
-            unsigned int idx1 = i1.first;
-            unsigned int idx2 = i2.first;
-            const PREC * p1 = m_p.col(idx1).data();
-            const PREC * p2 = m_p.col(idx2).data();
-
-            // if almost equal mark lower idx point delete
-            if(almostEqual(m_p.col(idx1),m_p.col(idx2))){
-                if(idx1<idx2){
-                    if(!i1.second){i1.second = true; ++m_deletedPoints;}
-                }else{
-                    if(!i2.second){i2.second = true; ++m_deletedPoints;}
-                }
-            }
-
-            if( (p1[0] < p2[0]) || (p1[0] == p2[0]  &&  p1[1] < p2[1])){
-                return true;
-            }
-
-            return false;
-        }
-    private:
-        unsigned int & m_deletedPoints;
-        const MatrixRef<const Matrix2Dyn> m_p;
-    };
-
-
     class CompareByAngle {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW

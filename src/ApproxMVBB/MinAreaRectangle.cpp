@@ -36,7 +36,7 @@ void MinAreaRectangle::computeRectangle() {
     m_hullIdx = m_convh.getIndices();
     unsigned int nPoints = m_hullIdx.size();
 
-    std::cout << "Convex hull points:" << nPoints << std::endl;
+    //std::cout << "Convex hull points:" << nPoints << std::endl;
 
     // The below code works for points >= 2
     // Anyway catch the cases n=1 and 2 and return early!
