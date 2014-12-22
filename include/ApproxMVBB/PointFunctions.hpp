@@ -243,18 +243,18 @@ namespace PointFunctions {
             PointData & point2 = const_cast<PointData &>(point2In);
             unsigned int idx1 = point1.first;
             unsigned int idx2 = point2.first;
-
-            if(idx1<idx2){
-                if(almostEqualAbs(m_p.col(idx1),m_p.col(idx2),1e-1)){
-                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
-                    return false;
-                }
-            }else{
-                if(almostEqualAbs(m_p.col(idx2),m_p.col(idx1),1e-1)){
-                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
-                    return false;
-                }
-            }
+//
+//            if(idx1<idx2){
+//                if(almostEqualUlp(m_p.col(idx1),m_p.col(idx2))){
+//                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
+//                    return false;
+//                }
+//            }else{
+//                if(almostEqualUlp(m_p.col(idx2),m_p.col(idx1))){
+//                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
+//                    return false;
+//                }
+//            }
 
             // Compare by Area Sign (by ascending positive (z-Axis Rotation) angle in x-y Plane)
             // always  insert the smaller index first , and the larger second (as the function is not completely symmetric!
@@ -268,14 +268,12 @@ namespace PointFunctions {
             }
             // points are collinear
 
-//            if(PointFunctions::equal(m_base, m_p.col(idx1))) return false;
-//            if(PointFunctions::equal(m_base, m_p.col(idx2))) return true;
-//            if(PointFunctions::equal(m_p.col(idx1), m_p.col(idx2))) return false;
+            if(PointFunctions::equal(m_base, m_p.col(idx1))) return false;
+            if(PointFunctions::equal(m_base, m_p.col(idx2))) return true;
+            if(PointFunctions::equal(m_p.col(idx1), m_p.col(idx2))) return false;
 
+            // if idx2 lies between mbase and idx1 then it should go after idx1
             return collinearAreOrderedAlongLine(m_base,m_p.col(idx2),m_p.col(idx1));
-            std::cout << "collinear idx:" << idx1 << "," << idx2 << std::endl;
-            // Compare by Length (smaller length first)
-            //return (m_p.col(idx1)-m_base).norm() > (m_p.col(idx2)-m_base).norm();
         }
     private:
         unsigned int & m_deletedPoints;

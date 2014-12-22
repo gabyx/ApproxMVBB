@@ -111,8 +111,8 @@ public:
         project(points);
 
         // compute minimum area rectangle first
-//        std::cout << "Dump points DEBUG:" << std::endl;
-        TestFunctions::dumpPointsMatrixBinary("DumpedPoints.bin",m_p);
+        // std::cout << "Dump points DEBUG:" << std::endl;
+        //TestFunctions::dumpPointsMatrixBinary("DumpedPoints.bin",m_p);
 
 
         MinAreaRectangle mar(m_p);
@@ -134,8 +134,8 @@ public:
 
         Matrix22 A2_KM;
 
-        //std::cout << "u:" << rect.m_u.norm() << std::endl;
-        //std::cout << "v:" << rect.m_v.norm() << std::endl;
+//        std::cout << "u:" << rect.m_u.norm() << std::endl;
+//        std::cout << "v:" << rect.m_v.norm() << std::endl;
 
         A2_KM.col(0) = rect.m_u.normalized();
         A2_KM.col(1) = rect.m_v.normalized();
@@ -175,6 +175,7 @@ private:
 
         // Generate Orthonormal Bases
         Vector3 xDir,yDir;
+        //std::cout << "dir: " <<  m_zDir << std::endl;
         makeCoordinateSystem(m_zDir,xDir,yDir);
 
         //Make coodinate transform from frame I to K!

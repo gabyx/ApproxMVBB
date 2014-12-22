@@ -93,7 +93,7 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Comp c) {
     Iterator comp = b;
     Iterator write = ++b;
     while  ( b != e ) {
-        if( s(*b) || !c(*comp, *b ) ) { // if we can skip element or if
+        if( !c(*comp, *b ) ) { // if we can skip element or if
             ++b;
             continue;
         }

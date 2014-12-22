@@ -1,9 +1,5 @@
 MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE SRC INC INCLUDE_DIRS ROOT_DIR )
 
-    INCLUDE(${ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
-    
-    INCLUDE_DIAMETER_SOURCE( DIAM_SRC DIAM_INC DIAM_INC_DIRS "${ROOT_DIR}/external/Diameter")
-    INCLUDE_GEOMETRYPREDICATES_SOURCE( GEOM_SRC GEOM_INC GEOM_INC_DIRS "${ROOT_DIR}/external/GeometryPredicates")
 
     SET(${SRC}
         ${ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp
@@ -54,10 +50,6 @@ ENDMACRO()
 
 MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE_EXTERN SRC INC INCLUDE_DIRS ROOT_DIR )
 
-    INCLUDE(${ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
-    
-    INCLUDE_DIAMETER_SOURCE( DIAM_SRC DIAM_INC DIAM_INC_DIRS "${ROOT_DIR}/external/Diameter")
-    INCLUDE_GEOMETRYPREDICATES_SOURCE( GEOM_SRC GEOM_INC GEOM_INC_DIRS "${ROOT_DIR}/external/GeometryPredicates")
 
     SET(${SRC}
         #${ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp

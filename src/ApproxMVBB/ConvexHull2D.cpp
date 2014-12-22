@@ -26,7 +26,7 @@ void ConvexHull2D::compute() {
 
     // Compute min point p0
     unsigned int position = minPointYX(m_p);
-//    std::cout << "min:" << position << std::endl;
+    // std::cout << "min:" << position << std::endl;
     Vector2 base = m_p.col(position);
 
     // Indices into m_p
@@ -53,46 +53,47 @@ void ConvexHull2D::compute() {
     CompareByAngle comp(m_p,base,position,deletedPoints);
     std::sort( indices.begin()+1, indices.end(), comp );
 
+    std::vector<unsigned int> indicesT(indices.size()-deletedPoints);
+    unsigned int k=0;
+    for(auto & p: indices){ if(!p.second){indicesT[k++]=p.first;} }
 
     // Remove almost equal elements
     // move to front if not almost equal to first point
     // skip all deleted points
-    auto ifFunc =  [&](const PointData & p1, const PointData & p2){
-                        return !almostEqualUlp(this->m_p.col(p1.first),this->m_p.col(p2.first));
+    auto ifFunc =  [&](const unsigned int & p1, const unsigned int & p2){
+                        return !almostEqualUlp(this->m_p.col(p1),this->m_p.col(p2));
                       };
-    auto skipFunc = [](const PointData & p1){ return p1.second; };
-    auto d2 = ContainerFunctions::moveConsecutiveToFrontIf(indices.begin(),indices.end(), ifFunc, skipFunc);
-        std::cout << "Deleted almostEqual: " << std::distance(d2,indices.end()) << std::endl;
-    indices.resize( std::distance(indices.begin(),d2) );
+//    auto skipFunc = [](const unsigned int & p1){ return false; };
+    auto d2 = ContainerFunctions::moveConsecutiveToFrontIf(indicesT.begin(),indicesT.end(), ifFunc);
+    indicesT.resize( std::distance(indicesT.begin(),d2) );
 
     // Convex hull consists of only 1 or 2 points!
-    if(indices.size() <= 2  ) {
-        for(auto & pa : indices){ m_indicesCH.emplace_back(pa.first);}  return;
+    if(indicesT.size() <= 2  ) {
+        for(auto & pa : indicesT){ m_indicesCH.emplace_back(pa);}  return;
     }
 
-    for(auto  a: indices){
-        std::cout << a.first<<",";
-    }
-    std::cout << "Graham Scan points: " << indices.size() << std::endl;
+    //for(auto  a: indicesT){
+    //    std::cout << a.first<<",";
+    //}
+    //std::cout << "Graham Scan points: " << indicesT.size() << std::endl;
+        unsigned int nPoints  = indicesT.size();
+        m_indicesCH.reserve(nPoints);
+        unsigned int lastIdx  = indicesT[0];
+        unsigned int firstIdx = indicesT[1];
+        m_indicesCH.push_back( lastIdx  );
+        m_indicesCH.push_back( firstIdx );
 
-    unsigned int nPoints  = indices.size();
-    m_indicesCH.reserve(nPoints);
-    unsigned int lastIdx  = indices[0].first;
-    unsigned int firstIdx = indices[1].first;
-    m_indicesCH.push_back( lastIdx  );
-    m_indicesCH.push_back( firstIdx );
-
-    unsigned int lPtIdx  = lastIdx;
-    unsigned int mPtIdx  = firstIdx;
-    unsigned int currIdx ;
-    unsigned int i = 2; // current point;
+        unsigned int lPtIdx  = lastIdx;
+        unsigned int mPtIdx  = firstIdx;
+        unsigned int currIdx ;
+        unsigned int i = 2; // current point;
 
     // skip the first non left turns in the sequence!
-    std::cout << "lastIdx point: " <<lastIdx << ","<< m_p.col(lastIdx).transpose() << std::endl;
-    std::cout << "firstIdx point: " <<firstIdx << ","<< m_p.col(firstIdx).transpose() << std::endl;
+    //    std::cout << "lastIdx point: " <<lastIdx << ","<< m_p.col(lastIdx).transpose() << std::endl;
+    //    std::cout << "firstIdx point: " <<firstIdx << ","<< m_p.col(firstIdx).transpose() << std::endl;
 
     while( i<nPoints){
-            currIdx = indices[i].first;
+            currIdx = indicesT[i];
             if(leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx))){
                 break;
             }
@@ -100,12 +101,12 @@ void ConvexHull2D::compute() {
     };
 
 
-    std::cout << "i:"<< i << std::endl;
-    std::cout << "currIdx point: " <<currIdx << std::endl;
-    std::cout << ","<< m_p.col(currIdx).transpose() << std::endl << "===="<<std::endl;
-    std::cout << "0,5,8: :" << orient2d(m_p.col(0), m_p.col(5), m_p.col(8)) << std::endl;
-    std::cout << "1,5,8: :" << orient2d(m_p.col(1), m_p.col(5), m_p.col(8)) << std::endl;
-    std::cout << "5,8,0: :" << orient2d(m_p.col(5), m_p.col(8), m_p.col(0)) << std::endl;
+    //    std::cout << "i:"<< i << std::endl;
+    //    std::cout << "currIdx point: " <<currIdx << std::endl;
+    //    std::cout << ","<< m_p.col(currIdx).transpose() << std::endl << "===="<<std::endl;
+    //    std::cout << "0,5,8: :" << orient2d(m_p.col(0), m_p.col(5), m_p.col(8)) << std::endl;
+    //    std::cout << "1,5,8: :" << orient2d(m_p.col(1), m_p.col(5), m_p.col(8)) << std::endl;
+    //    std::cout << "5,8,0: :" << orient2d(m_p.col(5), m_p.col(8), m_p.col(0)) << std::endl;
 
     if ( i < nPoints )
     {
@@ -116,15 +117,14 @@ void ConvexHull2D::compute() {
 
       for (++i ; i < nPoints; ++i )
       {
-          currIdx = indices[i].first;
+          currIdx = indicesT[i];
 
           if ( leftTurn(m_p.col(mPtIdx), m_p.col(currIdx), m_p.col(lastIdx)) )
           {
-
               while ( !leftTurn(m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx))   )
               {
-                  std::cout << "right turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;
-                  //ApproxMVBB_ASSERTMSG(m_indicesCH.size()>2,"");
+                  //std::cout << "right turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;
+                  ApproxMVBB_ASSERTMSG(m_indicesCH.size()>2,"");
                   m_indicesCH.pop_back();
 
                   if( m_indicesCH.size() <= 1) { // Degenerate Case if we come back to the beginning
@@ -139,16 +139,17 @@ void ConvexHull2D::compute() {
                   }
 
               }
-              std::cout << "left turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;
+              //std::cout << "left turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;
               m_indicesCH.push_back( currIdx );
               lPtIdx  = mPtIdx;          // last becomes middle
               mPtIdx  = currIdx;         // middle becomes currIdx
-          }else{
+          }/*else{
               std::cout << "skip point: " << currIdx << std::endl;
-          }
+          }*/
       }
 
     }
+
 }
 
 

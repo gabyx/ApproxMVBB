@@ -40,6 +40,7 @@ include_directories(${INCLUDE_DIRS})
 
 
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
+ADD_DEPENDENCIES(${PROJECT_NAME} generatePredicateInit)
 
 #file(GLOB testFiles RELATIVE "${PROJECT_SOURCE_DIR}/files/" "*.txt" "*.bin")
 #message(STATUS "Copying test files to 

@@ -157,6 +157,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
     for(unsigned int loop = 0; loop < times; ++loop ) {
 
         // Determine Direction (choose x or y axis)
+        //std::cout << oobb.m_q_KI.matrix() << std::endl;
         dir = oobb.getDirection(0);
 
         // check against all chache values
@@ -241,7 +242,6 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
             }
         }
     }
-
     return oobb;
 }
 
@@ -280,11 +280,9 @@ APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
     // or faster estimate diameter in projected plane and build coordinate system
     OOBB oobb = proj.computeMVBBApprox(dirZ,points,epsilon);
 
-
     if(optLoops) {
         oobb = optimizeMVBB(points,oobb,optLoops);
     }
-
     return oobb;
 }
 
