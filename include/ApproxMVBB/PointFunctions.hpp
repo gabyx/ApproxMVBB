@@ -86,6 +86,9 @@ namespace PointFunctions {
     /** vec1 = b-a and vec2 = c-a */
     template<typename VecT1, typename VecT2, typename VecT3>
     inline bool leftTurn(const VecT1  & a, const VecT2  & b, const VecT3  & c) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT1,2)
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT2,2)
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(VecT3,2)
         return orient2d(a,b,c) > 0;
     }
 
@@ -240,14 +243,14 @@ namespace PointFunctions {
             PointData & point2 = const_cast<PointData &>(point2In);
             unsigned int idx1 = point1.first;
             unsigned int idx2 = point2.first;
-
+//
 //            if(idx1<idx2){
-//                if(almostEqual(m_p.col(idx1),m_p.col(idx2),1e-5)){
+//                if(almostEqualUlp(m_p.col(idx1),m_p.col(idx2))){
 //                    if(!point1.second){point1.second = true; ++m_deletedPoints;}
 //                    return false;
 //                }
 //            }else{
-//                if(almostEqual(m_p.col(idx2),m_p.col(idx1),1e-5)){
+//                if(almostEqualUlp(m_p.col(idx2),m_p.col(idx1))){
 //                    if(!point2.second){point2.second = true; ++m_deletedPoints;}
 //                    return false;
 //                }
@@ -269,10 +272,8 @@ namespace PointFunctions {
             if(PointFunctions::equal(m_base, m_p.col(idx2))) return true;
             if(PointFunctions::equal(m_p.col(idx1), m_p.col(idx2))) return false;
 
+            // if idx2 lies between mbase and idx1 then it should go after idx1
             return collinearAreOrderedAlongLine(m_base,m_p.col(idx2),m_p.col(idx1));
-
-            // Compare by Length (smaller length first)
-            //return (m_p.col(idx1)-m_base).norm() < (m_p.col(idx2)-m_base).norm();
         }
     private:
         unsigned int & m_deletedPoints;

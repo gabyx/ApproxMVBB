@@ -30,13 +30,14 @@ public:
     ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
-    void convexHullTest(unsigned int N, const TMatrix & v) {
+    void convexHullTest(unsigned int N, const TMatrix & v, bool dumpPoints = true) {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) +".bin",v);
-        dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
-
+        if(dumpPoints){
+            dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) +".bin",v);
+            //dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
+        }
         std::cout << "\n\nStart ConvexHull Test "+ std::to_string(N) +"" << std::endl;
         START_TIMER(start)
         ConvexHull2D c(v);
@@ -59,7 +60,7 @@ public:
         }
 
         dumpPointsMatrixBinary("./ConvexHullTest"+ std::to_string(N) +"Out.bin",qHull);
-        dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +"Out.txt",qHull);
+        //dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +"Out.txt",qHull);
     }
 
     void test() {
@@ -217,10 +218,36 @@ public:
             ApproxMVBB::Matrix2Dyn t(2,16);
             t.setZero();
             getPointsFromFileBinary("./PointsBadProjection4.bin",t);
-
             convexHullTest(13,t);
 
         }
+
+                 {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,5);
+            t.setZero();
+            getPointsFromFileBinary("./PointsBadProjection5.bin",t);
+            convexHullTest(14,t);
+
+        }
+
+                 {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,100);
+            t.setZero();
+            getPointsFromFileBinary("./PointsBadProjection6.bin",t);
+            convexHullTest(15,t);
+
+        }
+
+//          {
+//            // generate points
+//            ApproxMVBB::Matrix2Dyn t(2,14000000);
+//            t.setRandom();
+//
+//            convexHullTest(14,t,false);
+//
+//        }
 
     }
 };
@@ -494,7 +521,7 @@ public:
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling Test "+ std::to_string(N) << std::endl;
 
-        oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
+        //oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
 
         if(!checkPointsInOOBB(v,oobb)){
             std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
@@ -509,7 +536,7 @@ public:
         dumpPointsMatrix("./DiameterTest" + std::to_string(N) +"Out2.txt",sampled);
 
 
-        ApproxMVBB_WARNINGMSG(oobb.volume() < 1e-6,"Volume small: " << oobb.volume() << std::endl)
+        ApproxMVBB_WARNINGMSG(oobb.volume() > 1e-6,"Volume small: " << oobb.volume() << std::endl)
 
 
     }
@@ -567,6 +594,13 @@ public:
             diameterTest(5,t,false,10,1);
         }
 
+         {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
+            t.setRandom();
+            diameterTest(7,t,false,0,0.01);
+        }
+
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
         {
@@ -593,7 +627,7 @@ public:
 
 
         //  Tests 8 - 59
-        //for(unsigned int k=0;k<3;k++){
+        for(unsigned int k=0;k<5;k++){
             for(unsigned int i=0;i<51;i++){
 
                 // generate points
@@ -604,9 +638,9 @@ public:
                     t.col(i) = v[i];
                 }
                 PointFunctions::applyRandomRotTrans(t);
-                diameterTest(/*k*51+*/i+8,t,true,4,0.1);
+                diameterTest(k*51 +i+8,t,true,4,0.1);
             }
-        //}
+        }
 
     }
 };
@@ -649,7 +683,7 @@ public:
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
         std::cout << "End MVBBTest Test "+ std::to_string(N) + "Out.txt" << std::endl;
 
-        ApproxMVBB_WARNINGMSG(oobb.volume() < 1e-6,"Volume small: " << oobb.volume() << std::endl)
+        ApproxMVBB_WARNINGMSG(oobb.volume() > 1e-6,"Volume small: " << oobb.volume() << std::endl)
 
 
         dumpOOBB("./MVBBTest"+ std::to_string(N) +"Out.txt", oobb);
@@ -753,7 +787,7 @@ public:
 #endif
 
          // Tests 9 - 59
-        //for(unsigned int k=0;k<3;k++){
+        for(unsigned int k=0;k<5;k++){
             for(unsigned int i=0;i<51;i++){
 
                 // generate points
@@ -766,7 +800,7 @@ public:
                 PointFunctions::applyRandomRotTrans(t);
                 mvbbTest(/*k*51+*/i + 4,t,true,0.1,400,5,3,6);
             }
-        //}
+        }
 
     }
 

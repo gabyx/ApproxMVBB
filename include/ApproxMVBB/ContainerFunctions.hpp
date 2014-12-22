@@ -75,13 +75,15 @@ Iterator moveElementsToBackIf(Iterator b, Iterator  e, Func f) {
 }
 
 
-/** Move all sequences in [b,e) to the front which fullfill Func(a,b) for two neighbour elements.
+/** Move all sequences S in [b,e) to the front where each element i
+* of the subsequence S =[start,end] fullfils c(start,i).
+* Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Comp c=AlmostEqual)
 * This function is especially efficient if we have little items which need to move to the front
 * This function respects the order of the elements
-* @return Iterator r  where the range [r,e] is the back part of the vector where Func returned true
+* @return Iterator r  where the range [r,e] is the back part of the vector where  Comp c returned true
 */
-template<typename Iterator, typename Func>
-Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f) {
+template<typename Iterator, typename Comp>
+Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Comp c) {
 
 
     if( std::distance(b,e)<2 ) {
@@ -91,7 +93,7 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f) {
     Iterator comp = b;
     Iterator write = ++b;
     while  ( b != e ) {
-        if( !f(*comp, *b ) ) {
+        if( !c(*comp, *b ) ) { // if we can skip element or if
             ++b;
             continue;
         }
@@ -106,6 +108,57 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f) {
 
     return write;
 }
+/** Move all sequences S in [b,e) to the front where each element i
+* of the subsequence S =[start,end] fullfils Func(start,i).
+* This function skips elements for which s(i) is true
+* Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Func=AlmostEqual)
+* This function is especially efficient if we have little items which need to move to the front
+* This function respects the order of the elements
+* @return Iterator r  where the range [r,e] is the back part of the vector where Func returned true
+*/
+template<typename Iterator, typename Func, typename Skip>
+Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f, Skip s) {
+
+
+    if( std::distance(b,e)<2 ) {
+        return e;
+    }
+    Iterator comp;
+    Iterator write = b;
+    // skip all at beginning
+	while(b!=e && s(*b)){
+		++b;
+	}
+	if(b!=e){
+		// write first element to front
+		if(write!=b){
+			*write = *b;
+		}
+		comp = write++; // shift write pointer (comp is previous)
+
+        // Start loop over all elements
+	    while  ( b != e ) {
+	        if(s(*b) || !f(*comp, *b ) ) {
+	            ++b;
+	            continue;
+	        }
+
+	        if(write!=b) {   // copy only if not at same position!
+	            *write = *b; // copy  value to front (test is not true)
+	        }
+	        //std::cout << *dest << std::endl;
+	        comp = write++;
+	        ++b;
+	    }
+		}
+
+    return write;
+}
+
+
+
 };
+
+
 };
 #endif // ContainerFunctions_hpp

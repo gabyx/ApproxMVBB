@@ -27,4 +27,4 @@ include_directories(${INCLUDE_DIRS})
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
 target_link_libraries(${PROJECT_NAME} "ApproxMVBB")
 
-
+ADD_DEPENDENCIES(${PROJECT_NAME} generatePredicateInit)

@@ -68,18 +68,18 @@ ENDIF()
 
 
 #Add some multithreaded build support =====================================================================================================
-MARK_AS_ADVANCED(MULTITHREADED_BUILD)
-SET(MULTITHREADED_BUILD 12 CACHE STRING "How many threads are used to build the project")
-if(MULTITHREADED_BUILD AND NOT MULTITHREADED_BUILD_SET)
-	SET(MULTITHREADED_BUILD_SET TRUE CACHE INTERNAL "internal check if we set the multithread stuff already" FORCE)
-	if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
-            SET(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${MULTITHREADED_BUILD}")
-            MESSAGE(STATUS "Added arguments to CMAKE_BUILD_TOOL: ${CMAKE_MAKE_PROGRAM}")
-    elseif(MSVC)
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-      MESSAGE(STATUS "Added parallel build arguments to CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-    endif()
-endif()
+#MARK_AS_ADVANCED(MULTITHREADED_BUILD)
+#SET(MULTITHREADED_BUILD 12 CACHE STRING "How many threads are used to build the project")
+#if(MULTITHREADED_BUILD AND NOT MULTITHREADED_BUILD_SET)
+	#SET(MULTITHREADED_BUILD_SET TRUE CACHE INTERNAL "internal check if we set the multithread stuff already" FORCE)
+	#if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
+            #SET(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${MULTITHREADED_BUILD}")
+            #MESSAGE(STATUS "Added arguments to CMAKE_BUILD_TOOL: ${CMAKE_MAKE_PROGRAM}")
+    #elseif(MSVC)
+      #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+      #MESSAGE(STATUS "Added parallel build arguments to CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+    #endif()
+#endif()
 # ========================================================================================================================================
 
 
@@ -87,6 +87,13 @@ endif()
 find_package(Eigen3 REQUIRED)
 set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
 # ===============================================================================================================================================================
+
+# Check for additional platform stuff =====================================================================================================
+include(CheckIncludeFiles)
+# Check header files
+check_include_files(fpu_control.h HAVE_FPU_CONTROL_H)
+# ===============================================================================================================================================================
+
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
@@ -109,19 +116,36 @@ endif()
 
 
 
+
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MYPROJECT_CXX_FLAGS}")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MYPROJECT_CXX_FLAGS}")
 MESSAGE(STATUS "Added ${MYPROJECT_CXX_FLAGS} to CMAKE_CXX and CMAKE_C_FLAGS: ${CMAKE_CXX_FLAGS} and ${CMAKE_C_FLAGS}")
 
 # Define all MVBB Source files
 INCLUDE(DefineApproxMVBBSources)
+SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 SET(ApproxMVBB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/ApproxMVBB")
-SET(ApproxMVBB_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/Diameter/include/ApproxMVBB/Diameter" 
+SET(ApproxMVBB_EXTERNAL_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/Diameter/include/ApproxMVBB/Diameter" 
                                     "${PROJECT_SOURCE_DIR}/external/GeometryPredicates/include/ApproxMVBB/GeometryPredicates")
                                     
 #Include all relevant sources
 INCLUDE_ALL_ApproxMVBB_SOURCE( COMMON_SOURCE COMMON_INCLUDE COMMON_INCLUDE_DIR "${PROJECT_SOURCE_DIR}")
-SET(COMMON_INCLUDE_DIR ${COMMON_INCLUDE_DIR} ${PROJECT_BINARY_DIR}/include/)
+
+# Add all external sources/headers
+ADD_SUBDIRECTORY(external/GeometryPredicates)
+ADD_SUBDIRECTORY(external/Diameter)
+
+SET(COMMON_SOURCE ${COMMON_SOURCE} ${DIAM_SRC}   ${GEOMPRED_SRC})
+SET(COMMON_INCLUDE ${COMMON_INCLUDE} ${DIAM_INC} ${GEOMPRED_INC})
+
+SET(COMMON_INCLUDE_DIR 
+    ${COMMON_INCLUDE_DIR} 
+    ${GEOMPRED_INC_DIRS} 
+    ${DIAM_INC_DIRS} 
+    ${ApproxMVBB_BINARY_DIR}/include/
+)
+
 
 # WRITE CONFIGURATION FILE
 INCLUDE(WriteConfigFile)
@@ -129,6 +153,12 @@ INCLUDE(WriteConfigFile)
 SET(ApproxMVBB_CONFIG_FILE ${PROJECT_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
 ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${PROJECT_SOURCE_DIR})
 #=========================
+
+
+
+
+
+
 
 if(ApproxMVBB_BUILD_LIBRARY)
     ADD_SUBDIRECTORY(lib)
