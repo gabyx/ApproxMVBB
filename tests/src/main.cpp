@@ -14,10 +14,10 @@
 
 int  main( int  argc, char  ** argv ){
 
-    //ApproxMVBB::convexHullTest();
+    ApproxMVBB::convexHullTest();
     //ApproxMVBB::minAreaBoxTest();
     //ApproxMVBB::diameterTest();
-    ApproxMVBB::mvbbTest();
+    //ApproxMVBB::mvbbTest();
 
     return 0;
 };
