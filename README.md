@@ -197,7 +197,7 @@ It seems to take a long time for 140 million points. The most ineffiecient task 
 Licensing
 --------------------------
 
-This source code is released under GPL License Version 3.0. (I might change the License to Boost/MIT depending on the owners of the depending source coder, yet to discuss)
+This source code is released under MPL 2.0. 
 
 ---------------------------
 Author and Acknowledgements
