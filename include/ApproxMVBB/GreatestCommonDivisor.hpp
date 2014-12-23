@@ -2,10 +2,9 @@
 //  ApproxMVBB 
 //  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
 //  
-//  Licensed under GNU General Public License 3.0 or later. 
-//  Some rights reserved. See COPYING, README.rst.
-//
-//  @license GPL-3.0 <http://www.gnu.org/licenses/gpl-3.0.html>
+//  This Source Code Form is subject to the terms of the Mozilla Public
+//  License, v. 2.0. If a copy of the MPL was not distributed with this
+//  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
 #ifndef ApproxMVBB_GreatestCommonDivisor_hpp
