@@ -180,17 +180,17 @@ The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotT
 Benchmark
 --------------------------
 Here are some short benchmarks from the tests folder:   
-| Point Cloud  | # Points | ~ CPU Time ``approximateMVBB`` [s]|
-| ------------ | --------:| --------:|
-| Standford Bunny | 35'945          |   0.91 | 
-| Standford Lucy  | 14'027'872      |   1.19 |   
-| Unit Cube       | 140'000'000     |    7.0 |   
 
-``approximateMVBB`` runs ``approximateMVBBDiam`` and performs a grid search afterwards (here 5x5x5=25 direction with each 5 optimization runs)
+| Point Cloud  | # Points | ~ CPU Time ``approximateMVBB``|
+| ------------ | --------:| --------:|
+| Standford Bunny | 35'945          |   0.91 s | 
+| Standford Lucy  | 14'027'872      |   1.19 s |   
+| Unit Cube       | 140'000'000     |    7.0 s |   
+
+``approximateMVBB`` runs ``approximateMVBBDiam`` and performs a grid search afterwards (here 5x5x5=25 directions with  5 optimization runs for each)
 It seems to take a long time for 140 million points. The most ineffiecient task is to get a good initial bounding box. This takes the most time as diameter computations are performed in 3d and then all points are projected in the found diameter direction in 3d and another diameter in the projected plane in 2d is computed. Afterwards the point cloud is sampled (not just random points, its done with a grid) and convex hull, minimal rectangle computations are performed over the grid directions. These algorithms could be made faster by exploiting the following things:
-    
-    - Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)
-    - Parllelism for the projection -> (CUDA, threads)
+* Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)
+* Parllelism for the projection -> (CUDA, threads)
     
     
 --------------------------
