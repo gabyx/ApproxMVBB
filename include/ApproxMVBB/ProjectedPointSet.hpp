@@ -21,7 +21,7 @@
 #include ApproxMVBB_OOBB_INCLUDE_FILE
 #include "ApproxMVBB/MinAreaRectangle.hpp"
 
-#include "TestFunctions.hpp"
+//#include "TestFunctions.hpp"
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT ProjectedPointSet {

@@ -32,7 +32,7 @@ SET(INCLUDE_FILES
 set(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
     ${COMMON_INCLUDE_DIR}
-    include/
+    ${PROJECT_SOURCE_DIR}/include/
     ${PROJECT_BINARY_DIR}/include/
 )
 
