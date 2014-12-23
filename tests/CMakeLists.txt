@@ -42,12 +42,6 @@ include_directories(${INCLUDE_DIRS})
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
 ADD_DEPENDENCIES(${PROJECT_NAME} generatePredicateInit)
 
-#file(GLOB testFiles RELATIVE "${PROJECT_SOURCE_DIR}/files/" "*.txt" "*.bin")
-#message(STATUS "Copying test files to 
-#file(COPY 
-        #${testFiles}
-        #DESTINATION ${PROJECT_BINARY_DIR}
-    #)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND 
@@ -55,6 +49,18 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
           -E
           copy_directory ${PROJECT_SOURCE_DIR}/files/ ${PROJECT_BINARY_DIR}
 )
+
+if(ApproxMVBB_TESTS_HIGH_PERFORMANCE)
+
+SET(highperfTestFiles ${ApproxMVBB_SOURCE_DIR}/additional/tests/files/Lucy.txt)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND 
+          ${CMAKE_COMMAND}
+          -E
+          copy ${highperfTestFiles} ${PROJECT_BINARY_DIR}
+)
+endif()
 
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
