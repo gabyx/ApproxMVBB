@@ -148,14 +148,14 @@ Building and installing the basic tests is done by:
 > To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
 > 140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
 > to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
-> and additionally initialize the submodule ``additional``:
+> and additionally initialize the submodule ``additional`` and unzip the files:
 
 >     $ cd ApproxMVBB
 >     $ git submodule init
 >     $ git submodule update
 >     $ cd addtional/tests/files; cat Lucy* | tar xz 
 
-> and copy the file ``Lucy.txt`` (~500mb) to the build folder of the tests ``BUILD/tests/``
+> and rebuild the tests. (this will copy the additional files next to the executable)
 
 
 Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the following tests:
@@ -179,8 +179,20 @@ The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotT
 --------------------------
 Benchmark
 --------------------------
-(to come!)
+Here are some short benchmarks from the tests folder:   
 
+| Point Cloud  | # Points | ~ CPU Time ``approximateMVBB``|
+| ------------ | --------:| --------:|
+| Standford Bunny | 35'945          |   0.91 s | 
+| Standford Lucy  | 14'027'872      |   1.19 s |   
+| Unit Cube       | 140'000'000     |    7.0 s |   
+
+``approximateMVBB`` runs ``approximateMVBBDiam`` and performs a grid search afterwards (here 5x5x5=25 directions with  5 optimization runs for each)
+It seems to take a long time for 140 million points. The most ineffiecient task is to get a good initial bounding box. This takes the most time as diameter computations are performed in 3d and then all points are projected in the found diameter direction in 3d and another diameter in the projected plane in 2d is computed. Afterwards the point cloud is sampled (not just random points, its done with a grid) and convex hull, minimal rectangle computations are performed over the grid directions. These algorithms could be made faster by exploiting the following things:
+* Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)
+* Parllelism for the projection -> (CUDA, threads)
+    
+    
 --------------------------
 Licensing
 --------------------------
@@ -191,8 +203,8 @@ This source code is released under GPL License Version 3.0. (I might change the 
 Author and Acknowledgements
 ---------------------------
 
-ApproxMVBB was written by Gabriel Nützi, with source code from Grégoire Malandain & Jean-Daniel Boissonnat 
-(for the approximation of the diameter of a point cloud)
-and Gill Barequet & Sariel Har-Peled (for the inspiration of the algorithms to compute a minimal volume bounding box)
-(reference to come!)
+ApproxMVBB was written by Gabriel Nützi, with source code from [Grégoire Malandain & Jean-Daniel Boissonnat](http://www-sop.inria.fr/members/Gregoire.Malandain/diameter/) 
+for the approximation of the diameter of a point cloud.
+I was inspired by the work and algorithms of [Gill Barequet & Sariel Har-Peled](http://sarielhp.org/papers/00/diameter/) for computing a minimal volume bounding box.
+Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of [Jonathan Richard Shewchuk](http://www.cs.cmu.edu/~quake/robust.html).
 
