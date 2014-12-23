@@ -125,6 +125,7 @@ MESSAGE(STATUS "Added ${MYPROJECT_CXX_FLAGS} to CMAKE_CXX and CMAKE_C_FLAGS: ${C
 # Define all MVBB Source files
 INCLUDE(DefineApproxMVBBSources)
 SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
+SET(ApproxMVBB_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 SET(ApproxMVBB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/ApproxMVBB")
 SET(ApproxMVBB_EXTERNAL_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/Diameter/include/ApproxMVBB/Diameter" 
                                     "${PROJECT_SOURCE_DIR}/external/GeometryPredicates/include/ApproxMVBB/GeometryPredicates")

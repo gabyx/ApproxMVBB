@@ -239,16 +239,16 @@ public:
             convexHullTest(15,t);
 
         }
+#ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
+          {
+            // generate points
+            ApproxMVBB::Matrix2Dyn t(2,14000000);
+            t.setRandom();
 
-//          {
-//            // generate points
-//            ApproxMVBB::Matrix2Dyn t(2,14000000);
-//            t.setRandom();
-//
-//            convexHullTest(14,t,false);
-//
-//        }
+            convexHullTest(14,t,false);
 
+        }
+#endif
     }
 };
 
@@ -764,12 +764,7 @@ public:
         }
 
 
-        {
-            // generate points
-            ApproxMVBB::Matrix3Dyn t(3,140000000);
-            t.setRandom();
-            mvbbTest(4,t,false,0.01,400,5,0,5);
-        }
+
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 
@@ -783,6 +778,13 @@ public:
 
             applyRandomRotTrans(t);
             mvbbTest(4,t,false,100,400,5,0,5);
+        }
+
+         {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
+            t.setRandom();
+            mvbbTest(4,t,false,0.01,400,5,0,5);
         }
 #endif
 
