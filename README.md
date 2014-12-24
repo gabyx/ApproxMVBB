@@ -207,4 +207,4 @@ ApproxMVBB was written by Gabriel Nützi, with source code from [Grégoire Malan
 for the approximation of the diameter of a point cloud.
 I was inspired by the work and algorithms of [Gill Barequet & Sariel Har-Peled](http://sarielhp.org/papers/00/diameter/) for computing a minimal volume bounding box.
 Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of [Jonathan Richard Shewchuk](http://www.cs.cmu.edu/~quake/robust.html).
-Special thank go to my significant other which always had an ear during breakfast for this little project :kissing_heart:
+Special thanks go to my significant other which always had an ear during breakfast for this little project :kissing_heart:
