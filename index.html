@@ -58,19 +58,16 @@ This library only depends on the matrix library <a href="http://eigen.tuxfamily.
 
 <p>Download the latest ApproxMVBB code:</p>
 
-<pre><code>$ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
-</code></pre>
+<div class="highlight highlight-bash"><pre>    $ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  </pre></div>
 
 <p>Make a build directory and navigate to it:</p>
 
-<pre><code>$ mkdir Build
-$ cd Build
-</code></pre>
+<div class="highlight highlight-bash"><pre>    $ mkdir Build
+    $ <span class="pl-s3">cd</span> Build</pre></div>
 
 <p>Invoke cmake in the Build directory:</p>
 
-<pre><code>$ cmake ../ApproxMVBB
-</code></pre>
+<div class="highlight highlight-bash"><pre>    $ cmake ../ApproxMVBB</pre></div>
 
 <p>The cmake script will find Eigen if you installed it in a system wide folder (e.g <code>/usr/local/</code>)
 In the <code>CMakeCache.txt</code> file you can specify what you want to build 
@@ -78,16 +75,32 @@ In the <code>CMakeCache.txt</code> file you can specify what you want to build
 
 <p>To install the library and the header files at a specific location <code>/usr/local/include/</code> run cmake with::</p>
 
-<pre><code>$ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
-</code></pre>
+<div class="highlight highlight-bash"><pre>    $ cmake -DCMAKE_INSTALL_PREFIX=<span class="pl-s1"><span class="pl-pds">"</span>/usr/local/include/<span class="pl-pds">"</span></span> ../ApproxMVBB</pre></div>
 
 <p>Finally, build and install the project:</p>
 
-<pre><code>$ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
-$ make install
-</code></pre>
+<div class="highlight highlight-bash"><pre>    $ make all   /<span class="pl-k">*</span> can be ApproxMVBB <span class="pl-k">for</span> <span class="pl-vo">the</span> library or ApproxMVBBExample or ApproxMVBBTests <span class="pl-k">*</span>/
+    $ make install</pre></div>
 
 <p>To build in parallel use the <code>-jN</code> flag in the <code>make</code> commmand, where <code>N</code>denotes the number of parallel threads to use.</p>
+
+<p><strong>Cmake Find Scripts</strong><br>
+The installation installs also scripts <code>approxmvbb-config.cmake</code> and <code>approxmvbb-config-version.cmake</code> into the <code>lib/cmake</code> folder. To include the library in another project the only thing you need to add in your cmake script is</p>
+
+<div class="highlight highlight-cmake"><pre>    <span class="pl-s3">find_package</span>(ApproxMVBB [version] [Required] )</pre></div>
+
+<p>which defines the following variables if ApproxMVBB has been found successfully:</p>
+
+<div class="highlight highlight-cmake"><pre>    ApproxMVBB_CXX_FLAGS    <span class="pl-c">#- extra flags for compilation</span>
+    ApproxMVBB_INCLUDE_DIRS <span class="pl-c">#- include directories</span>
+    ApproxMVBB_LIBRARY_REL  <span class="pl-c">#- Release library</span>
+    ApproxMVBB_LIBRARY_DGB  <span class="pl-c">#- Debug library</span>
+    ApproxMVBB_LIBRARIES    <span class="pl-c">#- libraries to link with</span></pre></div>
+
+<p>If you installed the library into non-system generic location you can set the cmake variable <code>$ApproxMVBB_DIR</code> before invoking the <code>find_library</code> command:</p>
+
+<div class="highlight highlight-cmake"><pre>    <span class="pl-s3">set</span>(ApproxMVBB_DIR <span class="pl-s1">"path/to/installation/lib/cmake"</span>)
+    <span class="pl-s3">find_package</span>(ApproxMVBB [version] [Required] )</pre></div>
 
 <hr>
 
@@ -189,7 +202,7 @@ $ make ApproxMVBBTests
 <p>To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
 140 million points and some polygonal statue <code>lucy.txt</code> succesfully you need 
 to set the cmake variable <code>ApproxMVBB_TESTS_HIGH_PERFORMANCE</code> to <code>ON</code>
-and additionally initialize the submodule <code>additional</code>:</p>
+and additionally initialize the submodule <code>additional</code> and unzip the files:</p>
 
 <pre><code>$ cd ApproxMVBB
 $ git submodule init
@@ -197,7 +210,7 @@ $ git submodule update
 $ cd addtional/tests/files; cat Lucy* | tar xz 
 </code></pre>
 
-<p>and copy the file <code>Lucy.txt</code> (~500mb) to the build folder of the tests <code>BUILD/tests/</code></p>
+<p>and rebuild the tests. (this will copy the additional files next to the executable)</p>
 </blockquote>
 
 <p>Executing the test application <code>cd tests; ./ApproxMVBBTests</code> will then run the following tests:</p>
@@ -226,24 +239,60 @@ $ ipython noteboook
 <h2>
 <a id="benchmark" class="anchor" href="#benchmark" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benchmark</h2>
 
-<p>(to come!)</p>
+<p>Here are some short benchmarks from the tests folder:   </p>
+
+<table>
+<thead>
+<tr>
+<th>Point Cloud</th>
+<th align="right"># Points</th>
+<th align="right">~ CPU Time <code>approximateMVBB</code>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standford Bunny</td>
+<td align="right">35'945</td>
+<td align="right">0.91 s</td>
+</tr>
+<tr>
+<td>Standford Lucy</td>
+<td align="right">14'027'872</td>
+<td align="right">1.19 s</td>
+</tr>
+<tr>
+<td>Unit Cube</td>
+<td align="right">140'000'000</td>
+<td align="right">7.0 s</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>approximateMVBB</code> runs <code>approximateMVBBDiam</code> and performs a grid search afterwards (here 5x5x5=25 directions with  5 optimization runs for each)
+It seems to take a long time for 140 million points. The most ineffiecient task is to get a good initial bounding box. This takes the most time as diameter computations are performed in 3d and then all points are projected in the found diameter direction in 3d and another diameter in the projected plane in 2d is computed. Afterwards the point cloud is sampled (not just random points, its done with a grid) and convex hull, minimal rectangle computations are performed over the grid directions. These algorithms could be made faster by exploiting the following things:</p>
+
+<ul>
+<li>Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)</li>
+<li>Parllelism for the projection -&gt; (CUDA, threads)</li>
+</ul>
 
 <hr>
 
 <h2>
 <a id="licensing" class="anchor" href="#licensing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Licensing</h2>
 
-<p>This source code is released under GPL License Version 3.0. (I might change the License to Boost/MIT depending on the owners of the depending source coder, yet to discuss)</p>
+<p>This source code is released under MPL 2.0. </p>
 
 <hr>
 
 <h2>
 <a id="author-and-acknowledgements" class="anchor" href="#author-and-acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author and Acknowledgements</h2>
 
-<p>ApproxMVBB was written by Gabriel Nützi, with source code from Grégoire Malandain &amp; Jean-Daniel Boissonnat 
-(for the approximation of the diameter of a point cloud)
-and Gill Barequet &amp; Sariel Har-Peled (for the inspiration of the algorithms to compute a minimal volume bounding box)
-(reference to come!)</p>
+<p>ApproxMVBB was written by Gabriel Nützi, with source code from <a href="http://www-sop.inria.fr/members/Gregoire.Malandain/diameter/">Grégoire Malandain &amp; Jean-Daniel Boissonnat</a> 
+for the approximation of the diameter of a point cloud.
+I was inspired by the work and algorithms of <a href="http://sarielhp.org/papers/00/diameter/">Gill Barequet &amp; Sariel Har-Peled</a> for computing a minimal volume bounding box.
+Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of <a href="http://www.cs.cmu.edu/%7Equake/robust.html">Jonathan Richard Shewchuk</a>.</p>
       </section>
     </div>
 
