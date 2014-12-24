@@ -10,12 +10,19 @@
 #ifndef GeometryPredicates_Rounding_hpp
 #define GeometryPredicates_Rounding_hpp
 
+#include <type_traits>
+
 #include "ApproxMVBB/GeometryPredicates/Config.hpp"
 #include "ApproxMVBB/GeometryPredicates/xpfpa.h"
 
+
+#define STR1(x)   #x
+#define STRINGIFY(x)  STR1((x))
+
+
 /** Define static state variables for the floating point unit */
 #define FPU_DECLARE  \
-    static XPFPA_DECLARE()
+    XPFPA_DECLARE()
 
 /** Switch to double precision (no extendet!) */
 #define FPU_ROUND_DOUBLE \
@@ -25,5 +32,9 @@
 #define FPU_RESTORE  \
     XPFPA_RESTORE()
 
+
+static_assert( sizeof(STRINGIFY(FPU_DECLARE)) > 1 ,"You are compiling GeometricPredicates without Floating Point Control!! "
+                        "The predicates are not so robust anymore if you uncomment this line!"
+                        "Check the cmake output GeoemtricPredicates!" );
 
 #endif

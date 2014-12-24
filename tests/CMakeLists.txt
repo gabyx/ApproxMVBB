@@ -52,7 +52,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 if(ApproxMVBB_TESTS_HIGH_PERFORMANCE)
 
-SET(highperfTestFiles ${ApproxMVBB_SOURCE_DIR}/additional/tests/files/Lucy.txt)
+SET(highperfTestFiles ${ApproxMVBB_ROOT_DIR}/additional/tests/files/Lucy.txt)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND 

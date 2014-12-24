@@ -13,10 +13,11 @@
 /* FPU control. We MUST have only double precision (not extended precision) */
 #include "ApproxMVBB/GeometryPredicates/Rounding.hpp"
 
-FPU_DECLARE
 
 int main (int argc, char * argv[])
 {
+  FPU_DECLARE
+
   double half = 0.5;
   double check = 1.0, lastcheck;
   int every_other = 1;
@@ -71,7 +72,7 @@ int main (int argc, char * argv[])
   fputs("/* This file was generated automatically by PredicatsInit.c */\n"
 "// ========================================================================================\n"
 "//  ApproxMVBB\n"
-"//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>\n"
+"//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (d0t) ch>\n"
 "//\n"
 "//  This Source Code Form is subject to the terms of the Mozilla Public\n"
 "//  License, v. 2.0. If a copy of the MPL was not distributed with this\n"
