@@ -693,32 +693,32 @@ public:
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
-        {
-            // generate points
-            auto v = generatePoints3D(100);
-
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            mvbbTest(1,t);
-        }
-
-        {
-            // generate points
-
-            auto v = generatePoints3D(10000);
-
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            mvbbTest(2,t);
-
-
-        }
+//        {
+//            // generate points
+//            auto v = generatePoints3D(100);
+//
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            mvbbTest(1,t);
+//        }
+//
+//        {
+//            // generate points
+//
+//            auto v = generatePoints3D(10000);
+//
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            mvbbTest(2,t);
+//
+//
+//        }
 //
 //        {
 //            Matrix3Dyn vec(3,140000000);
@@ -750,17 +750,17 @@ public:
 //
 //        }
 
-        {
-            // generate points
-            auto v = getPointsFromFile3D("./Bunny.txt");
-
-            ApproxMVBB::Matrix3Dyn t(3,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            applyRandomRotTrans(t);
-            mvbbTest(3,t,true,0.1);
-        }
+//        {
+//            // generate points
+//            auto v = getPointsFromFile3D("./Bunny.txt");
+//
+//            ApproxMVBB::Matrix3Dyn t(3,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            applyRandomRotTrans(t);
+//            mvbbTest(3,t,true,0.1);
+//        }
 
 
 
