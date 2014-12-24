@@ -16,13 +16,13 @@ configure_file (
 
 
 SET(SOURCE_FILES
-    ${COMMON_SOURCE}
+    ${ApproxMVBB_SRC}
     ${PROJECT_SOURCE_DIR}/src/TestFunctions.cpp
     ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 SET(INCLUDE_FILES
-    ${COMMON_INCLUDE}
+    ${ApproxMVBB_INC}
     ${PROJECT_SOURCE_DIR}/include/TestFunctions.hpp
     ${PROJECT_SOURCE_DIR}/include/ComputeApproxMVBBTests.hpp
 )
@@ -31,7 +31,7 @@ SET(INCLUDE_FILES
 #include directories
 set(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
-    ${COMMON_INCLUDE_DIR}
+    ${ApproxMVBB_INC_DIRS}
     ${PROJECT_SOURCE_DIR}/include/
     ${PROJECT_BINARY_DIR}/include/
 )

@@ -1,6 +1,10 @@
 MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE 
-      SRC INC INCLUDE_DIRS  # Names for the variables
-      ApproxMVBB_ROOT_DIR ApproxMVBB_BINARY_DIR)  # Input strings
+      SRC 
+      INC 
+      INCLUDE_DIRS 
+      DEPENDING_TARGETS # Input variable names
+      ApproxMVBB_ROOT_DIR 
+      ApproxMVBB_BINARY_DIR)  
 
 
     # Add all external sources/headers
@@ -8,7 +12,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
     INCLUDE_DIAMETER_SOURCE(           ApproxMVBB_DIAM_SRC ApproxMVBB_DIAM_INC ApproxMVBB_DIAM_INC_DIRS 
         ${ApproxMVBB_ROOT_DIR}/external/Diameter ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
     
-    INCLUDE_GEOMETRYPREDICATES_SOURCE( ApproxMVBB_GEOMPRED_SRC ApproxMVBB_GEOMPRED_INC ApproxMVBB_GEOMPRED_INC_DIRS 
+    INCLUDE_GEOMETRYPREDICATES_SOURCE( ApproxMVBB_GEOMPRED_SRC ApproxMVBB_GEOMPRED_INC ApproxMVBB_GEOMPRED_INC_DIRS ApproxMVBB_GEOMPRED_TARGETS
         ${ApproxMVBB_ROOT_DIR}/external/GeometryPredicates ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
 
 
@@ -57,6 +61,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_BINARY_DIR}/include
     )
     
+    SET(${DEPENDING_TARGETS} ${ApproxMVBB_GEOMPRED_TARGETS})
 
     # WRITE CONFIGURATION FILE
     INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/WriteConfigFile.cmake)

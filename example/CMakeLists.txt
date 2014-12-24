@@ -10,7 +10,7 @@ SET(SOURCE_FILES
 )
 
 SET(INCLUDE_FILES
-    ${COMMON_INCLUDE}
+    ${ApproxMVBB_INC}
 )
 
 
@@ -18,7 +18,7 @@ SET(INCLUDE_FILES
 #include directories
 set(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
-    ${COMMON_INCLUDE_DIR}
+    ${ApproxMVBB_INC_DIRS}
 )
 
 include_directories(${INCLUDE_DIRS})

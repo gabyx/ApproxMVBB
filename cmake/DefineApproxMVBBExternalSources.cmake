@@ -1,7 +1,8 @@
-MACRO(INCLUDE_DIAMETER_SOURCE SRC INC INCLUDE_DIRS 
-                              ROOT_DIR 
-                              ApproxMVBB_ROOT_DIR 
-                              ApproxMVBB_BINARY_DIR)
+MACRO(INCLUDE_DIAMETER_SOURCE SRC INC INCLUDE_DIRS
+                              ROOT_DIR #input
+                              ApproxMVBB_ROOT_DIR #input
+                              ApproxMVBB_BINARY_DIR #input
+                              )
     message(STATUS "Adding  ApproxMVBB - Diameter ======================")
     SET(${SRC}
         ${ROOT_DIR}/src/EstimateDiameter.cpp
@@ -22,10 +23,14 @@ MACRO(INCLUDE_DIAMETER_SOURCE SRC INC INCLUDE_DIRS
 
 ENDMACRO()
 
-MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC INC INCLUDE_DIRS 
-                                        ROOT_DIR
-                                        ApproxMVBB_ROOT_DIR 
-                                        ApproxMVBB_BINARY_DIR)
+MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC 
+                                        INC 
+                                        INCLUDE_DIRS 
+                                        DEPENDING_TARGETS
+                                        ROOT_DIR #input 
+                                        ApproxMVBB_ROOT_DIR #input
+                                        ApproxMVBB_BINARY_DIR #input
+                                        ) 
 
     message(STATUS "Adding  ApproxMVBB - GeometryPredicates ============")
     
@@ -65,11 +70,14 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC INC INCLUDE_DIRS
     )
     
     # add the executable that will do the generation
-
+    
+    SET(TARGET_NAME  ${PROJECT_NAME}_PredInitGenInternal)
+    SET(TARGET_NAME2 ${PROJECT_NAME}_PredInitGen)
+    
     INCLUDE_DIRECTORIES(${ROOT_DIR}/include/ ${ApproxMVBB_BINARY_DIR}/include/)
-    ADD_EXECUTABLE(PredicatesInitGenerator ${ROOT_DIR}/src/PredicatesInit.cpp)
+    ADD_EXECUTABLE(${TARGET_NAME} ${ROOT_DIR}/src/PredicatesInit.cpp)
 
-    GET_TARGET_PROPERTY(MY_GENERATOR_EXE PredicatesInitGenerator LOCATION)
+    GET_TARGET_PROPERTY(MY_GENERATOR_EXE ${TARGET_NAME} LOCATION)
 
     # add the custom command that will generate the files
     message(STATUS "Generate : " ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp)
@@ -77,13 +85,17 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC INC INCLUDE_DIRS
         OUTPUT  ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp
         COMMAND ${MY_GENERATOR_EXE} 
         WORKING_DIRECTORY ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/
-        DEPENDS PredicatesInitGenerator
+        DEPENDS ${TARGET_NAME}
     )
-    message(STATUS "Make project depend on target generatePredicateInit!")
     
-    ADD_CUSTOM_TARGET(generatePredicateInit DEPENDS ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp)
+    
+    # Create custom 
+    ADD_CUSTOM_TARGET(${TARGET_NAME2} DEPENDS ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp)
     SET_SOURCE_FILES_PROPERTIES(${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp PROPERTIES GENERATED True)
     
+    SET(${DEPENDING_TARGETS} ${TARGET_NAME2})
+    
+    message(STATUS "Make project depend on target ${TARGET_NAME2}!")
     message(STATUS "====================================================")
 
 ENDMACRO()

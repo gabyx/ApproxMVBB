@@ -6,11 +6,11 @@ PROJECT("ApproxMVBBLib")
 
 
 SET(SOURCE_FILES
-    ${COMMON_SOURCE}
+    ${ApproxMVBB_SRC}
 )
 
 SET(INCLUDE_FILES
-    ${COMMON_INCLUDE}
+    ${ApproxMVBB_INC}
 )
 
 # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
@@ -24,7 +24,7 @@ ENDIF()
 #include directories
 set(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
-    ${COMMON_INCLUDE_DIR}
+    ${ApproxMVBB_INC_DIRS}
 )
 
 include_directories(${INCLUDE_DIRS})
@@ -34,7 +34,7 @@ ADD_LIBRARY(ApproxMVBB SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
 set_target_properties(ApproxMVBB PROPERTIES 
     VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
 )
-ADD_DEPENDENCIES(ApproxMVBB generatePredicateInit)
+ADD_DEPENDENCIES(ApproxMVBB ${ApproxMVBB_DEPENDING_TARGETS})
 
 
 set(ApproxMVBB_LIBRARY_NAME_REL "${PROJECT_NAME}")

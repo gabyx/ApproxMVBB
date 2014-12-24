@@ -131,8 +131,11 @@ SET(ApproxMVBB_EXTERNAL_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/Diameter/in
                                     "${PROJECT_SOURCE_DIR}/external/GeometryPredicates/include/ApproxMVBB/GeometryPredicates")
                                     
 #Include all relevant sources
-INCLUDE_ALL_ApproxMVBB_SOURCE( COMMON_SOURCE COMMON_INCLUDE COMMON_INCLUDE_DIR 
-                                ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR})
+INCLUDE_ALL_ApproxMVBB_SOURCE(  ApproxMVBB_SRC 
+                                ApproxMVBB_INC 
+                                ApproxMVBB_INC_DIRS 
+                                ApproxMVBB_DEPENDING_TARGETS
+                                ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
 
 
