@@ -88,17 +88,28 @@ we compute an approximation of the minimum volume bounding volume by the followi
           ApproxMVBB::Matrix3Dyn points(3,10000);
           points.setRandom();
           ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,500,5,0,5);
-          
+          oobb.expandZeroExtent(0.1);
           return 0;
           
     }
 ```
-The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint``
-in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
+The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint`` expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K as a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
 
 ```C++
-    ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
+    ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
+```
+**Degenerate OOBB:**
+The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).
+
+**Points Outside of the final OOBB:**
+Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:
+
+```C++
+    ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();
+    auto size = points.cols();
+    for( unsigned int i=0;  i<size; ++i ) {
+        oobb.unite(A_KI*points.col(i));
+    }
 ```
 
 ---------------------------
@@ -207,4 +218,4 @@ ApproxMVBB was written by Gabriel Nützi, with source code from [Grégoire Malan
 for the approximation of the diameter of a point cloud.
 I was inspired by the work and algorithms of [Gill Barequet & Sariel Har-Peled](http://sarielhp.org/papers/00/diameter/) for computing a minimal volume bounding box.
 Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of [Jonathan Richard Shewchuk](http://www.cs.cmu.edu/~quake/robust.html).
-
+Special thanks go to my significant other which always had an ear during breakfast for this little project :kissing_heart:
