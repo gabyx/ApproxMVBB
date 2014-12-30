@@ -127,16 +127,26 @@ we compute an approximation of the minimum volume bounding volume by the followi
           ApproxMVBB::Matrix3Dyn <span class="pl-vo">points</span>(<span class="pl-c1">3</span>,<span class="pl-c1">10000</span>);
           points.<span class="pl-s3">setRandom</span>();
           ApproxMVBB::OOBB oobb = <span class="pl-s3">ApproxMVBB::approximateMVBB</span>(points,<span class="pl-c1">0.001</span>,<span class="pl-c1">500</span>,<span class="pl-c1">5</span>,<span class="pl-c1">0</span>,<span class="pl-c1">5</span>);
-
+          oobb.<span class="pl-s3">expandZeroExtent</span>(<span class="pl-c1">0.1</span>);
           <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 
     }</pre></div>
 
-<p>The returned object oriented bounding box <code>oobb</code> contains the lower <code>oobb.m_minPoint</code> and upper point <code>oobb.m_maxPoint</code>
-in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>). This rotation matrix <code>R_KI</code> corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:</p>
+<p>The returned object oriented bounding box <code>oobb</code> contains the lower <code>oobb.m_minPoint</code> and upper point <code>oobb.m_maxPoint</code> expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K as a quaternion  <code>oobb.m_q_KI</code> . The rotation matrix <code>R_KI</code> from frame I to frame K  can be obtained by <code>oobb.m_q_KI.matrix()</code> (see <code>Eigen::Quaternion</code>). This rotation matrix <code>R_KI</code> corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:</p>
 
-<div class="highlight highlight-C++"><pre>    ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  <span class="pl-c">// A_IK * oobb.m_minPoint </span></pre></div>
+<div class="highlight highlight-C++"><pre>    ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  <span class="pl-c">// A_IK * oobb.m_minPoint </span></pre></div>
+
+<p><strong>Degenerate OOBB:</strong>
+The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function <code>expandZeroExtent</code> is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).</p>
+
+<p><strong>Points Outside of the final OOBB:</strong>
+Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:</p>
+
+<div class="highlight highlight-C++"><pre>    ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();
+    <span class="pl-st">auto</span> size = points.cols();
+    <span class="pl-k">for</span>( <span class="pl-st">unsigned</span> <span class="pl-st">int</span> i=<span class="pl-c1">0</span>;  i&lt;size; ++i ) {
+        oobb.<span class="pl-s3">unite</span>(A_KI*points.<span class="pl-s3">col</span>(i));
+    }</pre></div>
 
 <hr>
 
