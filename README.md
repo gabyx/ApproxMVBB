@@ -105,7 +105,7 @@ The returned bounding box might have a degenerated extent in some axis direction
 Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:
 
 ```C++
-    ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose(); // faster to store the transformation matrix first
+    ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();
     auto size = points.cols();
     for( unsigned int i=0;  i<size; ++i ) {
         oobb.unite(A_KI*points.col(i));
