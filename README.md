@@ -93,13 +93,13 @@ we compute an approximation of the minimum volume bounding volume by the followi
           
     }
 ```
-The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint``. The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting otherwise a default value is used).
-in expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K 
-in form of a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
+The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint`` expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K as a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
 
 ```C++
     ApproxMVBB::Vector3 p = oobb.m_q_IK * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
 ```
+**Degenerate OOBB:**
+The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).
 
 
 ---------------------------
