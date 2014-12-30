@@ -43,6 +43,18 @@ public:
 
     void reset();
 
+    /** Add point expressed in OOBB's K frame to the OOBB */
+    template<typename Derived>
+    OOBB & unite(const MatrixBase<Derived> & p){
+        m_maxPoint(0) = std::max(m_maxPoint(0),p(0));
+        m_maxPoint(1) = std::max(m_maxPoint(1),p(1));
+        m_maxPoint(2) = std::max(m_maxPoint(2),p(2));
+        m_minPoint(0) = std::min( m_minPoint(0),p(0));
+        m_minPoint(1) = std::min( m_minPoint(1),p(1));
+        m_minPoint(2) = std::min( m_minPoint(2),p(2));
+        return *this;
+    }
+
     inline Array3 extent() const{
         return (m_maxPoint - m_minPoint).array();
     };
@@ -58,6 +70,8 @@ public:
     inline bool isEmpty() const {
         return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1) || m_maxPoint(2) <= m_minPoint(2);
     }
+
+    void expandZeroExtent(PREC percentageOfLongestAxis = 0.1, PREC eps = 1e-10, PREC defaultExtent = 0.1);
 
     inline void expand(PREC d) {
         ApproxMVBB_ASSERTMSG(d>=0,"d>=0")

@@ -120,7 +120,6 @@ void ConvexHull2D::compute() {
 
           if ( leftTurn(m_p.col(mPtIdx), m_p.col(currIdx), m_p.col(lastIdx)) )
           {
-
               while ( !leftTurn(m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx))   )
               {
                   //std::cout << "right turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;

@@ -43,10 +43,15 @@ void MinAreaRectangle::computeRectangle() {
         return;
     } else if( nPoints == 1) {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
+        m_minBox.m_u.setZero();
+        m_minBox.m_v.setZero();
+        adjustRectangle();
         return;
     } else if(nPoints == 2) {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
         m_minBox.m_u = m_p.col(m_hullIdx[1]) - m_p.col(m_hullIdx[0]);
+        m_minBox.m_v.setZero();
+        adjustRectangle();
         return;
     }
 
@@ -104,6 +109,9 @@ void MinAreaRectangle::computeRectangle() {
             m_minBox = box;
         }
     }
+
+
+    adjustRectangle();
 
 }
 

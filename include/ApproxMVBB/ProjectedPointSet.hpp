@@ -50,15 +50,17 @@ public:
         if( ( pp.second.array() >=  pp.first.array()).all() ) {
             dirX *= -1;
         }
-        // If direction zero, use (1,0)
-        if( (dirX.array() == 0.0).all() ) {
-            dirX.setZero();
-            dirX(0)= 1;
-        }
         //std::cout <<"estimated 2d diameter: " << dirX.transpose() << " eps: " << epsilon << std::endl;
         // Built Coordinate Trafo from frame K to frame M
         Matrix22 A2_MK;
         dirX.normalize();
+
+         // If normalized direction INf/NaN, use (1,0)
+        if( !dirX.allFinite() ) {
+            dirX.setZero();
+            dirX(0)= 1;
+        }
+
         Vector2 dirY(-dirX(1),dirX(0));  // Positive rotation of 90 degrees
         A2_MK.col(0) = dirX;
         A2_MK.col(1) = dirY;
@@ -72,8 +74,8 @@ public:
             aabb.unite(p);
         }
 
-        // std::cout << "aabb_min: "<<  aabb.m_minPoint.transpose() << std::endl;
-        // std::cout << "aabb_max: "<< aabb.m_maxPoint.transpose() << std::endl;
+//         std::cout << "aabb_min: "<<  aabb.m_minPoint.transpose() << std::endl;
+//         std::cout << "aabb_max: "<< aabb.m_maxPoint.transpose() << std::endl;
 
         Vector3 M_min;
         M_min.head<2>() = aabb.m_minPoint;
@@ -89,8 +91,8 @@ public:
         A_KM.setIdentity();
         A_KM.block<2,2>(0,0) =  A2_MK.transpose();
 
-        // std::cout << "M_min: "<< M_min.transpose() << std::endl;
-        // std::cout << "M_max: "<< M_max.transpose() << std::endl;
+//         std::cout << "M_min: "<< M_min.transpose() << std::endl;
+//         std::cout << "M_max: "<< M_max.transpose() << std::endl;
 
         return OOBB(M_min,M_max, m_A_KI.transpose()*A_KM );
     }
@@ -136,8 +138,8 @@ public:
 //        std::cout << "u:" << rect.m_u.norm() << std::endl;
 //        std::cout << "v:" << rect.m_v.norm() << std::endl;
 
-        A2_KM.col(0) = rect.m_u.normalized();
-        A2_KM.col(1) = rect.m_v.normalized();
+        A2_KM.col(0) = rect.m_u;
+        A2_KM.col(1) = rect.m_v;
 
         Vector2 M_p = A2_KM.transpose()*rect.m_p;
 
@@ -145,7 +147,7 @@ public:
         M_min.head<2>() = M_p;
         M_min(2) = m_minZValue;
 
-        Vector3 M_max(rect.m_u.norm(), rect.m_v.norm(),0.0);
+        Vector3 M_max(rect.m_uL, rect.m_vL, 0.0);
         M_max.head<2>() += M_p;
         M_max(2) = m_maxZValue;
 
