@@ -89,6 +89,27 @@ AABB&  AABB::transform(const AffineTrafo & M) {
     return *this;
 };
 
+void AABB::expandZeroExtent(PREC percentageOfLongestAxis, PREC eps, PREC defaultExtent){
+    //Expand all axes with almost zero extend
+    Array3 e = extent();
+    Array3::Index idx;
+    PREC max = e.maxCoeff(&idx);
+
+    // if longest axis is also smaller then eps -> make default extent!
+    if(max < eps){
+        expand(defaultExtent);
+        return;
+    }
+    // otherwise
+    PREC l = 0.5*max*percentageOfLongestAxis;
+    for(int i=0;i<2;++i){
+        if(i!=idx && e(i) < eps){
+            m_minPoint(i) -= l;
+            m_maxPoint(i) += l;
+        }
+    }
+}
+
 
 void AABB2d::reset() {
     // Violating the constraint min<max for making a completey empty box!
@@ -151,4 +172,7 @@ AABB2d & AABB2d::transform(const AffineTrafo2d & M) {
     *this = ret;
     return *this;
 };
+
+
+
 };

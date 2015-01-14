@@ -94,6 +94,8 @@ public:
         m_maxPoint += d;
     };
 
+    void expandZeroExtent(PREC percentageOfLongestAxis = 0.1, PREC eps = 1e-10, PREC defaultExtent = 0.1);
+
     inline PREC volume() const {
         Vector3 d = m_maxPoint- m_minPoint;
         return d(0) * d(1) * d(2);

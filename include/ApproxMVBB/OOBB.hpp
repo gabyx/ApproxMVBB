@@ -30,6 +30,21 @@ public:
          const Vector3 & u,
          const Matrix33 & A_IK);
 
+    /** Initializes OOBB with AABB values, rotation is set to identity!*/
+    OOBB(AABB & aabb){
+        m_minPoint = aabb.m_minPoint;
+        m_maxPoint = aabb.m_maxPoint;
+        m_q_KI.setIdentity();
+    }
+
+    /** Initializes OOBB with AABB values, rotation is set to identity!*/
+    OOBB & operator=(AABB & aabb){
+        m_minPoint = aabb.m_minPoint;
+        m_maxPoint = aabb.m_maxPoint;
+        m_q_KI.setIdentity();
+        return *this;
+    }
+
     inline void setZAxisLongest(){
         typename Vector3::Index i;
         maxExtent(i);
