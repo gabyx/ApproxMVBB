@@ -127,16 +127,13 @@ void ConvexHull2D::compute() {
                   m_indicesCH.pop_back();
 
                   if( m_indicesCH.size() <= 1) { // Degenerate Case if we come back to the beginning
-                    m_indicesCH.push_back(currIdx);
-                    mPtIdx  = currIdx;
+                    mPtIdx  = lPtIdx; // such that lPtIdx stays the same , mPtIdx becomes currIdx and we go to next point!
                     break;
                   }else{
                       mPtIdx = lPtIdx;                      // middle point becomes last
                       revIter = m_indicesCH.rbegin();
                       lPtIdx = *(++revIter);                // previous of .back();
-
                   }
-
               }
               //std::cout << "left turn: " <<lPtIdx << ","<< mPtIdx << "," << currIdx << std::endl;
               m_indicesCH.push_back( currIdx );

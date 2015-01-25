@@ -52,10 +52,16 @@ public:
             m_u.setZero();
             m_v.setZero();
             m_area = 0.0;
+            m_uL = 1.0;
+            m_vL = 1.0;
         }
-        Vector2 m_p;   ///< first corner x = m_p0 + m_u * u + m_v * v  , u,v in [0,1]
-        Vector2 m_u;   ///< vector of first side (x-Axis)
-        Vector2 m_v;   ///< vector of second side (y-Axis)
+        Vector2 m_p;   ///< first corner x = m_p0 + m_u*m_uL * u + m_v*m_vL * v  , u,v in [0,1]
+        Vector2 m_u;   ///< vector of first side (x-Axis)  (normalized)
+        Vector2 m_v;   ///< vector of second side (y-Axis) (normalized)
+
+        PREC m_uL = 1.0;     ///< Scalar factor direction u
+        PREC m_vL = 1.0;     ///< Scalar factor direction v
+
         PREC m_area = 0.0;
     };
 
@@ -63,6 +69,7 @@ public:
     getMinRectangle() {
         return m_minBox;
     }
+
 
     void compute();
 
@@ -77,6 +84,82 @@ private:
         unsigned int m_ptIdx = 0; // index in m_p
         PREC m_currAngle = 0.0;
     };
+
+    inline void adjustRectangle(){
+
+        // The rectangle might be a slight parallelogram due to numerics
+        //     |-l---*
+        //  *  +++++++=================+
+        //  |  +     |               | +
+        //  h  +   | <-v  Rect     |   +
+        //  |  + |               |     +
+        //  -  +=================+++++++
+        //     p        u
+
+        PREC uNorm = m_minBox.m_u.norm();
+        PREC vNorm = m_minBox.m_v.norm();
+
+        // Normalize u direction (if u close to zero -> this becomes not finite)
+        Vector2 uN = m_minBox.m_u.array() / uNorm;
+        Vector2 vN = m_minBox.m_v.array() / vNorm;
+
+        bool uF = uN.allFinite();
+        bool vF = vN.allFinite();
+
+        if(uF && vF){
+
+            // make orthogonal (x axis is u)
+            Vector2 uNT;
+            uNT(0) = -uN(1);
+            uNT(1) =  uN(0);
+
+            PREC h =  uNT.dot(m_minBox.m_v);
+            PREC l =  uN.dot (m_minBox.m_v);
+
+            if(l>=0.0){
+                m_minBox.m_uL = uNorm + l;
+            }else{
+                m_minBox.m_uL = uNorm - l;
+                m_minBox.m_p += uN*l; // move start point back
+            }
+
+            // if v vector pointed downwards (negative h)
+            if( h<0 ){
+                // invert uNT (and switch u,v)
+                uNT *= -1.0;
+                m_minBox.m_u = uNT;
+                m_minBox.m_v = uN;
+                m_minBox.m_vL = m_minBox.m_uL;
+                m_minBox.m_uL = -h;
+            }else{
+                m_minBox.m_vL = h;
+                m_minBox.m_u = uN;
+                m_minBox.m_v = uNT;
+            }
+
+        }else if(uF && !vF){
+            // adjust v direction
+            m_minBox.m_v(0) = -m_minBox.m_u(1);
+            m_minBox.m_v(1) = m_minBox.m_u(0);
+
+            m_minBox.m_uL = uNorm;
+            m_minBox.m_vL = 0.0;
+
+        }else if(!uF && vF){
+            // adjust u direction
+            m_minBox.m_u(0) = -m_minBox.m_v(1);
+            m_minBox.m_u(1) = m_minBox.m_v(0);
+
+            m_minBox.m_uL = 0.0;
+            m_minBox.m_vL = vNorm;
+        }else{
+            // adjust both directions
+            m_minBox.m_u(0) = 1.0; m_minBox.m_u(1) = 0.0;
+            m_minBox.m_v(0) = 0.0;  m_minBox.m_v(1) = 1.0;
+            m_minBox.m_uL = 0.0; m_minBox.m_vL = 0.0;
+        }
+
+    }
 
     inline void updateCalipers(PREC edgeAngle, Caliper (&c)[4]) {
 

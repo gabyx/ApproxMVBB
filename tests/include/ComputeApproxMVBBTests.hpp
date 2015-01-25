@@ -21,7 +21,7 @@
 #include "TestFunctions.hpp"
 #include "CPUTimer.hpp"
 
-namespace ApproxMVBB{
+namespace ApproxMVBB {
 
 class ConvexHullTest {
 public:
@@ -33,7 +33,7 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        if(dumpPoints){
+        if(dumpPoints) {
             dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) +".bin",v);
             //dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
         }
@@ -181,7 +181,8 @@ public:
                                         36,37,
                                         7,8,
                                         1,
-                                        226,196,154,137,30,4};
+                                        226,196,154,137,30,4
+                                       };
             t = filterPoints(t,i);
             convexHullTest(9,t);
 
@@ -195,7 +196,7 @@ public:
             convexHullTest(10,t);
 
         }
-         {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,400);
             getPointsFromFileBinary("./PointsBadProjection2.bin",t);
@@ -203,7 +204,7 @@ public:
             convexHullTest(11,t);
 
         }
-         {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,400);
             getPointsFromFileBinary("./PointsBadProjection3.bin",t);
@@ -212,7 +213,7 @@ public:
 
         }
 
-         {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,16);
             t.setZero();
@@ -221,7 +222,7 @@ public:
 
         }
 
-                 {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,5);
             t.setZero();
@@ -230,7 +231,7 @@ public:
 
         }
 
-                 {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,100);
             t.setZero();
@@ -239,7 +240,7 @@ public:
 
         }
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
-          {
+        {
             // generate points
             ApproxMVBB::Matrix2Dyn t(2,14000000);
             t.setRandom();
@@ -285,12 +286,14 @@ public:
         std::cout << "End MinAreaRectangle Test "+ std::to_string(N) +"" << std::endl;
         auto rect = c.getMinRectangle();
 
-        Matrix2Dyn p(2,5);
+        Matrix2Dyn p(2,7);
         p.col(0) =  rect.m_p;
-        p.col(1) =  rect.m_p + rect.m_u ;
-        p.col(2) =  rect.m_p + rect.m_u + rect.m_v ;
-        p.col(3) =  rect.m_p + rect.m_v ;
+        p.col(1) =  rect.m_p + rect.m_u*rect.m_uL ;
+        p.col(2) =  rect.m_p + rect.m_u*rect.m_uL + rect.m_v*rect.m_vL ;
+        p.col(3) =  rect.m_p + rect.m_v*rect.m_vL ;
         p.col(4) =  rect.m_p;
+        p.col(5) =  rect.m_u;
+        p.col(6) =  rect.m_v;
 
         dumpPointsMatrixBinary("./MinAreaRectangleTest"+ std::to_string(N) +"Out.bin",p);
         dumpPointsMatrix("./MinAreaRectangleTest"+ std::to_string(N) +"Out.txt",p);
@@ -372,20 +375,20 @@ public:
             }
             minRectTest(6,t);
         }
-
-        {
-            // generate points  on circle
-            unsigned int max = 100000;
-            Vector2List v(max);
-            for(unsigned int i=0; i<max; i++) {
-                v[i] = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
-            }
-            ApproxMVBB::Matrix2Dyn t(2,v.size());
-            for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-            }
-            minRectTest(7,t);
-        }
+//
+//        {
+//            // generate points  on circle
+//            unsigned int max = 100000;
+//            Vector2List v(max);
+//            for(unsigned int i=0; i<max; i++) {
+//                v[i] = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
+//            }
+//            ApproxMVBB::Matrix2Dyn t(2,v.size());
+//            for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//            }
+//            minRectTest(7,t);
+//        }
 
 
         {
@@ -469,7 +472,6 @@ public:
             minRectTest(15,t);
         }
 
-
     }
 };
 
@@ -489,7 +491,7 @@ public:
 
     template<typename TMatrix>
     void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
-                      unsigned int optLoops = 10, PREC epsilon = 0.001) {
+                      unsigned int optLoops = 10, PREC epsilon = 0.001, unsigned int samplePoints = 400) {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
@@ -506,28 +508,21 @@ public:
         std::cout << "End approximateMVBBDiam Test "+ std::to_string(N) << std::endl;
 
         oobb.expand(1e-10);
-        if(!checkPointsInOOBB(v,oobb)){
+        if(!checkPointsInOOBB(v,oobb)) {
             std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
-        }else{
+        } else {
             std::cout << "All points in OOBB!" << std::endl;
         }
 
         std::cout << "Start Sampling Test "+ std::to_string(N) +"" << std::endl;
         Matrix3Dyn sampled;
         START_TIMER(start2)
-        ApproxMVBB::samplePointsGrid(sampled,v,400,oobb);
+        ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb);
         STOP_TIMER_SEC(count2, start2)
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling Test "+ std::to_string(N) << std::endl;
 
         //oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
-
-        if(!checkPointsInOOBB(v,oobb)){
-            std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
-        }else{
-            std::cout << "All points in OOBB!" << std::endl;
-        }
-
 
         dumpOOBB("./DiameterTest"+ std::to_string(N) +"Out.txt", oobb);
 
@@ -544,6 +539,7 @@ public:
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
+
         {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,500);
@@ -581,7 +577,7 @@ public:
             diameterTest(4,t,true,10);
         }
 
-		{
+        {
             // generate points
             auto v = getPointsFromFile3D("./Bunny.txt");
 
@@ -593,7 +589,7 @@ public:
             diameterTest(5,t,false,10,1);
         }
 
-         {
+        {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,140000000);
             t.setRandom();
@@ -626,19 +622,26 @@ public:
 
 
         //  Tests 8 - 59
-        for(unsigned int k=0;k<5;k++){
-            for(unsigned int i=0;i<51;i++){
+        //for(unsigned int k=0;k<5;k++){
+        for(unsigned int i=0; i<51; i++) {
 
-                // generate points
-                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+            // generate points
+            auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
 
-                ApproxMVBB::Matrix3Dyn t(3,v.size());
-                for(unsigned int i = 0; i<v.size(); ++i) {
-                    t.col(i) = v[i];
-                }
-                PointFunctions::applyRandomRotTrans(t);
-                diameterTest(k*51 +i+8,t,true,4,0.1);
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
+            for(unsigned int i = 0; i<v.size(); ++i) {
+                t.col(i) = v[i];
             }
+            PointFunctions::applyRandomRotTrans(t);
+            diameterTest(/*k*51 +*/i+8,t,true,4,0.1);
+        }
+        //}
+
+        {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,3);
+            t.setRandom();
+            diameterTest(60,t,true,10,0.001,2);
         }
 
     }
@@ -647,6 +650,7 @@ public:
 
 void diameterTest() {
     srand(time(NULL));
+    ///srand(0);
     DiameterTest t;
     t.test();
 }
@@ -666,7 +670,7 @@ public:
                   unsigned int gridSize = 5,
                   unsigned int mvbbDiamOptLoops = 2,
                   unsigned int gridSearchOptLoops = 10
-                  ) {
+                 ) {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
@@ -680,10 +684,18 @@ public:
         auto oobb = ApproxMVBB::approximateMVBB(v,eps,nPoints,gridSize,mvbbDiamOptLoops,gridSearchOptLoops);
         STOP_TIMER_SEC(count, start)
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
-        std::cout << "End MVBBTest Test "+ std::to_string(N) + "Out.txt" << std::endl;
+        std::cout << "End MVBBTest "+ std::to_string(N) << std::endl;
 
         ApproxMVBB_WARNINGMSG(oobb.volume() > 1e-6,"Volume small: " << oobb.volume() << std::endl)
 
+        oobb.expandZeroExtent(0.1);
+
+        // Make all points inside OOBB!
+        Matrix33 A_KI = oobb.m_q_KI.matrix().transpose(); // faster to store the transformation matrix first
+        auto size = v.cols();
+        for( unsigned int i=0;  i<size; ++i ) {
+            oobb.unite(A_KI*v.col(i));
+        }
 
         dumpOOBB("./MVBBTest"+ std::to_string(N) +"Out.txt", oobb);
 
@@ -693,6 +705,28 @@ public:
     void test() {
         using namespace PointFunctions;
         using namespace TestFunctions;
+
+         {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,1);
+            t.setRandom();
+            mvbbTest(60,t,true,0.001,1,5,10,10);
+        }
+
+        {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,2);
+            t.setRandom();
+            mvbbTest(61,t,true,0.001,2,5,10,10);
+        }
+
+        {
+            // generate points
+            ApproxMVBB::Matrix3Dyn t(3,3);
+            t.setRandom();
+            mvbbTest(62,t,true,0.001,3,5,10,10);
+        }
+
         {
             // generate points
             auto v = generatePoints3D(100);
@@ -719,7 +753,7 @@ public:
 
 
         }
-//
+
 //        {
 //            Matrix3Dyn vec(3,140000000);
 //            Matrix3Dyn res(3,140000000);
@@ -788,7 +822,7 @@ public:
 #endif
 
          // Tests 9 - 59
-        for(unsigned int k=0;k<5;k++){
+        //for(unsigned int k=0;k<5;k++){
             for(unsigned int i=0;i<51;i++){
 
                 // generate points
@@ -801,7 +835,7 @@ public:
                 PointFunctions::applyRandomRotTrans(t);
                 mvbbTest(/*k*51+*/i + 4,t,true,0.1,400,5,3,6);
             }
-        }
+        //}
 
     }
 
@@ -813,6 +847,7 @@ void mvbbTest() {
     MVBBTests t;
     t.test();
 }
+
 };
 
 #endif

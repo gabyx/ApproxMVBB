@@ -15,11 +15,11 @@ namespace ApproxMVBB{
 void AABB::reset() {
     // Violating the constraint min<max for making a completey empty box!
     m_minPoint(0) = std::numeric_limits<PREC>::max();
-    m_maxPoint(0) = std::numeric_limits<PREC>::min();
+    m_maxPoint(0) = std::numeric_limits<PREC>::lowest();
     m_minPoint(1) = std::numeric_limits<PREC>::max();
-    m_maxPoint(1) = std::numeric_limits<PREC>::min();
+    m_maxPoint(1) = std::numeric_limits<PREC>::lowest();
     m_minPoint(2) = std::numeric_limits<PREC>::max();
-    m_maxPoint(2) = std::numeric_limits<PREC>::min();
+    m_maxPoint(2) = std::numeric_limits<PREC>::lowest();
 }
 
 
@@ -32,15 +32,6 @@ AABB::AABB( const Vector3 &l, const Vector3 &u) {
     m_maxPoint = Vector3(std::max(l(0),u(0)),std::max(l(1),u(1)),std::max(l(2),u(2)));
 };
 
-AABB& AABB::unite(const Vector3 &p) {
-    m_maxPoint(0) = std::max(m_maxPoint(0),p(0));
-    m_maxPoint(1) = std::max(m_maxPoint(1),p(1));
-    m_maxPoint(2) = std::max(m_maxPoint(2),p(2));
-    m_minPoint(0) = std::min( m_minPoint(0),p(0));
-    m_minPoint(1) = std::min( m_minPoint(1),p(1));
-    m_minPoint(2) = std::min( m_minPoint(2),p(2));
-    return *this;
-};
 
 AABB& AABB::unite(const AABB & box) {
     m_maxPoint(0) = std::max(m_maxPoint(0),box.m_maxPoint(0));
@@ -98,13 +89,34 @@ AABB&  AABB::transform(const AffineTrafo & M) {
     return *this;
 };
 
+void AABB::expandZeroExtent(PREC percentageOfLongestAxis, PREC eps, PREC defaultExtent){
+    //Expand all axes with almost zero extend
+    Array3 e = extent();
+    Array3::Index idx;
+    PREC max = e.maxCoeff(&idx);
+
+    // if longest axis is also smaller then eps -> make default extent!
+    if(max < eps){
+        expand(defaultExtent);
+        return;
+    }
+    // otherwise
+    PREC l = 0.5*max*percentageOfLongestAxis;
+    for(int i=0;i<2;++i){
+        if(i!=idx && e(i) < eps){
+            m_minPoint(i) -= l;
+            m_maxPoint(i) += l;
+        }
+    }
+}
+
 
 void AABB2d::reset() {
     // Violating the constraint min<max for making a completey empty box!
     m_minPoint(0) = std::numeric_limits<PREC>::max();
-    m_maxPoint(0) = std::numeric_limits<PREC>::min();
+    m_maxPoint(0) = std::numeric_limits<PREC>::lowest();
     m_minPoint(1) = std::numeric_limits<PREC>::max();
-    m_maxPoint(1) = std::numeric_limits<PREC>::min();
+    m_maxPoint(1) = std::numeric_limits<PREC>::lowest();
 }
 
 AABB2d::AABB2d( const Vector2 &p) {
@@ -160,4 +172,7 @@ AABB2d & AABB2d::transform(const AffineTrafo2d & M) {
     *this = ret;
     return *this;
 };
+
+
+
 };

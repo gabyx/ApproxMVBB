@@ -1,3 +1,6 @@
+#ifndef HEADER_EFA0D2C8E00D2B6D
+#define HEADER_EFA0D2C8E00D2B6D
+
 /* Cross Platform Floating Point Arithmetics
 
    This header file defines several platform-dependent macros that ensure
@@ -71,7 +74,7 @@
 # include <float.h>
 
 # define XPFPA_DECLARE() \
-            unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+            static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
 # define XPFPA_SWITCH_DOUBLE() \
             _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
@@ -119,7 +122,7 @@
 # include <float.h>
 
 # define XPFPA_DECLARE() \
-            unsigned int _xpfpa_fpu_oldcw;
+            static unsigned int _xpfpa_fpu_oldcw;
 
 # define XPFPA_SWITCH_DOUBLE() \
             _xpfpa_fpu_oldcw = _controlfp(0, 0); \
@@ -163,7 +166,7 @@
 # include <fpu_control.h>
 
 # define XPFPA_DECLARE() \
-            fpu_control_t _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+            static fpu_control_t _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
 # define XPFPA_SWITCH_DOUBLE() \
             _FPU_GETCW(_xpfpa_fpu_oldcw); \
@@ -207,7 +210,7 @@
 # include <machine/ieeefp.h>
 
 # define XPFPA_DECLARE() \
-            fp_prec_t _xpfpa_fpu_oldprec;
+            static fp_prec_t _xpfpa_fpu_oldprec;
 
 # define XPFPA_SWITCH_DOUBLE() \
             _xpfpa_fpu_oldprec = fpgetprec(); \
@@ -267,7 +270,7 @@
 */
 
 # define XPFPA_DECLARE() \
-            unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+            static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
 # define XPFPA_SWITCH_DOUBLE() \
             __asm__ __volatile__ ("fnstcw %0" : "=m" (*&_xpfpa_fpu_oldcw)); \
@@ -324,3 +327,5 @@
 #endif // FPU CONTROL
 
 #endif // XPFPA_H
+
+#endif // header guard 

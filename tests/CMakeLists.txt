@@ -16,13 +16,13 @@ configure_file (
 
 
 SET(SOURCE_FILES
-    ${COMMON_SOURCE}
+    ${ApproxMVBB_SRC}
     ${PROJECT_SOURCE_DIR}/src/TestFunctions.cpp
     ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 SET(INCLUDE_FILES
-    ${COMMON_INCLUDE}
+    ${ApproxMVBB_INC}
     ${PROJECT_SOURCE_DIR}/include/TestFunctions.hpp
     ${PROJECT_SOURCE_DIR}/include/ComputeApproxMVBBTests.hpp
 )
@@ -31,8 +31,8 @@ SET(INCLUDE_FILES
 #include directories
 set(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
-    ${COMMON_INCLUDE_DIR}
-    include/
+    ${ApproxMVBB_INC_DIRS}
+    ${PROJECT_SOURCE_DIR}/include/
     ${PROJECT_BINARY_DIR}/include/
 )
 
@@ -52,7 +52,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 if(ApproxMVBB_TESTS_HIGH_PERFORMANCE)
 
-SET(highperfTestFiles ${ApproxMVBB_SOURCE_DIR}/additional/tests/files/Lucy.txt)
+SET(highperfTestFiles ${ApproxMVBB_ROOT_DIR}/additional/tests/files/Lucy.txt)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND 

@@ -674,7 +674,7 @@ namespace GeometryPredicates{
         fnow = f[++findex];
       }
       hindex = 0;
-      if ((eindex < elen) && (findex < flen)) {
+      if ((eindex < elen-1) && (findex < flen-1)) {
         if ((fnow > enow) == (fnow > -enow)) {
           Fast_Two_Sum(enow, Q, Qnew, hh);
           enow = e[++eindex];
@@ -686,7 +686,7 @@ namespace GeometryPredicates{
         if (hh != 0.0) {
           h[hindex++] = hh;
         }
-        while ((eindex < elen) && (findex < flen)) {
+        while ((eindex < elen-1) && (findex < flen-1)) {
           if ((fnow > enow) == (fnow > -enow)) {
             Two_Sum(Q, enow, Qnew, hh);
             enow = e[++eindex];
@@ -700,7 +700,7 @@ namespace GeometryPredicates{
           }
         }
       }
-      while (eindex < elen) {
+      while (eindex < elen-1) {
         Two_Sum(Q, enow, Qnew, hh);
         enow = e[++eindex];
         Q = Qnew;
@@ -708,7 +708,7 @@ namespace GeometryPredicates{
           h[hindex++] = hh;
         }
       }
-      while (findex < flen) {
+      while (findex < flen-1) {
         Two_Sum(Q, fnow, Qnew, hh);
         fnow = f[++findex];
         Q = Qnew;

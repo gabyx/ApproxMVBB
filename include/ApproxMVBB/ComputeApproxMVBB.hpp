@@ -31,7 +31,7 @@ namespace ApproxMVBB {
 *   the point-set. The only guarenteed is that if we use sample of size m,
 *   we get an approximation of quality about 1/\sqrt{m}. Note that we pad
 *   the sample if necessary to get the desired size.
-*   This function changes the oobb and set the z Axis to the greates extent!
+*   This function changes the oobb and sets the z Axis to the greates extent!
 *   @param nPoints needs to be greater or equal than 2
 */
 template<typename Derived>
@@ -41,7 +41,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       OOBB & oobb) {
 
 
-    if(nPoints > points.cols() || nPoints < 2) {
+    if(nPoints >= points.cols() || nPoints < 2) {
         ApproxMVBB_ERRORMSG("Wrong arguements!")
     }
 
@@ -299,7 +299,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
     // Approx MVBB with Diameter
     auto oobb = approximateMVBBDiam(points,epsilon,mvbbDiamOptLoops);
 
-    if(pointSamples<points.size()) {
+    if(pointSamples<points.cols()) {
 
         // sample points
         Matrix3Dyn sampled;

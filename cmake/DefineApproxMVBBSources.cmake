@@ -1,98 +1,74 @@
-MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE SRC INC INCLUDE_DIRS ROOT_DIR )
+MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE 
+      SRC 
+      INC 
+      INCLUDE_DIRS 
+      DEPENDING_TARGETS # Input variable names
+      ApproxMVBB_ROOT_DIR 
+      ApproxMVBB_BINARY_DIR)  
+
+
+    # Add all external sources/headers
+    INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
+    INCLUDE_DIAMETER_SOURCE(           ApproxMVBB_DIAM_SRC ApproxMVBB_DIAM_INC ApproxMVBB_DIAM_INC_DIRS 
+        ${ApproxMVBB_ROOT_DIR}/external/Diameter ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
+    
+    INCLUDE_GEOMETRYPREDICATES_SOURCE( ApproxMVBB_GEOMPRED_SRC ApproxMVBB_GEOMPRED_INC ApproxMVBB_GEOMPRED_INC_DIRS ApproxMVBB_GEOMPRED_TARGETS
+        ${ApproxMVBB_ROOT_DIR}/external/GeometryPredicates ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
 
 
     SET(${SRC}
-        ${ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp
               
-        ${ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp           
-        ${ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp  
-        ${ROOT_DIR}/src/ApproxMVBB/OOBB.cpp              
-        ${ROOT_DIR}/src/ApproxMVBB/AABB.cpp   
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp           
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp  
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/OOBB.cpp              
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/AABB.cpp   
         
-        ${DIAM_SRC}
-        ${GEOM_SRC}
+        ${ApproxMVBB_DIAM_SRC}
+        ${ApproxMVBB_GEOMPRED_SRC}
     )
 
     SET(${INC}
-        ${ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixTypeDefs.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/AssertionDebug.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/Common/Platform.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixTypeDefs.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/AssertionDebug.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/Platform.hpp
         
         
-        ${ROOT_DIR}/include/ApproxMVBB/AABB.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/AngleFunctions.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/ComputeApproxMVBB.hpp 
-        ${ROOT_DIR}/include/ApproxMVBB/ContainerFunctions.hpp         
-        ${ROOT_DIR}/include/ApproxMVBB/ConvexHull2D.hpp       
-        ${ROOT_DIR}/include/ApproxMVBB/GreatestCommonDivisor.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/MakeCoordinateSystem.hpp     
-        ${ROOT_DIR}/include/ApproxMVBB/MinAreaRectangle.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/OOBB.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp     
-        ${ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
-
-        ${DIAM_INC}
-        ${GEOM_INC}
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/AABB.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/AngleFunctions.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ComputeApproxMVBB.hpp 
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ContainerFunctions.hpp         
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ConvexHull2D.hpp       
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/GreatestCommonDivisor.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/MakeCoordinateSystem.hpp     
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/MinAreaRectangle.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/OOBB.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp     
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
+        
+        ${ApproxMVBB_DIAM_INC}
+        ${ApproxMVBB_GEOMPRED_INC}
     )
 
     SET(${INCLUDE_DIRS}
-        ${ROOT_DIR}/include
-        
-        ${DIAM_INC_DIRS}
-        ${GEOM_INC_DIRS}
+        ${ApproxMVBB_GEOMPRED_INC_DIRS} 
+        ${ApproxMVBB_DIAM_INC_DIRS}
+        ${ApproxMVBB_ROOT_DIR}/include
+        ${ApproxMVBB_BINARY_DIR}/include
     )
-ENDMACRO()
+    
+    SET(${DEPENDING_TARGETS} ${ApproxMVBB_GEOMPRED_TARGETS})
 
-
-MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE_EXTERN SRC INC INCLUDE_DIRS ROOT_DIR )
-
-
-    SET(${SRC}
-        #${ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp
-              
-        ${ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp           
-        ${ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp  
-        #${ROOT_DIR}/src/ApproxMVBB/OOBB.cpp              
-        #${ROOT_DIR}/src/ApproxMVBB/AABB.cpp   
-        
-        ${DIAM_SRC}
-        ${GEOM_SRC}
-    )
-
-    SET(${INC}
-        #${ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixTypeDefs.hpp
-        #${ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
-        #${ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
-        #${ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
-        #${ROOT_DIR}/include/ApproxMVBB/Common/AssertionDebug.hpp
-        #${ROOT_DIR}/include/ApproxMVBB/Common/Platform.hpp
-        
-        
-        #${ROOT_DIR}/include/ApproxMVBB/AABB.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/AngleFunctions.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/ComputeApproxMVBB.hpp 
-        ${ROOT_DIR}/include/ApproxMVBB/ContainerFunctions.hpp         
-        ${ROOT_DIR}/include/ApproxMVBB/ConvexHull2D.hpp       
-        ${ROOT_DIR}/include/ApproxMVBB/GreatestCommonDivisor.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/MakeCoordinateSystem.hpp     
-        ${ROOT_DIR}/include/ApproxMVBB/MinAreaRectangle.hpp  
-        #${ROOT_DIR}/include/ApproxMVBB/OOBB.hpp  
-        ${ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp     
-        ${ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
-        ${ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
-
-        ${DIAM_INC}
-        ${GEOM_INC}
-    )
-
-    SET(${INCLUDE_DIRS}
-        ${ROOT_DIR}/include
-        
-        ${DIAM_INC_DIRS}
-        ${GEOM_INC_DIRS}
-    )
+    # WRITE CONFIGURATION FILE
+    INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/WriteConfigFile.cmake)
+    SET(ApproxMVBB_CONFIG_FILE ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
+    ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${ApproxMVBB_ROOT_DIR})
+    #=========================
+    
+    
+    
 ENDMACRO()

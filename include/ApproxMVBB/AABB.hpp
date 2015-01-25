@@ -32,7 +32,20 @@ public:
 
     AABB( const Vector3 &p);
     AABB( const Vector3 &l, const Vector3 &u);
-    AABB& unite(const Vector3 &p);
+
+    template<typename Derived>
+    AABB& unite(const MatrixBase<Derived> &p) {
+        m_maxPoint(0) = std::max(m_maxPoint(0),p(0));
+        m_maxPoint(1) = std::max(m_maxPoint(1),p(1));
+        m_maxPoint(2) = std::max(m_maxPoint(2),p(2));
+        m_minPoint(0) = std::min( m_minPoint(0),p(0));
+        m_minPoint(1) = std::min( m_minPoint(1),p(1));
+        m_minPoint(2) = std::min( m_minPoint(2),p(2));
+        return *this;
+    };
+
+
+
     AABB& unite(const AABB & box);
 
     AABB operator+ (const Vector3 &p);
@@ -80,6 +93,8 @@ public:
         m_minPoint -= d;
         m_maxPoint += d;
     };
+
+    void expandZeroExtent(PREC percentageOfLongestAxis = 0.1, PREC eps = 1e-10, PREC defaultExtent = 0.1);
 
     inline PREC volume() const {
         Vector3 d = m_maxPoint- m_minPoint;
