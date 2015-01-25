@@ -56,6 +56,8 @@ public:
 
     AABB & transform(const AffineTrafo & M);
 
+    inline Vector3 center(){ return 0.5*(m_maxPoint + m_minPoint);}
+
     inline bool overlaps(const AABB & box) const {
         bool x = (m_maxPoint(0) >= box. m_minPoint(0)) && ( m_minPoint(0) <= box.m_maxPoint(0));
         bool y = (m_maxPoint(1) >= box. m_minPoint(1)) && ( m_minPoint(1) <= box.m_maxPoint(1));
@@ -71,6 +73,7 @@ public:
     };
 
     inline Array3 extent() const{
+        // since min <= max, extent can not be smaller than zero, except if AABB contains no points/uninitialized (reset())
         return (m_maxPoint - m_minPoint).array();
     };
 
@@ -94,7 +97,13 @@ public:
         m_maxPoint += d;
     };
 
-    void expandZeroExtent(PREC percentageOfLongestAxis = 0.1, PREC eps = 1e-10, PREC defaultExtent = 0.1);
+    /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
+    void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
+
+    /** Adjust box that all axes have at least a minimal extent  minExtent*/
+    void expandToMinExtentAbsolute(PREC minExtent);
+    /** Adjust box that all axes have at least a minimal extent  minExtent for each axis*/
+    void expandToMinExtentAbsolute(Array3 minExtent);
 
     inline PREC volume() const {
         Vector3 d = m_maxPoint- m_minPoint;

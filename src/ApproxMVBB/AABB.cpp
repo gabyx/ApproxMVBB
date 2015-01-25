@@ -89,23 +89,51 @@ AABB&  AABB::transform(const AffineTrafo & M) {
     return *this;
 };
 
-void AABB::expandZeroExtent(PREC percentageOfLongestAxis, PREC eps, PREC defaultExtent){
-    //Expand all axes with almost zero extend
+void AABB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps){
     Array3 e = extent();
+    Vector3 c = center();
     Array3::Index idx;
-    PREC max = e.maxCoeff(&idx);
+    PREC ext = std::abs(e.maxCoeff(&idx)) * p;
 
-    // if longest axis is also smaller then eps -> make default extent!
-    if(max < eps){
-        expand(defaultExtent);
-        return;
+    if( ext < eps ){ // extent of max axis almost zero, set all axis to defaultExtent --> cube
+        ext = defaultExtent;
+        for(int i=0;i<2;++i){
+            m_minPoint(i) = c(i) - 0.5*ext;
+            m_maxPoint(i) = c(i) + 0.5*ext;
+        }
+    }else{
+        for(int i=0;i<2;++i){
+            if(i!=idx && std::abs(e(i)) < ext){
+                m_minPoint(i) = c(i) - 0.5*ext;
+                m_maxPoint(i) = c(i) + 0.5*ext;
+            }
+        }
     }
-    // otherwise
-    PREC l = 0.5*max*percentageOfLongestAxis;
+}
+
+void AABB::expandToMinExtentAbsolute(PREC minExtent){
+    Array3 e = extent();
+    Vector3 c = center();
+
+    PREC l = 0.5*minExtent;
     for(int i=0;i<2;++i){
-        if(i!=idx && e(i) < eps){
-            m_minPoint(i) -= l;
-            m_maxPoint(i) += l;
+        if(std::abs(e(i)) < minExtent){
+            m_minPoint(i) = c(i) - l;
+            m_maxPoint(i) = c(i) + l;
+        }
+    }
+}
+
+
+void AABB::expandToMinExtentAbsolute(Array3 minExtent){
+    Array3 e = extent();
+    Vector3 c = center();
+
+    for(int i=0;i<2;++i){
+        PREC l = minExtent(i);
+        if(std::abs(e(i)) < l){
+            m_minPoint(i) = c(i) - 0.5*l;
+            m_maxPoint(i) = c(i) + 0.5*l;
         }
     }
 }
