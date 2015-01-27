@@ -58,12 +58,12 @@ void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps){
 
    if( ext < eps ){ // extent of max axis almost zero, set all axis to defaultExtent --> cube
         ext = defaultExtent;
-        for(int i=0;i<2;++i){
+        for(int i=0;i<3;++i){
             m_minPoint(i) = c(i) - 0.5*ext;
             m_maxPoint(i) = c(i) + 0.5*ext;
         }
     }else{
-        for(int i=0;i<2;++i){
+        for(int i=0;i<3;++i){
             if(i!=idx && std::abs(e(i)) < ext){
                 m_minPoint(i) = c(i) - 0.5*ext;
                 m_maxPoint(i) = c(i) + 0.5*ext;
@@ -77,7 +77,7 @@ void OOBB::expandToMinExtentAbsolute(PREC minExtent){
     Vector3 c = center();
 
     PREC l = 0.5*minExtent;
-    for(int i=0;i<2;++i){
+    for(int i=0;i<3;++i){
         if(std::abs(e(i)) < minExtent){
             m_minPoint(i) = c(i) - l;
             m_maxPoint(i) = c(i) + l;
