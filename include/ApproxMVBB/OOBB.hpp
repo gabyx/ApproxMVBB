@@ -70,6 +70,8 @@ public:
         return *this;
     }
 
+    inline Vector3 center(){ return 0.5*(m_maxPoint + m_minPoint);}
+
     inline Array3 extent() const{
         return (m_maxPoint - m_minPoint).array();
     };
@@ -86,7 +88,12 @@ public:
         return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1) || m_maxPoint(2) <= m_minPoint(2);
     }
 
-    void expandZeroExtent(PREC percentageOfLongestAxis = 0.1, PREC eps = 1e-10, PREC defaultExtent = 0.1);
+
+    /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
+    void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
+
+    /** Adjust box that all axes have at least a minimal extent  minExtent*/
+    void expandToMinExtentAbsolute(PREC minExtent);
 
     inline void expand(PREC d) {
         ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
