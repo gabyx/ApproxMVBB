@@ -291,7 +291,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
                      const unsigned int pointSamples = 400,
                      const unsigned int gridSize = 5,
                      const unsigned int mvbbDiamOptLoops = 0,
-                     const unsigned int gridSearchOptLoops = 6
+                     const unsigned int mvbbGridSearchOptLoops = 6
                      ) {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
@@ -306,10 +306,10 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
         samplePointsGrid(sampled,points,pointSamples,oobb);
 
         // Exhaustive grid search with sampled points
-        oobb = approximateMVBBGridSearch(sampled,oobb,epsilon,gridSize,gridSearchOptLoops);
+        oobb = approximateMVBBGridSearch(sampled,oobb,epsilon,gridSize,mvbbGridSearchOptLoops);
 
     } else {
-        oobb = approximateMVBBGridSearch(points,oobb,epsilon,gridSize,gridSearchOptLoops);
+        oobb = approximateMVBBGridSearch(points,oobb,epsilon,gridSize,mvbbGridSearchOptLoops);
     }
     return oobb;
 }
