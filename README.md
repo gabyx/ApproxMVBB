@@ -136,13 +136,13 @@ computes an approximation of the minimal volume bounding box in the following st
    by computing the minimal volume bounding box over a direction ``t`` where the direction ``t`` 
    is choosen sequentially from the current optimal bounding box solution. The algorithm starts with the directions of the box ``A``. *This optimzation works with all points in ``pts`` and might use a lot of time*
 5. **The initial bounding box** ``A`` is used as a tight fit around the points ``pts`` 
-   to compute a **representative sample** of the point cloud. The value ``pointSamples`` 
+   to compute a **representative sample** ``RS`` of the point cloud. The value ``pointSamples`` 
    defines how many points are used for the exhaustive grid search procedure in the next step
 6. **An exhaustive grid search** (value ``gridSize`` specifies the x,y,z dimension of the grid defined by the bounding box ``A``) is performed.
    This search is a trivial loop over all grid directions (see Gill Barequet, and Sariel Har-Peled [1]) to find a even smaller bounding box.
    For each grid direction ``g`` the minimal bounding box of the projected points in direction ``g`` is computed. This consists 
    of finding the minimal rectangle (axis ``u`` and ``v`` in world frame) of the projected point cloud in the plane perpendicular to direction ``g``. The minimal bounding box ``G`` in direction ``g`` can be computed from the basis ``(u,v,g)`` and is a candidate for the overall minimzation problem.
-   Each found minimal bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``gridSearchOptLoops``, same algorithm as in step 5).
+   Each found minimal bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``gridSearchOptLoops``, same algorithm as in step 5 but with less points namely ``RS`` ).
 7. The final approximation for the mininmal volume bounding box (minimal volume over all computed candiadates) is returned. :poop:
 
 ---------------------------
