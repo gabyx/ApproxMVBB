@@ -134,7 +134,7 @@ computes an approximation of the minimal volume bounding box in the following st
 4. **The initial approximate bounding box** ``A`` is computed in the orthogonal frame ``[x,y,z]``
 5. **A first optional optimization loop** is performed (parameter ``mvbbDiamOptLoops`` specifies how many loops) 
    by computing the minimal volume bounding box over a direction ``t`` where the direction ``t`` 
-   is choosen sequentially from the current optimal bounding box solution. The algorithm starts with the directions of the box ``A``.
+   is choosen sequentially from the current optimal bounding box solution. The algorithm starts with the directions of the box ``A``. *This optimzation works with all points in ``pts`` and might use a lot of time*
 5. **The initial bounding box** ``A`` is used as a tight fit around the points ``pts`` 
    to compute a **representative sample** of the point cloud. The value ``pointSamples`` 
    defines how many points are used for the exhaustive grid search procedure in the next step
