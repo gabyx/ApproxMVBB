@@ -85,7 +85,7 @@ namespace TestFunctions{
         l.close();
     }
 
-    PointFunctions::Vector3List getPointsFromFile3D(std::string filePath);
+    Vector3List getPointsFromFile3D(std::string filePath);
 
     Vector2List getPointsFromFile2D(std::string filePath);
 

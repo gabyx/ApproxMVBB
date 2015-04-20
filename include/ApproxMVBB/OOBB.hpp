@@ -13,7 +13,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AABB_INCLUDE_FILE
-
+#include "ApproxMVBB/AABB.hpp"
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT OOBB{
 public:
