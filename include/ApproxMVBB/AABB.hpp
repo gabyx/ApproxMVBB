@@ -20,7 +20,7 @@
 namespace ApproxMVBB{
 
 template<unsigned int Dim>
-class  AABBnD {
+class  AABB {
 public:
     ApproxMVBB_DEFINE_MATRIX_TYPES
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -75,54 +75,54 @@ private:
 
 public:
 
-    AABBnD() {
+    AABB() {
         reset();
     };
     void reset(){
         reset_impl<>::apply(this);
     }
 
-    AABBnD( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {};
+    AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {};
 
-    AABBnD( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
+    AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
         ASSERTMSG( (m_maxPoint >= m_minPoint).all(),
         "AABB initialized wrongly! min/max: " << m_minPoint.tranpose() <<"/" << m_maxPoint.transpose());
     };
 
 
     template<typename Derived>
-    AABBnD& unite(const MatrixBase<Derived> &p) {
+    AABB& unite(const MatrixBase<Derived> &p) {
       EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dim);
       unite_impl<>::apply(this,p);
       return *this;
     };
 
     template<typename Derived>
-    AABBnD& operator+=(const MatrixBase<Derived> &p){
+    AABB& operator+=(const MatrixBase<Derived> &p){
         EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dim);
         unite_impl<>::apply(this,p);
         return *this;
     }
 
 
-    void unite(const AABBnD & box) {
+    void unite(const AABB & box) {
         uniteBox_impl<>::apply(this,box);
     };
 
-    AABBnD& operator+=(const AABBnD & box){
+    AABB& operator+=(const AABB & box){
         uniteBox_impl<>::apply(this,box);
         return *this;
     }
 
-    AABBnD operator+ (const AABBnD & box){
-        AABBnD r = this;
+    AABB operator+ (const AABB & box){
+        AABB r = this;
         uniteBox_impl<>::apply(&r,box);
         return r;
     }
 
-    AABBnD& transform(const AffineTrafo & M) {
+    AABB& transform(const AffineTrafo & M) {
         ApproxMVBB_STATIC_ASSERTM(Dim==3,"So far AABB transform is only implemented in 3d")
-        AABBnD ret( M*(Vector3( m_minPoint(0), m_minPoint(1), m_minPoint(2))));
+        AABB ret( M*(Vector3( m_minPoint(0), m_minPoint(1), m_minPoint(2))));
         ret.unite(M*(Vector3( m_maxPoint(0), m_minPoint(1), m_minPoint(2))));
         ret.unite(M*(Vector3( m_minPoint(0), m_maxPoint(1), m_minPoint(2))));
         ret.unite(M*(Vector3( m_minPoint(0), m_minPoint(1), m_maxPoint(2))));
@@ -137,7 +137,7 @@ public:
 
     inline VectorStat<Dim> center(){ return 0.5*(m_maxPoint + m_minPoint);}
 
-    inline bool overlaps(const AABBnD & box) const {
+    inline bool overlaps(const AABB & box) const {
         return ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array())).all();
     };
 
@@ -146,9 +146,15 @@ public:
         return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
     };
 
+    inline bool overlapsSubSpace(const AABB & box, unsigned int fixedAxis) const {
+        ArrayStat<Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
+        t(fixedAxis) = true;
+        return t.all();
+    }
+
     inline ArrayStat<Dim> extent() const{
         // since min <= max, extent can not be smaller than zero
-        // , except if AABBnD contains no points/uninitialized (reset())
+        // , except if AABB contains no points/uninitialized (reset())
         return (m_maxPoint - m_minPoint).array();
     };
 
@@ -208,7 +214,7 @@ public:
     }
 
     /** Adjust box that all axes have at least a minimal extent  minExtent for each axis*/
-    void expandToMinExtentAbsolute(ArrayStat<3> minExtent){
+    void expandToMinExtentAbsolute(ArrayStat<Dim> minExtent){
         Array3 e = extent();
         Vector3 c = center();
 
@@ -221,6 +227,20 @@ public:
         }
     }
 
+    /** Expands the selected axes \p axis to maximal value,
+    *  which simulates a box with infinite extent in this direction
+    *  \tparam MoveMin If true, the minimum value is moved to lowest value.
+    */
+    template<bool MoveMin>
+    void expandToMaxExtent(const unsigned int & axis){
+        ApproxMVBB_STATIC_ASSERT(axis < Dim);
+        if(MoveMin){
+            m_minPoint(axis) = std::numeric_limits<PREC>::lowest();
+        }else{
+            m_maxPoint(axis) = std::numeric_limits<PREC>::max();
+        }
+    }
+
     inline PREC volume() const {
         return (m_maxPoint - m_minPoint).prod();
     };
@@ -230,8 +250,8 @@ public:
     VectorStat<Dim> m_maxPoint;
 };
 
-using AABB = AABBnD<3>;
-using AABB2d = AABBnD<2>;
+using AABB3d = AABB<3>;
+using AABB2d = AABB<2>;
 
 };
 
