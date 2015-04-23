@@ -112,6 +112,10 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
+**Generating a KdTree from the OOBB: (to come!)**
+The library will (in the future) include a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, but was written to fullfill this aspects to a certain level, CGAL and ANN libraries seem faster)
+The KdTree splitting heuristic implements a sophisticated splitting optimization and an adaptable quality evaluator which in the most elaborate, performance worst case consists of searching for the best split between the splitting heuristics ``MIDPOINT``,``MEDIAN`` and``GEOMETRIC_MEAN``  by evaluating a user-provided quality evaluator.
+
 ---------------------------
 Function Parameters & How It Works
 ---------------------------
