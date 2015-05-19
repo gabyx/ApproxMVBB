@@ -52,10 +52,14 @@ struct MyMatrix {
     template<int N>
     using MatrixDynStat = Eigen::Matrix<PREC, Eigen::Dynamic, N >;
 
+    template<unsigned int M, unsigned int N>
+    using MatrixStatStat = Eigen::Matrix<PREC, M, N >;
+
+    template<unsigned int M>
+    using VectorStat = Eigen::Matrix<PREC, M, 1 >;
 
     template<typename Derived> using MatrixBase = Eigen::MatrixBase<Derived>;
     template<typename Derived> using MatrixDenseBase = Eigen::DenseBase<Derived>;
-    template<typename Derived> using ArrayBase  = Eigen::ArrayBase<Derived>;
 
     template<typename EigenType> using MatrixRef = Eigen::Ref<EigenType>;
     template<typename EigenType> using MatrixMap = Eigen::Map<EigenType>;
@@ -70,6 +74,16 @@ struct MyMatrix {
     using StdVecAligned = std::vector<Type, Eigen::aligned_allocator<Type> >;
 
     // Special Array types;
+    template<typename Derived> using ArrayBase  = Eigen::ArrayBase<Derived>;
+    template<unsigned int M>
+    using ArrayStatDyn = Eigen::Array<PREC, M, Eigen::Dynamic >;
+    template<unsigned int N>
+    using ArrayDynStat = Eigen::Array<PREC, Eigen::Dynamic, N >;
+    template<unsigned int M, unsigned int N>
+    using ArrayStatStat = Eigen::Array<PREC, M, N >;
+    template<unsigned int M>
+    using ArrayStat = Eigen::Array<PREC, M,1>;
+
     using Array3 = Eigen::Array<PREC, 3, 1>;
     using Array2 = Eigen::Array<PREC, 2, 1>;
 
@@ -104,10 +118,11 @@ struct MyMatrixIOFormat {
    \
    template<int M> using MatrixStatDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixStatDyn<M>; \
    template<int N> using MatrixDynStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDynStat<N>; \
+   template<unsigned int M,unsigned int N> using MatrixStatStat = typename MyMatrix< _PREC_ >::template MatrixStatStat<M,N>; \
+   template<unsigned int M> using VectorStat = typename MyMatrix< _PREC_ >::template VectorStat<M>; \
    \
    template<typename Derived> using MatrixBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixBase<Derived>; \
    template<typename Derived> using MatrixDenseBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDenseBase<Derived>; \
-   template<typename Derived> using ArrayBase  = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayBase<Derived>; \
    \
    template<typename EigenType> using MatrixRef = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixRef< EigenType >; \
    template<typename EigenType> using MatrixMap = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixMap< EigenType >; \
@@ -115,6 +130,11 @@ struct MyMatrixIOFormat {
    template<typename Key, typename EigenType> \
    using StdMapAligned = typename ApproxMVBB::MyMatrix< _PREC_ >::template StdMapAligned<Key, EigenType >; \
    \
+   template<typename Derived> using ArrayBase  = typename MyMatrix< _PREC_ >::template ArrayBase<Derived>; \
+   template<unsigned int M> using ArrayStatDyn = typename MyMatrix< _PREC_ >::template ArrayStatDyn<M>; \
+   template<unsigned int N> using ArrayDynStat = typename MyMatrix< _PREC_ >::template ArrayDynStat<N>; \
+   template<unsigned int M,unsigned int N> using ArrayStatStat = typename MyMatrix< _PREC_ >::template ArrayStatStat<M,N>; \
+   template<unsigned int M> using ArrayStat = typename MyMatrix< _PREC_ >::template ArrayStat<M>; \
    using Array3 = typename ApproxMVBB::MyMatrix< _PREC_ >::Array3;   \
    using Array2 = typename ApproxMVBB::MyMatrix< _PREC_ >::Array2; \
    \

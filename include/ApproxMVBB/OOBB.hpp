@@ -13,6 +13,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AABB_INCLUDE_FILE
+#include "ApproxMVBB/AABB.hpp"
 
 namespace ApproxMVBB{
 class APPROXMVBB_EXPORT OOBB{
@@ -30,15 +31,15 @@ public:
          const Vector3 & u,
          const Matrix33 & A_IK);
 
-    /** Initializes OOBB with AABB values, rotation is set to identity!*/
-    OOBB(AABB & aabb){
+    /** Initializes OOBB with AABB3d values, rotation is set to identity!*/
+    OOBB(AABB3d & aabb){
         m_minPoint = aabb.m_minPoint;
         m_maxPoint = aabb.m_maxPoint;
         m_q_KI.setIdentity();
     }
 
-    /** Initializes OOBB with AABB values, rotation is set to identity!*/
-    OOBB & operator=(AABB & aabb){
+    /** Initializes OOBB with AABB3d values, rotation is set to identity!*/
+    OOBB & operator=(AABB3d & aabb){
         m_minPoint = aabb.m_minPoint;
         m_maxPoint = aabb.m_maxPoint;
         m_q_KI.setIdentity();

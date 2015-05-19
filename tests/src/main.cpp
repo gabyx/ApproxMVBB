@@ -15,8 +15,8 @@ int  main( int  argc, char  ** argv ){
 
     ApproxMVBB::convexHullTest();
     ApproxMVBB::minAreaBoxTest();
-    //ApproxMVBB::diameterTest();
-    //ApproxMVBB::mvbbTest();
+    ApproxMVBB::diameterTest();
+    ApproxMVBB::mvbbTest();
 
     return 0;
 };

@@ -14,66 +14,147 @@
 
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
+#include ApproxMVBB_StaticAssert_INCLUDE_FILE
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
 namespace ApproxMVBB{
-class APPROXMVBB_EXPORT AABB {
+
+template<unsigned int Dim>
+class  AABB {
 public:
-
     ApproxMVBB_DEFINE_MATRIX_TYPES
-
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+private:
+
+    template<unsigned int D = Dim,  bool = true>
+    struct unite_impl{
+        template<typename T, typename P>
+        inline static void apply(T * t, const P & p){
+            t->m_maxPoint(D-1) = std::max(t->m_maxPoint(D-1),p(D-1));
+            t->m_minPoint(D-1) = std::min(t->m_minPoint(D-1),p(D-1));
+            unite_impl<D-1>::apply(t,p);
+        }
+    };
+    template<bool dummy>
+    struct unite_impl<0,dummy>{
+        template<typename T, typename P>
+        inline static void apply(T * t, const P & p){}
+    };
+
+    template<unsigned int D = Dim,  bool = true>
+    struct uniteBox_impl{
+        template<typename T, typename B>
+        inline static void apply(T * t, const B & b){
+            t->m_maxPoint(D-1) = std::max(t->m_maxPoint(D-1),b.m_maxPoint(D-1));
+            t->m_minPoint(D-1) = std::min(t->m_minPoint(D-1),b.m_minPoint(D-1));
+            uniteBox_impl<D-1>::apply(t,b);
+        }
+    };
+    template<bool dummy>
+    struct uniteBox_impl<0,dummy>{
+        template<typename T, typename B>
+        inline static void apply(T * t, const B & b){}
+    };
+
+
+    template<unsigned int D = Dim, bool = true>
+    struct reset_impl{
+        template<typename T>
+        inline static void apply(T * t){
+            t->m_minPoint(D-1) = std::numeric_limits<PREC>::max();
+            t->m_maxPoint(D-1) = std::numeric_limits<PREC>::lowest();
+            reset_impl<D-1>::apply(t);
+        }
+    };
+
+    template<bool dummy>
+    struct reset_impl<0,dummy>{
+        template<typename T>
+        inline static void apply(T * t){}
+    };
+
+public:
 
     AABB() {
         reset();
     };
+    void reset(){
+        reset_impl<>::apply(this);
+    }
 
-    void reset();
+    AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {};
 
-    AABB( const Vector3 &p);
-    AABB( const Vector3 &l, const Vector3 &u);
+    AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
+        ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
+        "AABB initialized wrongly! min/max: " << m_minPoint.transpose() <<"/" << m_maxPoint.transpose());
+    };
+
 
     template<typename Derived>
     AABB& unite(const MatrixBase<Derived> &p) {
-        m_maxPoint(0) = std::max(m_maxPoint(0),p(0));
-        m_maxPoint(1) = std::max(m_maxPoint(1),p(1));
-        m_maxPoint(2) = std::max(m_maxPoint(2),p(2));
-        m_minPoint(0) = std::min( m_minPoint(0),p(0));
-        m_minPoint(1) = std::min( m_minPoint(1),p(1));
-        m_minPoint(2) = std::min( m_minPoint(2),p(2));
+      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dim);
+      unite_impl<>::apply(this,p);
+      return *this;
+    };
+
+    template<typename Derived>
+    AABB& operator+=(const MatrixBase<Derived> &p){
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dim);
+        unite_impl<>::apply(this,p);
+        return *this;
+    }
+
+
+    void unite(const AABB & box) {
+        uniteBox_impl<>::apply(this,box);
+    };
+
+    AABB& operator+=(const AABB & box){
+        uniteBox_impl<>::apply(this,box);
+        return *this;
+    }
+
+    AABB operator+ (const AABB & box){
+        AABB r = this;
+        uniteBox_impl<>::apply(&r,box);
+        return r;
+    }
+
+    AABB& transform(const AffineTrafo & M) {
+        ApproxMVBB_STATIC_ASSERTM(Dim==3,"So far AABB transform is only implemented in 3d")
+        AABB ret( M*(Vector3( m_minPoint(0), m_minPoint(1), m_minPoint(2))));
+        ret.unite(M*(Vector3( m_maxPoint(0), m_minPoint(1), m_minPoint(2))));
+        ret.unite(M*(Vector3( m_minPoint(0), m_maxPoint(1), m_minPoint(2))));
+        ret.unite(M*(Vector3( m_minPoint(0), m_minPoint(1), m_maxPoint(2))));
+        ret.unite(M*(Vector3( m_minPoint(0), m_maxPoint(1), m_maxPoint(2))));
+        ret.unite(M*(Vector3( m_maxPoint(0), m_maxPoint(1), m_minPoint(2))));
+        ret.unite(M*(Vector3( m_maxPoint(0), m_minPoint(1), m_maxPoint(2))));
+        ret.unite(M*(Vector3( m_maxPoint(0), m_maxPoint(1), m_maxPoint(2))));
+        *this = ret;
         return *this;
     };
 
 
-
-    AABB& unite(const AABB & box);
-
-    AABB operator+ (const Vector3 &p);
-
-    AABB operator+ (const AABB & box);
-
-    AABB& operator+= (const AABB & box);
-
-    AABB & transform(const AffineTrafo & M);
-
-    inline Vector3 center(){ return 0.5*(m_maxPoint + m_minPoint);}
+    inline VectorStat<Dim> center(){ return 0.5*(m_maxPoint + m_minPoint);}
 
     inline bool overlaps(const AABB & box) const {
-        bool x = (m_maxPoint(0) >= box. m_minPoint(0)) && ( m_minPoint(0) <= box.m_maxPoint(0));
-        bool y = (m_maxPoint(1) >= box. m_minPoint(1)) && ( m_minPoint(1) <= box.m_maxPoint(1));
-        bool z = (m_maxPoint(2) >= box. m_minPoint(2)) && ( m_minPoint(2) <= box.m_maxPoint(2));
-        return (x && y && z);
+        return ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array())).all();
     };
 
-    inline bool inside(const Vector3 &p) const {
-        return (
-                   p(0) >= m_minPoint(0) && p(0) <= m_maxPoint(0) &&
-                   p(1) >= m_minPoint(1) && p(1) <= m_maxPoint(1) &&
-                   p(2) >= m_minPoint(2) && p(2) <= m_maxPoint(2));
+    template<typename Derived>
+    inline bool overlaps(const MatrixBase<Derived> &p) const {
+        return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
     };
 
-    inline Array3 extent() const{
-        // since min <= max, extent can not be smaller than zero, except if AABB contains no points/uninitialized (reset())
+    inline bool overlapsSubSpace(const AABB & box, unsigned int fixedAxis) const {
+        ArrayStat<Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
+        t(fixedAxis) = true;
+        return t.all();
+    }
+
+    inline ArrayStat<Dim> extent() const{
+        // since min <= max, extent can not be smaller than zero
+        // , except if AABB contains no points/uninitialized (reset())
         return (m_maxPoint - m_minPoint).array();
     };
 
@@ -82,118 +163,95 @@ public:
     };
 
     inline bool isEmpty() const {
-        return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1) || m_maxPoint(2) <= m_minPoint(2);
+        return (m_maxPoint.array() <= m_minPoint.array()).any();
     }
 
     inline void expand(PREC d) {
         ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
-        m_minPoint -= Vector3(d,d,d);
-        m_maxPoint += Vector3(d,d,d);
+        m_minPoint.array() -= d;
+        m_maxPoint.array() += d;
     };
 
-    inline void expand(Vector3 d) {
-        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0 && d(2)>=0,"d>=0")
+    inline void expand(VectorStat<Dim> d) {
+        ApproxMVBB_ASSERTMSG((d.array()>=0).all(), "d<0")
         m_minPoint -= d;
         m_maxPoint += d;
     };
 
     /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
-    void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
+    void expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps){
+        ArrayStat<Dim> e = extent();
+        VectorStat<Dim> c = center();
+        typename ArrayStat<Dim>::Index idx;
+        PREC ext = std::abs(e.maxCoeff(&idx)) * p;
 
-    /** Adjust box that all axes have at least a minimal extent  minExtent*/
-    void expandToMinExtentAbsolute(PREC minExtent);
-    /** Adjust box that all axes have at least a minimal extent  minExtent for each axis*/
-    void expandToMinExtentAbsolute(Array3 minExtent);
-
-    inline PREC volume() const {
-        Vector3 d = m_maxPoint- m_minPoint;
-        return d(0) * d(1) * d(2);
-    };
-
-    //info about axis aligned bounding box
-    Vector3 m_minPoint;
-    Vector3 m_maxPoint;
-};
-
-
-class APPROXMVBB_EXPORT AABB2d {
-public:
-
-    ApproxMVBB_DEFINE_MATRIX_TYPES
-
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-    AABB2d() {
-        reset();
-    };
-
-    void reset();
-
-    AABB2d( const Vector2 &p);
-    AABB2d( const Vector2 &l, const Vector2 &u);
-
-    template<typename Derived>
-    AABB2d& unite(const MatrixBase<Derived> &p) {
-        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,2);
-        m_maxPoint(0) = std::max(m_maxPoint(0),p(0));
-        m_maxPoint(1) = std::max(m_maxPoint(1),p(1));
-        m_minPoint(0) = std::min( m_minPoint(0),p(0));
-        m_minPoint(1) = std::min( m_minPoint(1),p(1));
-        return *this;
-    };
-
-    AABB2d& unite(const AABB2d & box);
-    AABB2d operator+ (const Vector2 &p);
-    AABB2d operator+ (const AABB2d & box);
-    AABB2d& operator+= (const AABB2d & box);
-
-    inline Array2 extent() const{
-        return (m_maxPoint - m_minPoint).array();
-    };
-
-    inline PREC maxExtent() const{
-        return (m_maxPoint - m_minPoint).maxCoeff();
-    };
-
-    inline AABB2d & transform(const AffineTrafo2d & M);
-
-    inline bool overlaps(const AABB2d & box) const {
-        bool x = (m_maxPoint(0) >= box.m_minPoint(0)) && ( m_minPoint(0) <= box.m_maxPoint(0));
-        bool y = (m_maxPoint(1) >= box.m_minPoint(1)) && ( m_minPoint(1) <= box.m_maxPoint(1));
-        return (x && y);
-    };
-
-    inline bool inside(const Vector2 &p) const {
-        return (
-                   p(0) >= m_minPoint(0) && p(0) <= m_maxPoint(0) &&
-                   p(1) >= m_minPoint(1) && p(1) <= m_maxPoint(1));
-    };
-
-    inline bool isEmpty() const {
-        return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1);
+        if( ext < eps ){ // extent of max axis almost zero, set all axis to defaultExtent --> cube
+            ext = defaultExtent;
+            m_minPoint = c - 0.5*ext;
+            m_maxPoint = c + 0.5*ext;
+        }else{
+            for(int i=0;i<Dim;++i){
+                if(i!=idx && std::abs(e(i)) < ext){
+                    m_minPoint(i) = c(i) - 0.5*ext;
+                    m_maxPoint(i) = c(i) + 0.5*ext;
+                }
+            }
+        }
     }
 
-    inline void expand(PREC d) {
-        ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
-        m_minPoint -= Vector2(d,d);
-        m_maxPoint += Vector2(d,d);
-    };
+    /** Adjust box that all axes have at least a minimal extent  minExtent*/
+    void expandToMinExtentAbsolute(PREC minExtent){
+        Array3 e = extent();
+        Vector3 c = center();
 
-    inline void expand(Vector2 d) {
-        ApproxMVBB_ASSERTMSG(d(0)>=0 && d(1)>=0,"d>=0")
-        m_minPoint -= d;
-        m_maxPoint += d;
-    };
+        PREC l = 0.5*minExtent;
+        for(int i=0;i<Dim;++i){
+            if(std::abs(e(i)) < minExtent){
+                m_minPoint(i) = c(i) - l;
+                m_maxPoint(i) = c(i) + l;
+            }
+        }
+    }
 
-    inline PREC area() const {
-        Vector2 d = m_maxPoint- m_minPoint;
-        return d(0) * d(1);
+    /** Adjust box that all axes have at least a minimal extent  minExtent for each axis*/
+    void expandToMinExtentAbsolute(ArrayStat<Dim> minExtent){
+        Array3 e = extent();
+        Vector3 c = center();
+
+        for(int i=0;i<Dim;++i){
+            PREC l = minExtent(i);
+            if(std::abs(e(i)) < l){
+                m_minPoint(i) = c(i) - 0.5*l;
+                m_maxPoint(i) = c(i) + 0.5*l;
+            }
+        }
+    }
+
+    /** Expands the selected axes \p axis to maximal value,
+    *  which simulates a box with infinite extent in this direction
+    *  \tparam MoveMin If true, the minimum value is moved to lowest value.
+    */
+    template<bool MoveMin>
+    void expandToMaxExtent(const unsigned int & axis){
+        ApproxMVBB_ASSERTMSG(axis < Dim,"axis >= Dim !");
+        if(MoveMin){
+            m_minPoint(axis) = std::numeric_limits<PREC>::lowest();
+        }else{
+            m_maxPoint(axis) = std::numeric_limits<PREC>::max();
+        }
+    }
+
+    inline PREC volume() const {
+        return (m_maxPoint - m_minPoint).prod();
     };
 
     //info about axis aligned bounding box
-    Vector2 m_minPoint;
-    Vector2 m_maxPoint;
+    VectorStat<Dim> m_minPoint;
+    VectorStat<Dim> m_maxPoint;
 };
+
+using AABB3d = AABB<3>;
+using AABB2d = AABB<2>;
 
 };
 
