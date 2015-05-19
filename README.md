@@ -112,6 +112,10 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
+**Generating a KdTree from the OOBB: (to come!)**
+The library will (in the future) include a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, but was written to fullfill this aspects to a certain level, CGAL and ANN libraries seem faster)
+The KdTree splitting heuristic implements a sophisticated splitting optimization and an adaptable quality evaluator which in the most elaborate, performance worst case consists of searching for the best split between the splitting heuristics ``MIDPOINT``,``MEDIAN`` and``GEOMETRIC_MEAN``  by evaluating a user-provided quality evaluator.
+
 ---------------------------
 Function Parameters & How It Works
 ---------------------------
@@ -122,7 +126,7 @@ The most important function:
                                 pointSamples, 
                                 gridSize,
                                 mvbbDiamOptLoops, 
-                                gridSearchOptLoops)
+                                mvbbGridSearchOptLoops)
 ```
 computes an approximation of the minimal volume bounding box in the following steps:
 
@@ -132,19 +136,18 @@ computes an approximation of the minimal volume bounding box in the following st
 2. The points are projected into the plane perpendicular to the direction ``z``
 3. An approximation of the diameter of the projected points in 2D is computed (direction ``x`` )
 4. **The initial approximate bounding box** ``A`` is computed in the orthogonal frame ``[x,y,z]``
-5. **An optional optimization loop** is performed (value ``mvbbDiamOptLoops`` specifies how many loops) 
+5. **A first optional optimization loop** is performed (parameter ``mvbbDiamOptLoops`` specifies how many loops) 
    by computing the minimal volume bounding box over a direction ``t`` where the direction ``t`` 
-   is choosen sequentially from the current optimal bounding box solution.  
+   is choosen sequentially from the current optimal bounding box solution. The algorithm starts with the directions of the box ``A``. *This optimzation works with all points in ``pts`` and might use a lot of time*
 5. **The initial bounding box** ``A`` is used as a tight fit around the points ``pts`` 
-   to compute a **representative sample** of the point cloud. The value ``pointSamples`` 
+   to compute a **representative sample** ``RS`` of the point cloud. The value ``pointSamples`` 
    defines how many points are used for the exhaustive grid search procedure in the next step
 6. **An exhaustive grid search** (value ``gridSize`` specifies the x,y,z dimension of the grid defined by the bounding box ``A``) is performed.
    This search is a trivial loop over all grid directions (see Gill Barequet, and Sariel Har-Peled [1]) to find a even smaller bounding box.
-   For each grid direction ``g`` the minimal bounding box in this direction is computed. This consists 
-   of finding the minimal rectangle of the projected 2D point cloud in the plane perpendicular to direction ``g``.
-   For each grid direction another **optional optimization loop** (same as in step 5, value ``gridSearchOptLoops`` ) can be 
-   specified which again optimizes the volume starting from direction ``g``.
-7. The final approximation for the mininmal volume bounding box is returned. :poop:
+   For each grid direction ``g`` the minimal bounding box of the projected points in direction ``g`` is computed. This consists 
+   of finding the minimal rectangle (axis ``u`` and ``v`` in world frame) of the projected point cloud in the plane perpendicular to direction ``g``. The minimal bounding box ``G`` in direction ``g`` can be computed from the basis ``(u,v,g)`` and is a candidate for the overall minimzation problem.
+   Each found minimal bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points namely ``RS`` ).
+7. The final approximation for the mininmal volume bounding box (minimal volume over all computed candiadates) is returned. :poop:
 
 ---------------------------
 Building and Visualizing the Tests
