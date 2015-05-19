@@ -85,8 +85,8 @@ public:
     AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {};
 
     AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
-        ASSERTMSG( (m_maxPoint >= m_minPoint).all(),
-        "AABB initialized wrongly! min/max: " << m_minPoint.tranpose() <<"/" << m_maxPoint.transpose());
+        ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
+        "AABB initialized wrongly! min/max: " << m_minPoint.transpose() <<"/" << m_maxPoint.transpose());
     };
 
 
@@ -233,7 +233,7 @@ public:
     */
     template<bool MoveMin>
     void expandToMaxExtent(const unsigned int & axis){
-        ApproxMVBB_STATIC_ASSERT(axis < Dim);
+        ApproxMVBB_ASSERTMSG(axis < Dim,"axis >= Dim !");
         if(MoveMin){
             m_minPoint(axis) = std::numeric_limits<PREC>::lowest();
         }else{
