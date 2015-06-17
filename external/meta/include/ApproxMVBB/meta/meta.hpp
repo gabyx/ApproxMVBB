@@ -12,13 +12,13 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef APPROX_MVBMETA_HPP
-#define META_HPP
+#ifndef ApproxMVBB_meta_meta_hpp
+#define ApproxMVBB_meta_meta_hpp
 
 #include <cstddef>
 #include <initializer_list>
 #include <type_traits>
-#include <meta/meta_fwd.hpp>
+#include <ApproxMVBB/meta/meta_fwd.hpp>
 
 /// \defgroup meta Meta
 ///

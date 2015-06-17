@@ -22,7 +22,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_ROOT_DIR}/external/meta ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
     
     SET(${SRC}
-        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixDefs.cpp
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixTypeDefs.cpp
               
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp           
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp  

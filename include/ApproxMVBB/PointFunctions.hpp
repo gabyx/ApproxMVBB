@@ -28,7 +28,7 @@ namespace ApproxMVBB{
 namespace PointFunctions {
 
     ApproxMVBB_DEFINE_MATRIX_TYPES
-    DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
     template<typename Derived>
     void applyRandomRotTrans(MatrixBase<Derived> & points) {

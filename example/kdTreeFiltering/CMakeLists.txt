@@ -34,5 +34,5 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND 
           ${CMAKE_COMMAND}
           -E
-          copy_files ${ApproxMVBB_ROOT_DIR}/tests/files/Bunny.txt ${PROJECT_BINARY_DIR}
+          copy ${ApproxMVBB_ROOT_DIR}/tests/files/Bunny.txt ${PROJECT_BINARY_DIR}
 )

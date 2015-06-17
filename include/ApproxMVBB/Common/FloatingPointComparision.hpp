@@ -63,7 +63,7 @@
 //
 //   RawType: the raw floating-point type (either float or double)
 
-#ifndef  ApproxMVBB_Common_FloatingPointComparision_hpp
+#ifndef ApproxMVBB_Common_FloatingPointComparision_hpp
 #define ApproxMVBB_Common_FloatingPointComparision_hpp
 
 template <size_t size>

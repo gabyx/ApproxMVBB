@@ -11,8 +11,8 @@
  * Copyright (C) 2003, by Kristen Wegner (kristen@tima.net)
  */
 
-#ifndef SOURCE_PUGIXML_CPP
-#define SOURCE_PUGIXML_CPP
+#ifndef ApproxMVBB_pugixml_pugixml_cpp
+#define ApproxMVBB_pugixml_pugixml_cpp
 
 #include "pugixml.hpp"
 

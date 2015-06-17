@@ -1,5 +1,5 @@
 #ifndef ApproxMVBB_KdTree_hpp
-#define ApproxMVBB__KdTree_hpp
+#define ApproxMVBB_KdTree_hpp
 
 
 #include <type_traits>
@@ -10,6 +10,7 @@
 #include <deque>
 #include <tuple>
 #include <unordered_set>
+#include <unordered_map>
 #include <utility>
 
 #include <fstream>
@@ -17,7 +18,6 @@
 #include "ApproxMVBB/Config/Config.hpp"
 
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
-#include "ApproxMVBB/TypeDefsPoints.hpp"
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
 #include "ApproxMVBB/pugixml/pugixml.hpp"
@@ -34,7 +34,7 @@ namespace ApproxMVBB{
 
 
     ApproxMVBB_DEFINE_MATRIX_TYPES
-    DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
 
     #define DEFINE_KDTREE_BASETYPES( __Traits__ )  \
@@ -102,13 +102,11 @@ namespace ApproxMVBB{
     class PointData {
     public:
 
-        DEFINE_LAYOUT_CONFIG_TYPES
 
         using Traits        = TTraits;
         static const unsigned int Dimension = Traits::Dimension;
         using PointType     = typename Traits::PointType;
         using PointListType = typename Traits::PointListType; /** linear in memory!*/
-        using value_type    = typename Traits::value_type;
         using iterator      = typename Traits::iterator;
         using const_iterator= typename Traits::const_iterator;
         using PointGetter   = typename Traits::PointGetter;
@@ -240,7 +238,6 @@ namespace ApproxMVBB{
     public:
 
         DEFINE_KDTREE_BASETYPES( Traits )
-        DEFINE_LAYOUT_CONFIG_TYPES
 
         using PointDataType = NodeDataType;
         using PointListType = typename NodeDataType::PointListType;
@@ -277,12 +274,12 @@ namespace ApproxMVBB{
 
             m_methods = m;
             if(m_methods.size()==0) {
-                ERRORMSG("No methods for splitting given!")
+                ApproxMVBB_ERRORMSG("No methods for splitting given!")
             }
             m_allowSplitAboveNPoints = allowSplitAboveNPoints;
             m_minExtent = minExtent;
             if( m_minExtent < 0) {
-                ERRORMSG("Minimal extent has wrong value!")
+                ApproxMVBB_ERRORMSG("Minimal extent has wrong value!")
             }
             m_searchCriteria = searchCriteria;
 
@@ -293,7 +290,7 @@ namespace ApproxMVBB{
             m_minExtentRatio = minExtentRatio;
 
             if( m_minSplitRatio < 0 || m_minPointRatio < 0 || m_minExtentRatio <0) {
-                ERRORMSG("Minimal split ratio, point ratio or extent ratio have <0 values!");
+                ApproxMVBB_ERRORMSG("Minimal split ratio, point ratio or extent ratio have <0 values!");
             }
 
             resetStatistics();
@@ -384,7 +381,7 @@ namespace ApproxMVBB{
 
                     ++tries;
                 } else {
-                    std::cout << "cannot split -> extent " << std::endl;
+                    //std::cout << "cannot split -> extent " << std::endl;
                 }
 
 
@@ -406,19 +403,19 @@ namespace ApproxMVBB{
                     switch(m_bestMethod) {
                     case Method::GEOMETRIC_MEAN:
                     case Method::MIDPOINT: {
-                        auto leftPredicate = [&](const value_type & a) {
+                        auto leftPredicate = [&](const typename PointListType::value_type & a) {
                             return PointGetter::get(a)(m_bestSplitAxis) < m_bestSplitPosition;
                         };
                         m_bestSplitRightIt = std::partition(data->begin(), data->end(), leftPredicate );
                         break;
                     }
                     case Method::MEDIAN: {
-                        auto less = [&](const value_type & a, const value_type & b) {
+                        auto less = [&](const typename PointListType::value_type & a, const typename PointListType::value_type & b) {
                             return PointGetter::get(a)(m_bestSplitAxis) < PointGetter::get(b)(m_bestSplitAxis);
                         };
                         std::nth_element(data->begin(), m_bestSplitRightIt, data->end(), less );
                         m_bestSplitPosition = PointGetter::get(*(m_bestSplitRightIt))(m_bestSplitAxis);
-                        auto leftPredicate = [&](const value_type & a) {
+                        auto leftPredicate = [&](const typename PointListType::value_type & a) {
                             return PointGetter::get(a)(m_bestSplitAxis) < m_bestSplitPosition;
                         };
                         m_bestSplitRightIt = std::partition(data->begin(),m_bestSplitRightIt, leftPredicate);
@@ -447,7 +444,7 @@ namespace ApproxMVBB{
                 unsigned int tries = 1) {
 
             auto * data = node->data();
-            ASSERTMSG( data, "Node @  " << node << " has no data!")
+            ApproxMVBB_ASSERTMSG( data, "Node @  " << node << " has no data!")
 
             auto & aabb = node->aabb();
             switch(m_method) {
@@ -469,7 +466,8 @@ namespace ApproxMVBB{
                 auto beg = data->begin();
                 m_splitRightIt = beg + data->size()/2; // split position is the median!
 
-                auto less = [&](const value_type & a, const value_type & b) {
+                auto less = [&](const typename PointListType::value_type & a,
+                                const typename PointListType::value_type & b) {
                     return PointGetter::get(a)(m_splitAxis) < PointGetter::get(b)(m_splitAxis);
                 };
                 // [5, 5, 1, 5, 6, 7, 9, 5] example for [beg ... end]
@@ -487,7 +485,7 @@ namespace ApproxMVBB{
 
                 // move left points which are equal to nth element to the right!
 
-                auto leftPredicate = [&](const value_type & a) {
+                auto leftPredicate = [&](const typename PointListType::value_type & a) {
                     return PointGetter::get(a)(m_splitAxis) < m_splitPosition;
                 };
                 m_splitRightIt = std::partition(beg,m_splitRightIt, leftPredicate);
@@ -531,7 +529,7 @@ namespace ApproxMVBB{
         }
 
         inline bool checkPosition(AABB<Dimension> & aabb) {
-            ASSERTMSG( m_splitPosition >= aabb.m_minPoint(m_splitAxis)
+            ApproxMVBB_ASSERTMSG( m_splitPosition >= aabb.m_minPoint(m_splitAxis)
                     && m_splitPosition <= aabb.m_maxPoint(m_splitAxis), " split position wrong")
 
             if( (m_splitPosition - aabb.m_minPoint(m_splitAxis)) <= m_minExtent ||
@@ -572,7 +570,7 @@ namespace ApproxMVBB{
         inline PREC computeSplitRatio(AABB<Dimension> & aabb) {
             PREC n = (m_splitPosition - aabb.m_minPoint(m_splitAxis))
                     / (aabb.m_maxPoint(m_splitAxis) - aabb.m_minPoint(m_splitAxis)) ;
-            ASSERTMSG(n>0.0 && n <=1.0," split ratio negative!, somthing wrong with splitPosition: " << n );
+            ApproxMVBB_ASSERTMSG(n>0.0 && n <=1.0," split ratio negative!, somthing wrong with splitPosition: " << n );
             return (n>0.5)? 1.0-n : n ;
         }
 
@@ -589,7 +587,7 @@ namespace ApproxMVBB{
             t(m_splitAxis) = aabb.m_maxPoint(m_splitAxis) - m_splitPosition;
             r = std::min(r,t.minCoeff() / t.maxCoeff());
 
-            ASSERTMSG(r > 0, "extent ratio <= 0!" );
+            ApproxMVBB_ASSERTMSG(r > 0, "extent ratio <= 0!" );
             return r;
 
         }
@@ -664,10 +662,8 @@ namespace ApproxMVBB{
 
         using DerivedNode = TDerivedNode;
 
-        DEFINE_LAYOUT_CONFIG_TYPES
-
         using  SplitAxisType = char;
-        STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max());
+        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max());
 
         TreeNodeBase(std::size_t idx, const AABB<Dimension> & aabb, unsigned int treeLevel = 0)
             : m_idx(idx), m_aabb(aabb),  m_treeLevel(treeLevel), m_child{nullptr,nullptr} {
@@ -950,7 +946,7 @@ namespace ApproxMVBB{
             // if we have no boundary information
 
 
-            ASSERTMSG(m_bound, "To determine neighbours we need boundary information!")
+            ApproxMVBB_ASSERTMSG(m_bound, "To determine neighbours we need boundary information!")
 
             std::deque<TreeNode*> nodes; // Breath First Search
             auto & neighbours = neigbourIdx[m_idx]; // Get this neighbour map
@@ -1143,7 +1139,7 @@ namespace ApproxMVBB{
             }
 
             if( c.find(root->getIdx()) == c.end()) {
-                ERRORMSG("Root node not in NodeMap!")
+                ApproxMVBB_ERRORMSG("Root node not in NodeMap!")
             }
 
 
@@ -1157,24 +1153,24 @@ namespace ApproxMVBB{
                 auto itR = c.find(l.second.second);
 
                 if(it==itE || itL==itE || itR==itE) {
-                    ERRORMSG("Link at node idx: " << l.first << " wrong!")
+                    ApproxMVBB_ERRORMSG("Link at node idx: " << l.first << " wrong!")
                 }
 
                 if(!hasParent.emplace(l.second.first).second) {
-                    ERRORMSG("Node idx: " << l.second.first << "has already a parent!")
+                    ApproxMVBB_ERRORMSG("Node idx: " << l.second.first << "has already a parent!")
                 };
                 if(!hasParent.emplace(l.second.second).second) {
-                    ERRORMSG("Node idx: " << l.second.first << "has already a parent!")
+                    ApproxMVBB_ERRORMSG("Node idx: " << l.second.first << "has already a parent!")
                 };
                 if( !it->second || !itL->second || !itR->second) {
-                    ERRORMSG("Ptr for link zero")
+                    ApproxMVBB_ERRORMSG("Ptr for link zero")
                 }
                 it->second->m_child[0] = itL->second; // link left
                 it->second->m_child[1] = itR->second; // link right
             }
 
             if(hasParent.size() != c.size()-1) {
-                ERRORMSG("Tree needs to have N nodes, with one root, which gives N-1 parents!")
+                ApproxMVBB_ERRORMSG("Tree needs to have N nodes, with one root, which gives N-1 parents!")
             }
 
             // Save root as it is a valid binary tree
@@ -1200,7 +1196,7 @@ namespace ApproxMVBB{
         const NodeType * getLeaf(const MatrixBase<Derived> & point) const {
             EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dimension);
             // Recursively traverse tree to find the leaf which contains the point
-            ASSERTMSG(m_root, "Tree is not built!")
+            ApproxMVBB_ASSERTMSG(m_root, "Tree is not built!")
             const NodeType * currentNode = m_root;
 
             while(!currentNode->isLeaf()) {
@@ -1352,8 +1348,8 @@ namespace ApproxMVBB{
             XMLNodeType r = kdTreeNode.append_child("Root");
             XMLNodeType aabb = r.append_child("AABB");
             ss.str("");
-            ss << Utilities::typeToString(this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                    << Utilities::typeToString(this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+            ss << this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+               << this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
             aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
             // Save leafs
@@ -1366,8 +1362,8 @@ namespace ApproxMVBB{
                 node.append_attribute("idx").set_value(std::to_string(l->getIdx()).c_str());
                 aabb = node.append_child("AABB");
                 ss.str("");
-                ss << Utilities::typeToString(l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                        << Utilities::typeToString(l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+                ss << l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+                   << l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
                 aabb.append_child(nodePCData).set_value(ss.str().c_str());
             }
 
@@ -1393,8 +1389,8 @@ namespace ApproxMVBB{
                 }
 
                 if(!f->isLeaf()) {
-                    ss << Utilities::typeToString(f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                            << Utilities::typeToString(f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+                    ss << f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+                       << f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
                 }
 
                 // push the left/right
@@ -1584,7 +1580,7 @@ namespace ApproxMVBB{
 
 
             if((aabb.extent() <= 0.0).any()) {
-                ERRORMSG("AABB given has wrong extent!");
+                ApproxMVBB_ERRORMSG("AABB given has wrong extent!");
             }
             this->m_root = new NodeType(0,aabb,data.release());
 
@@ -1685,7 +1681,7 @@ namespace ApproxMVBB{
         std::unordered_map<std::size_t, std::unordered_set<std::size_t> >
         buildLeafNeighboursAutomatic() {
             if(!m_statistics.m_computedTreeStats) {
-                ERRORMSG("You did not compute statistics for this tree while constructing it!")
+                ApproxMVBB_ERRORMSG("You did not compute statistics for this tree while constructing it!")
             }
             buildLeafNeighbours<computeStatistics,safetyCheck>(m_statistics.m_minLeafExtent);
         }
@@ -1694,7 +1690,7 @@ namespace ApproxMVBB{
         std::unordered_map<std::size_t, std::unordered_set<std::size_t> >
         buildLeafNeighbours(PREC minExtent) {
             if(!this->m_root) {
-                ERRORMSG("There is not root node! KdTree not built!")
+                ApproxMVBB_ERRORMSG("There is not root node! KdTree not built!")
             }
 
             m_statistics.m_computedNeighbourStats = computeStatistics;
@@ -1766,14 +1762,17 @@ namespace ApproxMVBB{
         *   and want to update the comperator in between.
         */
         template <typename Container, typename Compare>
-        class KNearestPrioQueue : public std::priority_queue<typename NodeDataType::value_type,Container,Compare> {
+        class KNearestPrioQueue : public std::priority_queue<typename NodeDataType::PointListType::value_type,
+                                                             Container,
+                                                             Compare> {
         public:
 
             using value_type = typename Container::value_type;
 
-            STATIC_ASSERT((std::is_same< value_type,typename NodeDataType::value_type>::value));
+            ApproxMVBB_STATIC_ASSERT((std::is_same< value_type,
+                                      typename NodeDataType::PointListType::value_type>::value));
 
-            using Base = std::priority_queue<typename NodeDataType::value_type,Container,Compare>;
+            using Base = std::priority_queue<typename NodeDataType::PointListType::value_type,Container,Compare>;
 
             using iterator = typename Container::iterator;
             using reverse_iterator = typename Container::reverse_iterator;
@@ -1858,7 +1857,7 @@ namespace ApproxMVBB{
     public:
 
         template<typename TDistSq = EuclideanDistSq,
-                typename TContainer = StdVecAligned<typename NodeDataType::value_type>
+                typename TContainer = StdVecAligned<typename NodeDataType::PointListType::value_type>
                 >
         struct KNNTraits {
             using DistSqType     = EuclideanDistSq;
@@ -1883,7 +1882,7 @@ namespace ApproxMVBB{
         template<typename TKNNTraits>
         void getKNearestNeighbours( typename TKNNTraits::PrioQueue & kNearest) const {
 
-            STATIC_ASSERT( isKNNTraits<TKNNTraits>::value )
+            ApproxMVBB_STATIC_ASSERT( isKNNTraits<TKNNTraits>::value )
 
             kNearest.clear();
 
@@ -1897,7 +1896,7 @@ namespace ApproxMVBB{
             // reference point is distComp.m_ref
 
             // Debug set, will be optimized away in release
-            std::set<NodeType*> visitedLeafs;
+            // std::set<NodeType*> visitedLeafs;
 
             // Get leaf node and parent stack by traversing down the tree
             std::vector< ParentInfo > parents;
@@ -1917,7 +1916,7 @@ namespace ApproxMVBB{
                     currNode = currNode->leftNode();
                 }
             }
-            ASSERTMSG(currNode && currNode->isLeaf(), "currNode is nullptr!")
+            ApproxMVBB_ASSERTMSG(currNode && currNode->isLeaf(), "currNode is nullptr!")
             // currNode is a leaf !
 
             PREC d = 0.0;
@@ -1928,7 +1927,7 @@ namespace ApproxMVBB{
             while(currNode!=nullptr) {
 
                 currParentInfo = &parents.back();
-                ASSERTMSG(currNode, "currNode is nullptr!")
+                ApproxMVBB_ASSERTMSG(currNode, "currNode is nullptr!")
 
                 if( !currNode->isLeaf()) {
 
@@ -1952,7 +1951,7 @@ namespace ApproxMVBB{
                         // maxNorm ball overlaps left side or to little points
                         // visit left side!
                         currNode = currNode->leftNode(); // cannot be nullptr, since currNode is not leaf
-                        ASSERTMSG(currNode,"cannot be nullptr, since a leaf")
+                        ApproxMVBB_ASSERTMSG(currNode,"cannot be nullptr, since a leaf")
                         if (!currNode->isLeaf()) {
                             // add the parent if no leaf
                             parents.emplace_back(currNode);
@@ -1977,7 +1976,7 @@ namespace ApproxMVBB{
                         // maxNorm ball overlaps right side or to little points!
                         // visit right side!
                         currNode = currNode->rightNode();
-                        ASSERTMSG(currNode,"cannot be nullptr, since a leaf")
+                        ApproxMVBB_ASSERTMSG(currNode,"cannot be nullptr, since a leaf")
                         if (!currNode->isLeaf()) {
                             // add to parent
                             parents.emplace_back( currNode );
@@ -1993,9 +1992,9 @@ namespace ApproxMVBB{
 
                 } else {
                     // this is a leaf
-    //                    if(visitedLeafs.insert(currNode).second==false){
-    //                            ERRORMSG("leaf has already been visited!")
-    //                    }
+                    // if(visitedLeafs.insert(currNode).second==false){
+                    //  ApproxMVBB_ERRORMSG("leaf has already been visited!")
+                    // }
 
                     // get at least k nearst  points in this leaf and merge with kNearest list
                     if(currNode->size()>0) {
@@ -2071,8 +2070,8 @@ namespace ApproxMVBB{
             XMLNodeType r = kdTreeNode.child("Root");
             XMLNodeType aabb = r.append_child("AABB");
             ss.str("");
-            ss << Utilities::typeToString(this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                    << Utilities::typeToString(this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+            ss << this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+               << this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
             aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
             // Save leafs
@@ -2085,8 +2084,8 @@ namespace ApproxMVBB{
                 node.append_attribute("idx").set_value(std::to_string(l->getIdx()).c_str());
                 aabb = node.append_child("AABB");
                 ss.str("");
-                ss << Utilities::typeToString(l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                        << Utilities::typeToString(l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+                ss << l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+                   << l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
                 aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
                 node = node.append_child("Points");
@@ -2119,8 +2118,8 @@ namespace ApproxMVBB{
                 }
 
                 if(!f->isLeaf()) {
-                    ss << Utilities::typeToString(f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() <<" "
-                            << Utilities::typeToString(f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep)).c_str() << "\n";
+                    ss << f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
+                       << f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
                 }
 
                 // push the left/right
@@ -2174,7 +2173,7 @@ namespace ApproxMVBB{
         void safetyCheckNeighbours(const NeighbourMap & n, PREC minExtent) {
 
             if(n.size() != this->m_leafs.size()) {
-                ERRORMSG("Safety check for neighbours failed!: size")
+                ApproxMVBB_ERRORMSG("Safety check for neighbours failed!: size")
             }
 
             bool ok = true;
@@ -2187,24 +2186,24 @@ namespace ApproxMVBB{
                 // check against neighbours ( if all neighbours really overlap )
                 auto it = n.find(p.first); // get neighbours for this leaf
                 if(it == n.end()) {
-                    ERRORMSG("Safety check: Leaf idx" << p.first << " not in neighbour map!")
+                    ApproxMVBB_ERRORMSG("Safety check: Leaf idx" << p.first << " not in neighbour map!")
                 }
 
                 for(const auto & idx : it->second ) {
                     if(this->m_leafs.find(idx) == this->m_leafs.end()) {
-                        ERRORMSG("Safety check: Neighbour idx" << idx << " not in leafs map!")
+                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " not in leafs map!")
                     }
                     // check if this neighbour overlaps
                     if( ! t.overlaps( this->m_leafs[idx]->aabb() ) ) {
-                        ERRORMSG("Safety check: Leaf idx: " << idx << " does not overlap " << p.first)
+                        ApproxMVBB_ERRORMSG("Safety check: Leaf idx: " << idx << " does not overlap " << p.first)
                     }
                     // check if this neighbours also has this leaf as neighbour
                     auto nIt = n.find(idx);
                     if(nIt == n.end()) {
-                        ERRORMSG("Safety check: Neighbour idx" << idx << " not in neighbour map!")
+                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " not in neighbour map!")
                     }
                     if(nIt->second.find(p.first) == nIt->second.end() ) {
-                        ERRORMSG("Safety check: Neighbour idx" << idx   << " does not have leaf idx: " << p.first << " as neighbour")
+                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx   << " does not have leaf idx: " << p.first << " as neighbour")
                     }
                 }
             }
@@ -2218,6 +2217,7 @@ namespace ApproxMVBB{
 
         using PointDataTraits = TTraits;
         static const unsigned int Dim = PointDataTraits::Dimension;
+        using PointListType = typename PointDataTraits::PointListType;
         using PointType = typename PointDataTraits::PointType;
         using PointGetter = typename PointDataTraits::PointGetter;
 
@@ -2234,7 +2234,7 @@ namespace ApproxMVBB{
                 std::size_t allowSplitAboveNPoints = 10 ):
             m_kNeighboursMean(kNeighboursMean), m_stdDevMult(stdDevMult), m_allowSplitAboveNPoints(allowSplitAboveNPoints) {
             if(m_kNeighboursMean==0) {
-                ERRORMSG("kNeighboursMean is zero! (needs to be >=1)")
+                ApproxMVBB_ERRORMSG("kNeighboursMean is zero! (needs to be >=1)")
             }
         }
 
@@ -2250,14 +2250,11 @@ namespace ApproxMVBB{
                 typename DistSq = EuclideanDistSq,
                 typename = typename std::enable_if<ContainerTags::has_randomAccessIterator<Container>::value>::type
                 >
-        void filter(Container & points,
-                const AABB<Dim> & aabb,
-                Container & output,
-                bool invert=false) {
+        void filter(Container & points, const AABB<Dim> & aabb, Container & output, bool invert=false) {
 
-            STATIC_ASSERTM( (std::is_same< typename Container::value_type,
-                    typename PointDataTraits::value_type>::value),
-                    "Container value_type needs to be the same as value_type of PointDataTraits!")
+            ApproxMVBB_STATIC_ASSERTM( (std::is_same< typename Container::value_type,
+                                        typename PointListType::value_type>::value),
+                                        "Container value_type needs to be the same as value_type of PointDataTraits!")
 
             // Make kdTree;
             Tree tree;
@@ -2338,7 +2335,7 @@ namespace ApproxMVBB{
             // all points which where invalid are left untouched since m_nearestDists[i] == 0
             output.resize(points.size());
             std::size_t nPointsOut = 0;
-            if(invert) {
+            if(!invert) {
                 for(std::size_t i = 0; i < nPoints; ++i) {
                     if (m_nearestDists[i] < distanceThreshold) {
                         // no outlier add to list

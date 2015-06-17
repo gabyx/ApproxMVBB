@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef GeometryPredicates_Rounding_hpp
-#define GeometryPredicates_Rounding_hpp
+#ifndef ApproxMVBB_GeometryPredicates_Rounding_hpp
+#define ApproxMVBB_GeometryPredicates_Rounding_hpp
 
 #include <type_traits>
 

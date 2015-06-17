@@ -12,8 +12,8 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef META_FWD_HPP
-#define META_FWD_HPP
+#ifndef ApproxMVBB_meta_meta_fwd_hpp
+#define ApproxMVBB_meta_meta_fwd_hpp
 
 namespace meta
 {

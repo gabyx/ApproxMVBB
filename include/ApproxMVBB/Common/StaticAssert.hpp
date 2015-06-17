@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef MVBB_Common_StaticAssert_hpp
-#define MVBB_Common_StaticAssert_hpp
+#ifndef ApproxMVBB_Common_StaticAssert_hpp
+#define ApproxMVBB_Common_StaticAssert_hpp
 
 
 #include <type_traits>

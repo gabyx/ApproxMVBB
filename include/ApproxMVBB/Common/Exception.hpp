@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef MVBB_Common_Exception_hpp
-#define MVBB_Common_Exception_hpp
+#ifndef ApproxMVBB_Common_Exception_hpp
+#define ApproxMVBB_Common_Exception_hpp
 
 #include <stdexcept>
 #include <exception>
@@ -24,7 +24,7 @@ namespace ApproxMVBB{
     };
 };
 
-#define ApproxMVBB_THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw Exception(___s___);}
+#define ApproxMVBB_THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw ApproxMVBB::Exception(___s___);}
 
 
 

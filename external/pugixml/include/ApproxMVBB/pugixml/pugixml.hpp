@@ -19,8 +19,8 @@
 // Include user configuration file (this can define various configuration macros)
 #include "pugiconfig.hpp"
 
-#ifndef HEADER_PUGIXML_HPP
-#define HEADER_PUGIXML_HPP
+#ifndef ApproxMVBB_pugixml_pugixml_hpp
+#define ApproxMVBB_pugixml_pugixml_hpp
 
 // Include stddef.h for size_t and ptrdiff_t
 #include <stddef.h>

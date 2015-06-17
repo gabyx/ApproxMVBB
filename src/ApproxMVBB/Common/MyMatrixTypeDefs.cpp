@@ -8,10 +8,12 @@
 // ========================================================================================
 
 #include "ApproxMVBB/Config/Config.hpp"
-#include ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE
+#include "ApproxMVBB/Common/MyMatrixTypeDefs.hpp"
 
 namespace ApproxMVBB{
-    Eigen::IOFormat MyMatrixIOFormat::Matlab(Eigen::FullPrecision, 0, ", ", ";\n", "", "", "[", "]");
-    Eigen::IOFormat MyMatrixIOFormat::CommaSep(Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n", "", "", "", "");
-    Eigen::IOFormat MyMatrixIOFormat::SpaceSep(Eigen::FullPrecision, Eigen::DontAlignCols, " ", "\n", "", "", "", "");
+
+        const Eigen::IOFormat MyMatrixIOFormat::Matlab = Eigen::IOFormat(Eigen::FullPrecision, 0, ", ", ";\n", "", "", "[", "]");
+        const Eigen::IOFormat MyMatrixIOFormat::CommaSep = Eigen::IOFormat(Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n", "", "", "", "");
+        const Eigen::IOFormat MyMatrixIOFormat::SpaceSep = Eigen::IOFormat(Eigen::FullPrecision, Eigen::DontAlignCols, " ", "\n", "", "", "", "");
+
 };

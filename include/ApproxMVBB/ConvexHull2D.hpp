@@ -30,7 +30,7 @@ namespace ApproxMVBB{
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         ApproxMVBB_DEFINE_MATRIX_TYPES
-        DEFINE_POINTS_CONFIG_TYPES
+        ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
         /** Cosntructor, points is not a temporary, it accepts all sorts of matrix expressions,
         * however the construction of MatrixRef<> might create a temporary but this is stored in m_p!
