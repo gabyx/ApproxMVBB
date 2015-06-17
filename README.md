@@ -187,8 +187,8 @@ Look at the examples in ``examples/kdTreeFiltering`` which produced the followin
 ``VisualizationKdTree.ipynb``.
 
 <p align="center">
-<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" tag="Bunny Kd-Tree Special Split Optimization"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"   width="200"/></a>
-<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="200"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" tag="Bunny Kd-Tree Special Split Optimization"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"   width="300px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
 </p>
 
 
