@@ -1,0 +1,72 @@
+language: cpp
+
+script: cmake
+
+compiler:
+ - clang
+ - gcc
+
+env:
+  global:
+    - GCC_VERSION="4.9"
+
+    # biicode credentials 
+    - BIICODE_USER="gabyx"
+
+
+# Install dependencies
+before_install:
+  - export CHECKOUT_PATH=`pwd`;
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -qq
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq -y --force-yes g++-${GCC_VERSION}; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+
+  # Install libc++ if tests are run with clang++
+  - if [ "$CXX" == "clang++" ]; then export LIBCXX=On; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd libcxx/lib && bash buildit; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo mkdir /usr/include/c++/v1; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
+  - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+
+  # Install eigen3
+  - hg clone https://bitbucket.org/eigen/eigen/ /eigen3
+  - mkdir /eigenBuild
+  - cd /eigenBuild
+  - cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=/usr/
+  - make VERBOSE=1 install
+  
+
+install:
+  - cd $CHECKOUT_PATH
+  - if [ ! -d build ]; then mkdir build; fi
+  - cd build
+  - export CXX_FLAGS=""
+  - export CXX_LINKER_FLAGS=""
+  - if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
+  - if [ "$CXX" == "clang++" ]; then CXX_FLAGS="${CXX_FLAGS} ; fi
+  - if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"; fi
+  - if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_FLAGS} -L/usr/lib/ -lc++"; fi
+
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
+  - make VERBOSE=1
+
+  #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
+  #- bii --version
+
+script:
+  #- ctest -VV
+
+after_success:
+  - cd $CHECKOUT_PATH
+  - git reset --hard HEAD # Discard build artifacts
+  - git clean -df # Discard build artifacts
+  #- bii init -l
+  #- bii user $BIICODE_USER -p $BIICODE_PASSWORD
+  #- if [ -n "$BIICODE_PASSWORD" ]; then bii publish -r; fi
+
+notifications:
+  email: false
