@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef GeometryPredicates_Predicates_hpp
-#define GeometryPredicates_Predicates_hpp
+#ifndef ApproxMVBB_GeometryPredicates_Predicates_hpp
+#define ApproxMVBB_GeometryPredicates_Predicates_hpp
 
 namespace GeometryPredicates{
 

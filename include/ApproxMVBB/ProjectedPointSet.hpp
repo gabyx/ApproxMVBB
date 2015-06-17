@@ -28,7 +28,7 @@ class APPROXMVBB_EXPORT ProjectedPointSet {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     ApproxMVBB_DEFINE_MATRIX_TYPES
-    DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
     template<typename Derived>
     OOBB computeMVBBApprox(const Vector3 & zDir,

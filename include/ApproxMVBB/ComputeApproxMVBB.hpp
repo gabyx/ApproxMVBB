@@ -24,7 +24,7 @@
 namespace ApproxMVBB {
 
     ApproxMVBB_DEFINE_MATRIX_TYPES
-    DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
 /** We are given a point set, and (hopefully) a tight fitting
 *   bounding box. We compute a sample of the given size nPoints that represents

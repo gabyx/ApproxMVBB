@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef Diameter_TypeSegement_hpp
-#define Diameter_TypeSegement_hpp
+#ifndef ApproxMVBB_Diameter_TypeSegment_hpp
+#define ApproxMVBB_Diameter_TypeSegment_hpp
 
 namespace Diameter{
 

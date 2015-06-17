@@ -9,7 +9,18 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.  
 This small standart compliant C++11 library can either be built into a shared object library 
-or directly be included in an existing C++ project. It includes code for computing the ConvexHull in 2D and the minimal area rectangle of a 2D point cloud as well.
+or directly be included in an existing C++ project. 
+It includes code for :
+    
+- computing an approximation of an oriented minimal volume box,
+- computing the convex hull of a point cloud in 2d,
+- computing the minimal area rectangle of a 2d point cloud,
+- 2d projections of point clouds,
+- fast building a kD-Tree (n-dimensional, templated) with sophisticated splitting techniques which optimizes a 
+  quality criteria during the splitting process,
+- computing the k-nearest neighbours to a given point (kNN search) via kd-Tree.
+- fast statistical outlier filtering of point clouds via (nearest neighbour search, kD-Tree).
+
 
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
 
@@ -112,9 +123,9 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
-**Generating a KdTree from the OOBB: (to come!)**
-The library will (in the future) include a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, but was written to fullfill this aspects to a certain level, CGAL and ANN libraries seem faster)
-The KdTree splitting heuristic implements a sophisticated splitting optimization and an adaptable quality evaluator which in the most elaborate, performance worst case consists of searching for the best split between the splitting heuristics ``MIDPOINT``,``MEDIAN`` and``GEOMETRIC_MEAN``  by evaluating a user-provided quality evaluator.
+
+
+
 
 ---------------------------
 Function Parameters & How It Works
@@ -148,6 +159,35 @@ computes an approximation of the minimal volume bounding box in the following st
    of finding the minimal rectangle (axis ``u`` and ``v`` in world frame) of the projected point cloud in the plane perpendicular to direction ``g``. The minimal bounding box ``G`` in direction ``g`` can be computed from the basis ``(u,v,g)`` and is a candidate for the overall minimzation problem.
    Each found minimal bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points namely ``RS`` ).
 7. The final approximation for the mininmal volume bounding box (minimal volume over all computed candiadates) is returned. :poop:
+
+
+
+---------------------------
+Generating a KdTree and Outlier Filtering
+---------------------------
+
+The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
+but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
+can really well compete with famous implementations such as ANN,FLANN, CGAL )
+The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
+which in the most elaborate, performance worst case consists of 
+searching for the best split between the splitting heuristics ` `MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN`` 
+by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` 
+which computes the split quality 
+by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
+
+Outlier filtering is done with the k-nearest neighbour search algorithm and works roughly as the following:
+The algorithm finds for each point ``p`` in the point cloud ``k``  nearest neighbours and averages their distance (distance functor) to the point ``p`` 
+to obtain a mean distance ``distance`` for this particular point.
+All nearest mean distances for all points give a histogram with a sample mean ``mean`` and sample standart deviation ``stdDev``.
+All points which have a mean nearest neighbour distance greater or equal to ``mean + stdDevMult * stdDev`` 
+are classified as outlier points.
+
+Look at the examples in ``examples/kdTreeFiltering`` which produced the following pictures with the provided visualization notebook
+``VisualizationKdTree.ipynb``.
+![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") 
+![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
+
 
 ---------------------------
 Building and Visualizing the Tests

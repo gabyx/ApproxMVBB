@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef MVBB_MakeCoordinateSystem_hpp
-#define MVBB_MakeCoordinateSystem_hpp
+#ifndef ApproxMVBB_MakeCoordinateSystem_hpp
+#define ApproxMVBB_MakeCoordinateSystem_hpp
 
 #include <cmath>
 #include "ApproxMVBB/Config/Config.hpp"

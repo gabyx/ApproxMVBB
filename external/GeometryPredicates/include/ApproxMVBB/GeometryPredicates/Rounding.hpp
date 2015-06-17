@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef GeometryPredicates_Rounding_hpp
-#define GeometryPredicates_Rounding_hpp
+#ifndef ApproxMVBB_GeometryPredicates_Rounding_hpp
+#define ApproxMVBB_GeometryPredicates_Rounding_hpp
 
 #include <type_traits>
 
@@ -16,8 +16,8 @@
 #include "ApproxMVBB/GeometryPredicates/xpfpa.h"
 
 
-#define STR1(x)   #x
-#define STRINGIFY(x)  STR1((x))
+#define STR1(x)   #x 
+#define STRINGIFY(x)  STR1((x)) 
 
 
 /** Define static state variables for the floating point unit */

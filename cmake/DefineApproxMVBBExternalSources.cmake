@@ -99,3 +99,46 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC
     message(STATUS "====================================================")
 
 ENDMACRO()
+
+
+MACRO(INCLUDE_PUGIXML_SOURCE  SRC INC INCLUDE_DIRS
+                              ROOT_DIR #input
+                              ApproxMVBB_ROOT_DIR #input
+                              ApproxMVBB_BINARY_DIR #input
+                              )
+    message(STATUS "Adding  ApproxMVBB - PugiXML ======================")
+    SET(${SRC}
+    )
+
+    SET(${INC}
+        ${ROOT_DIR}/include/ApproxMVBB/pugixml/pugixml.hpp
+    )
+
+    SET(${INCLUDE_DIRS}
+        ${ROOT_DIR}/include/
+    )
+    
+    message(STATUS "====================================================")
+
+ENDMACRO()
+
+MACRO(INCLUDE_META_SOURCE  SRC INC INCLUDE_DIRS
+                              ROOT_DIR #input
+                              ApproxMVBB_ROOT_DIR #input
+                              ApproxMVBB_BINARY_DIR #input
+                              )
+    message(STATUS "Adding  ApproxMVBB - Meta ======================")
+    SET(${SRC}
+    )
+
+    SET(${INC}
+        ${ROOT_DIR}/include/ApproxMVBB/meta/meta.hpp
+    )
+
+    SET(${INCLUDE_DIRS}
+        ${ROOT_DIR}/include/
+    )
+    
+    message(STATUS "====================================================")
+
+ENDMACRO()

@@ -27,10 +27,10 @@ namespace TypeDefsPoints {
 };
 };
 
-#define DEFINE_POINTS_CONFIG_TYPES \
-    using Vector3List = TypeDefsPoints::Vector3List; \
-    using Vector2List = TypeDefsPoints::Vector2List;\
-    using Matrix3Dyn  = TypeDefsPoints::Matrix3Dyn;\
-    using Matrix2Dyn  = TypeDefsPoints::Matrix2Dyn;
+#define ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES \
+    using Vector3List = ApproxMVBB::TypeDefsPoints::Vector3List; \
+    using Vector2List = ApproxMVBB::TypeDefsPoints::Vector2List;\
+    using Matrix3Dyn  = ApproxMVBB::TypeDefsPoints::Matrix3Dyn;\
+    using Matrix2Dyn  = ApproxMVBB::TypeDefsPoints::Matrix2Dyn;
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef HEADER_EFA0D2C8E00D2B6D
-#define HEADER_EFA0D2C8E00D2B6D
+#ifndef ApproxMVBB_GeometryPredicates_xpfpa_h
+#define ApproxMVBB_GeometryPredicates_xpfpa_h
 
 /* Cross Platform Floating Point Arithmetics
 

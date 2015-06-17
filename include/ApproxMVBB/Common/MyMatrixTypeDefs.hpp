@@ -7,8 +7,10 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef ApproxMVBB_Common_MyMatrixDefs_hpp
-#define ApproxMVBB_Common_MyMatrixDefs_hpp
+#ifndef ApproxMVBB_Common_MyMatrixTypeDefs_hpp
+#define ApproxMVBB_Common_MyMatrixTypeDefs_hpp
+
+#include "ApproxMVBB/Common/Platform.hpp"
 
 //#define EIGEN_DONT_VECTORIZE
 //#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
@@ -92,11 +94,12 @@ struct MyMatrix {
 };
 
 
-struct MyMatrixIOFormat {
-    static Eigen::IOFormat Matlab;
-    static Eigen::IOFormat CommaSep;
-    static Eigen::IOFormat SpaceSep;
+struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
+     static const  Eigen::IOFormat Matlab;
+     static const  Eigen::IOFormat CommaSep;
+     static const  Eigen::IOFormat SpaceSep;
 };
+
 };
 
 
@@ -118,8 +121,8 @@ struct MyMatrixIOFormat {
    \
    template<int M> using MatrixStatDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixStatDyn<M>; \
    template<int N> using MatrixDynStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDynStat<N>; \
-   template<unsigned int M,unsigned int N> using MatrixStatStat = typename MyMatrix< _PREC_ >::template MatrixStatStat<M,N>; \
-   template<unsigned int M> using VectorStat = typename MyMatrix< _PREC_ >::template VectorStat<M>; \
+   template<unsigned int M,unsigned int N> using MatrixStatStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixStatStat<M,N>; \
+   template<unsigned int M> using VectorStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template VectorStat<M>; \
    \
    template<typename Derived> using MatrixBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixBase<Derived>; \
    template<typename Derived> using MatrixDenseBase = typename ApproxMVBB::MyMatrix< _PREC_ >::template MatrixDenseBase<Derived>; \
@@ -130,11 +133,11 @@ struct MyMatrixIOFormat {
    template<typename Key, typename EigenType> \
    using StdMapAligned = typename ApproxMVBB::MyMatrix< _PREC_ >::template StdMapAligned<Key, EigenType >; \
    \
-   template<typename Derived> using ArrayBase  = typename MyMatrix< _PREC_ >::template ArrayBase<Derived>; \
-   template<unsigned int M> using ArrayStatDyn = typename MyMatrix< _PREC_ >::template ArrayStatDyn<M>; \
-   template<unsigned int N> using ArrayDynStat = typename MyMatrix< _PREC_ >::template ArrayDynStat<N>; \
-   template<unsigned int M,unsigned int N> using ArrayStatStat = typename MyMatrix< _PREC_ >::template ArrayStatStat<M,N>; \
-   template<unsigned int M> using ArrayStat = typename MyMatrix< _PREC_ >::template ArrayStat<M>; \
+   template<typename Derived> using ArrayBase  = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayBase<Derived>; \
+   template<unsigned int M> using ArrayStatDyn = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayStatDyn<M>; \
+   template<unsigned int N> using ArrayDynStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayDynStat<N>; \
+   template<unsigned int M,unsigned int N> using ArrayStatStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayStatStat<M,N>; \
+   template<unsigned int M> using ArrayStat = typename ApproxMVBB::MyMatrix< _PREC_ >::template ArrayStat<M>; \
    using Array3 = typename ApproxMVBB::MyMatrix< _PREC_ >::Array3;   \
    using Array2 = typename ApproxMVBB::MyMatrix< _PREC_ >::Array2; \
    \

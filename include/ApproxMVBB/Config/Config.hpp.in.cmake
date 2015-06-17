@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef ApproxMVBB_Config_Config_hpp
-#define ApproxMVBB_Config_Config_hpp
+#ifndef ApproxMVBB_Config_Config_hpp_in_cmake
+#define ApproxMVBB_Config_Config_hpp_in_cmake
 
 // Settings for the ApproxMVBB Library
 

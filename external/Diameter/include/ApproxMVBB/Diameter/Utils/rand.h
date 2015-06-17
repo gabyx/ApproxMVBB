@@ -7,8 +7,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef Diameter_Utils_rand_h
-#define Diameter_Utils_rand_h
+#ifndef ApproxMVBB_Diameter_Utils_rand_h
+#define ApproxMVBB_Diameter_Utils_rand_h
 
 /*************************************************************************
  *  -

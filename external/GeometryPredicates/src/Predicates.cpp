@@ -130,9 +130,10 @@ namespace GeometryPredicates{
 
 
     /** Use header file generated automatically by PredicatesInit. */
-    #define USE_PREDICATES_INIT
+    #define USE_PREDICATES_INIT 
 
-    #ifdef USE_PREDICATES_INIT
+
+    #ifdef USE_PREDICATES_INIT 
         #include "ApproxMVBB/GeometryPredicates/PredicatesInit.hpp"
     #endif
 
@@ -143,7 +144,7 @@ namespace GeometryPredicates{
     /*   which is disastrously slow.  A faster way on IEEE machines might be to  */
     /*   mask the appropriate bit, but that's difficult to do in C.              */
 
-    #define Absolute(a)  ((a) >= 0.0 ? (a) : -(a))
+    #define Absolute(a)  ((a) >= 0.0 ? (a) : -(a)) 
     /* #define Absolute(a)  fabs(a) */
 
     /* Many of the operations are broken up into two pieces, a main part that    */
