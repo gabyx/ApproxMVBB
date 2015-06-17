@@ -23,8 +23,8 @@ It includes code for :
 
 
 <p align="center">
-<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" tag="Bunny"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png"   height="300px"/></a>
-<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" tag="Cube"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png"  height="300px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" tag="Bunny"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png"   height="300px" border="10px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" tag="Cube"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png"  height="300px" border="10px"/></a>
 </p>
 
 ---------------------------
