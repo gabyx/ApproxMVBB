@@ -22,10 +22,8 @@ It includes code for :
 - fast statistical outlier filtering of point clouds via (nearest neighbour search, kD-Tree).
 
 
-    
-
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
-![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
+
 ---------------------------
 Installation & Dependencies
 ---------------------------
@@ -185,8 +183,10 @@ All nearest mean distances for all points give a histogram with a sample mean ``
 All points which have a mean nearest neighbour distance greater or equal to ``mean + stdDevMult * stdDev`` 
 are classified as outlier points.
 
-Look at the examples in ``examples/kdTreeFiltering``.
-
+Look at the examples in ``examples/kdTreeFiltering`` which produced the following pictures with the provided visualization notebook
+``VisualizationKdTree.ipynb``.
+![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") 
+![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
 
 
 ---------------------------
