@@ -22,7 +22,10 @@ It includes code for :
 - fast statistical outlier filtering of point clouds via (nearest neighbour search, kD-Tree).
 
 
-![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
+<p align="center">
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" tag="Bunny"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png"   height="300px" border="10px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" tag="Cube"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png"  height="300px" border="10px"/></a>
+</p>
 
 ---------------------------
 Installation & Dependencies
@@ -184,9 +187,12 @@ All points which have a mean nearest neighbour distance greater or equal to ``me
 are classified as outlier points.
 
 Look at the examples in ``examples/kdTreeFiltering`` which produced the following pictures with the provided visualization notebook
-``VisualizationKdTree.ipynb``.
-![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") 
-![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
+``examples/kdTreeFiltering/python/VisualizeKdTree.ipynb``.
+
+<p align="center">
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" tag="Bunny Kd-Tree Special Split Optimization"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"   width="300px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
+</p>
 
 
 ---------------------------
