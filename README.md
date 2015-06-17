@@ -22,7 +22,10 @@ It includes code for :
 - fast statistical outlier filtering of point clouds via (nearest neighbour search, kD-Tree).
 
 
-![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
+<p align="center">
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" tag="Bunny"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"   width="300px"/></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" tag="Cube"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
+</p>
 
 ---------------------------
 Installation & Dependencies
