@@ -40,5 +40,6 @@ int  main( int  argc, char  ** argv ) {
               << "---> lower point in OOBB frame: " << oobb.m_minPoint.transpose() << std::endl
               << "---> upper point in OOBB frame: " << oobb.m_maxPoint.transpose() << std::endl;
 
+
     return 0;
 }

@@ -16,8 +16,8 @@
 #include "ApproxMVBB/GeometryPredicates/xpfpa.h"
 
 
-#define STR1(x)   #x
-#define STRINGIFY(x)  STR1((x))
+#define STR1(x)   #x 
+#define STRINGIFY(x)  STR1((x)) 
 
 
 /** Define static state variables for the floating point unit */
