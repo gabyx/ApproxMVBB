@@ -185,8 +185,11 @@ are classified as outlier points.
 
 Look at the examples in ``examples/kdTreeFiltering`` which produced the following pictures with the provided visualization notebook
 ``VisualizationKdTree.ipynb``.
+
+<p align="center">
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") 
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
+</p>
 
 
 ---------------------------
