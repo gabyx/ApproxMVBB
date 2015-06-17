@@ -187,7 +187,7 @@ All points which have a mean nearest neighbour distance greater or equal to ``me
 are classified as outlier points.
 
 Look at the examples in ``examples/kdTreeFiltering`` which produced the following pictures with the provided visualization notebook
-``VisualizeKdTree.ipynb``.
+``examples/kdTreeFiltering/python/VisualizeKdTree.ipynb``.
 
 <p align="center">
 <a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" tag="Bunny Kd-Tree Special Split Optimization"  target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"   width="300px"/></a>
