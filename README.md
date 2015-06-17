@@ -9,10 +9,20 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.  
 This small standart compliant C++11 library can either be built into a shared object library 
-or directly be included in an existing C++ project. It includes code for computing the ConvexHull in 2D and the minimal area rectangle of a 2D point cloud as well.
+or directly be included in an existing C++ project. 
+It includes code for :
+    
+    - computing an approximation of an oriented minimal volume box,
+    - computing the convex hull of a point cloud in 2d,
+    - computing the minimal area rectangle of a 2d point cloud,
+    - 2d projections of point clouds,
+    - fast building a kD-Tree (n-dimensional, templated) with sophisticated splitting techniques which optimizes a 
+      quality criteria during the splitting process,
+    - fast statistical outlier filtering of point clouds via kD-Tree,
+    
 
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
-
+![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png "Bunny Kd-Tree Special Split Optimization") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png "Bunny Kd-Tree, simple midpoint split")
 ---------------------------
 Installation & Dependencies
 ---------------------------

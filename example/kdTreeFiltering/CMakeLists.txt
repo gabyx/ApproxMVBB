@@ -34,5 +34,12 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND 
           ${CMAKE_COMMAND}
           -E
-          copy ${ApproxMVBB_ROOT_DIR}/tests/files/Bunny.txt ${PROJECT_BINARY_DIR}
+          copy ${ApproxMVBB_ROOT_DIR}/tests/files/Bunny.txt  ${PROJECT_BINARY_DIR}
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND 
+          ${CMAKE_COMMAND}
+          -E
+          copy_directory ${PROJECT_SOURCE_DIR}/python ${PROJECT_BINARY_DIR}
 )

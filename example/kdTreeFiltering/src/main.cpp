@@ -101,20 +101,20 @@ int  main( int  argc, char  ** argv ) {
                 2.0, /* pointratio (maximized by MEDIAN)*/
                 1.0);/* extentratio (maximized by MidPoint)*/
 
-        PREC minExtent = 0.01; // box extents are bigger than this!
-        PREC allowSplitAboveNPoints = 10;
+        PREC minExtent = 0.001; // box extents are bigger than this!
+        PREC allowSplitAboveNPoints = 2;
         tree.initSplitHeuristic( std::initializer_list<SplitHeuristicType::Method> {
             SplitHeuristicType::Method::MEDIAN,
             SplitHeuristicType::Method::GEOMETRIC_MEAN,
             SplitHeuristicType::Method::MIDPOINT
         },
         allowSplitAboveNPoints, minExtent,
-        SplitHeuristicType::SearchCriteria::FIND_BEST, e,
+        SplitHeuristicType::SearchCriteria::FIND_FIRST, e,
         0.0, 0.0, 0.1);
 
         auto rootData = std::unique_ptr<NodeDataType>(new NodeDataType(t.begin(),t.end()));
 
-        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 600 /*max leafs*/);
+        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 5000 /*max leafs*/);
 
         std::cout << tree.getStatisticsString() << std::endl;
 

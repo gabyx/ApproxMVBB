@@ -197,6 +197,19 @@ namespace ApproxMVBB{
             return ss.str();
         }
 
+
+        using XMLNodeType = pugi::xml_node;
+
+        void saveToXML(XMLNodeType & root){
+            static const auto nodePCData = pugi::node_pcdata;
+            XMLNodeType node = root.append_child("Points");
+            std::stringstream ss;
+            for(auto & p : *this){
+                ss << PointGetter::get(p).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+            }
+            node.append_child(nodePCData).set_value( ss.str().c_str() );
+        }
+
     private:
         iterator m_begin,m_end; ///< The actual range of m_points which this node contains
 
@@ -2058,20 +2071,27 @@ namespace ApproxMVBB{
 
         using XMLNodeType = pugi::xml_node;
 
-        void saveToXML(XMLNodeType root) {
+        void saveToXML(XMLNodeType & root, bool aligned = true,
+                       const Matrix33 & A_IK = Matrix33::Identity(),
+                       bool exportPoints = false) {
+
             static const auto nodePCData = pugi::node_pcdata;
 
             std::stringstream ss;
             XMLNodeType node;
             XMLNodeType kdTreeNode = root.append_child("KdTree");
 
-            kdTreeNode.attribute("aligned").set_value( true );
+            kdTreeNode.append_attribute("aligned").set_value( aligned );
 
-            XMLNodeType r = kdTreeNode.child("Root");
+            XMLNodeType a = kdTreeNode.append_child("A_IK");
+            ss << A_IK.format(MyMatrixIOFormat::SpaceSep);
+            a.append_child(nodePCData).set_value(ss.str().c_str());
+
+            XMLNodeType r = kdTreeNode.append_child("Root");
             XMLNodeType aabb = r.append_child("AABB");
             ss.str("");
             ss << this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
-               << this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
+               << this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep);
             aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
             // Save leafs
@@ -2085,15 +2105,12 @@ namespace ApproxMVBB{
                 aabb = node.append_child("AABB");
                 ss.str("");
                 ss << l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
-                   << l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
+                   << l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep);
                 aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
-                node = node.append_child("Points");
-    //            ss.str("");
-    //            for(auto * p : *(l->data())){
-    //                ss << p->transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-    //            }
-                //node.append_child(nodePCData).set_value( ss.str().c_str() );
+                if(l->data() && exportPoints){
+                    l->data()->saveToXML(node);
+                }
             }
 
             // Save AABB tree (breath first)
