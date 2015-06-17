@@ -12,13 +12,13 @@ This small standart compliant C++11 library can either be built into a shared ob
 or directly be included in an existing C++ project. 
 It includes code for :
     
-    - computing an approximation of an oriented minimal volume box,
-    - computing the convex hull of a point cloud in 2d,
-    - computing the minimal area rectangle of a 2d point cloud,
-    - 2d projections of point clouds,
-    - fast building a kD-Tree (n-dimensional, templated) with sophisticated splitting techniques which optimizes a 
-      quality criteria during the splitting process,
-    - fast statistical outlier filtering of point clouds via kD-Tree,
+- computing an approximation of an oriented minimal volume box,
+- computing the convex hull of a point cloud in 2d,
+- computing the minimal area rectangle of a 2d point cloud,
+- 2d projections of point clouds,
+- fast building a kD-Tree (n-dimensional, templated) with sophisticated splitting techniques which optimizes a 
+  quality criteria during the splitting process,
+- fast statistical outlier filtering of point clouds via kD-Tree
     
 
 ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png "Bunny") ![alt text](https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png "Cube")
