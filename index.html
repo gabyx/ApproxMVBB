@@ -1,42 +1,32 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="ApproxMVBB : Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>ApproxMVBB</title>
+    <meta charset="UTF-8">
+    <title>ApproxMVBB by gabyx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">ApproxMVBB</h1>
+      <h2 class="project-tagline">Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
+      <a href="https://github.com/gabyx/ApproxMVBB" class="btn">View on GitHub</a>
+      <a href="https://github.com/gabyx/ApproxMVBB/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/gabyx/ApproxMVBB/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/gabyx/ApproxMVBB">View on GitHub</a>
-
-          <h1 id="project_title">ApproxMVBB</h1>
-          <h2 id="project_tagline">Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/gabyx/ApproxMVBB/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/gabyx/ApproxMVBB/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1></h1>
+    <section class="main-content">
+      <h1></h1>
 
 <h1>
 <a id="approxmvbb" class="anchor" href="#approxmvbb" aria-hidden="true"><span class="octicon octicon-link"></span></a>ApproxMVBB</h1>
 
-<hr>
+<h2>
+<a id="-1" class="anchor" href="#-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://travis-ci.org/gabyx/ApproxMVBB"><img src="https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master" alt="Build Status"></a>
+</h2>
 
 <h2>
 <a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
@@ -44,9 +34,24 @@
 <p>Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.<br>
 This small standart compliant C++11 library can either be built into a shared object library 
-or directly be included in an existing C++ project. It includes code for computing the ConvexHull in 2D and the minimal area rectangle of a 2D point cloud as well.</p>
+or directly be included in an existing C++ project. 
+It includes code for :</p>
 
-<p><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" alt="alt text" title="Bunny"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" alt="alt text" title="Cube"></p>
+<ul>
+<li>computing an approximation of an oriented minimal volume box,</li>
+<li>computing the convex hull of a point cloud in 2d,</li>
+<li>computing the minimal area rectangle of a 2d point cloud,</li>
+<li>2d projections of point clouds,</li>
+<li>fast building a kD-Tree (n-dimensional, templated) with sophisticated splitting techniques which optimizes a 
+quality criteria during the splitting process,</li>
+<li>computing the k-nearest neighbours to a given point (kNN search) via kd-Tree.</li>
+<li>fast statistical outlier filtering of point clouds via (nearest neighbour search, kD-Tree).</li>
+</ul>
+
+<p align="center">
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Bunny.png" height="300px" border="10px"></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" height="300px" border="10px"></a>
+</p>
 
 <hr>
 
@@ -113,7 +118,7 @@ It should work for Windows as well, but has not been tested.</p>
 <hr>
 
 <h2>
-<a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage</h2>
+<a id="example-usage-approximation-mvbb" class="anchor" href="#example-usage-approximation-mvbb" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage: Approximation MVBB</h2>
 
 <p>Please see the <code>example/main.cpp</code> in the source directory.
 Given a point cloud with <code>n=10000</code> points sampled in the unit cube in 3D 
@@ -136,10 +141,10 @@ we compute an approximation of the minimum volume bounding volume by the followi
 
 <div class="highlight highlight-C++"><pre>    ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  <span class="pl-c">// A_IK * oobb.m_minPoint </span></pre></div>
 
-<p><strong>Degenerate OOBB:</strong>
+<p><strong>Degenerate OOBB:</strong><br>
 The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function <code>expandZeroExtent</code> is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).</p>
 
-<p><strong>Points Outside of the final OOBB:</strong>
+<p><strong>Points Outside of the final OOBB:</strong><br>
 Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:</p>
 
 <div class="highlight highlight-C++"><pre>    ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();
@@ -148,16 +153,8 @@ Because the algorithm  works internally with a sample of the point cloud, the re
         oobb.<span class="pl-c1">unite</span>(A_KI*points.<span class="pl-c1">col</span>(i));
     }</pre></div>
 
-<p><strong>Generating a KdTree from the OOBB: (to come!)</strong>
-The library will (in the future) include a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, but was written to fullfill this aspects to a certain level, CGAL and ANN libraries seem faster)
-The KdTree splitting heuristic implements a sophisticated splitting optimization and an adaptable quality evaluator which in the most elaborate, performance worst case consists of searching for the best split between the splitting heuristics <code>MIDPOINT</code>,<code>MEDIAN</code> and<code>GEOMETRIC_MEAN</code>  by evaluating a user-provided quality evaluator.</p>
-
-<hr>
-
-<h2>
-<a id="function-parameters--how-it-works" class="anchor" href="#function-parameters--how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>Function Parameters &amp; How It Works</h2>
-
-<p>The most important function:</p>
+<p><strong>Function Parameters &amp; How It Works:</strong><br>
+The most important function:</p>
 
 <div class="highlight highlight-C++"><pre>    <span class="pl-en">ApproxMVBB::approximateMVBB</span>(pts, 
                                 epsilon, 
@@ -197,6 +194,37 @@ Each found minimal bounding box candidate <code>G</code> and its directions <cod
 <li>The final approximation for the mininmal volume bounding box (minimal volume over all computed candiadates) is returned. <img class="emoji" title=":poop:" alt=":poop:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4a9.png" height="20" width="20" align="absmiddle">
 </li>
 </ol>
+
+<hr>
+
+<h2>
+<a id="example-usage-generating-a-kdtree-and-outlier-filtering" class="anchor" href="#example-usage-generating-a-kdtree-and-outlier-filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage: Generating a KdTree and Outlier Filtering</h2>
+
+<p>The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
+but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
+can really well compete with famous implementations such as ANN,FLANN, CGAL )
+The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
+which in the most elaborate, performance worst case consists of 
+searching for the best split between the splitting heuristics <code>MIDPOINT</code> , <code>MEDIAN</code> and <code>GEOMETRIC_MEAN</code>
+by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the <code>LinearQualityEvaluator</code> which computes the split quality by a weighted linear combination of the quantities <code>splitRatio</code> , <code>pointRatio</code>, <code>minMaxExtentRatio</code>.</p>
+
+<p>Outlier filtering is done with the k-nearest neighbour search algorithm and works roughly as the following:
+The algorithm finds for each point <code>p</code> in the point cloud <code>k</code>  nearest neighbours and averages their distance (distance functor) to the point <code>p</code> 
+to obtain a mean distance <code>distance</code> for this particular point.
+All nearest mean distances for all points give a histogram with a sample mean <code>mean</code> and sample standart deviation <code>stdDev</code>.
+All points which have a mean nearest neighbour distance greater or equal to <code>mean + stdDevMult * stdDev</code> 
+are classified as outlier points.</p>
+
+<p>Look at the examples in <code>examples/kdTreeFiltering</code> which produced the following pictures with the provided visualization notebook
+<code>examples/kdTreeFiltering/python/VisualizeKdTree.ipynb</code>.</p>
+
+<p align="center">
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" target="_blank"> <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" width="300px"></a>
+<a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png" width="300px"></a>
+</p>
+
+<p><strong>Function Parameters &amp; How It Works</strong><br>
+To come</p>
 
 <hr>
 
@@ -307,18 +335,16 @@ for the approximation of the diameter of a point cloud.
 I was inspired by the work and algorithms of <a href="http://sarielhp.org/papers/00/diameter/">Gill Barequet &amp; Sariel Har-Peled</a> for computing a minimal volume bounding box.
 Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of <a href="http://www.cs.cmu.edu/%7Equake/robust.html">Jonathan Richard Shewchuk</a>.
 Special thanks go to my significant other which always had an ear during breakfast for this little project <img class="emoji" title=":kissing_heart:" alt=":kissing_heart:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f618.png" height="20" width="20" align="absmiddle"></p>
-      </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">ApproxMVBB maintained by <a href="https://github.com/gabyx">gabyx</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/gabyx/ApproxMVBB">ApproxMVBB</a> is maintained by <a href="https://github.com/gabyx">gabyx</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-              <script type="text/javascript">
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -329,6 +355,6 @@ Special thanks go to my significant other which always had an ear during breakfa
             } catch(err) {}
           </script>
 
-
   </body>
 </html>
+
