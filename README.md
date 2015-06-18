@@ -165,13 +165,13 @@ Example Usage: Generating a KdTree and Outlier Filtering
 
 The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
 but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
-can really well compete with famous implementations such as PCL(FLANN),ANN,FLANN and CGAL )
+can really well compete with famous implementations such as PCL(FLANN),ANN, and CGAL )
 The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
 which in the most elaborate, performance worst case consists of 
 searching for the best split between the splitting heuristics ``MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN``
 by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` which computes the split quality by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
 
-Outlier filtering is done with the k-nearest neighbour search algorithm (similar to the PCL library but faster) and works roughly as the following:
+Outlier filtering is done with the k-nearest neighbour search algorithm (similar to the PCL library but faster, and with user defined precision) and works roughly as the following:
 The algorithm finds for each point ``p`` in the point cloud ``k``  nearest neighbours and averages their distance (distance functor) to the point ``p`` 
 to obtain a mean distance ``distance`` for this particular point.
 All nearest mean distances for all points give a histogram with a sample mean ``mean`` and sample standart deviation ``stdDev``.
