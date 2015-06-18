@@ -33,10 +33,12 @@ Installation & Dependencies
 To build the library, the tests and the example you need the built tool [cmake](
 http://www.cmake.org).
 This library has these light-weight dependencies:
+
 - [Eigen](http://eigen.tuxfamily.org) at least version 3, 
 - [meta](https://github.com/ericniebler/meta), 
-- [pugixml](https://github.com/zeux/pugixml), 
-Download it and install it on your system.
+- [pugixml](https://github.com/zeux/pugixml)
+
+Download these and install it on your system.
 
 Download the latest ApproxMVBB code:
 ```bash

@@ -46,7 +46,17 @@ before_install:
   - cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=/usr/local
   - sudo make VERBOSE=1 install
   
-
+  # Install meta
+  - hg clone https://github.com/ericniebler/meta.git ${ROOT_PATH}/meta
+  - sudo cp -r ${ROOT_PATH}/meta/include/ /usr/local/include/
+  
+  # Install pugixml
+  - hg clone https://github.com/zeux/pugixml.git${ROOT_PATH}/pugixml
+  - mkdir ${ROOT_PATH}/pugixmlBuild
+  - cd ${ROOT_PATH}/pugixmlBuild
+  - cmake ../pugixml -DCMAKE_INSTALL_PREFIX=/usr/local 
+  - sudo make VERBOSE=1 install
+  
 install:
   - cd $CHECKOUT_PATH
   - if [ ! -d build ]; then mkdir build; fi
