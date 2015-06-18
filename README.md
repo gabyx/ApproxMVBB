@@ -1,5 +1,6 @@
 ==========
-ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB) ![Build Status](https://img.shields.io/badge/c%2B%2B-11-green.svg)
+ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB) ![C++](https://img.shields.io/badge/c%2B%2B-11-green.svg)
+![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg)
 ==========
 
 [Homepage](http://gabyx.github.io/ApproxMVBB/)
