@@ -1,9 +1,9 @@
 language: cpp
 
 compiler:
- - gcc
  - clang
-
+ - gcc
+ 
 env:
   global:
     - GCC_VERSION="4.9"
