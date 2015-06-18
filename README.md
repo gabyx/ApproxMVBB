@@ -1,7 +1,10 @@
 ==========
 ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB) 
 ==========
+
 [Homepage](http://gabyx.github.io/ApproxMVBB/)
+
+
 ----------------------------------------
 Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.
 ----------------------------------------
