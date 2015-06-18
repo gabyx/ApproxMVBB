@@ -90,7 +90,7 @@ It should work for Windows as well, but has not been tested.
 ---------------------------
 Example Usage: Approximation MVBB
 ---------------------------
-Please see the ``example/main.cpp`` in the source directory.
+Please see the ``example/approxMVBB/main.cpp`` in the source directory.
 Given a point cloud with ``n=10000`` points sampled in the unit cube in 3D 
 we compute an approximation of the minimum volume bounding volume by the following calls:
 ```C++
