@@ -51,6 +51,7 @@ install:
   
   - export CXX_FLAGS="-std=c++11"
   - export CXX_LINKER_FLAGS=""
+  
   - if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
   
   - if [ "$CXX" == "clang++" ]; then CXX_FLAGS="${CXX_FLAGS}" ; fi
