@@ -47,11 +47,11 @@ before_install:
   - sudo make VERBOSE=1 install
   
   # Install meta
-  - hg clone https://github.com/ericniebler/meta.git ${ROOT_PATH}/meta
+  - git clone https://github.com/ericniebler/meta.git ${ROOT_PATH}/meta
   - sudo cp -r ${ROOT_PATH}/meta/include/ /usr/local/include/
   
   # Install pugixml
-  - hg clone https://github.com/zeux/pugixml.git${ROOT_PATH}/pugixml
+  - git clone https://github.com/zeux/pugixml.git${ROOT_PATH}/pugixml
   - mkdir ${ROOT_PATH}/pugixmlBuild
   - cd ${ROOT_PATH}/pugixmlBuild
   - cmake ../pugixml -DCMAKE_INSTALL_PREFIX=/usr/local 
