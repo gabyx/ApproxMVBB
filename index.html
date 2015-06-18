@@ -31,7 +31,7 @@
 <a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
 
 <p>Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
-Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.<br>
+Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developped for research in <a href="http://www.zfm.ethz.ch/%7Enuetzig/?page=research">Granular Rigidbody Dynamics</a>.
 This small standart compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
 It includes code for :</p>
@@ -58,7 +58,17 @@ quality criteria during the splitting process,</li>
 <a id="installation--dependencies" class="anchor" href="#installation--dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation &amp; Dependencies</h2>
 
 <p>To build the library, the tests and the example you need the built tool <a href="http://www.cmake.org">cmake</a>.
-This library only depends on the matrix library <a href="http://eigen.tuxfamily.org">Eigen</a> at least version 3. Download it and install it on your system.</p>
+This library has these light-weight dependencies:</p>
+
+<ul>
+<li>
+<a href="http://eigen.tuxfamily.org">Eigen</a> at least version 3, </li>
+<li>
+<a href="https://github.com/ericniebler/meta">meta</a>, </li>
+<li><a href="https://github.com/zeux/pugixml">pugixml</a></li>
+</ul>
+
+<p>Download these and install it on your system.</p>
 
 <p>Download the latest ApproxMVBB code:</p>
 
@@ -73,7 +83,7 @@ This library only depends on the matrix library <a href="http://eigen.tuxfamily.
 
 <div class="highlight highlight-bash"><pre>    $ cmake ../ApproxMVBB</pre></div>
 
-<p>The cmake script will find Eigen if you installed it in a system wide folder (e.g <code>/usr/local/</code>)
+<p>The cmake script tries to find  <a href="http://eigen.tuxfamily.org">Eigen</a>,<a href="https://github.com/ericniebler/meta">meta</a> and <a href="https://github.com/zeux/pugixml">pugixml</a>. If you installed these in a system wide folder (e.g <code>/usr/local/</code>) this should succed without any problems.
 In the <code>CMakeCache.txt</code> file you can specify what you want to build 
 ( <code>ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS</code> )</p>
 
@@ -201,13 +211,13 @@ Each found minimal bounding box candidate <code>G</code> and its directions <cod
 
 <p>The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
 but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
-can really well compete with famous implementations such as ANN,FLANN, CGAL )
+can really well compete with famous implementations such as PCL(FLANN),ANN, and CGAL )
 The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
 which in the most elaborate, performance worst case consists of 
 searching for the best split between the splitting heuristics <code>MIDPOINT</code> , <code>MEDIAN</code> and <code>GEOMETRIC_MEAN</code>
 by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the <code>LinearQualityEvaluator</code> which computes the split quality by a weighted linear combination of the quantities <code>splitRatio</code> , <code>pointRatio</code>, <code>minMaxExtentRatio</code>.</p>
 
-<p>Outlier filtering is done with the k-nearest neighbour search algorithm and works roughly as the following:
+<p>Outlier filtering is done with the k-nearest neighbour search algorithm (similar to the PCL library but faster, and with user defined precision) and works roughly as the following:
 The algorithm finds for each point <code>p</code> in the point cloud <code>k</code>  nearest neighbours and averages their distance (distance functor) to the point <code>p</code> 
 to obtain a mean distance <code>distance</code> for this particular point.
 All nearest mean distances for all points give a histogram with a sample mean <code>mean</code> and sample standart deviation <code>stdDev</code>.
