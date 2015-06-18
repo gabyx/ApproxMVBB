@@ -112,10 +112,10 @@ The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_m
 ```C++
     ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
 ```
-**Degenerate OOBB:**
+**Degenerate OOBB:**    
 The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).
 
-**Points Outside of the final OOBB:**
+**Points Outside of the final OOBB:**    
 Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:
 
 ```C++
@@ -126,8 +126,7 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
-**Function Parameters & How It Works**
-
+**Function Parameters & How It Works:**    
 The most important function:
 ```C++
     ApproxMVBB::approximateMVBB(pts, 
@@ -169,10 +168,8 @@ but was written to fullfill this aspects to a certain level, real benchmarks sti
 can really well compete with famous implementations such as ANN,FLANN, CGAL )
 The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
 which in the most elaborate, performance worst case consists of 
-searching for the best split between the splitting heuristics ` `MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN`` 
-by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` 
-which computes the split quality 
-by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
+searching for the best split between the splitting heuristics ``MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN``
+by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` which computes the split quality by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
 
 Outlier filtering is done with the k-nearest neighbour search algorithm and works roughly as the following:
 The algorithm finds for each point ``p`` in the point cloud ``k``  nearest neighbours and averages their distance (distance functor) to the point ``p`` 
@@ -189,7 +186,7 @@ Look at the examples in ``examples/kdTreeFiltering`` which produced the followin
 <a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
 </p>
 
-**Function Parameters & How It Works**
+**Function Parameters & How It Works**    
 To come
 
 ---------------------------
