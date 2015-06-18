@@ -88,7 +88,7 @@ The code has been tested on Linux and OS X with compilers ``clang`` and ``gcc``.
 It should work for Windows as well, but has not been tested.
 
 ---------------------------
-Example Usage
+Example Usage: Approximation MVBB
 ---------------------------
 Please see the ``example/main.cpp`` in the source directory.
 Given a point cloud with ``n=10000`` points sampled in the unit cube in 3D 
@@ -126,13 +126,8 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
+**Function Parameters & How It Works**
 
-
-
-
----------------------------
-Function Parameters & How It Works
----------------------------
 The most important function:
 ```C++
     ApproxMVBB::approximateMVBB(pts, 
@@ -166,7 +161,7 @@ computes an approximation of the minimal volume bounding box in the following st
 
 
 ---------------------------
-Generating a KdTree and Outlier Filtering
+Example Usage: Generating a KdTree and Outlier Filtering
 ---------------------------
 
 The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
@@ -194,6 +189,8 @@ Look at the examples in ``examples/kdTreeFiltering`` which produced the followin
 <a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
 </p>
 
+**Function Parameters & How It Works**
+To come
 
 ---------------------------
 Building and Visualizing the Tests
