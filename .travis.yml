@@ -8,7 +8,7 @@ compiler:
 env:
   global:
     - GCC_VERSION="4.9"
-    - CLANG_VERSION="3.6"
+    - CLANG_VERSION="3.5"
     
     # biicode credentials 
     - BIICODE_USER="gabyx"
