@@ -1,4 +1,3 @@
-language: cpp
 
 script: cmake
 
@@ -59,8 +58,6 @@ install:
   #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
   #- bii --version
 
-script:
-  #- ctest -VV
 
 after_success:
   - cd $CHECKOUT_PATH
