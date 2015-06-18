@@ -32,7 +32,11 @@ Installation & Dependencies
 ---------------------------
 To build the library, the tests and the example you need the built tool [cmake](
 http://www.cmake.org).
-This library only depends on the matrix library [Eigen](http://eigen.tuxfamily.org) at least version 3. Download it and install it on your system.
+This library has these light-weight dependencies:
+- [Eigen](http://eigen.tuxfamily.org) at least version 3, 
+- [meta](https://github.com/ericniebler/meta), 
+- [pugixml](https://github.com/zeux/pugixml), 
+Download it and install it on your system.
 
 Download the latest ApproxMVBB code:
 ```bash
@@ -47,7 +51,7 @@ Invoke cmake in the Build directory:
 ```bash
     $ cmake ../ApproxMVBB
 ```
-The cmake script will find Eigen if you installed it in a system wide folder (e.g ``/usr/local/``)
+The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https://github.com/ericniebler/meta) and [pugixml](https://github.com/zeux/pugixml). If you installed these in a system wide folder (e.g ``/usr/local/``) this should succed without any problems.
 In the `CMakeCache.txt` file you can specify what you want to build 
 ( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
 
