@@ -51,10 +51,10 @@ before_install:
   - sudo cp -r ${ROOT_PATH}/meta/include/ /usr/local/include/
   
   # Install pugixml
-  - git clone https://github.com/zeux/pugixml.git${ROOT_PATH}/pugixml
+  - git clone https://github.com/zeux/pugixml.git ${ROOT_PATH}/pugixml
   - mkdir ${ROOT_PATH}/pugixmlBuild
   - cd ${ROOT_PATH}/pugixmlBuild
-  - cmake ../pugixml -DCMAKE_INSTALL_PREFIX=/usr/local 
+  - cmake ../pugixml/scripts/ -DCMAKE_INSTALL_PREFIX=/usr/local 
   - sudo make VERBOSE=1 install
   
 install:
