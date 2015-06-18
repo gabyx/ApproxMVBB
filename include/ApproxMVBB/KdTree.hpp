@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 #include <array>
+#include <queue>
 #include <deque>
 #include <tuple>
 #include <unordered_set>
