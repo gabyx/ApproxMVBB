@@ -33,6 +33,8 @@ before_install:
   - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
   - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
   - if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+  - if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"; fi
+  - if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_FLAGS} -L/usr/lib/ -lc++"; fi
 
   # Install eigen3
   - hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
