@@ -55,8 +55,7 @@ install:
   #- if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"; fi
   #- if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_FLAGS} -L/usr/lib/ -lc++"; fi
 
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
-  #-DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
   - make VERBOSE=1
 
   #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
