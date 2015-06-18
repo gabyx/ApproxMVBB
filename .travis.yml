@@ -16,8 +16,7 @@ env:
 
 # Install dependencies
 before_install:
-  - export ROOT_PATH=`pwd`;
-  - mkdir ApproxMVBB && cd ApproxMVBB;
+  - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
