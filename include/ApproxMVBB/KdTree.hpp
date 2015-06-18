@@ -6,7 +6,7 @@
 #include <initializer_list>
 #include <memory>
 #include <algorithm>
-#include <queue>
+#include <array>
 #include <deque>
 #include <tuple>
 #include <unordered_set>
