@@ -76,7 +76,6 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC
     
     INCLUDE_DIRECTORIES(${ROOT_DIR}/include/ ${ApproxMVBB_BINARY_DIR}/include/)
     ADD_EXECUTABLE(${TARGET_NAME} ${ROOT_DIR}/src/PredicatesInit.cpp)
-
     GET_TARGET_PROPERTY(MY_GENERATOR_EXE ${TARGET_NAME} LOCATION)
 
     # add the custom command that will generate the files
@@ -91,9 +90,11 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC
     
     # Create custom 
     ADD_CUSTOM_TARGET(${TARGET_NAME2} DEPENDS ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp)
+    ADD_DEPENDENCIES(${TARGET_NAME2} ${TARGET_NAME})
+    
     SET_SOURCE_FILES_PROPERTIES(${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp PROPERTIES GENERATED True)
     
-    SET(${DEPENDING_TARGETS} ${TARGET_NAME2})
+    SET(${DEPENDING_TARGETS}  ${TARGET_NAME2})
     
     message(STATUS "Make project depend on target ${TARGET_NAME2}!")
     message(STATUS "====================================================")
@@ -101,44 +102,45 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC
 ENDMACRO()
 
 
-MACRO(INCLUDE_PUGIXML_SOURCE  SRC INC INCLUDE_DIRS
-                              ROOT_DIR #input
-                              ApproxMVBB_ROOT_DIR #input
-                              ApproxMVBB_BINARY_DIR #input
-                              )
-    message(STATUS "Adding  ApproxMVBB - PugiXML ======================")
-    SET(${SRC}
-    )
+#MACRO(INCLUDE_PUGIXML_SOURCE  SRC INC INCLUDE_DIRS
+                              #ROOT_DIR #input
+                              #ApproxMVBB_ROOT_DIR #input
+                              #ApproxMVBB_BINARY_DIR #input
+                              #)
+    #message(STATUS "Adding  ApproxMVBB - PugiXML ======================")
+    #SET(${SRC}
+        #${ROOT_DIR}/include/ApproxMVBB/pugixml/pugixml.cpp
+    #)
 
-    SET(${INC}
-        ${ROOT_DIR}/include/ApproxMVBB/pugixml/pugixml.hpp
-    )
+    #SET(${INC}
+        #${ROOT_DIR}/include/ApproxMVBB/pugixml/pugixml.hpp
+    #)
 
-    SET(${INCLUDE_DIRS}
-        ${ROOT_DIR}/include/
-    )
+    #SET(${INCLUDE_DIRS}
+        #${ROOT_DIR}/include/
+    #)
     
-    message(STATUS "====================================================")
+    #message(STATUS "====================================================")
 
-ENDMACRO()
+#ENDMACRO()
 
-MACRO(INCLUDE_META_SOURCE  SRC INC INCLUDE_DIRS
-                              ROOT_DIR #input
-                              ApproxMVBB_ROOT_DIR #input
-                              ApproxMVBB_BINARY_DIR #input
-                              )
-    message(STATUS "Adding  ApproxMVBB - Meta ======================")
-    SET(${SRC}
-    )
+#MACRO(INCLUDE_META_SOURCE  SRC INC INCLUDE_DIRS
+                              #ROOT_DIR #input
+                              #ApproxMVBB_ROOT_DIR #input
+                              #ApproxMVBB_BINARY_DIR #input
+                              #)
+    #message(STATUS "Adding  ApproxMVBB - Meta ======================")
+    #SET(${SRC}
+    #)
 
-    SET(${INC}
-        ${ROOT_DIR}/include/ApproxMVBB/meta/meta.hpp
-    )
+    #SET(${INC}
+        #${ROOT_DIR}/include/ApproxMVBB/meta/meta.hpp
+    #)
 
-    SET(${INCLUDE_DIRS}
-        ${ROOT_DIR}/include/
-    )
+    #SET(${INCLUDE_DIRS}
+        #${ROOT_DIR}/include/
+    #)
     
-    message(STATUS "====================================================")
+    #message(STATUS "====================================================")
 
-ENDMACRO()
+#ENDMACRO()

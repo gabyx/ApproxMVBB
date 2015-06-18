@@ -8,6 +8,8 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
 
 
     # Add all external sources/headers
+    
+    
     INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
     INCLUDE_DIAMETER_SOURCE(           ApproxMVBB_DIAM_SRC ApproxMVBB_DIAM_INC ApproxMVBB_DIAM_INC_DIRS 
         ${ApproxMVBB_ROOT_DIR}/external/Diameter ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
@@ -15,11 +17,14 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
     INCLUDE_GEOMETRYPREDICATES_SOURCE( ApproxMVBB_GEOMPRED_SRC ApproxMVBB_GEOMPRED_INC ApproxMVBB_GEOMPRED_INC_DIRS ApproxMVBB_GEOMPRED_TARGETS
         ${ApproxMVBB_ROOT_DIR}/external/GeometryPredicates ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
 
-    INCLUDE_PUGIXML_SOURCE(           ApproxMVBB_PUGIXML_SRC ApproxMVBB_PUGIXML_INC ApproxMVBB_PUGIXML_INC_DIRS 
-        ${ApproxMVBB_ROOT_DIR}/external/pugixml ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
+    #INCLUDE_PUGIXML_SOURCE(           ApproxMVBB_PUGIXML_SRC ApproxMVBB_PUGIXML_INC ApproxMVBB_PUGIXML_INC_DIRS 
+        #${ApproxMVBB_ROOT_DIR}/external/pugixml ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
     
-    INCLUDE_META_SOURCE(           ApproxMVBB_META_SRC ApproxMVBB_META_INC ApproxMVBB_META_INC_DIRS 
-        ${ApproxMVBB_ROOT_DIR}/external/meta ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
+    #INCLUDE_META_SOURCE(           ApproxMVBB_META_SRC ApproxMVBB_META_INC ApproxMVBB_META_INC_DIRS 
+        #${ApproxMVBB_ROOT_DIR}/external/meta ${ApproxMVBB_ROOT_DIR} ${ApproxMVBB_BINARY_DIR})
+        
+        
+        
     
     SET(${SRC}
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixTypeDefs.cpp

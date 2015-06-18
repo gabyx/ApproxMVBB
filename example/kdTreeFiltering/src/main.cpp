@@ -188,6 +188,8 @@ int  main( int  argc, char  ** argv ) {
                 " for the distribution of the mean nearest neighbour distance, "
                 " which is used to determine which points have nearest neighbour distance >= then mean + " <<
                 stdDevMult << " * stdDeviation which classifies the points as outlier points." << std::endl;
+
+
     }
 
     return 0;

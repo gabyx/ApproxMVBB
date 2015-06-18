@@ -16,18 +16,20 @@
 
 #include <fstream>
 
+#include <pugixml/pugixml.hpp>
+#include <meta/meta.hpp>
+
 #include "ApproxMVBB/Config/Config.hpp"
 
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
-#include "ApproxMVBB/pugixml/pugixml.hpp"
-#include "ApproxMVBB/meta/meta.hpp"
-
 #include "ApproxMVBB/Common/StaticAssert.hpp"
 #include "ApproxMVBB/Common/ContainerTag.hpp"
 
 #include "ApproxMVBB/AABB.hpp"
+
+
 
 namespace ApproxMVBB{
 

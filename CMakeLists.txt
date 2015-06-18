@@ -105,10 +105,28 @@ if(MULTITHREADED_BUILD)
 endif()
 # ========================================================================================================================================
 
-#Define Eigen ===================================================================================================================================================
+
+
+# ========================================================================================================================================
+# Dependencies 
+# Define Eigen =====================
 find_package(Eigen3 REQUIRED)
 set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
-# ===============================================================================================================================================================
+# ==================================
+
+# Define PugiXML ===================
+find_package(PugiXML REQUIRED)
+# ==================================
+
+# Define Meta ======================
+find_package(Meta REQUIRED)
+# ==================================
+SET(ApproxMVBB_DEP_INC_DIRS ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
+SET(ApproxMVBB_DEP_LIBRARIES ${PUGIXML_LIBRARIES})
+SET(ApproxMVBB_DEP_TARGETS meta)
+# ========================================================================================================================================
+
+
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
@@ -151,7 +169,9 @@ INCLUDE_ALL_ApproxMVBB_SOURCE(  ApproxMVBB_SRC
                                 ApproxMVBB_DEPENDING_TARGETS
                                 ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
-
+SET(ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS} ${ApproxMVBB_DEP_INC_DIRS})
+SET(ApproxMVBB_LINK_LIBS ${ApproxMVBB_DEP_LIBRARIES})
+SET(ApproxMVBB_DEPENDING_TARGETS ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEP_TARGETS})
 
 if(ApproxMVBB_BUILD_LIBRARY)
     ADD_SUBDIRECTORY(lib)
