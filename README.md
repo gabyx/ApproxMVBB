@@ -1,5 +1,5 @@
 ==========
-ApproxMVBB
+ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB)
 ==========
 
 ----------------------------------------
@@ -7,7 +7,7 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 ----------------------------------------
 
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
-Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough.  
+Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developped for research in [Granular Rigidbody Dynamics](http://www.zfm.ethz.ch/~nuetzig/?page=research).
 This small standart compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
 It includes code for :
@@ -88,9 +88,9 @@ The code has been tested on Linux and OS X with compilers ``clang`` and ``gcc``.
 It should work for Windows as well, but has not been tested.
 
 ---------------------------
-Example Usage
+Example Usage: Approximation MVBB
 ---------------------------
-Please see the ``example/main.cpp`` in the source directory.
+Please see the ``example/approxMVBB/main.cpp`` in the source directory.
 Given a point cloud with ``n=10000`` points sampled in the unit cube in 3D 
 we compute an approximation of the minimum volume bounding volume by the following calls:
 ```C++
@@ -112,10 +112,10 @@ The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_m
 ```C++
     ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
 ```
-**Degenerate OOBB:**
+**Degenerate OOBB:**    
 The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if exisiting, otherwise a default value is used).
 
-**Points Outside of the final OOBB:**
+**Points Outside of the final OOBB:**    
 Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:
 
 ```C++
@@ -126,13 +126,7 @@ Because the algorithm  works internally with a sample of the point cloud, the re
     }
 ```
 
-
-
-
-
----------------------------
-Function Parameters & How It Works
----------------------------
+**Function Parameters & How It Works:**    
 The most important function:
 ```C++
     ApproxMVBB::approximateMVBB(pts, 
@@ -166,20 +160,18 @@ computes an approximation of the minimal volume bounding box in the following st
 
 
 ---------------------------
-Generating a KdTree and Outlier Filtering
+Example Usage: Generating a KdTree and Outlier Filtering
 ---------------------------
 
 The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
 but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
-can really well compete with famous implementations such as ANN,FLANN, CGAL )
+can really well compete with famous implementations such as PCL(FLANN),ANN, and CGAL )
 The KdTree splitting heuristic implements an extendable sophisticated splitting optimization 
 which in the most elaborate, performance worst case consists of 
-searching for the best split between the splitting heuristics ` `MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN`` 
-by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` 
-which computes the split quality 
-by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
+searching for the best split between the splitting heuristics ``MIDPOINT`` , ``MEDIAN`` and ``GEOMETRIC_MEAN``
+by evaluating a user-provided quality evaluator. The simple standart quality evaluator is the ``LinearQualityEvaluator`` which computes the split quality by a weighted linear combination of the quantities ``splitRatio`` , ``pointRatio``, ``minMaxExtentRatio``.
 
-Outlier filtering is done with the k-nearest neighbour search algorithm and works roughly as the following:
+Outlier filtering is done with the k-nearest neighbour search algorithm (similar to the PCL library but faster, and with user defined precision) and works roughly as the following:
 The algorithm finds for each point ``p`` in the point cloud ``k``  nearest neighbours and averages their distance (distance functor) to the point ``p`` 
 to obtain a mean distance ``distance`` for this particular point.
 All nearest mean distances for all points give a histogram with a sample mean ``mean`` and sample standart deviation ``stdDev``.
@@ -194,6 +186,8 @@ Look at the examples in ``examples/kdTreeFiltering`` which produced the followin
 <a href="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree2.png" tag="Bunny Kd-Tree, simple midpoint split"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/BunnyKdTree1.png"  width="300px"/></a>
 </p>
 
+**Function Parameters & How It Works**    
+To come
 
 ---------------------------
 Building and Visualizing the Tests
