@@ -48,7 +48,7 @@ before_install:
   
   # Install meta
   - git clone https://github.com/ericniebler/meta.git ${ROOT_PATH}/meta
-  - sudo cp -r ${ROOT_PATH}/meta/include/ /usr/local/include/
+  - sudo cp -r ${ROOT_PATH}/meta/include/* /usr/local/include/
   - ls -a /usr/local/include/meta
   
   # Install pugixml
