@@ -7,11 +7,15 @@
 # PUGIXML_FOUND - true if pugixml was found.
 
 find_path (PUGIXML_INCLUDE_DIR 
-            NAMES pugixml/pugixml.hpp pugixml.hpp)
+            NAMES pugixml.hpp
+            ${CMAKE_INSTALL_PREFIX}/include
+            $ENV{PUGIXML_HOME}
+            PATH_SUFFIXES pugixml)
             
             
 find_library (PUGIXML_LIBRARY
-              NAMES pugixml)
+              NAMES pugixml
+              PATH_SUFFIXES pugixml)
 
 
 # Support the REQUIRED and QUIET arguments, and set PUGIXML_FOUND if found.
