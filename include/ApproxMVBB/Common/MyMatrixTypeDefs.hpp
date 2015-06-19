@@ -100,7 +100,7 @@ struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
      static const  Eigen::IOFormat SpaceSep;
 };
 
-};
+}
 
 
 /**

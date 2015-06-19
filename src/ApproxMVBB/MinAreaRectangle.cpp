@@ -186,4 +186,4 @@ void MinAreaRectangle::getBox(Caliper (&c)[4], Box2d & box) {
 
     }
 
-};
+}

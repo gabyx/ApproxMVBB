@@ -146,8 +146,6 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
     PREC volumeAcceptTol = oobb.volume() * 1e-6;
 
 
-
-    bool sameAsCache = true;
     unsigned int cacheIdx = 0; // current write Idx into the cache
     Vector3 dirCache[3]; // save the last three directions (avoiding cycling in choosen axis)
 
@@ -314,7 +312,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
     return oobb;
 }
 
-};
+}
 
 
 

@@ -163,5 +163,4 @@ bool ConvexHull2D::verifyHull() {
     return true;
 }
 
-
-};
+}

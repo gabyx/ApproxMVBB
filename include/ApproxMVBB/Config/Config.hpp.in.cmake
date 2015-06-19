@@ -52,7 +52,7 @@ namespace ApproxMVBB{
     #endif
     
     
-};
+}
 
 
 #endif

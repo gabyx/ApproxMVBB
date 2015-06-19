@@ -19,4 +19,4 @@ int  main( int  argc, char  ** argv ){
     ApproxMVBB::mvbbTest();
 
     return 0;
-};
+}

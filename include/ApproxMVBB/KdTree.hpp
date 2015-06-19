@@ -275,7 +275,7 @@ namespace ApproxMVBB{
 
 
         SplitHeuristicPointData() : m_methods{Method::MIDPOINT}, m_searchCriteria(SearchCriteria::FIND_BEST) {
-            for(SplitAxisType i = 0; i < Dimension; i++) {
+            for(SplitAxisType i = 0; i < static_cast<SplitAxisType>(Dimension); i++) {
                 m_splitAxes.push_back(i);
             }
             resetStatistics();
@@ -679,10 +679,10 @@ namespace ApproxMVBB{
         using DerivedNode = TDerivedNode;
 
         using  SplitAxisType = char;
-        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max());
+        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max())
 
         TreeNodeBase(std::size_t idx, const AABB<Dimension> & aabb, unsigned int treeLevel = 0)
-            : m_idx(idx), m_aabb(aabb),  m_treeLevel(treeLevel), m_child{nullptr,nullptr} {
+            : m_idx(idx),  m_treeLevel(treeLevel), m_aabb(aabb), m_child{nullptr,nullptr} {
         }
 
         ~TreeNodeBase() {};
@@ -694,7 +694,7 @@ namespace ApproxMVBB{
         */
         template<typename Derived>
         TreeNodeBase(const TreeNodeBase<Derived,Dimension> & n):
-            m_idx(n.m_idx),m_aabb(n.m_aabb),m_treeLevel(n.m_treeLevel),
+            m_idx(n.m_idx),m_treeLevel(n.m_treeLevel), m_aabb(aabb),
             m_splitAxis(n.m_splitAxis),m_splitPosition(n.m_splitPosition),
             m_child{nullptr,nullptr} {
         }
@@ -1046,10 +1046,12 @@ namespace ApproxMVBB{
         }
 
     private:
+
+        NodeDataType* m_data = nullptr;
+
         /** Boundary information which is nullptr for non-leaf nodes */
         BoundaryInformation * m_bound = nullptr;
 
-        NodeDataType* m_data = nullptr;
     };
 
 
@@ -1570,7 +1572,7 @@ namespace ApproxMVBB{
         *  This tree needs to be a friend of TTree::NodeType to successfully copy the nodes!
         */
         template<typename TTree>
-        Tree( const TTree & tree): Base(tree) {};
+        Tree( const TTree & tree): Base(tree) {}
 
 
 
@@ -1606,9 +1608,6 @@ namespace ApproxMVBB{
 
             bool nodeSplitted;
 
-            auto end = splitList.end();
-            auto it  = splitList.begin();
-
             m_statistics.m_treeDepth = 0;
             unsigned int nNodesLevelCurr = 1; // number of nodes in list of current level
             unsigned int nNodesLevelNext = 0; // number of nodes in list (after the current nodes with next level)
@@ -1616,9 +1615,9 @@ namespace ApproxMVBB{
             unsigned int nLeafs = 1;
     //        unsigned int nodeIdx = 0; // root node has idx = 0;
 
-            auto greaterData = [](const NodeType * a, const NodeType * b) {
-                return a->data()->size() > b->data()->size() ;
-            };
+//            auto greaterData = [](const NodeType * a, const NodeType * b) {
+//                return a->data()->size() > b->data()->size() ;
+//            };
 
             while( !splitList.empty()) {
 
@@ -1786,7 +1785,7 @@ namespace ApproxMVBB{
             using value_type = typename Container::value_type;
 
             ApproxMVBB_STATIC_ASSERT((std::is_same< value_type,
-                                      typename NodeDataType::PointListType::value_type>::value));
+                                      typename NodeDataType::PointListType::value_type>::value))
 
             using Base = std::priority_queue<typename NodeDataType::PointListType::value_type,Container,Compare>;
 
@@ -1907,7 +1906,7 @@ namespace ApproxMVBB{
             }
 
             // distance comperator
-            using DistSqType = typename TKNNTraits::DistSqType;
+            //using DistSqType = typename TKNNTraits::DistSqType;
             typename TKNNTraits::DistCompType & distComp = kNearest.getComperator();
             // reference point is distComp.m_ref
 
@@ -2099,7 +2098,7 @@ namespace ApproxMVBB{
 
             // Save leafs
             XMLNodeType leafs = kdTreeNode.append_child("Leafs");
-            unsigned int level = 0;
+
             for(auto & p: this->m_leafs) {
                 auto * l = p.second;
                 XMLNodeType node = leafs.append_child("Leaf");
@@ -2404,8 +2403,8 @@ namespace ApproxMVBB{
 
     };
 
-    };
+    }
 
-};
+}
 
 #endif

@@ -79,7 +79,7 @@ int  main( int  argc, char  ** argv ) {
                 >;
         using SplitHeuristicType = Tree::SplitHeuristicType;
         using NodeDataType = Tree::NodeDataType;
-        static const unsigned int Dimension = NodeDataType::Dimension;
+        //static const unsigned int Dimension = NodeDataType::Dimension;
         using PointListType = NodeDataType::PointListType;
 
         using PointListType = NodeDataType::PointListType;
@@ -138,7 +138,7 @@ int  main( int  argc, char  ** argv ) {
                 >;
         using SplitHeuristicType = Tree::SplitHeuristicType;
         using NodeDataType = Tree::NodeDataType;
-        static const unsigned int Dimension = NodeDataType::Dimension;
+        //static const unsigned int Dimension = NodeDataType::Dimension;
         using PointListType = NodeDataType::PointListType;
 
         using PointListType = NodeDataType::PointListType;

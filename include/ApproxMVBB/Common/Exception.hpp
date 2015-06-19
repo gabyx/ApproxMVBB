@@ -22,7 +22,7 @@ namespace ApproxMVBB{
     private:
 
     };
-};
+}
 
 #define ApproxMVBB_THROWEXCEPTION( message ) {std::stringstream ___s___ ; ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; throw ApproxMVBB::Exception(___s___);}
 

@@ -156,8 +156,6 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator  e, Func f, Skip s) {
 
 
 
-};
-
-
-};
+}
+}
 #endif // ContainerFunctions_hpp

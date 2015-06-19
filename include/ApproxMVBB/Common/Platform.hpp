@@ -46,6 +46,6 @@ namespace ApproxMVBB{
 
 #endif
 
-};
+}
 
 #endif

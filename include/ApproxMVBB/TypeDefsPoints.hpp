@@ -24,8 +24,8 @@ namespace TypeDefsPoints {
     using  Matrix3Dyn = MatrixStatDyn<3>;
     using  Matrix2Dyn = MatrixStatDyn<2>;
 
-};
-};
+}
+}
 
 #define ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES \
     using Vector3List = ApproxMVBB::TypeDefsPoints::Vector3List; \

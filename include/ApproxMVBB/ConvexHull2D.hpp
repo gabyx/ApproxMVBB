@@ -61,5 +61,5 @@ namespace ApproxMVBB{
         std::vector<unsigned int> m_indicesCH;
         const MatrixRef< const Matrix2Dyn > m_p;
     };
-};
+}
 #endif

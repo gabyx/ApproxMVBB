@@ -28,7 +28,7 @@ struct GlobalConfigs {
     ApproxMVBB_DEFINE_MATRIX_TYPES_OF( PREC )
 
 
-};
+}
 
 
 #include "ApproxMVBB/TypeDefsPoints.hpp"

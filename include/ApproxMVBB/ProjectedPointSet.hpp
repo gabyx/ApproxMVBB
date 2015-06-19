@@ -211,5 +211,5 @@ private:
     PREC m_minZValue, m_maxZValue;
 
 };
-};
+}
 #endif
