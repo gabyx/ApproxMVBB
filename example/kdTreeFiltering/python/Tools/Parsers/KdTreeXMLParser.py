@@ -21,6 +21,7 @@ class KdTree:
         self.A_IK = A_IK;
         self.q_KI = mat2quat(A_IK); # A_IK = R_KI
         
+    @staticmethod    
     def parseFromXML(g):
         dtAABB = np.dtype([('min', (float,3) ), ('max',(float,3) )]);
         dtPoints = float;

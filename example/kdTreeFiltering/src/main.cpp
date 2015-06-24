@@ -122,7 +122,7 @@ int  main( int  argc, char  ** argv ) {
         std::cout << "Saving KdTree XML to: " << file << std::endl;
 
         pugi::xml_document dataXML;
-        tree.saveToXML(dataXML);
+        tree.appendToXML(dataXML);
         dataXML.save_file(file.c_str(),"    ");
     }
 
