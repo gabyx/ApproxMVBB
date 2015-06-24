@@ -41,8 +41,8 @@ namespace AngleFunctions {
         return mapTo2Pi(angle2-angle);
     }
 
-};
-};
+}
+}
 #endif // AngleFunctions_hpp
 
 

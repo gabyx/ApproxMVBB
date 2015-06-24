@@ -33,7 +33,8 @@ namespace ApproxMVBB{
         #define ApproxMVBB_AABB_INCLUDE_FILE                    "@ApproxMVBB_AABB_INCLUDE_FILE@"
         #define ApproxMVBB_OOBB_INCLUDE_FILE                    "@ApproxMVBB_OOBB_INCLUDE_FILE@"
         
-        
+        #define ApproxMVBB_PugiXML_INCLUDE_FILE                 "@ApproxMVBB_PugiXML_INCLUDE_FILE@"
+        #define ApproxMVBB_Meta_INCLUDE_FILE                    "@ApproxMVBB_Meta_INCLUDE_FILE@"
         
     #else
         #define ApproxMVBB_AssertionDebug_INCLUDE_FILE          "ApproxMVBB/Common/AssertionDebug.hpp"
@@ -44,10 +45,14 @@ namespace ApproxMVBB{
         #define ApproxMVBB_TypeDefs_INCLUDE_FILE                "ApproxMVBB/Common/TypeDefs.hpp"
         #define ApproxMVBB_AABB_INCLUDE_FILE                    "ApproxMVBB/AABB.hpp"
         #define ApproxMVBB_OOBB_INCLUDE_FILE                    "ApproxMVBB/OOBB.hpp" 
+        
+        #define ApproxMVBB_PugiXML_INCLUDE_FILE                 "ApproxMVBB/pugixml/pugixml.hpp"
+        #define ApproxMVBB_Meta_INCLUDE_FILE                    "ApproxMVBB/meta/meta.hpp"
+        
     #endif
     
     
-};
+}
 
 
 #endif

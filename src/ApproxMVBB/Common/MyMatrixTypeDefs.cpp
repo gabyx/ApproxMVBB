@@ -16,4 +16,4 @@ namespace ApproxMVBB{
         const Eigen::IOFormat MyMatrixIOFormat::CommaSep = Eigen::IOFormat(Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n", "", "", "", "");
         const Eigen::IOFormat MyMatrixIOFormat::SpaceSep = Eigen::IOFormat(Eigen::FullPrecision, Eigen::DontAlignCols, " ", "\n", "", "", "", "");
 
-};
+}

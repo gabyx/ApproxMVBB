@@ -47,6 +47,6 @@ namespace GeometryPredicates{
                     REAL * pc,
                     REAL * pd,
                     REAL * pe);
-};
+}
 
 #endif

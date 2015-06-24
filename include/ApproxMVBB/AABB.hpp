@@ -95,7 +95,7 @@ public:
       EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived,Dim);
       unite_impl<>::apply(this,p);
       return *this;
-    };
+    }
 
     template<typename Derived>
     AABB& operator+=(const MatrixBase<Derived> &p){
@@ -144,7 +144,7 @@ public:
     template<typename Derived>
     inline bool overlaps(const MatrixBase<Derived> &p) const {
         return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
-    };
+    }
 
     inline bool overlapsSubSpace(const AABB & box, unsigned int fixedAxis) const {
         ArrayStat<Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
@@ -253,6 +253,6 @@ public:
 using AABB3d = AABB<3>;
 using AABB2d = AABB<2>;
 
-};
+}
 
  #endif

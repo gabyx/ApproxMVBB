@@ -848,6 +848,6 @@ void mvbbTest() {
     t.test();
 }
 
-};
+}
 
 #endif

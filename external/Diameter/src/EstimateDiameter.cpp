@@ -18,6 +18,7 @@
 #include "ApproxMVBB/Diameter/Utils/rand.h"
 #include "ApproxMVBB/Diameter/Utils/util.h"
 
+namespace ApproxMVBB{
 namespace Diameter{
 
 APPROXMVBB_EXPORT double estimateDiameter( typeSegment *theDiam,
@@ -614,5 +615,5 @@ double estimateDiameterInOneList( typeSegment *theDiam,
   return( upperBound );
 }
 
-};
-
+}
+}

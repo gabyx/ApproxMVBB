@@ -55,7 +55,7 @@ inline void makeCoordinateSystem(      Vector3 &v1,
   v2.normalize();
   v3.normalize();
 
-};
+}
 
 
 inline void makeZAxisUp(Matrix33 & A_IK){
@@ -87,8 +87,6 @@ inline bool checkOrthogonality(Vector3 &v1,
 
 /* @} */
 
-};
-
-
-};
+}
+}
 #endif

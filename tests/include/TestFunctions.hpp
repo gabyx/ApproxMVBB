@@ -130,8 +130,7 @@ namespace TestFunctions{
         return allInside;
     }
 
-};
-
-};
+}
+}
 
 #endif

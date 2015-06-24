@@ -96,4 +96,4 @@ void OOBB::reset() {
     m_maxPoint(2) = std::numeric_limits<PREC>::min();
     m_q_KI.setIdentity();
 }
-};
+}

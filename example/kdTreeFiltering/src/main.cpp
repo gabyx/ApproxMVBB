@@ -79,7 +79,7 @@ int  main( int  argc, char  ** argv ) {
                 >;
         using SplitHeuristicType = Tree::SplitHeuristicType;
         using NodeDataType = Tree::NodeDataType;
-        static const unsigned int Dimension = NodeDataType::Dimension;
+        //static const unsigned int Dimension = NodeDataType::Dimension;
         using PointListType = NodeDataType::PointListType;
 
         using PointListType = NodeDataType::PointListType;
@@ -122,7 +122,7 @@ int  main( int  argc, char  ** argv ) {
         std::cout << "Saving KdTree XML to: " << file << std::endl;
 
         pugi::xml_document dataXML;
-        tree.saveToXML(dataXML);
+        tree.appendToXML(dataXML);
         dataXML.save_file(file.c_str(),"    ");
     }
 
@@ -138,7 +138,7 @@ int  main( int  argc, char  ** argv ) {
                 >;
         using SplitHeuristicType = Tree::SplitHeuristicType;
         using NodeDataType = Tree::NodeDataType;
-        static const unsigned int Dimension = NodeDataType::Dimension;
+        //static const unsigned int Dimension = NodeDataType::Dimension;
         using PointListType = NodeDataType::PointListType;
 
         using PointListType = NodeDataType::PointListType;
@@ -188,6 +188,8 @@ int  main( int  argc, char  ** argv ) {
                 " for the distribution of the mean nearest neighbour distance, "
                 " which is used to determine which points have nearest neighbour distance >= then mean + " <<
                 stdDevMult << " * stdDeviation which classifies the points as outlier points." << std::endl;
+
+
     }
 
     return 0;

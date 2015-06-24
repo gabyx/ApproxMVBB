@@ -275,11 +275,12 @@ namespace PointFunctions {
             return collinearAreOrderedAlongLine(m_base,m_p.col(idx2),m_p.col(idx1));
         }
     private:
-        unsigned int & m_deletedPoints;
-        const Vector2 m_base; const unsigned int m_baseIdx;
         const MatrixRef<const Matrix2Dyn> m_p;
-    };
+        const Vector2 m_base; const unsigned int m_baseIdx;
+        unsigned int & m_deletedPoints;
 
     };
-};
+
+}
+}
 #endif

@@ -34,30 +34,29 @@ SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
-IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
+IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 	IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
-		SET(MYPROJECT_SET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
+		SET(MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
 		MESSAGE(STATUS "Setting Values for GNU")
-		SET(CMAKE_C_FLAGS "-fmessage-length=0" CACHE STRING "Flags for C Compiler" FORCE)
-		SET(CMAKE_CXX_FLAGS "-std=c++11 -Wno-enum-compare" CACHE STRING "Flags for CXX Compiler" FORCE)
-		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=address" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
+		SET(CMAKE_C_FLAGS "-fmessage-length=0 -fmax-errors=50" CACHE STRING "Flags for C Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS "-std=c++11 -fmax-errors=50" CACHE STRING "Flags for CXX Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=address -Wall -Wpedantic -Wno-char-subscripts" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
 
 	ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
 
 		MESSAGE(STATUS "Setting Values for Clang")
-		SET(MYPROJECT_SET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
-		SET(CMAKE_C_FLAGS                "-Wall" CACHE STRING "Flags for C Compiler" FORCE)
-		SET(CMAKE_C_FLAGS_DEBUG          "-g" CACHE STRING "Flags for C Compiler for debug builds" FORCE)
-		SET(CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG" CACHE STRING "Flags for C Compiler for release minsize builds" FORCE)
-		SET(CMAKE_C_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for C Compiler for release builds" FORCE)
+		SET(MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
+		SET(CMAKE_C_FLAGS                "" CACHE STRING "Flags for C Compiler" FORCE)
+		SET(CMAKE_C_FLAGS_DEBUG          "-g -Weverything" CACHE STRING "Flags for C Compiler for debug builds" FORCE)
+		SET(CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG -w" CACHE STRING "Flags for C Compiler for release minsize builds" FORCE)
+		SET(CMAKE_C_FLAGS_RELEASE        "-O3 -DNDEBUG -w" CACHE STRING "Flags for C Compiler for release builds" FORCE)
 		SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for C Compiler for release builds with debug info" FORCE)
 
-        #SET (CMAKE_CXX_FLAGS             "-std=c++11 -ferror-limit=50 -Weverything -Wno-extra-semi -Wno-documentation -pedantic -Wno-conversion -Wno-comment -Wno-unused-parameter -Wno-deprecated-register -Wno-float-equal -Wno-switch -fdiagnostics-show-template-tree -Wno-c++98 -Wno-c++98-compat-pedantic -Wno-deprecated" CACHE STRING "" FORCE)
-		SET(CMAKE_CXX_FLAGS                "-std=c++11 -ferror-limit=50 -w" CACHE STRING "Flags for CXX Compiler" FORCE)
-		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=leak -fsanitize=address" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
-		SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release minsize builds" FORCE)
-		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
+		SET(CMAKE_CXX_FLAGS                "-std=c++11 -ferror-limit=50 " CACHE STRING "Flags for CXX Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=leak -fsanitize=address -Weverything -Wpedantic -Wno-deprecated-register -Wno-documentation -Wno-old-style-cast -Wno-comment -Wno-float-equal -Wno-deprecated -Wno-c++98-compat -Wno-sign-conversion -Wno-unused-macros" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
+		SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -w" CACHE STRING "Flags for CXX Compiler for release minsize builds" FORCE)
+		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG -w" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
 
         SET(CMAKE_AR      "/usr/bin/local/llvm-ar" CACHE STRING "archiver" FORCE )
@@ -69,15 +68,15 @@ IF(NOT MYPROJECT_SET_COMPILER_FLAGS_INTERNAL)
 	ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" )
         
         MESSAGE(STATUS "Setting Values for Intel")
-		SET(MYPROJECT_SET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
-		SET(CMAKE_C_FLAGS                "-w" CACHE STRING "Flags for C Compiler" FORCE)
-		SET(CMAKE_C_FLAGS_DEBUG          "-g" CACHE STRING "Flags for C Compiler for debug builds" FORCE)
+		SET(MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
+		SET(CMAKE_C_FLAGS                "" CACHE STRING "Flags for C Compiler" FORCE)
+		SET(CMAKE_C_FLAGS_DEBUG          "-g -Wall" CACHE STRING "Flags for C Compiler for debug builds" FORCE)
 		SET(CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG" CACHE STRING "Flags for C Compiler for release minsize builds" FORCE)
 		SET(CMAKE_C_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for C Compiler for release builds" FORCE)
 		SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for C Compiler for release builds with debug info" FORCE)
 
-		SET(CMAKE_CXX_FLAGS                "-std=c++11 -w" CACHE STRING "Flags for CXX Compiler" FORCE)
-		SET(CMAKE_CXX_FLAGS_DEBUG          "-g" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
+		SET(CMAKE_CXX_FLAGS                "-std=c++11" CACHE STRING "Flags for CXX Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -Wall" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release minsize builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
@@ -105,10 +104,28 @@ if(MULTITHREADED_BUILD)
 endif()
 # ========================================================================================================================================
 
-#Define Eigen ===================================================================================================================================================
+
+
+# ========================================================================================================================================
+# Dependencies 
+# Define Eigen =====================
 find_package(Eigen3 REQUIRED)
 set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
-# ===============================================================================================================================================================
+# ==================================
+
+# Define PugiXML ===================
+find_package(PugiXML REQUIRED)
+# ==================================
+
+# Define Meta ======================
+find_package(Meta REQUIRED)
+# ==================================
+SET(ApproxMVBB_DEP_INC_DIRS ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
+SET(ApproxMVBB_DEP_LIBRARIES ${PUGIXML_LIBRARIES})
+SET(ApproxMVBB_DEP_TARGETS meta)
+# ========================================================================================================================================
+
+
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
@@ -151,7 +168,9 @@ INCLUDE_ALL_ApproxMVBB_SOURCE(  ApproxMVBB_SRC
                                 ApproxMVBB_DEPENDING_TARGETS
                                 ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
-
+SET(ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS} ${ApproxMVBB_DEP_INC_DIRS})
+SET(ApproxMVBB_LINK_LIBS ${ApproxMVBB_DEP_LIBRARIES})
+SET(ApproxMVBB_DEPENDING_TARGETS ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEP_TARGETS})
 
 if(ApproxMVBB_BUILD_LIBRARY)
     ADD_SUBDIRECTORY(lib)

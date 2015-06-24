@@ -126,6 +126,6 @@ public:
     Vector3 m_maxPoint; ///< in K Frame
 };
 
-};
+}
 
 #endif // OOBB_hpp

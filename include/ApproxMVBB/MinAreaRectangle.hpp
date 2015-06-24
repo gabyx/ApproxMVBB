@@ -199,5 +199,6 @@ private:
     ConvexHull2D m_convh;
 
 };
-};
+
+}
 #endif

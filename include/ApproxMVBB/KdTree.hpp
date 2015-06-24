@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <memory>
 #include <algorithm>
+#include <array>
 #include <queue>
 #include <deque>
 #include <tuple>
@@ -15,18 +16,20 @@
 
 #include <fstream>
 
+#include <pugixml.hpp>
+#include <meta/meta.hpp>
+
 #include "ApproxMVBB/Config/Config.hpp"
 
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
-#include "ApproxMVBB/pugixml/pugixml.hpp"
-#include "ApproxMVBB/meta/meta.hpp"
-
 #include "ApproxMVBB/Common/StaticAssert.hpp"
 #include "ApproxMVBB/Common/ContainerTag.hpp"
 
 #include "ApproxMVBB/AABB.hpp"
+
+
 
 namespace ApproxMVBB{
 
@@ -36,6 +39,16 @@ namespace ApproxMVBB{
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
+
+    namespace details{
+        struct TakeDefault;
+
+        template<typename T>
+        using isDefault =   meta::or_<
+                                meta::eval<std::is_same<T,TakeDefault> >,
+                                meta::eval<std::is_same<T,void> >
+                            >;
+    }
 
     #define DEFINE_KDTREE_BASETYPES( __Traits__ )  \
         using NodeDataType = typename __Traits__::NodeDataType; \
@@ -51,11 +64,41 @@ namespace ApproxMVBB{
         }
     };
 
+    template<typename TPoint, typename TPointGetter, typename DistSq = EuclideanDistSq>
+    struct DistanceComp {
+        DistanceComp() {
+            m_ref.setZero();
+        }
+        template<typename T>
+        DistanceComp( const T & ref ): m_ref(ref) {}
 
+        template<typename T>
+        inline bool operator()(const T & p1, const T & p2) {
+            return DistSq::apply(m_ref - TPointGetter::get(p1)) <
+                   DistSq::apply(m_ref - TPointGetter::get(p2));
+        }
+
+        template<typename T>
+        inline PREC operator()(const T & p1) {
+            return DistSq::apply(m_ref - TPointGetter::get(p1));
+        }
+
+        TPoint m_ref;
+    };
+
+    /** The default distance comperator traits*/
+    template<typename TPoint, typename TPointGetter>
+    struct DefaultDistanceCompTraits{
+        template<typename TDistSq>
+        using DistanceComp = DistanceComp<TPoint,TPointGetter>;
+    };
+
+    /** The default point data traits*/
     template<unsigned int Dim = 3,
             typename TPoint = Vector3,
             typename TValue = Vector3 *,
-            typename TPointGetter = void
+            typename TPointGetter = details::TakeDefault, /* decides on TValue type */
+            typename TDistanceCompTraits = details::TakeDefault /* decides on TPoint,TPointGetter */
             >
     class DefaultPointDataTraits {
     public:
@@ -66,7 +109,7 @@ namespace ApproxMVBB{
         using iterator      = typename PointListType::iterator;
         using const_iterator= typename PointListType::const_iterator;
 
-    private:
+
     private:
         /* Standart Point Getter (T = value_type no ptr) */
         template<typename T>
@@ -89,11 +132,20 @@ namespace ApproxMVBB{
             }
         };
 
+
+
     public:
         /** The getter which turns a value_type into the PointType */
-        using PointGetter   = typename std::conditional< std::is_same<TPointGetter,void>::value,
-              PointGetterImpl<typename PointListType::value_type>,
-              TPointGetter>::type;
+        using PointGetter   =  meta::if_< details::isDefault<TPointGetter> ,
+                                          PointGetterImpl<typename PointListType::value_type>,
+                                          TPointGetter
+                                        >;
+
+        /** The distance comperator traits */
+        using DistCompTraits  = meta::if_< details::isDefault<TDistanceCompTraits> ,
+                                          DefaultDistanceCompTraits<PointType,PointGetter>,
+                                          TDistanceCompTraits
+                                        >;
 
     };
 
@@ -101,7 +153,6 @@ namespace ApproxMVBB{
     template<typename TTraits = DefaultPointDataTraits<> >
     class PointData {
     public:
-
 
         using Traits        = TTraits;
         static const unsigned int Dimension = Traits::Dimension;
@@ -111,26 +162,9 @@ namespace ApproxMVBB{
         using const_iterator= typename Traits::const_iterator;
         using PointGetter   = typename Traits::PointGetter;
 
-        template<typename DistSq = EuclideanDistSq>
-        struct DistanceComp {
-            DistanceComp() {
-                m_ref.setZero();
-            }
-            template<typename TPoint>
-            DistanceComp( const TPoint & ref ): m_ref(ref) {}
+        template<typename TDistSq>
+        using DistanceComp  =  typename Traits::DistCompTraits::template DistanceComp<TDistSq>;
 
-            inline bool operator()(const typename PointListType::value_type & p1,
-                                   const typename PointListType::value_type & p2) {
-                return DistSq::apply(m_ref - PointGetter::get(p1)) <
-                        DistSq::apply(m_ref - PointGetter::get(p2));
-            }
-
-            inline PREC operator()(const typename PointListType::value_type & p1) {
-                return DistSq::apply(m_ref - PointGetter::get(p1));
-            }
-
-            PointType m_ref;
-        };
 
 
 
@@ -200,7 +234,7 @@ namespace ApproxMVBB{
 
         using XMLNodeType = pugi::xml_node;
 
-        void saveToXML(XMLNodeType & root){
+        void appendToXML(XMLNodeType & root){
             static const auto nodePCData = pugi::node_pcdata;
             XMLNodeType node = root.append_child("Points");
             std::stringstream ss;
@@ -272,7 +306,7 @@ namespace ApproxMVBB{
 
 
         SplitHeuristicPointData() : m_methods{Method::MIDPOINT}, m_searchCriteria(SearchCriteria::FIND_BEST) {
-            for(SplitAxisType i = 0; i < Dimension; i++) {
+            for(SplitAxisType i = 0; i < static_cast<SplitAxisType>(Dimension); i++) {
                 m_splitAxes.push_back(i);
             }
             resetStatistics();
@@ -676,10 +710,10 @@ namespace ApproxMVBB{
         using DerivedNode = TDerivedNode;
 
         using  SplitAxisType = char;
-        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max());
+        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max())
 
         TreeNodeBase(std::size_t idx, const AABB<Dimension> & aabb, unsigned int treeLevel = 0)
-            : m_idx(idx), m_aabb(aabb),  m_treeLevel(treeLevel), m_child{nullptr,nullptr} {
+            : m_idx(idx),  m_treeLevel(treeLevel), m_aabb(aabb), m_child{nullptr,nullptr} {
         }
 
         ~TreeNodeBase() {};
@@ -691,7 +725,7 @@ namespace ApproxMVBB{
         */
         template<typename Derived>
         TreeNodeBase(const TreeNodeBase<Derived,Dimension> & n):
-            m_idx(n.m_idx),m_aabb(n.m_aabb),m_treeLevel(n.m_treeLevel),
+            m_idx(n.m_idx),m_treeLevel(n.m_treeLevel), m_aabb(aabb),
             m_splitAxis(n.m_splitAxis),m_splitPosition(n.m_splitPosition),
             m_child{nullptr,nullptr} {
         }
@@ -1043,10 +1077,12 @@ namespace ApproxMVBB{
         }
 
     private:
+
+        NodeDataType* m_data = nullptr;
+
         /** Boundary information which is nullptr for non-leaf nodes */
         BoundaryInformation * m_bound = nullptr;
 
-        NodeDataType* m_data = nullptr;
     };
 
 
@@ -1349,7 +1385,7 @@ namespace ApproxMVBB{
 
 
         using XMLNodeType = pugi::xml_node;
-        void saveToXML(XMLNodeType root) {
+        void appendToXML(XMLNodeType root) {
             static const auto nodePCData = pugi::node_pcdata;
 
             std::stringstream ss;
@@ -1567,7 +1603,7 @@ namespace ApproxMVBB{
         *  This tree needs to be a friend of TTree::NodeType to successfully copy the nodes!
         */
         template<typename TTree>
-        Tree( const TTree & tree): Base(tree) {};
+        Tree( const TTree & tree): Base(tree) {}
 
 
 
@@ -1603,9 +1639,6 @@ namespace ApproxMVBB{
 
             bool nodeSplitted;
 
-            auto end = splitList.end();
-            auto it  = splitList.begin();
-
             m_statistics.m_treeDepth = 0;
             unsigned int nNodesLevelCurr = 1; // number of nodes in list of current level
             unsigned int nNodesLevelNext = 0; // number of nodes in list (after the current nodes with next level)
@@ -1613,9 +1646,9 @@ namespace ApproxMVBB{
             unsigned int nLeafs = 1;
     //        unsigned int nodeIdx = 0; // root node has idx = 0;
 
-            auto greaterData = [](const NodeType * a, const NodeType * b) {
-                return a->data()->size() > b->data()->size() ;
-            };
+//            auto greaterData = [](const NodeType * a, const NodeType * b) {
+//                return a->data()->size() > b->data()->size() ;
+//            };
 
             while( !splitList.empty()) {
 
@@ -1783,7 +1816,7 @@ namespace ApproxMVBB{
             using value_type = typename Container::value_type;
 
             ApproxMVBB_STATIC_ASSERT((std::is_same< value_type,
-                                      typename NodeDataType::PointListType::value_type>::value));
+                                      typename NodeDataType::PointListType::value_type>::value))
 
             using Base = std::priority_queue<typename NodeDataType::PointListType::value_type,Container,Compare>;
 
@@ -1875,7 +1908,7 @@ namespace ApproxMVBB{
         struct KNNTraits {
             using DistSqType     = EuclideanDistSq;
             using ContainerType  = TContainer;
-            using DistCompType = typename NodeDataType::template DistanceComp<DistSqType>;
+            using DistCompType   = typename NodeDataType::template DistanceComp<DistSqType>;
             using PrioQueue      = KNearestPrioQueue<
                     ContainerType,
                     DistCompType
@@ -1904,7 +1937,7 @@ namespace ApproxMVBB{
             }
 
             // distance comperator
-            using DistSqType = typename TKNNTraits::DistSqType;
+            //using DistSqType = typename TKNNTraits::DistSqType;
             typename TKNNTraits::DistCompType & distComp = kNearest.getComperator();
             // reference point is distComp.m_ref
 
@@ -2071,7 +2104,7 @@ namespace ApproxMVBB{
 
         using XMLNodeType = pugi::xml_node;
 
-        void saveToXML(XMLNodeType & root, bool aligned = true,
+        void appendToXML(XMLNodeType & root, bool aligned = true,
                        const Matrix33 & A_IK = Matrix33::Identity(),
                        bool exportPoints = false) {
 
@@ -2096,7 +2129,7 @@ namespace ApproxMVBB{
 
             // Save leafs
             XMLNodeType leafs = kdTreeNode.append_child("Leafs");
-            unsigned int level = 0;
+
             for(auto & p: this->m_leafs) {
                 auto * l = p.second;
                 XMLNodeType node = leafs.append_child("Leaf");
@@ -2109,7 +2142,7 @@ namespace ApproxMVBB{
                 aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
                 if(l->data() && exportPoints){
-                    l->data()->saveToXML(node);
+                    l->data()->appendToXML(node);
                 }
             }
 
@@ -2246,13 +2279,28 @@ namespace ApproxMVBB{
         using NodeDataType = typename Tree::NodeDataType;
 
         /** CTor */
-        NearestNeighbourFilter(std::size_t kNeighboursMean = 20,
-                std::size_t stdDevMult=1,
-                std::size_t allowSplitAboveNPoints = 10 ):
+        NearestNeighbourFilter( std::size_t kNeighboursMean = 20,
+                                PREC stdDevMult=1.0,
+                                std::size_t allowSplitAboveNPoints = 10 ):
             m_kNeighboursMean(kNeighboursMean), m_stdDevMult(stdDevMult), m_allowSplitAboveNPoints(allowSplitAboveNPoints) {
             if(m_kNeighboursMean==0) {
                 ApproxMVBB_ERRORMSG("kNeighboursMean is zero! (needs to be >=1)")
             }
+        }
+
+        inline std::tuple<std::size_t,PREC,std::size_t>
+        getSettings()
+        {
+            return std::make_tuple(m_kNeighboursMean,m_stdDevMult,m_allowSplitAboveNPoints);
+        }
+
+        inline void setSettings(std::size_t kNeighboursMean,
+                         PREC stdDevMult,
+                         std::size_t allowSplitAboveNPoints)
+        {
+            m_kNeighboursMean = kNeighboursMean;
+            m_stdDevMult = stdDevMult;
+            m_allowSplitAboveNPoints = allowSplitAboveNPoints;
         }
 
         /**
@@ -2342,11 +2390,11 @@ namespace ApproxMVBB{
                 sum   += m_nearestDists[i];
                 sumSq += m_nearestDists[i] * m_nearestDists[i];
             }
-            PREC mean = sum / validPoints;
-            PREC stdDev = std::sqrt(  (sumSq - sum*sum/validPoints) / validPoints );
+            m_mean = sum / validPoints;
+            m_stdDev = std::sqrt(  (sumSq - sum*sum/validPoints) / validPoints );
 
 
-            PREC distanceThreshold = mean + m_stdDevMult * stdDev; // a distance that is bigger than this signals an outlier
+            PREC distanceThreshold = m_mean + m_stdDevMult * m_stdDev; // a distance that is bigger than this signals an outlier
 
             // move over all points and build new list (without outliers)
             // all points which where invalid are left untouched since m_nearestDists[i] == 0
@@ -2380,29 +2428,41 @@ namespace ApproxMVBB{
         *   because filter() function may have changed the order which is also
         *   reflected in the return value of this function.
         */
+
+        using NearestDistancesType = std::vector<PREC>;
         std::vector<PREC> & getNearestDists() {
             return m_nearestDists;
         }
 
+        /** Get the computed mean/standart deviation of the nearest distance
+        *   (the mean of the returned array of getNearestDists())
+        */
+        std::pair<PREC,PREC> getMoments(){
+            return std::make_pair(m_mean,m_stdDev);
+        }
+
+
     private:
 
-        std::vector<PREC> m_nearestDists;
+        NearestDistancesType m_nearestDists;
+        PREC m_mean = 0;
+        PREC m_stdDev = 0;
 
         /** How many neighbours points are search for one point to classify to build the mean neighbour distance */
-        std::size_t m_kNeighboursMean = 20;
+        std::size_t m_kNeighboursMean;
         /** The multiplier for the standart deviation,
         * if the distance of the point to classify is > \p stdDevMult * stdDevDist + meanDist,
         * then the point is classfied as an outlier.
         */
-        std::size_t m_stdDevMult= 1;
+        PREC m_stdDevMult;
 
-        std::size_t m_allowSplitAboveNPoints = 20;
+        std::size_t m_allowSplitAboveNPoints;
 
-
-    };
 
     };
 
-};
+    }
+
+}
 
 #endif
