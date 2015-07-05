@@ -28,5 +28,5 @@ target_link_libraries(libraryUsage ${ApproxMVBB_LIBRARIES})
 
 # add dependecies (if any)
 if( NOT ApproxMVBB_DEPENDING_TARGETS STREQUAL "")
-    add_dependencies(${PROJECT_NAME} ${ApproxMVBB_DEPENDING_TARGETS})
+    add_dependencies(libraryUsage ${ApproxMVBB_DEPENDING_TARGETS})
 endif()
