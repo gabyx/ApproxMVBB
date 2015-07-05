@@ -105,7 +105,7 @@ findpkg_finish(ApproxMVBB)
 include(FindPackageHandleStandardArgs)
 ## handle the QUIETLY and REQUIRED arguments
 ## if all listed variables are TRUE
-find_package_handle_standard_args(ApproxMVBB DEFAULT_MSG ApproxMVBB_LIBRARIES ApproxMVBB_INCLUDE_DIR ApproxMVBB_DEPENDING_TARGETS)
+find_package_handle_standard_args(ApproxMVBB DEFAULT_MSG ApproxMVBB_LIBRARIES ApproxMVBB_INCLUDE_DIR)
 
 
 
