@@ -14,7 +14,7 @@ message(STATUS "ApproxMVBB_DIR:" ${ApproxMVBB_DIR})
 find_package(ApproxMVBB REQUIRED)
 
 # add CXX flags from library
-LIST(APPEND CMAKE_CXX_FLAGS ${ApproxMVBB_CXX_FLAGS}) 
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${ApproxMVBB_CXX_FLAGS}) 
 
 # add include directory
 include_directories(${ApproxMVBB_INCLUDE_DIR})
