@@ -76,7 +76,7 @@ find_library(ApproxMVBB_LIBRARY_DBG NAMES "@ApproxMVBB_LIBRARY_NAME_DBG@" HINTS 
 # find dependecies Eigen3, meta and pugiXMl
 # ========================================================================================================================================
 SET(OLD_PATH ${CMAKE_MODULE_PATH})
-LIST(APPEND CMAKE_MODULE_PATH @CMAKE_CONFIG_FOLDER@)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 message(STATUS "Changed path temporarly to: " ${CMAKE_MODULE_PATH})
 # Define Eigen =====================
 find_package(Eigen3 REQUIRED)
