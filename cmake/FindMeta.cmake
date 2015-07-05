@@ -2,6 +2,8 @@
 # The following variables are set if Meta is found.
 #  Meta_FOUND        - True when the Meta include directory is found.
 #  Meta_INCLUDE_DIR  - The path to where the meta include files are.
+#  Meta_TARGET       - If meta is downloaded from source (if the user has not installed it system-wide, 
+#                       this target is used for add_dependency for any project using meta
 # If Meta is not found, Meta_FOUND is set to false.
 
 find_package(PkgConfig)
@@ -17,7 +19,7 @@ if(NOT EXISTS "${Meta_INCLUDE_DIR}")
 endif()
 
 if(EXISTS "${Meta_INCLUDE_DIR}")
-
+  set(Meta_TARGET "" CACHE STRING "Meta target" FORCE)
 else()
 
   message(STATUS "Meta: Setup External Projext")
@@ -34,6 +36,8 @@ else()
   # Specify include dir
   ExternalProject_Get_Property(meta source_dir)
   set(Meta_INCLUDE_DIR ${source_dir}/include CACHE STRING "Meta include directory" FORCE)
+  
+  set(Meta_TARGET meta CACHE STRING "Meta target" FORCE)
   
 endif()
 
