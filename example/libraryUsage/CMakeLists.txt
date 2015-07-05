@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 2.8)
 
-SET(PROJECT_NAME libUsage)
+SET(PROJECT_NAME libraryUsage)
 
 
 # only set this variable if ApproxMVBB is not installed system-wide
@@ -17,11 +17,11 @@ LIST(APPEND CMAKE_CXX_FLAGS ${ApproxMVBB_CXX_FLAGS})
 include_directories(${ApproxMVBB_INCLUDE_DIR})
 
 # add simple executable
-ADD_EXECUTABLE(libUsage ./main.cpp)
+ADD_EXECUTABLE(libraryUsage ./main.cpp)
 
 # link with ApproxMVBB
 MESSAGE(STATUS "Linking with: " ${ApproxMVBB_LIBRARIES})
-target_link_libraries(libUsage ${ApproxMVBB_LIBRARIES})
+target_link_libraries(libraryUsage ${ApproxMVBB_LIBRARIES})
 
 # add dependecies (if any)
-add_dependencies(libUsage ${ApproxMVBB_DEPENDING_TARGETS})
+add_dependencies(libraryUsage ${ApproxMVBB_DEPENDING_TARGETS})
