@@ -27,6 +27,6 @@ MESSAGE(STATUS "Linking with: " ${ApproxMVBB_LIBRARIES})
 target_link_libraries(libraryUsage ${ApproxMVBB_LIBRARIES})
 
 # add dependecies (if any)
-if( NOT ${ApproxMVBB_DEPENDING_TARGETS} STREQUAL "")
+if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
     ADD_DEPENDENCIES(libraryUsage ${ApproxMVBB_DEPENDING_TARGETS})
 endif()
