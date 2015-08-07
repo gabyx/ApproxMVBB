@@ -1293,7 +1293,7 @@ namespace ApproxMVBB{
 
             // copy all nodes
             for( auto * n : tree.m_nodes){
-                ASSERTMSG(n, "Node of tree to copy from is nullptr!")
+                ApproxMVBB_ASSERTMSG(n, "Node of tree to copy from is nullptr!")
                 this->m_nodes.emplace_back( new NodeType(*n) );
             }
 
@@ -1305,12 +1305,12 @@ namespace ApproxMVBB{
 
             // setup leaf list
             for( auto * n : tree.m_leafs){
-                ASSERTMSG( (n->getIdx() < this->m_nodes.size()) , "Leaf node from source is out of range: " << n->getIdx() <<"," << this->m_nodes.size() )
+                ApproxMVBB_ASSERTMSG( (n->getIdx() < this->m_nodes.size()) , "Leaf node from source is out of range: " << n->getIdx() <<"," << this->m_nodes.size() )
                 this->m_leafs.emplace_back( this->m_nodes[n->getIdx()] );
             }
 
             // setup root
-            ASSERTMSG( tree.m_root->getIdx() < this->m_nodes.size(), "Root idx out of range: " << tree.m_root->getIdx() << "," << this->m_nodes.size() )
+            ApproxMVBB_ASSERTMSG( tree.m_root->getIdx() < this->m_nodes.size(), "Root idx out of range: " << tree.m_root->getIdx() << "," << this->m_nodes.size() )
             m_root = m_nodes[ tree.m_root->getIdx() ];
 
         }
