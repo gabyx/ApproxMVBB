@@ -39,8 +39,8 @@ This library has these light-weight dependencies:
 
 - [Eigen](http://eigen.tuxfamily.org) at least version 3, 
 - [meta](https://github.com/ericniebler/meta), 
-- [pugixml](https://github.com/zeux/pugixml)
-
+- [pugixml](https://github.com/zeux/pugixml),
+- [python3](https://www.python.org/downloads/)(only for visualization)
 Download these and install it on your system.
 
 Download the latest ApproxMVBB code:

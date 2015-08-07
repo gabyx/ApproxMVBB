@@ -32,7 +32,9 @@ include_directories(${INCLUDE_DIRS})
 SET(LINK_LIBS ${ApproxMVBB_LINK_LIBS})
 
 ADD_LIBRARY(ApproxMVBB SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
-ADD_DEPENDENCIES(ApproxMVBB ${ApproxMVBB_DEPENDING_TARGETS})
+if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
+    ADD_DEPENDENCIES(ApproxMVBB ${ApproxMVBB_DEPENDING_TARGETS})
+endif()
 
 target_link_libraries(ApproxMVBB ${LINK_LIBS})
 set_target_properties(ApproxMVBB PROPERTIES 
@@ -41,9 +43,9 @@ set_target_properties(ApproxMVBB PROPERTIES
 
 
 
-set(ApproxMVBB_LIBRARY_NAME_REL "${PROJECT_NAME}")
-set(ApproxMVBB_LIBRARY_NAME_DBG "${PROJECT_NAME}${CMAKE_DEBUG_POSTFIX}")
-set(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "Config/Config.hpp")
+set(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")
+set(ApproxMVBB_LIBRARY_NAME_DBG "ApproxMVBB${CMAKE_DEBUG_POSTFIX}")
+set(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "ApproxMVBB/Config/Config.hpp")
 
 # Install stuff (default location is not some where on the system! for safty reasons
 if(FIRST_CMAKE_RUN)
@@ -89,6 +91,12 @@ install(DIRECTORY  ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB
         FILE_PERMISSIONS      OWNER_READ OWNER_WRITE               GROUP_READ               WORLD_READ
         DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
+
+
+# Make configuration files for cmake
+
+SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxMVBB_VERSION_STRING})
+
 #=========================
 # Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
@@ -108,8 +116,15 @@ configure_file(
 #=========================
 
 
-SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxMVBB_VERSION_STRING})
- MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
+
+MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
 install(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
+        DESTINATION ${CMAKE_CONFIG_FOLDER}
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
+MESSAGE( STATUS "Installing dependency cmake find scripts for 'eigen3,meta,pugixml' to ${CMAKE_CONFIG_FOLDER}")
+install(FILES  ${ApproxMVBB_ROOT_DIR}/cmake/FindEigen3.cmake  
+               ${ApproxMVBB_ROOT_DIR}/cmake/FindMeta.cmake 
+               ${ApproxMVBB_ROOT_DIR}/cmake/FindPugiXML.cmake 
         DESTINATION ${CMAKE_CONFIG_FOLDER}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)

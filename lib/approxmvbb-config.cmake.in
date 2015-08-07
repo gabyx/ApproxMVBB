@@ -18,7 +18,7 @@ macro(make_library_set PREFIX)
     set(${PREFIX} ${${PREFIX}_REL})
   elseif (${PREFIX}_DBG)
     set(${PREFIX} ${${PREFIX}_DBG})
-  endif ()
+  endif()
 endmacro(make_library_set)
 
 
@@ -32,7 +32,7 @@ macro(findpkg_finish PREFIX)
       if (NOT ${PREFIX}_FIND_QUIETLY)
         message(STATUS "Found ${PREFIX}")
       endif ()
-   elseif ( "${ARGV1}" AND ${PREFIX}_INCLUDE_DIR)
+    elseif ( "${ARGV1}" AND ${PREFIX}_INCLUDE_DIR)
       set(${PREFIX}_FOUND TRUE)
       set(${PREFIX}_INCLUDE_DIRS ${${PREFIX}_INCLUDE_DIR} )
       set(${PREFIX}_LIBRARIES ${${PREFIX}_LIBRARY} )
@@ -47,17 +47,22 @@ macro(findpkg_finish PREFIX)
         message(FATAL_ERROR "Required library ${PREFIX} not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake.")
       endif ()
     endif ()
-
+    
+    # add dependency libraries
+    if (${PREFIX}_LIBRARIES_DEP)
+        list(APPEND ${PREFIX}_LIBRARIES ${${PREFIX}_LIBRARIES_DEP})
+    endif()
+    
     mark_as_advanced(${PREFIX}_INCLUDE_DIR ${PREFIX}_LIBRARY ${PREFIX}_LIBRARY_REL ${PREFIX}_LIBRARY_DBG ${PREFIX}_LIBRARY_FWK)
   endif ()
 endmacro(findpkg_finish)
 
 
-set( ApproxMVBB_LINK_FLAGS "-std=c++11" CACHE STRING "Build flags when linking with ApproxMVBB")
+set( ApproxMVBB_CXX_FLAGS "-std=c++11" CACHE STRING "Build flags when linking with ApproxMVBB")
 
 
 #Find Include Headers
-find_path(ApproxMVBB_INCLUDE_DIR NAMES "@ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER@" HINTS @ApproxMVBB_INC_INSTALL_DIR@ ${ApproxMVBB_DIR} PATH_SUFFIXES ApproxMVBB)
+find_path(ApproxMVBB_INCLUDE_DIR NAMES "@ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER@" HINTS @ApproxMVBB_INC_INSTALL_DIR@ ${ApproxMVBB_DIR})
 #message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
 
 #Find libraries in @ApproxMVBB_LIBRARY_INSTALL_PATH@
@@ -66,13 +71,41 @@ find_library(ApproxMVBB_LIBRARY_DBG NAMES "@ApproxMVBB_LIBRARY_NAME_DBG@" HINTS 
 #message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_REL})
 #message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_DBG})
 
+
+
+# find dependecies Eigen3, meta and pugiXMl
+# ========================================================================================================================================
+SET(OLD_PATH ${CMAKE_MODULE_PATH})
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+message(STATUS "Changed path temporarly to: " ${CMAKE_MODULE_PATH})
+# Define Eigen =====================
+find_package(Eigen3 REQUIRED)
+set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
+# ==================================
+
+# Define PugiXML ===================
+find_package(PugiXML REQUIRED)
+# ==================================
+
+# Define Meta ======================
+find_package(Meta REQUIRED)
+# ==================================
+list(APPEND ApproxMVBB_INCLUDE_DIR ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
+SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
+SET(ApproxMVBB_DEPENDING_TARGETS ${Meta_TARGET})
+# ========================================================================================================================================
+
+SET(CMAKE_MODULE_PATH ${OLD_PATH})
+
+
+
 make_library_set(ApproxMVBB_LIBRARY)
 findpkg_finish(ApproxMVBB)
 
 include(FindPackageHandleStandardArgs)
 ## handle the QUIETLY and REQUIRED arguments
 ## if all listed variables are TRUE
-find_package_handle_standard_args(ApproxMVBB DEFAULT_MSG ApproxMVBB_LIBRARY ApproxMVBB_INCLUDE_DIR)
+find_package_handle_standard_args(ApproxMVBB DEFAULT_MSG ApproxMVBB_LIBRARIES ApproxMVBB_INCLUDE_DIR)
 
 
 
@@ -82,5 +115,6 @@ MARK_AS_ADVANCED(
     ApproxMVBB_INCLUDE_DIRS
     ApproxMVBB_LIBRARY_REL
     ApproxMVBB_LIBRARY_DBG
-    ApproxMVBB_LIBRARY
+    ApproxMVBB_LIBRARIES
+    ApproxMVBB_DEPENDING_TARGETS
 )

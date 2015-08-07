@@ -76,7 +76,9 @@ MACRO(INCLUDE_GEOMETRYPREDICATES_SOURCE SRC
     
     INCLUDE_DIRECTORIES(${ROOT_DIR}/include/ ${ApproxMVBB_BINARY_DIR}/include/)
     ADD_EXECUTABLE(${TARGET_NAME} ${ROOT_DIR}/src/PredicatesInit.cpp)
-    GET_TARGET_PROPERTY(MY_GENERATOR_EXE ${TARGET_NAME} LOCATION)
+    SET(MY_GENERATOR_EXE "$<TARGET_FILE:${TARGET_NAME}>")
+    #GET_TARGET_PROPERTY(MY_GENERATOR_EXE ${TARGET_NAME} LOCATION) # not allowed since policy cmake --help-policy CMP0026
+
 
     # add the custom command that will generate the files
     message(STATUS "Generate : " ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/GeometryPredicates/PredicatesInit.hpp)

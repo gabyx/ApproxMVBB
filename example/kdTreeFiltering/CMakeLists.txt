@@ -27,7 +27,9 @@ include_directories(${INCLUDE_DIRS})
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
 target_link_libraries(${PROJECT_NAME} "ApproxMVBB")
 
-ADD_DEPENDENCIES(${PROJECT_NAME} generatePredicateInit)
+if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
+    ADD_DEPENDENCIES(${PROJECT_NAME} ${ApproxMVBB_DEPENDING_TARGETS})
+endif()
 
 # copy files
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

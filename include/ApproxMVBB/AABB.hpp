@@ -218,7 +218,7 @@ public:
         Array3 e = extent();
         Vector3 c = center();
 
-        for(int i=0;i<Dim;++i){
+        for(unsigned int i=0;i<Dim;++i){
             PREC l = minExtent(i);
             if(std::abs(e(i)) < l){
                 m_minPoint(i) = c(i) - 0.5*l;
@@ -229,16 +229,21 @@ public:
 
     /** Expands the selected axes \p axis to maximal value,
     *  which simulates a box with infinite extent in this direction
-    *  \tparam MoveMin If true, the minimum value is moved to lowest value.
+    *  \tparam MoveMax If true, the maximum value is moved to max value, otherwise the minimum value is moved to lowest.
     */
-    template<bool MoveMin>
+    template<bool MoveMax>
     void expandToMaxExtent(const unsigned int & axis){
         ApproxMVBB_ASSERTMSG(axis < Dim,"axis >= Dim !");
-        if(MoveMin){
+        if(!MoveMax){
             m_minPoint(axis) = std::numeric_limits<PREC>::lowest();
         }else{
             m_maxPoint(axis) = std::numeric_limits<PREC>::max();
         }
+    }
+
+    void expandToMaxExtent(){
+        m_minPoint.setConstant(std::numeric_limits<PREC>::lowest());
+        m_maxPoint.setConstant(std::numeric_limits<PREC>::max());
     }
 
     inline PREC volume() const {

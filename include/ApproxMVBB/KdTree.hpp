@@ -9,6 +9,7 @@
 #include <array>
 #include <queue>
 #include <deque>
+#include <list>
 #include <tuple>
 #include <unordered_set>
 #include <unordered_map>
@@ -16,7 +17,7 @@
 
 #include <fstream>
 
-#include <pugixml.hpp>
+#include <pugixml/pugixml.hpp>
 #include <meta/meta.hpp>
 
 #include "ApproxMVBB/Config/Config.hpp"
@@ -25,6 +26,7 @@
 #include ApproxMVBB_AssertionDebug_INCLUDE_FILE
 
 #include "ApproxMVBB/Common/StaticAssert.hpp"
+#include "ApproxMVBB/Common/SfinaeMacros.hpp"
 #include "ApproxMVBB/Common/ContainerTag.hpp"
 
 #include "ApproxMVBB/AABB.hpp"
@@ -51,9 +53,14 @@ namespace ApproxMVBB{
     }
 
     #define DEFINE_KDTREE_BASETYPES( __Traits__ )  \
+        /* NodeDataType, Dimension and NodeType */ \
         using NodeDataType = typename __Traits__::NodeDataType; \
         static const unsigned int Dimension = __Traits__::NodeDataType::Dimension; \
         using NodeType = typename __Traits__::NodeType; \
+        /*Containers*/ \
+        using NodeContainerType = std::vector<NodeType *>; \
+        using LeafContainerType = NodeContainerType; \
+        using LeafNeighbourMapType = std::unordered_map<std::size_t, std::unordered_set<std::size_t> >;
 
 
     struct EuclideanDistSq {
@@ -312,7 +319,7 @@ namespace ApproxMVBB{
             resetStatistics();
         }
 
-        void init(const std::initializer_list<Method>  m,
+        void init(std::initializer_list<Method> m,
                 unsigned int allowSplitAboveNPoints = 100,
                 PREC minExtent = 0.0,
                 SearchCriteria searchCriteria = SearchCriteria::FIND_BEST,
@@ -698,25 +705,77 @@ namespace ApproxMVBB{
 
     };
 
+
+    /** Forward declar all tree classes */
     template<typename T> class TreeBase;
+    template<typename T> class TreeSimple;
+    template<typename T> class Tree;
+
+
+    #define DEFINE_KDTREE_BASENODETYPES( _Base_ ) \
+        using SplitAxisType = typename  _Base_::SplitAxisType; \
+        using BoundaryInfoType = typename _Base_::BoundaryInfoType;
+
+    /** Node stuff =======================================================================================*/
 
     template<typename TDerivedNode, unsigned int Dimension>
-    class TreeNodeBase {
+    class NodeBase {
     private:
+
+        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max())
+
         template<typename D, unsigned int Dim>
-        friend class TreeNodeBase; ///< all classes are friends (even the ones with other dimension, which results in compilation error
+        friend class NodeBase; ///< all classes are friends (even the ones with other dimension, which results in compilation error
+
     public:
 
         using DerivedNode = TDerivedNode;
+        using SplitAxisType = char;
 
-        using  SplitAxisType = char;
-        ApproxMVBB_STATIC_ASSERT( Dimension <= std::numeric_limits<char>::max())
+    private:
+        class BoundaryInformation {
+            public:
+                static const unsigned int size = Dimension * 2;
 
-        TreeNodeBase(std::size_t idx, const AABB<Dimension> & aabb, unsigned int treeLevel = 0)
-            : m_idx(idx),  m_treeLevel(treeLevel), m_aabb(aabb), m_child{nullptr,nullptr} {
+
+                inline DerivedNode* & at(unsigned int idx){
+                    ApproxMVBB_ASSERTMSG(idx < size, "Index " << idx << "out of bound!");
+                    return m_nodes[idx];
+                }
+                inline DerivedNode* const & at(unsigned int idx) const{
+                    ApproxMVBB_ASSERTMSG(idx < size, "Index " << idx << "out of bound!");
+                    return m_nodes[idx];
+                }
+
+                inline DerivedNode* & at(unsigned int axis, char minMax){
+                    ApproxMVBB_ASSERTMSG(minMax*Dimension + axis < size, "Index " << minMax*Dimension + axis << "out of bound!");
+                    return m_nodes[minMax*Dimension + axis];
+                }
+                inline DerivedNode* const & at(unsigned int axis, char minMax) const{
+                    ApproxMVBB_ASSERTMSG(minMax*Dimension + axis < size, "Index " << minMax*Dimension + axis << "out of bound!");
+                    return m_nodes[minMax*Dimension + axis];
+                }
+
+                DerivedNode* * begin(){ return m_nodes;}
+                DerivedNode* * end(){ return m_nodes + size;}
+
+                DerivedNode* const * begin() const { return m_nodes;}
+                DerivedNode* const * end() const { return m_nodes + size;}
+
+            private:
+                DerivedNode* m_nodes[size] = {nullptr}; ///< min/max pointers
+        };
+
+    public:
+        using BoundaryInfoType = BoundaryInformation;
+
+        NodeBase(){}
+
+        NodeBase(std::size_t idx, const AABB<Dimension> & aabb, unsigned int treeLevel = 0)
+            : m_idx(idx),  m_treeLevel(treeLevel), m_aabb(aabb) {
         }
 
-        ~TreeNodeBase() {};
+        ~NodeBase() {};
 
         /** Copy from node
         *   Childs are not deep copied (since the node does not own the childs)
@@ -724,18 +783,29 @@ namespace ApproxMVBB{
         *   The tree class is responsible for copying the childs accordingly.
         */
         template<typename Derived>
-        TreeNodeBase(const TreeNodeBase<Derived,Dimension> & n):
-            m_idx(n.m_idx),m_treeLevel(n.m_treeLevel), m_aabb(aabb),
+        NodeBase(const NodeBase<Derived,Dimension> & n):
+            m_idx(n.m_idx),m_treeLevel(n.m_treeLevel), m_aabb(n.m_aabb),
             m_splitAxis(n.m_splitAxis),m_splitPosition(n.m_splitPosition),
-            m_child{nullptr,nullptr} {
-        }
+            m_child{{nullptr,nullptr}}, m_parent{nullptr}
+        {}
         /** Move from node */
         template<typename Derived>
-        TreeNodeBase(TreeNodeBase<Derived,Dimension> && n):
-            m_idx(std::move(n.m_idx)), m_treeLevel(n.m_treeLevel),
-            m_aabb(std::move(n.m_aabb)),m_splitAxis(std::move(n.m_splitAxis)),
-            m_splitPosition(std::move(n.m_splitPosition)) {
+        NodeBase(NodeBase<Derived,Dimension> && n):
+            m_idx(n.m_idx), m_treeLevel(n.m_treeLevel),
+            m_aabb(std::move(n.m_aabb)),m_splitAxis(n.m_splitAxis),
+            m_splitPosition(n.m_splitPosition) , m_child(n.child), m_parent(n.parent)
+        {
+            n.m_parent = nullptr;
+            n.m_child  = {{nullptr,nullptr}};
         }
+
+        inline void setChilds(DerivedNode * r, DerivedNode * l){
+            m_child[0]=r;
+            m_child[1]=l;
+        }
+
+        inline DerivedNode * parent(){ return m_parent;}
+        inline const DerivedNode * parent() const { return m_parent;}
 
         inline DerivedNode * leftNode() {
             return m_child[0];
@@ -769,6 +839,11 @@ namespace ApproxMVBB{
             return (m_splitAxis < 0);
         }
 
+
+        inline void setIdx(std::size_t i){
+            m_idx = i;
+        }
+
         inline std::size_t getIdx() const {
             return m_idx;
         }
@@ -795,9 +870,13 @@ namespace ApproxMVBB{
             return m_treeLevel;
         }
 
+        inline void setLevel(unsigned int l) const {
+            m_treeLevel = l;
+        }
+
     protected:
 
-        TreeNodeBase(std::size_t idx, const AABB<Dimension> & aabb, SplitAxisType axis, PREC splitPos)
+        NodeBase(std::size_t idx, const AABB<Dimension> & aabb, SplitAxisType axis, PREC splitPos)
             : m_idx(idx), m_aabb(aabb), m_splitAxis(axis), m_splitPosition(splitPos) {
         }
 
@@ -806,18 +885,38 @@ namespace ApproxMVBB{
         AABB<Dimension> m_aabb;
         SplitAxisType m_splitAxis = -1; ///< smaller than zero to indicate leaf node!
         PREC m_splitPosition = 0.0;
-        /** Child Nodes */
-        std::array<DerivedNode *,2> m_child{nullptr,nullptr};  ///< The child nodes, these objects are not owned by this node!
+
+        /** Child Nodes
+        * The child nodes, these objects are not owned by this node
+        * and if it is not a leaf, both pointers are valid!
+        */
+        std::array<DerivedNode *,2> m_child{{nullptr,nullptr}};
+        DerivedNode * m_parent = nullptr;
     };
 
-    template<typename Traits> class TreeNode;
+    /** Forward declaration */
+    template<typename Traits> class Node;
 
-    template<typename TTraits>
-    class TreeNodeSimple : public TreeNodeBase<TreeNodeSimple<TTraits>,TTraits::Dimension> {
+    namespace details{
+       // Helper to select the correct Derived type
+        template<typename PD,typename T>
+        struct select{ using type = PD;};
+
+        template<typename T>
+        struct select<void,T>{ using type = T; };
+    };
+
+    template<typename TTraits, typename PD = void> /*PD = PossibleDerived */
+    class NodeSimple : public NodeBase< typename details::select<PD, NodeSimple<TTraits,PD> >::type ,
+                                                TTraits::Dimension>
+    {
     public:
         using Traits = TTraits;
-        using Base = TreeNodeBase<TreeNodeSimple<TTraits>,TTraits::Dimension>;
-    private:
+
+        using Base = NodeBase< typename details::select<PD, NodeSimple<TTraits,PD> >::type , TTraits::Dimension>;
+        using DerivedType = typename details::select<PD, NodeSimple<TTraits,PD> >::type;
+
+    protected:
         using Base::m_idx;
         using Base::m_aabb;
         using Base::m_splitAxis;
@@ -828,22 +927,74 @@ namespace ApproxMVBB{
         friend class TreeBase;
 
 
+        /** Boundary information which is nullptr for non-leaf nodes
+        *   Pointer which point to the subtrees min/max for each dimension
+        */
+        typename Base::BoundaryInfoType m_bound;
+
     public:
 
         DEFINE_KDTREE_BASETYPES( Traits )
+        DEFINE_KDTREE_BASENODETYPES( Base )
 
-        TreeNodeSimple(std::size_t idx, const AABB<Dimension> & aabb): Base(idx,aabb) {}
-        TreeNodeSimple(TreeNodeSimple&& t): Base(std::move(t)) {}
-        TreeNodeSimple(const TreeNodeSimple& t): Base(t) {}
+        NodeSimple(){}
+        NodeSimple(std::size_t idx, const AABB<Dimension> & aabb): Base(idx,aabb) {}
+        NodeSimple(NodeSimple&& t): Base(std::move(t)) {}
+        NodeSimple(const NodeSimple& t): Base(t) {}
 
-        /** Copy values from TreeNode<T>, only Base class does copy */
+        /** Copy values from TrşeeNode<T>, only Base class does copy */
         template<typename T>
-        TreeNodeSimple(const TreeNode<T> & t): Base(t) {
+        explicit NodeSimple(const Node<T> & t): Base(t) {
+
         }
 
+        /**
+        *   Setup node from some other node  \p t, with a node pointer list \p nodes (continous index ordered)!
+        */
+        template<typename T, typename NodeVector>
+        void setup( const Node<T> * t, const NodeVector & nodes){
+
+            ApproxMVBB_STATIC_ASSERT(Dimension==Node<T>::Dimension);
+
+
+            // link left child
+            Node<T> * c = t->m_child[0];
+            if(c){
+               m_child[0] = nodes[c->getIdx()];
+               m_child[0]->m_parent = static_cast<DerivedType*>(this);
+            }
+
+            // link right child
+            c = t->m_child[1];
+            if(c){
+               m_child[1] = nodes[c->getIdx()];
+               m_child[1]->m_parent = static_cast<DerivedType*>(this);
+            }
+
+
+            // link boundary information if this (and of course t) is a leaf
+            if(t->isLeaf()){
+                auto it = m_bound.begin();
+                for(const auto * bNode : t->m_bound){
+                    if( bNode ){ // if boundary node is valid
+                        // find node idx in node list (access by index)
+                        auto * p = nodes[bNode->getIdx()];
+                        if(p == nullptr){
+                            ApproxMVBB_ERRORMSG("Setup in node: " << this->getIdx() << " failed!");
+                        }
+                        *it = p; // set boundary pointer to the found node pointer.
+                        ++it;
+                    }
+                }
+            }
+
+        }
+
+        const  BoundaryInfoType & getBoundaries() const {return m_bound;}
+        BoundaryInfoType & getBoundaries() {return m_bound;}
     };
 
-    /** Default class used for TreeNodeSimple and TreeSimpleTraits*/
+    /** Default class used for NodeSimple and TreeSimpleTraits*/
     template<unsigned int Dim = 3>
     struct NoData {
         static const unsigned int Dimension = Dim;
@@ -851,10 +1002,10 @@ namespace ApproxMVBB{
 
 
     template<typename TTraits>
-    class TreeNode : public TreeNodeBase<TreeNode<TTraits>,TTraits::Dimension> {
+    class Node : public NodeBase<Node<TTraits>,TTraits::Dimension> {
     public:
         using Traits = TTraits;
-        using Base = TreeNodeBase<TreeNode<TTraits>,TTraits::Dimension>;
+        using Base = NodeBase<Node<TTraits>,TTraits::Dimension>;
     private:
 
         using Base::m_idx;
@@ -863,29 +1014,32 @@ namespace ApproxMVBB{
         using Base::m_splitPosition;
         using Base::m_child;
 
+
+
+        /** Tree Access */
+        template<typename T>
+        friend class Tree;
         template<typename T>
         friend class TreeBase;
 
+        /** Node Friends */
         template<typename T>
-        friend class Tree;
-
-        template<typename T>
-        friend class TreeNodeSimple;
+        friend class Node;
+        template<typename T,typename PD>
+        friend class NodeSimple;
 
     public:
 
         DEFINE_KDTREE_BASETYPES( Traits )
-        using SplitAxisType = typename Base::SplitAxisType;
+        DEFINE_KDTREE_BASENODETYPES( Base )
 
-        struct BoundaryInformation {
-            TreeNode* m_nodes[Dimension][2] = {{nullptr}}; ///< min/max pointers , if nullptr its an outside boundary
-        };
 
-        TreeNode(std::size_t idx, const AABB<Dimension> & aabb, NodeDataType * data, unsigned int treeLevel = 0)
-            : Base(idx,aabb,treeLevel), m_data(data), m_bound(new BoundaryInformation{}) {
+
+        Node(std::size_t idx, const AABB<Dimension> & aabb, NodeDataType * data, unsigned int treeLevel = 0)
+            : Base(idx,aabb,treeLevel), m_data(data) {
         }
 
-        ~TreeNode() {
+        ~Node() {
             cleanUp();
         };
 
@@ -894,30 +1048,25 @@ namespace ApproxMVBB{
         *   the child pointers have the same values as the node \p n.
         *   The tree class is responsible for copying the childs accordingly.
         */
-        TreeNode(const TreeNode & n): Base(n) {
-            if(n.m_bound) {
-                m_bound = new BoundaryInformation(*n.m_bound);
-            }
+        template<typename Traits>
+        Node(const Node<Traits> & n): Base(n) {
             if(n.m_data) {
                 m_data = new NodeDataType(*n.m_data);
             }
         }
 
         /** Move from node */
-        TreeNode(TreeNode && n): Base(std::move(n)),
+        Node(Node && n): Base(std::move(n)),
             m_bound(n.m_bound),
             m_data(n.m_data) {
-            n.m_bound = nullptr;
             n.m_data = nullptr;
         }
 
+        const BoundaryInfoType & getBoundaries() const {return m_bound;}
+        BoundaryInfoType & getBoundaries() {return m_bound;}
 
-
-        void setBoundaryInfo(const BoundaryInformation & b) {
-            if(!m_bound) {
-                m_bound = new BoundaryInformation(b);
-            }
-            *m_bound = b;
+        void setBoundaryInfo(const BoundaryInfoType & b) {
+            m_bound = b;
         }
 
         inline NodeDataType * data() {
@@ -929,9 +1078,11 @@ namespace ApproxMVBB{
 
         /** Splits the node into two new nodes by the splitting position
         * The ownership of the left and right nodes is the caller of this function!
+        * If \p startIdx, which specifies the start numbering for the left child , right child is startIdx+1,
+        * is zero then we number according to a complete binary tree, left = 2*m_idx +1 and  right 2*m_idx + 2
         */
         template<typename TSplitHeuristic>
-        bool split(TSplitHeuristic & s) {
+        bool split(TSplitHeuristic & s, std::size_t startIdx = 0) {
 
             auto pLR = s.doSplit(this, m_splitAxis, m_splitPosition);
 
@@ -939,33 +1090,37 @@ namespace ApproxMVBB{
                 return false;
             }
 
+            // if startIdx for numbering is zero then number according to complete binary tree
+            startIdx = (startIdx == 0) ? 2*m_idx + 1 : startIdx;
+
             // Split aabb and make left and right
             // left (idx for next child if tree is complete binary tree, then idx = 2*idx+1 for left child)
             AABB<Dimension> t(m_aabb);
             PREC v = t.m_maxPoint(m_splitAxis);
             t.m_maxPoint(m_splitAxis) = m_splitPosition;
-            m_child[0] = new TreeNode(2*m_idx+1,t,pLR.first,  this->m_treeLevel+1);
+            m_child[0] = new Node(startIdx,t,pLR.first,  this->m_treeLevel+1);
+            m_child[0]->m_parent = this;
 
             // right
             t.m_maxPoint(m_splitAxis) = v; //restore
             t.m_minPoint(m_splitAxis) = m_splitPosition;
-            m_child[1] = new TreeNode(2*m_idx+2,t,pLR.second, this->m_treeLevel+1);
+            m_child[1] = new Node(startIdx+1,t,pLR.second, this->m_treeLevel+1);
+            m_child[1]->m_parent = this;
 
             // Set Boundary Information
-            BoundaryInformation b = *m_bound;
-            TreeNode * tn = b.m_nodes[m_splitAxis][1];
-            b.m_nodes[m_splitAxis][1] = m_child[1]; // left changes pointer at max value
+            BoundaryInfoType b = m_bound; //copy
+            Node * tn = b.at(m_splitAxis,1);
+            b.at(m_splitAxis,1) = m_child[1]; // left changes pointer at max value
             m_child[0]->setBoundaryInfo(b);
 
-            b.m_nodes[m_splitAxis][1] = tn; // restore
-            b.m_nodes[m_splitAxis][0] = m_child[0]; // right changes pointer at min value
+            b.at(m_splitAxis,1) = tn; // restore
+            b.at(m_splitAxis,0) = m_child[0]; // right changes pointer at min value
             m_child[1]->setBoundaryInfo(b);
 
             // clean up own node if it is not the root node on level 0
             if(this->m_treeLevel != 0) {
                 cleanUp();
             }
-
 
             return true;
         }
@@ -993,23 +1148,21 @@ namespace ApproxMVBB{
             // if we have no boundary information
 
 
-            ApproxMVBB_ASSERTMSG(m_bound, "To determine neighbours we need boundary information!")
-
-            std::deque<TreeNode*> nodes; // Breath First Search
+            std::deque<Node*> nodes; // Breath First Search
             auto & neighbours = neigbourIdx[m_idx]; // Get this neighbour map
-            TreeNode * f;
+            Node * f;
 
             AABB<Dimension> aabb(m_aabb);
             aabb.expand(minExtent); // expand this nodes aabb such that we find all the neighbours which overlap this aabb;
 
             // For each axis traverse subtree
-            for(SplitAxisType d = 0; d<Dimension; ++d) {
+            for(SplitAxisType d = 0; d< static_cast<SplitAxisType>(Dimension); ++d) {
 
                 // for min and max
                 for(unsigned int m = 0; m<2; ++m) {
 
                     // push first -> Breath First Search (of boundary subtree)
-                    TreeNode * subTreeRoot = m_bound->m_nodes[d][m];
+                    Node * subTreeRoot = m_bound.at(d,m);
                     if(!subTreeRoot) {
                         continue;
                     } else {
@@ -1061,14 +1214,10 @@ namespace ApproxMVBB{
 
         }
 
-        void cleanUp(bool data = true, bool bounds = true) {
+        void cleanUp(bool data = true /*,bool bounds = true*/) {
             if(data && m_data) {
                 delete m_data;
                 m_data = nullptr;
-            }
-            if(bounds && m_bound) {
-                delete m_bound;
-                m_bound = nullptr;
             }
         }
 
@@ -1080,12 +1229,17 @@ namespace ApproxMVBB{
 
         NodeDataType* m_data = nullptr;
 
-        /** Boundary information which is nullptr for non-leaf nodes */
-        BoundaryInformation * m_bound = nullptr;
+        /** Boundary information which is nullptr for non-leaf nodes
+        *   Pointer which point to the subtrees min/max for each dimension
+        */
+        BoundaryInfoType m_bound;
 
     };
+    /** =======================================================================================*/
 
 
+
+    /** Tree stuff ============================================================================*/
     template<typename Traits>
     class TreeBase {
     private:
@@ -1095,13 +1249,11 @@ namespace ApproxMVBB{
 
         DEFINE_KDTREE_BASETYPES( Traits )
 
-        using LeafMapType = std::unordered_map<std::size_t, NodeType *>;
-        using NodeContainerType = std::vector<NodeType *>;
-
         TreeBase() {}
 
         TreeBase(TreeBase && t)
             : m_nodes(std::move(t.m_nodes)), m_leafs( std::move(t.m_leafs) ), m_root(t.m_root) {
+            // Make other tree empty
             t.m_root = nullptr;
             t.m_nodes.clear();
             t.m_leafs.clear();
@@ -1116,10 +1268,21 @@ namespace ApproxMVBB{
             copyFrom(t);
         }
 
+
+    protected:
+
+
+
+        /** Deep copy, copies all nodes, and leafs , and links childs together
+        *   Special links added to the Node classes are not preserved!
+        *   For example: BoundaryInformation
+        *   Therefore a newNode->setup() routine is called for each new copied node at the end of this function
+        *   such that every newNode can setup these special links by accesing a (index,newNode) map and the oldNode.
+        */
         template<typename T>
         void copyFrom(const TreeBase<T> & tree) {
 
-            using CNodeType = typename TreeBase<T>::NodeType;
+            //using CNodeType = typename TreeBase<T>::NodeType;
 
             if(!tree.m_root) {
                 return;
@@ -1128,37 +1291,30 @@ namespace ApproxMVBB{
             this->m_nodes.reserve(tree.m_nodes.size());
             this->m_leafs.reserve(tree.m_leafs.size());
 
-            std::deque< std::pair<NodeType**,CNodeType * > > l;  // first = to pointer reference, second = from;
-
-            l.emplace_back( std::make_pair(&this->m_root, tree.m_root) );
-
-            while(!l.empty()) {
-                auto & t = l.front();
-
-                (*t.first) = new NodeType(*t.second); // copy from node, childs are uninitialized
-                this->m_nodes.emplace_back( *t.first );
-
-                if(t.second->isLeaf()) {
-                    this->m_leafs.emplace((*t.first)->getIdx(),*t.first);
-
-                } else {
-
-                    if(t.second->m_child[0]) {
-                        l.emplace_back( std::make_pair(&(*t.first)->m_child[0],t.second->m_child[0]) );
-                    }
-
-                    if(t.second->m_child[1]) {
-                        l.emplace_back( std::make_pair(&(*t.first)->m_child[1],t.second->m_child[1])  );
-                    }
-
-                }
-
-                l.pop_front();
+            // copy all nodes
+            for( auto * n : tree.m_nodes){
+                ApproxMVBB_ASSERTMSG(n, "Node of tree to copy from is nullptr!")
+                this->m_nodes.emplace_back( new NodeType(*n) );
             }
+
+            // setup all nodes
+            auto s = tree.m_nodes.size();
+            for( std::size_t i=0;i<s;++i){
+                this->m_nodes[i]->setup(tree.m_nodes[i],this->m_nodes);
+            }
+
+            // setup leaf list
+            for( auto * n : tree.m_leafs){
+                ApproxMVBB_ASSERTMSG( (n->getIdx() < this->m_nodes.size()) , "Leaf node from source is out of range: " << n->getIdx() <<"," << this->m_nodes.size() )
+                this->m_leafs.emplace_back( this->m_nodes[n->getIdx()] );
+            }
+
+            // setup root
+            ApproxMVBB_ASSERTMSG( tree.m_root->getIdx() < this->m_nodes.size(), "Root idx out of range: " << tree.m_root->getIdx() << "," << this->m_nodes.size() )
+            m_root = m_nodes[ tree.m_root->getIdx() ];
 
         }
 
-    protected:
         ~TreeBase() {
             resetTree();
         }; ///< Prohibit the use of this base polymophically
@@ -1192,7 +1348,6 @@ namespace ApproxMVBB{
             }
 
 
-
             std::unordered_set<std::size_t> hasParent;
             // first link all nodes together
             auto itE = c.end();
@@ -1224,6 +1379,9 @@ namespace ApproxMVBB{
 
             // Save root as it is a valid binary tree
             m_root = root;
+
+
+            // Move over all nodes again an do some setup
         }
 
         void resetTree() {
@@ -1259,20 +1417,75 @@ namespace ApproxMVBB{
             return currentNode;
         }
 
-        const NodeType * getLeaf(const std::size_t & index) const {
-            auto it = m_leafs.find(index);
-            if(it == m_leafs.end()) {
-                return nullptr;
-            }
-            return it->second;
+        const NodeType * gaga(const NodeType * a,
+                              const NodeType * b){
+            return nullptr;
         }
 
-        inline  const LeafMapType & getLeafs() {
+        /** Get common ancestor of two nodes
+         *  Complexity: O(h) algorithm
+        */
+        const NodeType * getLowestCommonAncestor(const NodeType * a, const NodeType * b){
+            // build list of parents to root
+
+            static std::vector<NodeType *> aL; // reserve treelevel nodes
+            static std::vector<NodeType *> bL; // reserve treelevel nodes
+            aL.clear();
+            bL.clear();
+
+            NodeType * r = a->m_parent;
+            while(r != nullptr){ // root has nullptr which stops
+                aL.emplace_back(r);
+                r = r->m_parent;
+            }
+            r = b->m_parent;
+            while(r != nullptr){
+                bL.emplace_back(r);
+                r = r->m_parent;
+            }
+
+            // list a = [5,4,3,1]
+            // list b = [9,13,11,2,3,1]
+            // lowest common ancestor = 3
+            // get the node from root (from back of both lists)
+            // where it differs
+            std::size_t sizeA = aL.size();
+            std::size_t sizeB = bL.size();
+            NodeType * ret = nullptr;
+            std::size_t s = std::min(sizeA,sizeB);
+
+            for(std::size_t i = 1; i<=s;++i){
+                if (aL[sizeA-i] == bL[sizeB-i]){
+                    ret = aL[sizeA-i];
+                }
+            }
+            return ret;
+        }
+
+        inline const NodeType * getLeaf(const std::size_t & leafIndex) const {
+            if(leafIndex < m_leafs.size() ) {
+                return m_leafs[leafIndex];
+            }
+            return nullptr;
+        }
+
+        inline  const LeafContainerType & getLeafs() {
             return m_leafs;
+        }
+
+        inline const NodeType * getNode(const std::size_t & globalIndex) const {
+            if(globalIndex < m_nodes.size()) {
+                return m_nodes[globalIndex];
+            }
+            return nullptr;
         }
 
         inline  const NodeContainerType & getNodes() {
             return m_nodes;
+        }
+
+        inline const NodeType * getRootNode(){
+            return m_root;
         }
 
 
@@ -1292,15 +1505,19 @@ namespace ApproxMVBB{
         }
 
 
-        /** Enumerate nodes (continously, leafs first, then non-leafs */
+        /** Enumerate nodes (continously, leafs first, then non-leafs
+         *  This is reflected in the list m_nodes too, which needs to correspond to getIdx()!
+        */
         void enumerateNodes() {
 
             std::size_t leafIdx = 0;
 
+            this->m_leafs.clear(); // rebuild leafs list
+
             for(auto * n : this->m_nodes) {
                 if(n->isLeaf()) {
                     n->m_idx=leafIdx++;
-                    this->m_leafs.emplace(n->m_idx,n);
+                    this->m_leafs.emplace_back(n);
                 }
             }
             std::size_t nonleafIdx = this->m_leafs.size();
@@ -1310,91 +1527,17 @@ namespace ApproxMVBB{
                     n->m_idx = nonleafIdx++;
                 }
             }
+
+            // Sort m_nodes (IMPORTANT such that m_nodes[getIdx()] gives the correct node
+            std::sort(m_nodes.begin(),m_nodes.end(), [](NodeType * a, NodeType * b) {return a->getIdx()< b->getIdx() ;} );
+
         }
-    protected:
-
-        LeafMapType m_leafs; ///< Only leaf nodes (idx to node)
-        NodeContainerType m_nodes; ///< All nodes
-
-        NodeType * m_root = nullptr;     ///< Root node
-    };
-
-
-
-    template<
-            typename TNodeData = NoData<>,
-            template<typename...> class  TNode = TreeNode
-            >
-    struct TreeSimpleTraits {
-
-        struct BaseTraits {
-            using NodeDataType = TNodeData;
-            static const unsigned int Dimension = NodeDataType::Dimension;
-            using NodeType = TNode<BaseTraits>;
-        };
-
-    };
-
-
-    ///** Standart Class to build a kd-tree */
-    template<typename TTraits = TreeSimpleTraits<> >
-    class TreeSimple : public TreeBase<typename TTraits::BaseTraits> {
-    public:
-
-        using Traits = TTraits;
-        using BaseTraits = typename TTraits::BaseTraits;
-        using Base = TreeBase<typename TTraits::BaseTraits>;
-
-        DEFINE_KDTREE_BASETYPES(BaseTraits)
-
-        /** Move constructor to move from SimpleTree */
-        TreeSimple( TreeSimple && tree): Base(tree) {}
-        /** Copy the tree */
-        TreeSimple( const TreeSimple & tree): Base(tree) {}
-
-
-        /** Copy from a TreeBase with any kind of traits if possible
-        * The underlying Traits::NodeType has a copy constructor for T::NodeType!
-        */
-        template<typename T>
-        explicit TreeSimple( const TreeBase<T> & tree): Base(tree) {
-        }
-
-
-        ~TreeSimple() {}
-
-        /** Returns tuple with values
-        * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data size)
-        */
-        std::tuple<std::size_t, std::size_t>
-        getStatistics() {
-            return std::tuple_cat(
-                    Base::getStatistics()
-                    );
-        }
-
-        std::string getStatisticsString() {
-            std::stringstream s;
-            auto t = getStatistics();
-            s << "Tree Stats: "
-                    << "\n\t nodes      : " << std::get<0>(t)
-                    << "\n\t leafs      : " << std::get<1>(t)
-                    << std::endl;
-            return s.str();
-        }
-
 
         using XMLNodeType = pugi::xml_node;
-        void appendToXML(XMLNodeType root) {
+        void appendToXML(XMLNodeType kdNode){
             static const auto nodePCData = pugi::node_pcdata;
-
             std::stringstream ss;
-            XMLNodeType node;
-            XMLNodeType kdTreeNode = root.append_child("KdTree");
-
-            kdTreeNode.append_attribute("aligned").set_value( true );
-
-            XMLNodeType r = kdTreeNode.append_child("Root");
+            XMLNodeType r = kdNode.append_child("Root");
             XMLNodeType aabb = r.append_child("AABB");
             ss.str("");
             ss << this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
@@ -1402,10 +1545,9 @@ namespace ApproxMVBB{
             aabb.append_child(nodePCData).set_value(ss.str().c_str());
 
             // Save leafs
-            XMLNodeType leafs = kdTreeNode.append_child("Leafs");
-            unsigned int level = 0;
-            for(auto & p: this->m_leafs) {
-                auto * l = p.second;
+            XMLNodeType leafs = kdNode.append_child("Leafs");
+
+            for(auto * l: this->m_leafs) {
                 XMLNodeType node = leafs.append_child("Leaf");
                 node.append_attribute("level").set_value(l->getLevel());
                 node.append_attribute("idx").set_value(std::to_string(l->getIdx()).c_str());
@@ -1417,7 +1559,7 @@ namespace ApproxMVBB{
             }
 
             // Save AABB tree (breath first)
-            XMLNodeType aabbTree = kdTreeNode.append_child("AABBTree");
+            XMLNodeType aabbTree = kdNode.append_child("AABBTree");
             std::deque<NodeType*> q; // Breath first queue
 
             q.push_back(this->m_root);
@@ -1462,38 +1604,16 @@ namespace ApproxMVBB{
                 aabb.append_attribute("level").set_value(currLevel);
                 aabb.append_child(nodePCData).set_value( s.c_str() );
             }
-
         }
 
+    protected:
 
+        NodeContainerType m_leafs;       ///< Only leaf nodes , continously index ordered: leafs[idx]->getIdx() < leafs[idx+1]->getIdx();
+        NodeContainerType m_nodes;       ///< All nodes, continously index ordered, with first element = m_root
+
+        NodeType * m_root = nullptr;     ///< Root node, has index 0!
     };
-
-
-    template<typename Traits>
-    using SplitHeuristicPointDataDefault =   meta::apply<meta::bind_front<
-            meta::quote<SplitHeuristicPointData>,
-            LinearQualityEvaluator
-            >, Traits>;
-
-
-    template<
-            typename TNodeData = PointData<>,
-            template<typename...> class TSplitHeuristic = SplitHeuristicPointDataDefault,
-            template<typename...> class  TNode = TreeNode
-            >
-    struct TreeTraits {
-
-        struct BaseTraits {
-            using NodeDataType = TNodeData;
-            static const unsigned int Dimension = NodeDataType::Dimension;
-            using NodeType           = TNode<BaseTraits>;
-        };
-
-        using SplitHeuristicType = TSplitHeuristic<BaseTraits>;
-
-
-    };
-
+    /** =======================================================================================*/
 
 
     class TreeStatistics {
@@ -1556,6 +1676,158 @@ namespace ApproxMVBB{
     };
 
 
+    /** Tree simple stuff ============================================================================*/
+
+    template<
+            typename TNodeData = NoData<>,
+            template<typename...> class  TNode = NodeSimple
+            >
+    struct TreeSimpleTraits {
+
+        struct BaseTraits {
+            using NodeDataType = TNodeData;
+            static const unsigned int Dimension = NodeDataType::Dimension;
+            using NodeType = TNode<BaseTraits>;
+        };
+
+    };
+
+
+    ///** Standart Class to build a kd-tree */
+    template<typename TTraits = TreeSimpleTraits<> >
+    class TreeSimple : public TreeBase<typename TTraits::BaseTraits> {
+    public:
+
+        using Traits = TTraits;
+        using BaseTraits = typename TTraits::BaseTraits;
+        using Base = TreeBase<typename TTraits::BaseTraits>;
+
+        DEFINE_KDTREE_BASETYPES(BaseTraits)
+
+        /** Standart constructor */
+        TreeSimple(){}
+
+        /** Move constructor */
+        template<typename Traits>
+        TreeSimple( TreeSimple<Traits> && tree)
+            : Base(std::move(tree)), m_statistics(std::move(tree.m_statistics)) {}
+        /** Copy the tree */
+        template<typename Traits>
+        TreeSimple( const TreeSimple<Traits> & tree)
+            : Base(tree), m_statistics(tree.m_statistics){}
+
+        /** Copy from a Tree<Traits> with any kind of traits if possible
+        * The underlying Traits::NodeType has a copy constructor for T::NodeType!
+        */
+        template< typename Traits >
+        explicit TreeSimple( const Tree<Traits> & tree)
+            : Base( tree ) , m_statistics(tree.m_statistics)
+        {}
+
+
+
+        ~TreeSimple() {}
+
+        /** Returns tuple with values
+        * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data size)
+        */
+        std::tuple<std::size_t, std::size_t, std::size_t, PREC, std::size_t, std::size_t, PREC, PREC,std::size_t,std::size_t,PREC>
+        getStatistics() {
+            return std::tuple_cat(
+                    Base::getStatistics(),
+                    std::make_tuple(
+                            m_statistics.m_treeDepth,
+                            m_statistics.m_avgLeafSize,
+                            m_statistics.m_minLeafDataSize,
+                            m_statistics.m_maxLeafDataSize,
+                            m_statistics.m_minLeafExtent,
+                            m_statistics.m_maxLeafExtent,
+                            m_statistics.m_minNeighbours,
+                            m_statistics.m_maxNeighbours,
+                            m_statistics.m_avgNeighbours)
+                    );
+        }
+
+
+        std::string getStatisticsString() {
+            std::stringstream s;
+            auto t = getStatistics();
+            s << "Tree Stats: "
+                    << "\n\t nodes      : " << std::get<0>(t)
+                    << "\n\t leafs      : " << std::get<1>(t)
+                    << "\n\t tree level : " << std::get<2>(t)
+                    << "\n\t avg. leaf data size : " << std::get<3>(t)
+                    << "\n\t min. leaf data size : " << std::get<4>(t)
+                    << "\n\t max. leaf data size : " << std::get<5>(t)
+                    << "\n\t min. leaf extent    : " << std::get<6>(t)
+                    << "\n\t max. leaf extent    : " << std::get<7>(t)
+                    << "\nNeighbour Stats (if computed): \n"
+                    << "\n\t min. leaf neighbours    : " << std::get<8>(t)
+                    << "\n\t max. leaf neighbours    : " << std::get<9>(t)
+                    << "\n\t avg. leaf neighbours    : " << std::get<10>(t) << std::endl;
+
+            return s.str();
+        }
+
+
+        using XMLNodeType = pugi::xml_node;
+        void appendToXML(XMLNodeType root,
+                         bool aligned = true,
+                         const Matrix33 & A_IK = Matrix33::Identity()) {
+            static const auto nodePCData = pugi::node_pcdata;
+
+            std::stringstream ss;
+            XMLNodeType node;
+            XMLNodeType kdNode = root.append_child("KdTree");
+
+            kdNode.append_attribute("aligned").set_value( aligned );
+
+            XMLNodeType a = kdNode.append_child("A_IK");
+            ss << A_IK.format(MyMatrixIOFormat::SpaceSep);
+            a.append_child(nodePCData).set_value(ss.str().c_str());
+
+            Base::appendToXML(kdNode);
+        }
+    protected:
+
+        using Base::m_nodes;
+        using Base::m_leafs;
+        using Base::m_root;
+
+        TreeStatistics m_statistics;
+    };
+
+    /** =======================================================================================*/
+
+
+    /** Tree stuff ============================================================================*/
+    template<typename Traits>
+    using SplitHeuristicPointDataDefault =   meta::apply<meta::bind_front<
+                                                        meta::quote<SplitHeuristicPointData>,
+                                                        LinearQualityEvaluator
+                                                        >, Traits>;
+
+
+    template<
+            typename TNodeData = PointData<>,
+            template<typename...> class TSplitHeuristic = SplitHeuristicPointDataDefault,
+            template<typename...> class  TNode = Node
+            >
+    struct TreeTraits {
+
+        struct BaseTraits {
+            using NodeDataType = TNodeData;
+            static const unsigned int Dimension = NodeDataType::Dimension;
+            using NodeType           = TNode<BaseTraits>;
+        };
+
+        using SplitHeuristicType = TSplitHeuristic<BaseTraits>;
+
+
+    };
+
+
+
     /** Standart Class to build a kd-tree
     */
     template<typename TTraits = TreeTraits<> >
@@ -1564,6 +1836,9 @@ namespace ApproxMVBB{
 
         template<typename T>
         friend class Tree;
+
+        template<typename T>
+        friend class TreeSimple;
 
     public:
 
@@ -1614,7 +1889,11 @@ namespace ApproxMVBB{
             Base::resetTree();
         }
 
-        /** Builds a new Tree with the SplitHeurstic */
+        /** Builds a new Tree with the SplitHeurstic
+        *   First node in m_nodes is always root!
+        *   All following nodes are in breath first order, and continuously numbered
+        *   and m_nodes[node->getIdx()] == node (index in sync with the list)
+        */
         template<bool computeStatistics = true>
         void build(const AABB<Dimension> & aabb, std::unique_ptr<NodeDataType> data,
                 unsigned int maxTreeDepth = 50,
@@ -1671,9 +1950,8 @@ namespace ApproxMVBB{
 
                 if(m_statistics.m_treeDepth+1 <= m_maxTreeDepth && nLeafs < m_maxLeafs) {
 
-                    // try to split the nodes in the  list
-                    nodeSplitted = f->split(m_heuristic);
-
+                    // try to split the nodes in the  list (number continuously!)
+                    nodeSplitted = f->split(m_heuristic,this->m_nodes.size());
                     if(nodeSplitted) {
                         auto * l = f->leftNode();
                         auto * r = f->rightNode();
@@ -1688,8 +1966,8 @@ namespace ApproxMVBB{
                         ++nLeafs; // each split adds one leaf
 
                     } else {
-                        // this is a leaf node, save in leaf list (later in enumerateNodes):
-                        //std::cout << "leaf size: " << f->data()->size() << ",";
+                        // this is a leaf
+                        this->m_leafs.emplace_back(f);
                     }
 
                     // add to node statistic:
@@ -1698,7 +1976,10 @@ namespace ApproxMVBB{
                     }
 
                 } else {
-                    // depth level reached
+                    // depth level reached, add to leafs
+
+                    this->m_leafs.emplace_back(f);
+
                     // add to node statistics
                     if(computeStatistics) {
                         m_statistics.addNode(f);
@@ -1713,6 +1994,7 @@ namespace ApproxMVBB{
             // enumerate nodes new (firsts leafs then all other nodes)
             this->enumerateNodes();
 
+
             if(computeStatistics) {
                 averageStatistics();
             }
@@ -1720,20 +2002,22 @@ namespace ApproxMVBB{
 
         template<typename... T>
         void initSplitHeuristic(T &&... t) {
-            m_heuristic.init(std::forward<T>(t)...);
+            //m_heuristic.init(std::forward<T>(t)...);
         }
 
         template<bool computeStatistics = true, bool safetyCheck = true>
-        std::unordered_map<std::size_t, std::unordered_set<std::size_t> >
+        LeafNeighbourMapType
         buildLeafNeighboursAutomatic() {
             if(!m_statistics.m_computedTreeStats) {
                 ApproxMVBB_ERRORMSG("You did not compute statistics for this tree while constructing it!")
             }
-            buildLeafNeighbours<computeStatistics,safetyCheck>(m_statistics.m_minLeafExtent);
+            /* Here the minLeafExtent ratio is made slightly smaller to make the neighbour classification sensfull */
+            /* Multiple cells can have m_minLeafExtent */
+            buildLeafNeighbours<computeStatistics,safetyCheck>(0.99*m_statistics.m_minLeafExtent);
         }
 
         template<bool computeStatistics = true, bool safetyCheck = true>
-        std::unordered_map<std::size_t, std::unordered_set<std::size_t> >
+        LeafNeighbourMapType
         buildLeafNeighbours(PREC minExtent) {
             if(!this->m_root) {
                 ApproxMVBB_ERRORMSG("There is not root node! KdTree not built!")
@@ -1767,8 +2051,8 @@ namespace ApproxMVBB{
             std::unordered_map<std::size_t, std::unordered_set<std::size_t> > leafToNeighbourIdx;
 
             // iterate over all leafs
-            for(auto & p: this->m_leafs) {
-                p.second->getNeighbourLeafsIdx(leafToNeighbourIdx, minExtent);
+            for(auto * node: this->m_leafs) {
+                node->getNeighbourLeafsIdx(leafToNeighbourIdx, minExtent);
             }
 
             // Do safety check in debug mode
@@ -1788,7 +2072,7 @@ namespace ApproxMVBB{
                     m_statistics.m_maxNeighbours = std::max(m_statistics.m_maxNeighbours,n.second.size());
 
                 }
-                m_statistics.m_avgNeighbours /= leafToNeighbourIdx.size();
+                m_statistics.m_avgNeighbours /= this->m_leafs.size();
             }
 
             return leafToNeighbourIdx;
@@ -2112,87 +2396,15 @@ namespace ApproxMVBB{
 
             std::stringstream ss;
             XMLNodeType node;
-            XMLNodeType kdTreeNode = root.append_child("KdTree");
+            XMLNodeType kdNode = root.append_child("KdTree");
 
-            kdTreeNode.append_attribute("aligned").set_value( aligned );
+            kdNode.append_attribute("aligned").set_value( aligned );
 
-            XMLNodeType a = kdTreeNode.append_child("A_IK");
+            XMLNodeType a = kdNode.append_child("A_IK");
             ss << A_IK.format(MyMatrixIOFormat::SpaceSep);
             a.append_child(nodePCData).set_value(ss.str().c_str());
 
-            XMLNodeType r = kdTreeNode.append_child("Root");
-            XMLNodeType aabb = r.append_child("AABB");
-            ss.str("");
-            ss << this->m_root->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
-               << this->m_root->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep);
-            aabb.append_child(nodePCData).set_value(ss.str().c_str());
-
-            // Save leafs
-            XMLNodeType leafs = kdTreeNode.append_child("Leafs");
-
-            for(auto & p: this->m_leafs) {
-                auto * l = p.second;
-                XMLNodeType node = leafs.append_child("Leaf");
-                node.append_attribute("level").set_value(l->getLevel());
-                node.append_attribute("idx").set_value(std::to_string(l->getIdx()).c_str());
-                aabb = node.append_child("AABB");
-                ss.str("");
-                ss << l->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
-                   << l->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep);
-                aabb.append_child(nodePCData).set_value(ss.str().c_str());
-
-                if(l->data() && exportPoints){
-                    l->data()->appendToXML(node);
-                }
-            }
-
-            // Save AABB tree (breath first)
-            XMLNodeType aabbTree = kdTreeNode.append_child("AABBTree");
-            std::deque<NodeType*> q; // Breath first queue
-
-            q.push_back(this->m_root);
-            unsigned int currLevel = this->m_root->getLevel();
-            ss.str("");
-            while(q.size()>0) {
-                // Write stuff of f if not leaf
-                auto * f = q.front();
-
-                if(f->getLevel() > currLevel) {
-                    // write new string
-                    aabb = aabbTree.append_child("AABBSubTree");
-                    aabb.append_attribute("level").set_value(currLevel);
-                    aabb.append_child(nodePCData).set_value( ss.str().c_str() );
-                    // update to next level
-                    currLevel = f->getLevel();
-                    ss.str("");
-                }
-
-                if(!f->isLeaf()) {
-                    ss << f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) <<" "
-                       << f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
-                }
-
-                // push the left/right
-                auto * n = f->leftNode();
-                if(n) {
-                    q.push_back(n);
-                }
-                n = f->rightNode();
-                if(n) {
-                    q.push_back(n);
-                }
-
-                q.pop_front();
-            }
-
-            // write last string
-            auto s = ss.str();
-            if(!s.empty()) {
-                aabb = aabbTree.append_child("AABBSubTree");
-                aabb.append_attribute("level").set_value(currLevel);
-                aabb.append_child(nodePCData).set_value( s.c_str() );
-            }
-
+            Base::appendToXML(kdNode);
         }
 
 
@@ -2223,43 +2435,62 @@ namespace ApproxMVBB{
         void safetyCheckNeighbours(const NeighbourMap & n, PREC minExtent) {
 
             if(n.size() != this->m_leafs.size()) {
-                ApproxMVBB_ERRORMSG("Safety check for neighbours failed!: size")
+                ApproxMVBB_ERRORMSG("Safety check for neighbours failed!: size:" << n.size() <<","<<this->m_leafs.size())
             }
 
-            bool ok = true;
-            for(auto & p:  this->m_leafs) {
-                auto * l = p.second;
+
+            for(auto * l:  this->m_leafs) {
                 // Check leaf l
                 AABB<Dimension> t = l->aabb();
                 t.expand(minExtent);
 
                 // check against neighbours ( if all neighbours really overlap )
-                auto it = n.find(p.first); // get neighbours for this leaf
+                auto it = n.find(l->getIdx()); // get neighbours for this leaf
                 if(it == n.end()) {
-                    ApproxMVBB_ERRORMSG("Safety check: Leaf idx" << p.first << " not in neighbour map!")
+                    ApproxMVBB_ERRORMSG("Safety check: Leaf idx" << l->getIdx() << " not in neighbour map!")
                 }
 
                 for(const auto & idx : it->second ) {
-                    if(this->m_leafs.find(idx) == this->m_leafs.end()) {
-                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " not in leafs map!")
+                    if(this->getLeaf(idx) == nullptr) {
+                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " not found!")
                     }
                     // check if this neighbour overlaps
                     if( ! t.overlaps( this->m_leafs[idx]->aabb() ) ) {
-                        ApproxMVBB_ERRORMSG("Safety check: Leaf idx: " << idx << " does not overlap " << p.first)
+                        ApproxMVBB_ERRORMSG("Safety check: Leaf idx: " << idx << " does not overlap " << l->getIdx())
                     }
                     // check if this neighbours also has this leaf as neighbour
                     auto nIt = n.find(idx);
                     if(nIt == n.end()) {
                         ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " not in neighbour map!")
                     }
-                    if(nIt->second.find(p.first) == nIt->second.end() ) {
-                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx   << " does not have leaf idx: " << p.first << " as neighbour")
+                    if(nIt->second.find(l->getIdx()) == nIt->second.end() ) {
+                        ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx   << " does not have leaf idx: " << l->getIdx() << " as neighbour")
                     }
                 }
+
+                // built brute force list with AABB t
+                std::unordered_set<std::size_t> ns;
+                for(auto * ll : this->m_leafs){
+                    if( ll->getIdx() != l->getIdx() && t.overlaps( ll->aabb() ) ) {
+                        ns.emplace(ll->getIdx());
+                    }
+                }
+                // check brute force list with computed list
+                for(auto & i : ns){
+                    if( it->second.find(i) == it->second.end() ){
+                        ApproxMVBB_ERRORMSG("Safety check: Bruteforce list has neighbour idx: " << i << " for leaf idx: " << l->getIdx() << " but not computed list!")
+                    }
+                }
+                if(ns.size() != it->second.size()){
+                     ApproxMVBB_ERRORMSG("Safety check: Bruteforce list and computed list are not the same size!" << ns.size() << "," << it->second.size() )
+                }
+
             }
 
         }
     };
+
+    /** =======================================================================================*/
 
     template<typename TTraits = KdTree::DefaultPointDataTraits<> >
     class NearestNeighbourFilter {
