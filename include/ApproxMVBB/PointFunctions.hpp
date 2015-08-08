@@ -53,7 +53,7 @@ namespace PointFunctions {
     }
 
     template<typename VecT1, typename VecT2>
-    inline bool almostEqualUlp(const VecT1  & a, const VecT2  & b, PREC eps = 1.0e-8 ) {
+    inline bool almostEqualUlp(const VecT1  & a, const VecT2  & b /*, PREC eps = 1.0e-8*/ ) {
         bool ret = true;
         for(unsigned int i=0;i<a.size();i++){
             ret = ret && FloatingPoint<PREC>(a(i)).AlmostEquals(FloatingPoint<PREC>(b(i)));

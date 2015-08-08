@@ -623,17 +623,17 @@ public:
 
         //  Tests 8 - 59
         //for(unsigned int k=0;k<5;k++){
-        for(unsigned int i=0; i<51; i++) {
+        for(unsigned int k=0; k<51; k++) {
 
             // generate points
-            auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+            auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(k) +".txt");
 
             ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
             PointFunctions::applyRandomRotTrans(t);
-            diameterTest(/*k*51 +*/i+8,t,true,4,0.1);
+            diameterTest(/*k*51 +*/k+8,t,true,4,0.1);
         }
         //}
 
@@ -823,17 +823,17 @@ public:
 
          // Tests 9 - 59
         //for(unsigned int k=0;k<5;k++){
-            for(unsigned int i=0;i<51;i++){
+            for(unsigned int k=0;k<51;k++){
 
                 // generate points
-                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(i) +".txt");
+                auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(k) +".txt");
                 ApproxMVBB::Matrix3Dyn t(3,v.size());
                 for(unsigned int i = 0; i<v.size(); ++i) {
                     t.col(i) = v[i];
                 }
 
                 PointFunctions::applyRandomRotTrans(t);
-                mvbbTest(/*k*51+*/i + 4,t,true,0.1,400,5,3,6);
+                mvbbTest(/*k*51+*/k + 4,t,true,0.1,400,5,3,6);
             }
         //}
 

@@ -25,7 +25,7 @@
 	*/
     #define ApproxMVBB_ASSERTMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
 #else
-    #define ApproxMVBB_ASSERTMSG(condition,message)
+     #define ApproxMVBB_ASSERTMSG(condition , message) { if(!(condition)){ ApproxMVBB_ERRORMSG(message) } }
 #endif
 
     #define ApproxMVBB_WARNINGMSG(condition , message) { if(!(condition)){ std::cerr << "WARNING: " << #condition << " : " <<std::endl<< message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl;} }

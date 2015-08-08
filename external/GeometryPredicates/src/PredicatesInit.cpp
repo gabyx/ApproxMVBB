@@ -14,7 +14,7 @@
 #include "ApproxMVBB/GeometryPredicates/Rounding.hpp"
 
 
-int main (int argc, char * argv[])
+int main (int , char * [])
 {
   FPU_DECLARE
 

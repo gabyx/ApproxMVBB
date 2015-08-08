@@ -180,7 +180,7 @@ namespace ApproxMVBB{
          *  \p points can be nullptr, such that kdTree is not responsible for the points!
          */
         PointData(iterator begin, iterator end, std::unique_ptr<PointListType> points = nullptr)
-            : m_begin(begin), m_end(end), m_points(points.release()) {};
+            : m_begin(begin), m_end(end), m_points(points.release()) {}
 
         ~PointData() {
             if(m_points) {
@@ -268,7 +268,7 @@ namespace ApproxMVBB{
 
         inline void setLevel(unsigned int level) {
             /* set parameters for tree level dependent (here not used)*/
-        };
+        }
 
         inline PREC compute(const PREC & splitRatio, const PREC & pointRatio, const PREC & minMaxExtentRatio) {
             return  m_weightSplitRatio     *     2.0 * splitRatio
@@ -775,7 +775,7 @@ namespace ApproxMVBB{
             : m_idx(idx),  m_treeLevel(treeLevel), m_aabb(aabb) {
         }
 
-        ~NodeBase() {};
+        ~NodeBase() {}
 
         /** Copy from node
         *   Childs are not deep copied (since the node does not own the childs)
@@ -836,9 +836,8 @@ namespace ApproxMVBB{
         }
 
         inline bool isLeaf() const {
-            return (m_splitAxis < 0);
+            return (m_splitAxis == -1);
         }
-
 
         inline void setIdx(std::size_t i){
             m_idx = i;
@@ -883,7 +882,7 @@ namespace ApproxMVBB{
         std::size_t m_idx = std::numeric_limits<std::size_t>::max();   ///< node index
         unsigned int m_treeLevel = 0;
         AABB<Dimension> m_aabb;
-        SplitAxisType m_splitAxis = -1; ///< smaller than zero to indicate leaf node!
+        SplitAxisType m_splitAxis = -1; ///< -1 indicates leaf node
         PREC m_splitPosition = 0.0;
 
         /** Child Nodes
@@ -904,7 +903,7 @@ namespace ApproxMVBB{
 
         template<typename T>
         struct select<void,T>{ using type = T; };
-    };
+    }
 
     template<typename TTraits, typename PD = void> /*PD = PossibleDerived */
     class NodeSimple : public NodeBase< typename details::select<PD, NodeSimple<TTraits,PD> >::type ,
@@ -927,7 +926,7 @@ namespace ApproxMVBB{
         friend class TreeBase;
 
 
-        /** Boundary information which is nullptr for non-leaf nodes
+        /** Boundary information which is empty for non-leaf nodes
         *   Pointer which point to the subtrees min/max for each dimension
         */
         typename Base::BoundaryInfoType m_bound;
@@ -942,7 +941,7 @@ namespace ApproxMVBB{
         NodeSimple(NodeSimple&& t): Base(std::move(t)) {}
         NodeSimple(const NodeSimple& t): Base(t) {}
 
-        /** Copy values from TrşeeNode<T>, only Base class does copy */
+        /** Copy values from TreeNode<T>, only Base class does copy */
         template<typename T>
         explicit NodeSimple(const Node<T> & t): Base(t) {
 
@@ -976,6 +975,7 @@ namespace ApproxMVBB{
             if(t->isLeaf()){
                 auto it = m_bound.begin();
                 for(const auto * bNode : t->m_bound){
+
                     if( bNode ){ // if boundary node is valid
                         // find node idx in node list (access by index)
                         auto * p = nodes[bNode->getIdx()];
@@ -983,8 +983,11 @@ namespace ApproxMVBB{
                             ApproxMVBB_ERRORMSG("Setup in node: " << this->getIdx() << " failed!");
                         }
                         *it = p; // set boundary pointer to the found node pointer.
-                        ++it;
+                    }else{
+                        *it = nullptr;
                     }
+
+                    ++it;
                 }
             }
 
@@ -1041,7 +1044,7 @@ namespace ApproxMVBB{
 
         ~Node() {
             cleanUp();
-        };
+        }
 
         /** Copy from node
         *   childs are not deep copied (since the node does not own the childs)
@@ -1071,10 +1074,10 @@ namespace ApproxMVBB{
 
         inline NodeDataType * data() {
             return m_data;
-        };
+        }
         inline const NodeDataType * data() const {
             return m_data;
-        };
+        }
 
         /** Splits the node into two new nodes by the splitting position
         * The ownership of the left and right nodes is the caller of this function!
@@ -1171,16 +1174,18 @@ namespace ApproxMVBB{
 
                     while(!nodes.empty()) {
                         f = nodes.front();
+                        ApproxMVBB_ASSERTMSG(f, "Node f is nullptr")
+
                         auto axis = f->m_splitAxis;
                         if(f->isLeaf()) {
-                            //std::cout << "is leaf" << std::endl;
+                            //std::cerr << "is leaf" << std::endl;
                             // determine if f is a neighbour to this node
                             // if leaf is not already in neighbour map for this node (skip)
                             if( neighbours.find(f->m_idx) == neighbours.end() ) {
 
                                 // check if the subspace (fixedAxis = m) overlaps
                                 if(aabb.overlapsSubSpace(f->m_aabb,d)) {
-                                    //std::cout << m_idx << " overlaps" << f->getIdx() <<  std::endl;
+                                    //std::cerr << m_idx << " overlaps" << f->getIdx() <<  std::endl;
                                     neighbours.emplace(f->m_idx);
                                     neigbourIdx[f->m_idx].emplace(m_idx);
                                 }
@@ -1229,7 +1234,7 @@ namespace ApproxMVBB{
 
         NodeDataType* m_data = nullptr;
 
-        /** Boundary information which is nullptr for non-leaf nodes
+        /** Boundary information which is empty for non-leaf nodes
         *   Pointer which point to the subtrees min/max for each dimension
         */
         BoundaryInfoType m_bound;
@@ -1305,6 +1310,7 @@ namespace ApproxMVBB{
 
             // setup leaf list
             for( auto * n : tree.m_leafs){
+                //std::cerr << "Approx:: n->getIdx() " << n->getIdx() << std::endl;
                 ApproxMVBB_ASSERTMSG( (n->getIdx() < this->m_nodes.size()) , "Leaf node from source is out of range: " << n->getIdx() <<"," << this->m_nodes.size() )
                 this->m_leafs.emplace_back( this->m_nodes[n->getIdx()] );
             }
@@ -1317,7 +1323,8 @@ namespace ApproxMVBB{
 
         ~TreeBase() {
             resetTree();
-        }; ///< Prohibit the use of this base polymophically
+        } ///< Prohibit the use of this base polymophically
+
     public:
 
 
@@ -1417,38 +1424,46 @@ namespace ApproxMVBB{
             return currentNode;
         }
 
-        const NodeType * gaga(const NodeType * a,
-                              const NodeType * b){
-            return nullptr;
-        }
-
         /** Get common ancestor of two nodes
          *  Complexity: O(h) algorithm
         */
         const NodeType * getLowestCommonAncestor(const NodeType * a, const NodeType * b){
             // build list of parents to root
 
+            ApproxMVBB_ASSERTMSG(a && b, "Input nodes are nullptr!")
+
             static std::vector<NodeType *> aL; // reserve treelevel nodes
             static std::vector<NodeType *> bL; // reserve treelevel nodes
             aL.clear();
             bL.clear();
 
+            //std::cerr << " List A: ";
             NodeType * r = a->m_parent;
             while(r != nullptr){ // root has nullptr which stops
                 aL.emplace_back(r);
+                //std::cerr << r->getIdx() << ",";
                 r = r->m_parent;
             }
+            //std::cerr << std::endl;
+
+            //std::cerr << " List B: ";
             r = b->m_parent;
             while(r != nullptr){
                 bL.emplace_back(r);
+                //std::cerr << r->getIdx() << ",";
                 r = r->m_parent;
             }
+            //std::cerr << std::endl;
 
             // list a = [5,4,3,1]
             // list b = [9,13,11,2,3,1]
             // lowest common ancestor = 3
             // get the node from root (from back of both lists)
             // where it differs
+
+
+
+
             std::size_t sizeA = aL.size();
             std::size_t sizeB = bL.size();
             NodeType * ret = nullptr;
@@ -1457,6 +1472,8 @@ namespace ApproxMVBB{
             for(std::size_t i = 1; i<=s;++i){
                 if (aL[sizeA-i] == bL[sizeB-i]){
                     ret = aL[sizeA-i];
+                }else{
+                    break;
                 }
             }
             return ret;
@@ -1514,6 +1531,7 @@ namespace ApproxMVBB{
 
             this->m_leafs.clear(); // rebuild leafs list
 
+            // reenumerate leaf nodes and isnert in leaf list
             for(auto * n : this->m_nodes) {
                 if(n->isLeaf()) {
                     n->m_idx=leafIdx++;
@@ -1522,6 +1540,7 @@ namespace ApproxMVBB{
             }
             std::size_t nonleafIdx = this->m_leafs.size();
 
+            // reenumerate other nodes
             for(auto * n : this->m_nodes) {
                 if(!n->isLeaf()) {
                     n->m_idx = nonleafIdx++;
@@ -1656,9 +1675,13 @@ namespace ApproxMVBB{
             m_avgNeighbours = 0;
         }
 
-        void average(unsigned int nodes, unsigned int leafs) {
-            m_avgLeafSize /= nodes;
-            m_avgSplitPercentage /= nodes - leafs;
+        void average(std::size_t nodes, std::size_t leafs) {
+            if( nodes ){
+                m_avgLeafSize /= nodes;
+            }
+            if(leafs){
+                m_avgSplitPercentage /= nodes - leafs;
+            }
         }
 
         template<typename TNode>
@@ -1859,7 +1882,7 @@ namespace ApproxMVBB{
               m_statistics(std::move(tree.m_statistics)),
               m_maxLeafs(tree.m_maxLeafs), m_maxTreeDepth(tree.m_maxTreeDepth) {
             tree.resetStatistics();
-        };
+        }
 
         /** Copies the tree */
         Tree( const Tree & tree): Base(tree),
@@ -2001,7 +2024,7 @@ namespace ApproxMVBB{
         }
 
         template<typename... T>
-        void initSplitHeuristic(T &&... t) {
+        void initSplitHeuristic(T &&... /*t*/) {
             //m_heuristic.init(std::forward<T>(t)...);
         }
 
@@ -2013,7 +2036,7 @@ namespace ApproxMVBB{
             }
             /* Here the minLeafExtent ratio is made slightly smaller to make the neighbour classification sensfull */
             /* Multiple cells can have m_minLeafExtent */
-            buildLeafNeighbours<computeStatistics,safetyCheck>(0.99*m_statistics.m_minLeafExtent);
+            return buildLeafNeighbours<computeStatistics,safetyCheck>(0.99*m_statistics.m_minLeafExtent);
         }
 
         template<bool computeStatistics = true, bool safetyCheck = true>
@@ -2389,8 +2412,8 @@ namespace ApproxMVBB{
         using XMLNodeType = pugi::xml_node;
 
         void appendToXML(XMLNodeType & root, bool aligned = true,
-                       const Matrix33 & A_IK = Matrix33::Identity(),
-                       bool exportPoints = false) {
+                       const Matrix33 & A_IK = Matrix33::Identity()
+                       /*,bool exportPoints = false*/) {
 
             static const auto nodePCData = pugi::node_pcdata;
 

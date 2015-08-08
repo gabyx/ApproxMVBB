@@ -18,7 +18,7 @@
 namespace ApproxMVBB{
     class Exception : public std::runtime_error {
     public:
-        Exception(const std::stringstream & ss): std::runtime_error(ss.str()){};
+        Exception(const std::stringstream & ss): std::runtime_error(ss.str()){}
     private:
 
     };
