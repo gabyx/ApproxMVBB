@@ -60,10 +60,10 @@ struct MyPointGetter {
 
 
 
-/** Dont do this in head files!!, here in example thats ok :-) */
+/** Dont do this in header files!!, here in example thats ok :-) */
 using namespace ApproxMVBB;
 
-int  main( int  argc, char  ** argv ) {
+int  main( int , char  **  ) {
 
     auto points = getPointsFromFile3D("./Bunny.txt");
     AABB3d aabb; // bounding box
@@ -115,7 +115,7 @@ int  main( int  argc, char  ** argv ) {
         auto rootData = std::unique_ptr<NodeDataType>(new NodeDataType(t.begin(),t.end()));
 
         tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 5000 /*max leafs*/);
-
+        auto list = tree.buildLeafNeighboursAutomatic();
         std::cout << tree.getStatisticsString() << std::endl;
 
         std::string file = "KdTreeResults.xml";

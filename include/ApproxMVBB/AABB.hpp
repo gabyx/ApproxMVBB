@@ -38,7 +38,7 @@ private:
     template<bool dummy>
     struct unite_impl<0,dummy>{
         template<typename T, typename P>
-        inline static void apply(T * t, const P & p){}
+        inline static void apply(T *, const P &){}
     };
 
     template<unsigned int D = Dim,  bool = true>
@@ -53,7 +53,7 @@ private:
     template<bool dummy>
     struct uniteBox_impl<0,dummy>{
         template<typename T, typename B>
-        inline static void apply(T * t, const B & b){}
+        inline static void apply(T *, const B &){}
     };
 
 
@@ -70,24 +70,24 @@ private:
     template<bool dummy>
     struct reset_impl<0,dummy>{
         template<typename T>
-        inline static void apply(T * t){}
+        inline static void apply(T *){}
     };
 
 public:
 
     AABB() {
         reset();
-    };
+    }
     void reset(){
         reset_impl<>::apply(this);
     }
 
-    AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {};
+    AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {}
 
     AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
         ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
         "AABB initialized wrongly! min/max: " << m_minPoint.transpose() <<"/" << m_maxPoint.transpose());
-    };
+    }
 
 
     template<typename Derived>
@@ -107,7 +107,7 @@ public:
 
     void unite(const AABB & box) {
         uniteBox_impl<>::apply(this,box);
-    };
+    }
 
     AABB& operator+=(const AABB & box){
         uniteBox_impl<>::apply(this,box);
@@ -132,14 +132,14 @@ public:
         ret.unite(M*(Vector3( m_maxPoint(0), m_maxPoint(1), m_maxPoint(2))));
         *this = ret;
         return *this;
-    };
+    }
 
 
     inline VectorStat<Dim> center(){ return 0.5*(m_maxPoint + m_minPoint);}
 
     inline bool overlaps(const AABB & box) const {
         return ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array())).all();
-    };
+    }
 
     template<typename Derived>
     inline bool overlaps(const MatrixBase<Derived> &p) const {
@@ -156,11 +156,11 @@ public:
         // since min <= max, extent can not be smaller than zero
         // , except if AABB contains no points/uninitialized (reset())
         return (m_maxPoint - m_minPoint).array();
-    };
+    }
 
     inline PREC maxExtent() const{
         return (m_maxPoint - m_minPoint).maxCoeff();
-    };
+    }
 
     inline bool isEmpty() const {
         return (m_maxPoint.array() <= m_minPoint.array()).any();
@@ -170,13 +170,13 @@ public:
         ApproxMVBB_ASSERTMSG(d>=0,"d>=0")
         m_minPoint.array() -= d;
         m_maxPoint.array() += d;
-    };
+    }
 
     inline void expand(VectorStat<Dim> d) {
         ApproxMVBB_ASSERTMSG((d.array()>=0).all(), "d<0")
         m_minPoint -= d;
         m_maxPoint += d;
-    };
+    }
 
     /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
     void expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps){
@@ -248,7 +248,7 @@ public:
 
     inline PREC volume() const {
         return (m_maxPoint - m_minPoint).prod();
-    };
+    }
 
     //info about axis aligned bounding box
     VectorStat<Dim> m_minPoint;
