@@ -259,27 +259,37 @@ namespace ApproxMVBB{
     };
 
 
-    /** Quality evaluator for the split heuristic */
+    /** Quality evaluator for the split heuristic
+    *   s = split ratio is between (0,0.5]
+    *   p = point ratio is between [0,0.5]
+    *   e = extent ratio is between (0,1]
+    *   ws,wp,we are weightings between [0,1] for the following linear criteria:
+    *   J(s,p,e) = ws*2*s + wp*2*p + we*e which is the return value of compute()
+    *   and maximized by the kd-Tree building procedure!
+    */
     class LinearQualityEvaluator {
     public:
-
-        LinearQualityEvaluator(PREC s = 1.0, PREC p = 1.0, PREC e = 1.0):
-            m_weightSplitRatio(s), m_weightPointRatio(p), m_weightMinMaxExtentRatio(e) {}
+        /**
+        *   By default ws=0, wp=0, we=1.0 which maximizes the extent ratio which
+        *   is sensfull for midpoint splitting!
+        */
+        LinearQualityEvaluator(PREC ws = 0.0, PREC wp = 0.0, PREC we = 1.0):
+            m_weightSplitRatio(ws), m_weightPointRatio(wp), m_weightMinMaxExtentRatio(we) {}
 
         inline void setLevel(unsigned int level) {
             /* set parameters for tree level dependent (here not used)*/
         }
 
         inline PREC compute(const PREC & splitRatio, const PREC & pointRatio, const PREC & minMaxExtentRatio) {
-            return  m_weightSplitRatio     *     2.0 * splitRatio
+            return    m_weightSplitRatio     *     2.0 * splitRatio
                     + m_weightPointRatio     *     2.0 * pointRatio
                     + m_weightMinMaxExtentRatio        * minMaxExtentRatio;
         }
 
     private:
         /** Quality weights */
-        PREC m_weightSplitRatio = 1.0;
-        PREC m_weightPointRatio = 1.0;
+        PREC m_weightSplitRatio = 0.0;
+        PREC m_weightPointRatio = 0.0;
         PREC m_weightMinMaxExtentRatio = 1.0;
     };
 
@@ -312,14 +322,14 @@ namespace ApproxMVBB{
         using SplitAxisType = typename NodeType::SplitAxisType;
 
 
-        SplitHeuristicPointData() : m_methods{Method::MIDPOINT}, m_searchCriteria(SearchCriteria::FIND_BEST) {
+        SplitHeuristicPointData() : m_methods({Method::MIDPOINT}), m_searchCriteria(SearchCriteria::FIND_BEST) {
             for(SplitAxisType i = 0; i < static_cast<SplitAxisType>(Dimension); i++) {
                 m_splitAxes.push_back(i);
             }
             resetStatistics();
         }
 
-        void init(std::initializer_list<Method> m,
+        void init(const std::initializer_list<Method> & m,
                 unsigned int allowSplitAboveNPoints = 100,
                 PREC minExtent = 0.0,
                 SearchCriteria searchCriteria = SearchCriteria::FIND_BEST,
@@ -327,6 +337,7 @@ namespace ApproxMVBB{
                 PREC minSplitRatio = 0.0, PREC minPointRatio = 0.0, PREC minExtentRatio = 0.0) {
 
             m_methods = m;
+
             if(m_methods.size()==0) {
                 ApproxMVBB_ERRORMSG("No methods for splitting given!")
             }
@@ -364,7 +375,7 @@ namespace ApproxMVBB{
         std::string getStatisticsString() {
             std::stringstream s;
             s<<   "\t splits            : " << m_splits
-                    << "\n\t avg. split ratio  (0,0.5) : " << m_avgSplitRatio / m_splits
+                    << "\n\t avg. split ratio  (0,0.5] : " << m_avgSplitRatio / m_splits
                     << "\n\t avg. point ratio  [0,0.5] : " << m_avgPointRatio/ m_splits
                     << "\n\t avg. extent ratio (0,1]   : " << m_avgExtentRatio / m_splits
                     << "\n\t tries / calls     : " << m_tries << "/" << m_splitCalls << " = " <<(PREC)m_tries/m_splitCalls;
@@ -1696,6 +1707,25 @@ namespace ApproxMVBB{
             }
         }
 
+        using XMLNodeType = pugi::xml_node;
+        void appendToXML(XMLNodeType & kdNode){
+
+            auto stat = kdNode.append_child("Statistics");
+
+            stat.append_attribute("m_computedTreeStats").set_value( m_computedTreeStats );
+            stat.append_attribute("m_treeDepth").set_value( m_treeDepth );
+            stat.append_attribute("m_avgSplitPercentage").set_value( m_avgSplitPercentage );
+            stat.append_attribute("m_minLeafExtent").set_value( m_minLeafExtent );
+            stat.append_attribute("m_maxLeafExtent").set_value( m_maxLeafExtent );
+            stat.append_attribute("m_avgLeafSize").set_value( m_avgLeafSize );
+            stat.append_attribute("m_minLeafDataSize").set_value( (long long unsigned int)m_minLeafDataSize );
+            stat.append_attribute("m_maxLeafDataSize").set_value( (long long unsigned int)m_maxLeafDataSize );
+            stat.append_attribute("m_computedNeighbourStats").set_value( (long long unsigned int)m_computedNeighbourStats );
+            stat.append_attribute("m_minNeighbours").set_value( (long long unsigned int)m_minNeighbours );
+            stat.append_attribute("m_maxNeighbours").set_value( (long long unsigned int)m_maxNeighbours );
+            stat.append_attribute("m_avgNeighbours").set_value( m_avgNeighbours );
+        }
+
     };
 
 
@@ -1810,6 +1840,8 @@ namespace ApproxMVBB{
             a.append_child(nodePCData).set_value(ss.str().c_str());
 
             Base::appendToXML(kdNode);
+            m_statistics.appendToXML(kdNode);
+
         }
     protected:
 
@@ -2024,8 +2056,8 @@ namespace ApproxMVBB{
         }
 
         template<typename... T>
-        void initSplitHeuristic(T &&... /*t*/) {
-            //m_heuristic.init(std::forward<T>(t)...);
+        void initSplitHeuristic(T &&... t) {
+             m_heuristic.init(std::forward<T>(t)...);
         }
 
         template<bool computeStatistics = true, bool safetyCheck = true>
@@ -2428,6 +2460,9 @@ namespace ApproxMVBB{
             a.append_child(nodePCData).set_value(ss.str().c_str());
 
             Base::appendToXML(kdNode);
+
+            m_statistics.appendToXML(kdNode);
+
         }
 
 
