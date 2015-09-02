@@ -17,7 +17,7 @@
 
 #include <fstream>
 
-#include <pugixml/pugixml.hpp>
+#include <pugixml.hpp>
 #include <meta/meta.hpp>
 
 #include "ApproxMVBB/Config/Config.hpp"
