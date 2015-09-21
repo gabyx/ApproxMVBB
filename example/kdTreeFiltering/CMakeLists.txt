@@ -17,6 +17,7 @@ SET(INCLUDE_FILES
 
 #include directories
 set(INCLUDE_DIRS
+    ${ApproxMVBB_ROOT_DIR}/tests/include
     ${EIGEN_INCLUDE_DIR}
     ${ApproxMVBB_INC_DIRS}
 )

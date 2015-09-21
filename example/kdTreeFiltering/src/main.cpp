@@ -15,6 +15,9 @@
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/KdTree.hpp"
 
+// Not part of library:
+#include "CPUTimer.hpp"
+
 ApproxMVBB_DEFINE_MATRIX_TYPES
 ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
@@ -66,6 +69,8 @@ using namespace ApproxMVBB;
 int  main( int , char  **  ) {
 
     auto points = getPointsFromFile3D("./Bunny.txt");
+    std::cout << "Loaded: " << points.size() << " points " << std::endl;
+
     AABB3d aabb; // bounding box
 
     using PointDataTraits = KdTree::DefaultPointDataTraits<3,Vector3, MyPoint, MyPointGetter>;
@@ -104,8 +109,8 @@ int  main( int , char  **  ) {
         PREC minExtent = 0.001; // box extents are bigger than this!
         PREC allowSplitAboveNPoints = 2;
         tree.initSplitHeuristic( std::initializer_list<SplitHeuristicType::Method> {
-            SplitHeuristicType::Method::MEDIAN,
-            SplitHeuristicType::Method::GEOMETRIC_MEAN,
+//            SplitHeuristicType::Method::MEDIAN,
+//            SplitHeuristicType::Method::GEOMETRIC_MEAN,
             SplitHeuristicType::Method::MIDPOINT
         },
         allowSplitAboveNPoints, minExtent,
@@ -114,7 +119,11 @@ int  main( int , char  **  ) {
 
         auto rootData = std::unique_ptr<NodeDataType>(new NodeDataType(t.begin(),t.end()));
 
-        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 5000 /*max leafs*/);
+        START_TIMER(start)
+        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 600 /*max leafs*/);
+        STOP_TIMER_MILLI(count,start)
+        std::cout << "KdTree build took: " << count << "ms." << std::endl;
+
         auto list = tree.buildLeafNeighboursAutomatic();
         std::cout << tree.getStatisticsString() << std::endl;
 
@@ -165,9 +174,15 @@ int  main( int , char  **  ) {
 
         auto rootData = std::unique_ptr<NodeDataType>(new NodeDataType(points.begin(),points.end()));
 
+        START_TIMER(start)
         tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 600 /*max leafs*/);
+        STOP_TIMER_MILLI(count,start)
 
+        auto list = tree.buildLeafNeighboursAutomatic();
+
+        std::cout << "KdTree build took: " << count << "ms." << std::endl;
         std::cout << tree.getStatisticsString() << std::endl;
+
     }
 
 
