@@ -44,11 +44,11 @@ inline void makeCoordinateSystem(      Vector3 &v1,
 
 	if(abs(v1(0)) > abs(v1(2))){
     PREC invLen = 1.0 / sqrt(v1(0)*v1(0) + v1(2) * v1(2));
-		v2 = typename MyMatrix<PREC>::Vector3(-v1(2) * invLen, 0, v1(0) *invLen);
+		v2 = typename MyMatrix::Vector3<PREC>(-v1(2) * invLen, 0, v1(0) *invLen);
 	}
 	else{
 		PREC invLen = 1.0 / sqrt(v1(1)*v1(1) + v1(2) * v1(2));
-		v2 = typename MyMatrix<PREC>::Vector3(0, v1(2) * invLen, -v1(1) *invLen);
+		v2 = typename MyMatrix::Vector3<PREC>(0, v1(2) * invLen, -v1(1) *invLen);
 	}
 	v3 = v1.cross(v2);
 

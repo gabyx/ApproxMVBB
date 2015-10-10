@@ -94,7 +94,7 @@ namespace MyMatrix {
     template<typename Scalar>
     using  Array2 =  Eigen::Array<Scalar, 2, 1>;
 
-};
+}
 
 namespace MyMatrix{
 
@@ -112,7 +112,7 @@ namespace MyMatrix{
 
     template<typename EigenType> using MatrixMap = Eigen::Map<EigenType>;
 
-};
+}
 
 
 struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
@@ -124,58 +124,58 @@ struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
 }
 
 
-#define DEFINE_MATRIX_SPECIALTYPES \
-   template<typename Derived> using MatrixBase = typename MyMatrix::MatrixBase<Derived>; \
-   template<typename Derived> using ArrayBase  = typename MyMatrix::ArrayBase<Derived>; \
+#define ApproxMVBB_DEFINE_MATRIX_SPECIALTYPES \
+   template<typename Derived> using MatrixBase = ApproxMVBB::MyMatrix::MatrixBase<Derived>; \
+   template<typename Derived> using ArrayBase  = ApproxMVBB::MyMatrix::ArrayBase<Derived>; \
    \
-   template<typename Derived> using VectorBDyn = typename MyMatrix::VectorBDyn<Derived>; \
-   template<typename Derived,unsigned int M> using VectorBStat = typename MyMatrix::VectorBStat<Derived,M>; \
+   template<typename Derived> using VectorBDyn = ApproxMVBB::MyMatrix::VectorBDyn<Derived>; \
+   template<typename Derived,unsigned int M> using VectorBStat = ApproxMVBB::MyMatrix::VectorBStat<Derived,M>; \
    \
-   template<typename Derived> using MatrixBDynDyn = typename MyMatrix::MatrixBDynDyn<Derived>; \
-   template<typename Derived, unsigned int N> using MatrixBDynStat = typename MyMatrix::MatrixBDynStat<Derived,N>; \
-   template<typename Derived, unsigned int M> using MatrixBStatDyn = typename MyMatrix::MatrixBStatDyn<Derived,M>; \
+   template<typename Derived> using MatrixBDynDyn = ApproxMVBB::MyMatrix::MatrixBDynDyn<Derived>; \
+   template<typename Derived, unsigned int N> using MatrixBDynStat = ApproxMVBB::MyMatrix::MatrixBDynStat<Derived,N>; \
+   template<typename Derived, unsigned int M> using MatrixBStatDyn = ApproxMVBB::MyMatrix::MatrixBStatDyn<Derived,M>; \
     \
-   template<typename EigenType> using MatrixRef = typename MyMatrix::MatrixRef< EigenType >; \
-   template<typename EigenType> using MatrixMap = typename MyMatrix::MatrixMap< EigenType >; \
+   template<typename EigenType> using MatrixRef = ApproxMVBB::MyMatrix::MatrixRef< EigenType >; \
+   template<typename EigenType> using MatrixMap = ApproxMVBB::MyMatrix::MatrixMap< EigenType >; \
 
 /**
 * @brief This macro is used to typedef all custom matrix types which have nothing to do with the system.
 */
 #define ApproxMVBB_DEFINE_MATRIX_TYPES_OF( _PREC_ ) \
-    using Matrix44 = typename MyMatrix::Matrix44< _PREC_ >; \
-    using Matrix33 = typename MyMatrix::Matrix33< _PREC_ >; \
-    using Matrix22 = typename MyMatrix::Matrix22< _PREC_ >; \
-    using Matrix32 = typename MyMatrix::Matrix32< _PREC_ >; \
-    using Matrix23 = typename MyMatrix::Matrix23< _PREC_ >; \
-    using Matrix43 = typename MyMatrix::Matrix43< _PREC_ >; \
-    using Matrix34 = typename MyMatrix::Matrix34< _PREC_ >; \
-    using Vector3 = typename MyMatrix::Vector3< _PREC_ >; \
-    using Vector2 = typename MyMatrix::Vector2< _PREC_ >; \
-    using Vector4 = typename MyMatrix::Vector4< _PREC_ >; \
-    using Vector6 = typename MyMatrix::Vector6< _PREC_ >; \
-    using Quaternion = typename MyMatrix::Quaternion< _PREC_ >; \
-    using AngleAxis = typename MyMatrix::AngleAxis< _PREC_ >; \
-    using VectorDyn = typename MyMatrix::VectorDyn< _PREC_ >; \
-    using MatrixDynDyn = typename MyMatrix::MatrixDynDyn< _PREC_ >; \
-    using MatrixDiagDyn = typename MyMatrix::MatrixDiagDyn< _PREC_ >; \
-    using MatrixDynDynRow = typename MyMatrix::MatrixDynDynRow< _PREC_ >; \
+    using Matrix44 = ApproxMVBB::MyMatrix::Matrix44< _PREC_ >; \
+    using Matrix33 = ApproxMVBB::MyMatrix::Matrix33< _PREC_ >; \
+    using Matrix22 = ApproxMVBB::MyMatrix::Matrix22< _PREC_ >; \
+    using Matrix32 = ApproxMVBB::MyMatrix::Matrix32< _PREC_ >; \
+    using Matrix23 = ApproxMVBB::MyMatrix::Matrix23< _PREC_ >; \
+    using Matrix43 = ApproxMVBB::MyMatrix::Matrix43< _PREC_ >; \
+    using Matrix34 = ApproxMVBB::MyMatrix::Matrix34< _PREC_ >; \
+    using Vector3 = ApproxMVBB::MyMatrix::Vector3< _PREC_ >; \
+    using Vector2 = ApproxMVBB::MyMatrix::Vector2< _PREC_ >; \
+    using Vector4 = ApproxMVBB::MyMatrix::Vector4< _PREC_ >; \
+    using Vector6 = ApproxMVBB::MyMatrix::Vector6< _PREC_ >; \
+    using Quaternion = ApproxMVBB::MyMatrix::Quaternion< _PREC_ >; \
+    using AngleAxis = ApproxMVBB::MyMatrix::AngleAxis< _PREC_ >; \
+    using VectorDyn = ApproxMVBB::MyMatrix::VectorDyn< _PREC_ >; \
+    using MatrixDynDyn = ApproxMVBB::MyMatrix::MatrixDynDyn< _PREC_ >; \
+    using MatrixDiagDyn = ApproxMVBB::MyMatrix::MatrixDiagDyn< _PREC_ >; \
+    using MatrixDynDynRow = ApproxMVBB::MyMatrix::MatrixDynDynRow< _PREC_ >; \
     \
-    template<unsigned int M> using MatrixStatDyn = typename MyMatrix::MatrixStatDyn< _PREC_, M>; \
-    template<unsigned int N> using MatrixDynStat = typename MyMatrix::MatrixDynStat< _PREC_, N>; \
-    template<unsigned int M,unsigned int N> using MatrixStatStat = typename MyMatrix::MatrixStatStat< _PREC_, M,N>; \
-    template<unsigned int M> using VectorStat = typename MyMatrix::VectorStat< _PREC_, M>; \
+    template<unsigned int M> using MatrixStatDyn = ApproxMVBB::MyMatrix::MatrixStatDyn< _PREC_, M>; \
+    template<unsigned int N> using MatrixDynStat = ApproxMVBB::MyMatrix::MatrixDynStat< _PREC_, N>; \
+    template<unsigned int M,unsigned int N> using MatrixStatStat = ApproxMVBB::MyMatrix::MatrixStatStat< _PREC_, M,N>; \
+    template<unsigned int M> using VectorStat = ApproxMVBB::MyMatrix::VectorStat< _PREC_, M>; \
     \
-    using AffineTrafo = typename MyMatrix::AffineTrafo< _PREC_ >; \
-    using AffineTrafo2d = typename MyMatrix::AffineTrafo2d< _PREC_ >; \
+    using AffineTrafo = ApproxMVBB::MyMatrix::AffineTrafo< _PREC_ >; \
+    using AffineTrafo2d = ApproxMVBB::MyMatrix::AffineTrafo2d< _PREC_ >; \
     \
-    template<unsigned int M> using ArrayStatDyn = typename MyMatrix::ArrayStatDyn< _PREC_, M>; \
-    template<unsigned int N> using ArrayDynStat = typename MyMatrix::ArrayDynStat< _PREC_, N>; \
-    template<unsigned int M,unsigned int N> using ArrayStatStat = typename MyMatrix::ArrayStatStat< _PREC_, M,N>; \
-    template<unsigned int M> using ArrayStat = typename MyMatrix::ArrayStat< _PREC_, M>; \
-    using Array3 = typename MyMatrix::Array3< _PREC_ >; \
-    using Array2 = typename MyMatrix::Array2< _PREC_ >; \
+    template<unsigned int M> using ArrayStatDyn = ApproxMVBB::MyMatrix::ArrayStatDyn< _PREC_, M>; \
+    template<unsigned int N> using ArrayDynStat = ApproxMVBB::MyMatrix::ArrayDynStat< _PREC_, N>; \
+    template<unsigned int M,unsigned int N> using ArrayStatStat = ApproxMVBB::MyMatrix::ArrayStatStat< _PREC_, M,N>; \
+    template<unsigned int M> using ArrayStat = ApproxMVBB::MyMatrix::ArrayStat< _PREC_, M>; \
+    using Array3 = ApproxMVBB::MyMatrix::Array3< _PREC_ >; \
+    using Array2 = ApproxMVBB::MyMatrix::Array2< _PREC_ >; \
     \
-    DEFINE_MATRIX_SPECIALTYPES
+    ApproxMVBB_DEFINE_MATRIX_SPECIALTYPES
 
 #endif
 

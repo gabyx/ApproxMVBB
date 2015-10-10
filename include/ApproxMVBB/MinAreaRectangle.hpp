@@ -75,7 +75,7 @@ public:
 
 private:
 
-    using Vector2U = MyMatrix<unsigned int>::Vector2;
+    using Vector2U = MyMatrix::Vector2<unsigned int>;
 
     void computeRectangle();
 

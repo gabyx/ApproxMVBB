@@ -147,7 +147,7 @@ public:
     }
 
     inline bool overlapsSubSpace(const AABB & box, unsigned int fixedAxis) const {
-        ArrayStat<Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
+        MyMatrix::ArrayStat<bool,Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
         t(fixedAxis) = true;
         return t.all();
     }

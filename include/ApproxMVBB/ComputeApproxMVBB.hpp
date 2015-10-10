@@ -63,7 +63,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     std::vector< std::pair<unsigned int , PREC > > bottomPoints(halfSampleSize, std::pair<unsigned int,PREC>{} ); // grid of indices of the bottom points (indexed from 1 )
 
     using LongInt = long long int;
-    MyMatrix<LongInt>::Array2 idx; // Normalized P
+    MyMatrix::Array2<LongInt> idx; // Normalized P
     //std::cout << oobb.extent() << std::endl;
     //std::cout << oobb.m_minPoint.transpose() << std::endl;
     Array2 dxdyInv =  Array2(gridSize,gridSize) / oobb.extent().head<2>(); // in K Frame;
