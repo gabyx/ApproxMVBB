@@ -15,7 +15,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_Platform_INCLUDE_FILE
 #include ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE
-
+#include ApproxMVBB_MyContainerTypeDefs_INCLUDE_FILE
 
 namespace ApproxMVBB{
 
@@ -25,7 +25,8 @@ struct GlobalConfigs {
 
 #define ApproxMVBB_DEFINE_MATRIX_TYPES \
     using PREC = typename ApproxMVBB::GlobalConfigs::PREC; \
-    ApproxMVBB_DEFINE_MATRIX_TYPES_OF( PREC )
+    ApproxMVBB_DEFINE_MATRIX_TYPES_OF( PREC ) \
+    ApproxMVBB_DEFINE_CONTAINER_TYPES
 
 
 }

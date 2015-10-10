@@ -66,9 +66,9 @@ struct MyPointGetter {
 /** Dont do this in header files!!, here in example thats ok :-) */
 using namespace ApproxMVBB;
 
-int  main( int , char  **  ) {
 
-    auto points = getPointsFromFile3D("./Bunny.txt");
+void doKdTree(std::string file){
+    auto points = getPointsFromFile3D(file);
     std::cout << "Loaded: " << points.size() << " points " << std::endl;
 
     AABB3d aabb; // bounding box
@@ -120,19 +120,19 @@ int  main( int , char  **  ) {
         auto rootData = std::unique_ptr<NodeDataType>(new NodeDataType(t.begin(),t.end()));
 
         START_TIMER(start)
-        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 600 /*max leafs*/);
+        tree.build(aabb,std::move(rootData), 500 /*max tree depth*/, 500000 /*max leafs*/);
         STOP_TIMER_MILLI(count,start)
         std::cout << "KdTree build took: " << count << "ms." << std::endl;
 
-        auto list = tree.buildLeafNeighboursAutomatic();
+        //auto list = tree.buildLeafNeighboursAutomatic();
         std::cout << tree.getStatisticsString() << std::endl;
-
-        std::string file = "KdTreeResults.xml";
-        std::cout << "Saving KdTree XML to: " << file << std::endl;
-
-        pugi::xml_document dataXML;
-        tree.appendToXML(dataXML);
-        dataXML.save_file(file.c_str(),"    ");
+//
+//        std::string file = "KdTreeResults.xml";
+//        std::cout << "Saving KdTree XML to: " << file << std::endl;
+//
+//        pugi::xml_document dataXML;
+//        tree.appendToXML(dataXML);
+//        dataXML.save_file(file.c_str(),"    ");
     }
 
 
@@ -206,6 +206,11 @@ int  main( int , char  **  ) {
 
 
     }
+}
 
+int  main( int , char  **  ) {
+
+    //doKdTree("./Bunny.txt")
+    doKdTree("./Lucy.txt");
     return 0;
 }

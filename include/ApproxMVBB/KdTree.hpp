@@ -1184,6 +1184,7 @@ namespace ApproxMVBB{
                     }
 
                     while(!nodes.empty()) {
+                        //std::cout << nodes.size() << std::endl;
                         f = nodes.front();
                         ApproxMVBB_ASSERTMSG(f, "Node f is nullptr")
 

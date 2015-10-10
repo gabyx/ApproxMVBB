@@ -16,6 +16,8 @@
 #include "ApproxMVBB/AABB.hpp"
 
 namespace ApproxMVBB{
+
+
 class APPROXMVBB_EXPORT OOBB{
 public:
 
@@ -89,6 +91,17 @@ public:
         return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1) || m_maxPoint(2) <= m_minPoint(2);
     }
 
+    template<typename Derived, bool transform = true>
+    inline bool overlaps(const MatrixBase<Derived> &p) const {
+        if(transform){
+            // p is in I frame
+            Vector3 t = m_q_KI.inverse() * p; // A_IK^T * I_p
+            return ((t.array() >= m_minPoint.array()) && (t.array() <= m_maxPoint.array())).all();
+        }else{
+            // p is in K Frame!!
+            return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
+        }
+    }
 
     /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
     void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
@@ -119,7 +132,6 @@ public:
         Vector3 d; d.setZero(); d(i) = 1.0;
         return m_q_KI * d; // A_IK* d;
     }
-
 
     Quaternion m_q_KI;  ///< Rotation of frame I to frame K, corresponds to a transformation A_IK;
     Vector3 m_minPoint; ///< in K Frame
