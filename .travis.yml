@@ -18,6 +18,8 @@ env:
 
 # Install dependencies
 before_install:
+
+  - echo "Cmake version is: $(cmake --version)" 
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
