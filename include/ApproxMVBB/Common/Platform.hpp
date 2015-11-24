@@ -17,7 +17,7 @@ namespace ApproxMVBB{
 #if defined _WIN32 || defined __CYGWIN__
 
   // This macro is given to the compiler when building the library!
-  #if ApproxMVBB_BUILD_LIBRARY
+  #ifdef ApproxMVBB_BUILD_LIBRARY
 
     #ifdef __GNUC__
       #define APPROXMVBB_EXPORT __attribute__ ((dllexport))

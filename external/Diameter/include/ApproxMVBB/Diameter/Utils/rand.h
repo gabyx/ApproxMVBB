@@ -39,7 +39,7 @@ namespace Diameter{
 extern long int _GetRandomCalls();
 extern long int _GetRandomSeed();
 
-#ifdef WIN32
+#ifdef _WIN32
 extern void   _SetRandomSeed( unsigned int seed );
 #else
 extern void   _SetRandomSeed( long int seed );

@@ -40,7 +40,8 @@ target_link_libraries(ApproxMVBB ${LINK_LIBS})
 set_target_properties(ApproxMVBB PROPERTIES 
     VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
 )
-
+# set build flag, for import/export specifiers in platform.hpp
+target_compile_definitions(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY)
 
 
 set(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")

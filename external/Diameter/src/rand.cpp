@@ -27,7 +27,7 @@ long int _GetRandomSeed()
 
 
 
-#ifdef WIN32
+#ifdef _WIN32
 void _SetRandomSeed( unsigned int seed )
 {
   srand( seed );
@@ -45,7 +45,7 @@ void _SetRandomSeed( long int seed )
 
 
 
-#ifdef WIN32
+#ifdef _WIN32
 double _GetRandomDoubleNb( )
 {
   _random_calls_ ++;
