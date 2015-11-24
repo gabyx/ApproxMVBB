@@ -27,7 +27,7 @@ long int _GetRandomSeed()
 
 
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __CYGWIN__ || defined WIN32 // WIN32 is for legacy CMake
 void _SetRandomSeed( unsigned int seed )
 {
   srand( seed );
@@ -45,7 +45,7 @@ void _SetRandomSeed( long int seed )
 
 
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __CYGWIN__ || defined WIN32	// WIN32 is for legacy CMake
 double _GetRandomDoubleNb( )
 {
   _random_calls_ ++;

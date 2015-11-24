@@ -12,9 +12,13 @@
 
 #include "ApproxMVBB/Config/Config.hpp"
 
+#ifdef __CYGWIN__
+  #include "CygwinPatch.h"
+#endif
+
 namespace ApproxMVBB{
 
-#if defined _WIN32 || defined __CYGWIN__
+#if defined _WIN32 || defined __CYGWIN__ || defined WIN32
 
   // This macro is given to the compiler when building the library!
   #ifdef ApproxMVBB_BUILD_LIBRARY
