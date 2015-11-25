@@ -39,7 +39,7 @@ namespace Diameter{
 extern long int _GetRandomCalls();
 extern long int _GetRandomSeed();
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __CYGWIN__ || defined WIN32 // WIN32 is for legacy CMake
 extern void   _SetRandomSeed( unsigned int seed );
 #else
 extern void   _SetRandomSeed( long int seed );
