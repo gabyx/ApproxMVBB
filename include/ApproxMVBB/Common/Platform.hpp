@@ -34,7 +34,7 @@ namespace ApproxMVBB{
     #ifdef __GNUC__
       #define APPROXMVBB_EXPORT __attribute__ ((dllimport))
     #else
-      #define APPROXMVBB_EXPORT __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+      #define APPROXMVBB_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
     #endif
 
   #endif

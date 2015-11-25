@@ -49,7 +49,7 @@ public:
     }
 
     inline void setZAxisLongest(){
-        typename Vector3::Index i;
+        Vector3::Index i;
         maxExtent(i);
         if(i<2){
             switchZAxis(static_cast<unsigned int>(i));
@@ -83,7 +83,7 @@ public:
         return (m_maxPoint - m_minPoint).maxCoeff();
     }
 
-    inline PREC maxExtent(typename Vector3::Index & i) const{
+    inline PREC maxExtent(Vector3::Index & i) const{
         return (m_maxPoint - m_minPoint).maxCoeff(&i);
     }
 
