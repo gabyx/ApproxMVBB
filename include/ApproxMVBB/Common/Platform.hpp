@@ -18,19 +18,23 @@
 
 namespace ApproxMVBB{
 
-#if defined _WIN32 || defined __CYGWIN__ || defined WIN32
+#if (defined _WIN32) || (defined __CYGWIN__) || (defined WIN32)
 
   // This macro is given to the compiler when building the library!
   #ifdef ApproxMVBB_BUILD_LIBRARY
-
+    
+    #pragma message(" Platform.hpp: Building library ...")
+    
     #ifdef __GNUC__
       #define APPROXMVBB_EXPORT __attribute__ ((dllexport))
     #else
       #define APPROXMVBB_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
     #endif
-
+    
+    
+    
   #else
-
+    
     #ifdef __GNUC__
       #define APPROXMVBB_EXPORT __attribute__ ((dllimport))
     #else
@@ -40,12 +44,18 @@ namespace ApproxMVBB{
   #endif
 
 #else
+  
+  #ifdef ApproxMVBB_BUILD_LIBRARY
+    
+    #pragma message(" Platform.hpp: Building library ...")
+    
+    #if __GNUC__ >= 4 ||  __clang__
+      #define APPROXMVBB_EXPORT __attribute__ ((visibility ("default")))
+    #else
+      #define APPROXMVBB_EXPORT
+      #warning "Unknown compiler: Exporting everything into library!"
+    #endif
 
-  #if __GNUC__ >= 4 ||  __clang__
-    #define APPROXMVBB_EXPORT __attribute__ ((visibility ("default")))
-  #else
-    #define APPROXMVBB_EXPORT
-    #warning "Unknown compiler: Exporting everything into library!"
   #endif
 
 #endif

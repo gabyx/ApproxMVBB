@@ -24,7 +24,7 @@ struct GlobalConfigs {
 };
 
 #define ApproxMVBB_DEFINE_MATRIX_TYPES \
-    using PREC = typename ApproxMVBB::GlobalConfigs::PREC; \
+    using PREC = ApproxMVBB::GlobalConfigs::PREC; \
     ApproxMVBB_DEFINE_MATRIX_TYPES_OF( PREC ) \
     ApproxMVBB_DEFINE_CONTAINER_TYPES
 

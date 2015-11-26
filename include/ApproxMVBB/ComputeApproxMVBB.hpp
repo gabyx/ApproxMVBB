@@ -257,9 +257,9 @@ APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
 
     using namespace PointFunctions;
 
-    auto pp = estimateDiameter<3,Vector3>(points,epsilon);
+	auto pp = estimateDiameter<3, ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC> >(points, epsilon);
 
-    Vector3 dirZ = pp.first - pp.second;
+	ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC> dirZ = pp.first - pp.second;
     if( ( pp.second.array() >=  pp.first.array()).all() ) {
         dirZ *= -1;
     }
