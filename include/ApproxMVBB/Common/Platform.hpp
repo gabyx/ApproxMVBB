@@ -13,7 +13,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 
 #ifdef __CYGWIN__
-  #include "CygwinPatch.h"
+  #include "ApproxMVBB/Common/CygwinPatch.hpp"
 #endif
 
 namespace ApproxMVBB{

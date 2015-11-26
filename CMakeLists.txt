@@ -81,7 +81,10 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
         
-    ENDIF()
+  ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
+    MESSAGE(WARNING "MSVC is not supported yet, trying to set compiler flags anyway!")
+		SET(CMAKE_CXX_FLAGS "-std=c++11" CACHE STRING "Flags for CXX Compiler" FORCE)
+  ENDIF()
 ENDIF()
 
 
