@@ -25,8 +25,6 @@ namespace ApproxMVBB {
 
 class ConvexHullTest {
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
     void convexHullTest(unsigned int N, const TMatrix & v, bool dumpPoints = true) {
@@ -53,7 +51,7 @@ public:
         auto ind = c.getIndices();
         std::cout << "ConvexHull Points: " << ind.size()  << std::endl;
         unsigned int j = 0;
-        Matrix2Dyn qHull(2,ind.size());
+        ApproxMVBB::Matrix2Dyn qHull(2,ind.size());
         for(auto & i : ind) {
             qHull.col(j++) = v.col(i);
         }
@@ -67,7 +65,7 @@ public:
         using namespace TestFunctions;
         {
             // generate points
-            Matrix2Dyn t(2,10);
+            ApproxMVBB::Matrix2Dyn t(2,10);
             t.setRandom();
             convexHullTest(1,t);
         }
@@ -264,8 +262,6 @@ void convexHullTest() {
 class MinAreaRectangleTest {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES
-
 
     template<typename TMatrix>
     void minRectTest(unsigned int N, const TMatrix & v) {
@@ -304,7 +300,7 @@ public:
         using namespace TestFunctions;
         {
             // generate points
-            Matrix2Dyn t(2,10);
+            ApproxMVBB::Matrix2Dyn t(2,10);
             t.setRandom();
             minRectTest(1,t);
         }
@@ -317,7 +313,7 @@ public:
             v.push_back(Vector2(2,2));
             v.push_back(Vector2(3,3));
             v.push_back(Vector2(-1,1));
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -330,7 +326,7 @@ public:
             v.push_back(Vector2(0,0));
             v.push_back(Vector2(1,1));
             v.push_back(Vector2(2,2));
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -355,7 +351,7 @@ public:
             v.push_back(Vector2(0,0));
             v.push_back(Vector2(1,1));
             v.push_back(Vector2(1,-1));
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -369,7 +365,7 @@ public:
             v.push_back(Vector2(1,1));
             v.push_back(Vector2(1,1+1e-13));
             v.push_back(Vector2(2,2));
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -396,7 +392,7 @@ public:
             Vector2List v;
             v.push_back(Vector2(1,0));
 
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -407,7 +403,7 @@ public:
             // generate points
             Vector2List v;
 
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -422,7 +418,7 @@ public:
             v.push_back(Vector2(1,0));
             v.push_back(Vector2(1,1));
             v.push_back(Vector2(0,1));
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -434,7 +430,7 @@ public:
         {
             // generate points
             auto v = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
-            Matrix2Dyn t(2,v.size());
+            ApproxMVBB::Matrix2Dyn t(2,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -444,7 +440,7 @@ public:
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
         {
             // generate points
-            Matrix2Dyn t(2,10000000);
+            ApproxMVBB::Matrix2Dyn t(2,10000000);
             t.setRandom();
             minRectTest(12,t);
         }
@@ -453,21 +449,21 @@ public:
 
         {
             // generate points
-            Matrix2Dyn t(2,400);
+            ApproxMVBB::Matrix2Dyn t(2,400);
             getPointsFromFileBinary("./PointsBadProjection.bin",t);
             minRectTest(13,t);
         }
 
         {
             // generate points
-            Matrix2Dyn t(2,400);
+            ApproxMVBB::Matrix2Dyn t(2,400);
             getPointsFromFileBinary("./PointsBadProjection2.bin",t);
             minRectTest(14,t);
         }
 
         {
             // generate points
-            Matrix2Dyn t(2,400);
+            ApproxMVBB::Matrix2Dyn t(2,400);
             getPointsFromFileBinary("./PointsBadProjection3.bin",t);
             minRectTest(15,t);
         }
@@ -486,9 +482,7 @@ void minAreaBoxTest() {
 
 class DiameterTest {
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES
-
+  
     template<typename TMatrix>
     void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
                       unsigned int optLoops = 10, PREC epsilon = 0.001, unsigned int samplePoints = 400) {
@@ -542,14 +536,14 @@ public:
 
         {
             // generate points
-            Matrix3Dyn t(3,500);
+            ApproxMVBB::Matrix3Dyn t(3,500);
             t.setRandom();
             diameterTest(1,t);
         }
 
         {
             // generate points
-            Matrix3Dyn t(3,10000);
+            ApproxMVBB::Matrix3Dyn t(3,10000);
             t.setRandom();
             diameterTest(2,t);
         }
@@ -558,7 +552,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./PointsSimulation.txt");
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -569,7 +563,7 @@ public:
         {
             // generate points
             auto v = getPointsFromFile3D("./PointsSimulationFailMVBB.txt");
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -581,7 +575,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./Bunny.txt");
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -591,7 +585,7 @@ public:
 
         {
             // generate points
-            Matrix3Dyn t(3,140000000);
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
             t.setRandom();
             diameterTest(7,t,false,0,0.01);
         }
@@ -602,7 +596,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./Lucy.txt");
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -612,7 +606,7 @@ public:
 
         {
             // generate points
-            Matrix3Dyn t(3,140000000);
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
             t.setRandom();
             diameterTest(7,t,false,0,0.01);
         }
@@ -628,7 +622,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(k) +".txt");
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -639,7 +633,7 @@ public:
 
         {
             // generate points
-            Matrix3Dyn t(3,3);
+            ApproxMVBB::Matrix3Dyn t(3,3);
             t.setRandom();
             diameterTest(60,t,true,10,0.001,2);
         }
@@ -659,8 +653,6 @@ void diameterTest() {
 
 class MVBBTests {
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES
 
     template<typename TMatrix>
     void mvbbTest(unsigned int N, const TMatrix & v,
@@ -708,21 +700,21 @@ public:
 
          {
             // generate points
-            Matrix3Dyn t(3,1);
+            ApproxMVBB::Matrix3Dyn t(3,1);
             t.setRandom();
             mvbbTest(60,t,true,0.001,1,5,10,10);
         }
 
         {
             // generate points
-            Matrix3Dyn t(3,2);
+            ApproxMVBB::Matrix3Dyn t(3,2);
             t.setRandom();
             mvbbTest(61,t,true,0.001,2,5,10,10);
         }
 
         {
             // generate points
-            Matrix3Dyn t(3,3);
+            ApproxMVBB::Matrix3Dyn t(3,3);
             t.setRandom();
             mvbbTest(62,t,true,0.001,3,5,10,10);
         }
@@ -731,7 +723,7 @@ public:
             // generate points
             auto v = generatePoints3D(100);
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -744,7 +736,7 @@ public:
 
             auto v = generatePoints3D(10000);
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -788,7 +780,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./Bunny.txt");
 
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -804,7 +796,7 @@ public:
         {
             // generate points
             auto v = getPointsFromFile3D("./Lucy.txt");
-            Matrix3Dyn t(3,v.size());
+            ApproxMVBB::Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {
                 t.col(i) = v[i];
             }
@@ -815,7 +807,7 @@ public:
 
          {
             // generate points
-            Matrix3Dyn t(3,140000000);
+            ApproxMVBB::Matrix3Dyn t(3,140000000);
             t.setRandom();
             mvbbTest(4,t,false,0.01,400,5,0,5);
         }
