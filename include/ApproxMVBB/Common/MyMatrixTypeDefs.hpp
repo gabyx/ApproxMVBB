@@ -129,7 +129,7 @@ struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
    template<typename Derived> using ArrayBase  = ApproxMVBB::MyMatrix::ArrayBase<Derived>; \
    \
    template<typename Derived> using VectorBDyn = ApproxMVBB::MyMatrix::VectorBDyn<Derived>; \
-   template<typename Derived,unsigned int M> using VectorBStat = ApproxMVBB::MyMatrix::VectorBStat<Derived,M>; \
+   template<typename Derived, int M> using VectorBStat = ApproxMVBB::MyMatrix::VectorBStat<Derived,M>; \
    \
    template<typename Derived> using MatrixBDynDyn = ApproxMVBB::MyMatrix::MatrixBDynDyn<Derived>; \
    template<typename Derived, int N> using MatrixBDynStat = ApproxMVBB::MyMatrix::MatrixBDynStat<Derived,N>; \
