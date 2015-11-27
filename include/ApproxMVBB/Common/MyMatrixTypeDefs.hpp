@@ -101,12 +101,12 @@ namespace MyMatrix{
     template<typename Derived> using MatrixBase = Eigen::MatrixBase<Derived>;
     template<typename Derived> using ArrayBase = Eigen::ArrayBase<Derived>;
 
-    template<typename Derived>                 using VectorBDyn     = Eigen::VectorBlock<Derived,Eigen::Dynamic>;
-    template<typename Derived, unsigned int M> using VectorBStat    = Eigen::VectorBlock<Derived,M>;
+    template<typename Derived> using VectorBDyn = Eigen::VectorBlock<Derived,Eigen::Dynamic>;
+    template<typename Derived, int M> using VectorBStat    = Eigen::VectorBlock<Derived,M>;
 
-    template<typename Derived>                 using MatrixBDynDyn  = Eigen::Block<Derived>;
-    template<typename Derived, unsigned int M> using MatrixBStatDyn = Eigen::Block<Derived,M, Eigen::Dynamic>;
-    template<typename Derived, unsigned int N> using MatrixBDynStat = Eigen::Block<Derived,Eigen::Dynamic,N>;
+    template<typename Derived> using MatrixBDynDyn  = Eigen::Block<Derived>;
+    template<typename Derived, int M> using MatrixBStatDyn = Eigen::Block<Derived,M, Eigen::Dynamic>;
+    template<typename Derived, int N> using MatrixBDynStat = Eigen::Block<Derived,Eigen::Dynamic,N>;
 
     template<typename EigenType> using MatrixRef = Eigen::Ref<EigenType>;
 
@@ -132,8 +132,8 @@ struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
    template<typename Derived,unsigned int M> using VectorBStat = ApproxMVBB::MyMatrix::VectorBStat<Derived,M>; \
    \
    template<typename Derived> using MatrixBDynDyn = ApproxMVBB::MyMatrix::MatrixBDynDyn<Derived>; \
-   template<typename Derived, unsigned int N> using MatrixBDynStat = ApproxMVBB::MyMatrix::MatrixBDynStat<Derived,N>; \
-   template<typename Derived, unsigned int M> using MatrixBStatDyn = ApproxMVBB::MyMatrix::MatrixBStatDyn<Derived,M>; \
+   template<typename Derived, int N> using MatrixBDynStat = ApproxMVBB::MyMatrix::MatrixBDynStat<Derived,N>; \
+   template<typename Derived, int M> using MatrixBStatDyn = ApproxMVBB::MyMatrix::MatrixBStatDyn<Derived,M>; \
     \
    template<typename EigenType> using MatrixRef = ApproxMVBB::MyMatrix::MatrixRef< EigenType >; \
    template<typename EigenType> using MatrixMap = ApproxMVBB::MyMatrix::MatrixMap< EigenType >; \
