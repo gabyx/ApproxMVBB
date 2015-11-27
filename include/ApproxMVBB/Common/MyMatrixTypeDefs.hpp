@@ -160,18 +160,18 @@ struct APPROXMVBB_EXPORT  MyMatrixIOFormat {
     using MatrixDiagDyn = ApproxMVBB::MyMatrix::MatrixDiagDyn< _PREC_ >; \
     using MatrixDynDynRow = ApproxMVBB::MyMatrix::MatrixDynDynRow< _PREC_ >; \
     \
-    template<unsigned int M> using MatrixStatDyn = ApproxMVBB::MyMatrix::MatrixStatDyn< _PREC_, M>; \
-    template<unsigned int N> using MatrixDynStat = ApproxMVBB::MyMatrix::MatrixDynStat< _PREC_, N>; \
-    template<unsigned int M,unsigned int N> using MatrixStatStat = ApproxMVBB::MyMatrix::MatrixStatStat< _PREC_, M,N>; \
-    template<unsigned int M> using VectorStat = ApproxMVBB::MyMatrix::VectorStat< _PREC_, M>; \
+    template<int M> using MatrixStatDyn = ApproxMVBB::MyMatrix::MatrixStatDyn< _PREC_, M>; \
+    template<int N> using MatrixDynStat = ApproxMVBB::MyMatrix::MatrixDynStat< _PREC_, N>; \
+    template<int M, int N> using MatrixStatStat = ApproxMVBB::MyMatrix::MatrixStatStat< _PREC_, M,N>; \
+    template<int M> using VectorStat = ApproxMVBB::MyMatrix::VectorStat< _PREC_, M>; \
     \
     using AffineTrafo = ApproxMVBB::MyMatrix::AffineTrafo< _PREC_ >; \
     using AffineTrafo2d = ApproxMVBB::MyMatrix::AffineTrafo2d< _PREC_ >; \
     \
-    template<unsigned int M> using ArrayStatDyn = ApproxMVBB::MyMatrix::ArrayStatDyn< _PREC_, M>; \
-    template<unsigned int N> using ArrayDynStat = ApproxMVBB::MyMatrix::ArrayDynStat< _PREC_, N>; \
-    template<unsigned int M,unsigned int N> using ArrayStatStat = ApproxMVBB::MyMatrix::ArrayStatStat< _PREC_, M,N>; \
-    template<unsigned int M> using ArrayStat = ApproxMVBB::MyMatrix::ArrayStat< _PREC_, M>; \
+    template<int M> using ArrayStatDyn = ApproxMVBB::MyMatrix::ArrayStatDyn< _PREC_, M>; \
+    template<int N> using ArrayDynStat = ApproxMVBB::MyMatrix::ArrayDynStat< _PREC_, N>; \
+    template<int M,int N> using ArrayStatStat = ApproxMVBB::MyMatrix::ArrayStatStat< _PREC_, M,N>; \
+    template<int M> using ArrayStat = ApproxMVBB::MyMatrix::ArrayStat< _PREC_, M>; \
     using Array3 = ApproxMVBB::MyMatrix::Array3< _PREC_ >; \
     using Array2 = ApproxMVBB::MyMatrix::Array2< _PREC_ >; \
     \
