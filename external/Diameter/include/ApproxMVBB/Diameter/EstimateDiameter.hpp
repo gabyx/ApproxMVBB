@@ -14,7 +14,7 @@
 namespace ApproxMVBB{
 namespace Diameter{
 
-double estimateDiameter( typeSegment *theDiam,
+APPROXMVBB_EXPORT double estimateDiameter(typeSegment *theDiam,
                          double **theList,
                          const int first,
                          const int last,

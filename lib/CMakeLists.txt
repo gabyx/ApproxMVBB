@@ -3,7 +3,8 @@
 #The name of the library project ====================================================================
 PROJECT("ApproxMVBBLib")
 
-
+MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY_STATIC  )
+SET(ApproxMVBB_BUILD_LIBRARY_STATIC OFF CACHE BOOL "Build a static library")
 
 SET(SOURCE_FILES
     ${ApproxMVBB_SRC}
@@ -22,43 +23,50 @@ ENDIF()
 
 
 #include directories
-set(INCLUDE_DIRS
+SET(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
     ${ApproxMVBB_INC_DIRS}
 )
 
-include_directories(${INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SET(LINK_LIBS ${ApproxMVBB_LINK_LIBS})
 
+# Make Targets shared/static
+IF(ApproxMVBB_BUILD_LIBRARY_STATIC)
+ADD_LIBRARY(ApproxMVBB STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
+SET_TARGET_PROPERTIES(ApproxMVBB PROPERTIES OUTPUT_NAME ApproxMVBBStatic)
+ELSE()
 ADD_LIBRARY(ApproxMVBB SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
-if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
-    ADD_DEPENDENCIES(ApproxMVBB ${ApproxMVBB_DEPENDING_TARGETS})
-endif()
+ENDIF()
 
-target_link_libraries(ApproxMVBB ${LINK_LIBS})
-set_target_properties(ApproxMVBB PROPERTIES 
+IF( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
+    ADD_DEPENDENCIES(ApproxMVBB ${ApproxMVBB_DEPENDING_TARGETS})
+ENDIF()
+
+TARGET_LINK_LIBRARIES(ApproxMVBB ${LINK_LIBS})
+SET_TARGET_PROPERTIES(ApproxMVBB PROPERTIES 
     VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
 )
 # set build flag, for import/export specifiers in platform.hpp
-target_compile_definitions(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY)
+TARGET_COMPILE_DEFINITIONS(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY)
 
 
-set(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")
-set(ApproxMVBB_LIBRARY_NAME_DBG "ApproxMVBB${CMAKE_DEBUG_POSTFIX}")
-set(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "ApproxMVBB/Config/Config.hpp")
+SET(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")
+SET(ApproxMVBB_LIBRARY_NAME_DBG "ApproxMVBB${CMAKE_DEBUG_POSTFIX}")
+SET(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "ApproxMVBB/Config/Config.hpp")
 
 # Install stuff (default location is not some where on the system! for safty reasons
-if(FIRST_CMAKE_RUN)
+IF(FIRST_CMAKE_RUN)
     SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/../install" CACHE STRING "Install prefix (e.g. /usr/local/)" FORCE)
-endif()
+ENDIF()
 
 # Set install directories (if changed CMAKE_INSTALL_PREFIX adjust values)
 SET(ApproxMVBB_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "Install dir library")
 SET(ApproxMVBB_INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/ApproxMVBB CACHE STRING "Install dir includes")
 MARK_AS_ADVANCED(ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INCLUDE_INSTALL_DIR )
 
-if(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
+IF(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
     SET(INSTALL_PREFIX_LAST_VALUE ${CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Last install prefix value")
     MESSAGE(WARNING "Check install dir! They have been changed!")
     UNSET(ApproxMVBB_LIB_INSTALL_DIR)
@@ -66,28 +74,30 @@ if(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
     SET(ApproxMVBB_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "Install dir library" FORCE)
     SET(ApproxMVBB_INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/ApproxMVBB CACHE STRING "Install dir includes" FORCE)
     MARK_AS_ADVANCED(FORCE ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INC_INSTALL_DIR )
-endif()
+ENDIF()
 
 # INSTALLING FILES
 MESSAGE( STATUS "Installing library to " "${ApproxMVBB_LIB_INSTALL_DIR}")
-install(TARGETS ApproxMVBB LIBRARY DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
+INSTALL(TARGETS ApproxMVBB 
+        LIBRARY DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
 
 MESSAGE( STATUS "Installing include folders:" ${ApproxMVBB_INCLUDE_DIR} " to ${ApproxMVBB_INC_INSTALL_DIR}")
-install(DIRECTORY  ${ApproxMVBB_INCLUDE_DIR}  DESTINATION ${ApproxMVBB_INC_INSTALL_DIR}
+INSTALL(DIRECTORY  ${ApproxMVBB_INCLUDE_DIR}  DESTINATION ${ApproxMVBB_INC_INSTALL_DIR}
         FILE_PERMISSIONS      OWNER_READ OWNER_WRITE               GROUP_READ               WORLD_READ
         DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
         FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE)
 
 
 MESSAGE( STATUS "Installing external include folders:" ${ApproxMVBB_EXTERNAL_INCLUDE_DIRS} " to ${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB")
-install(DIRECTORY  ${ApproxMVBB_EXTERNAL_INCLUDE_DIRS}
+INSTALL(DIRECTORY  ${ApproxMVBB_EXTERNAL_INCLUDE_DIRS}
         DESTINATION "${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB"
         FILE_PERMISSIONS      OWNER_READ OWNER_WRITE               GROUP_READ               WORLD_READ
         DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
         FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE)
 
-MESSAGE( STATUS "Installing conmfiguration dependend files:" ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB " to ${ApproxMVBB_INC_INSTALL_DIR}")
-install(DIRECTORY  ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB
+MESSAGE( STATUS "Installing configuration dependend files:" ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB " to ${ApproxMVBB_INC_INSTALL_DIR}")
+INSTALL(DIRECTORY  ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB
         DESTINATION ${ApproxMVBB_INC_INSTALL_DIR}
         FILE_PERMISSIONS      OWNER_READ OWNER_WRITE               GROUP_READ               WORLD_READ
         DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
@@ -102,7 +112,7 @@ SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxM
 # Generate ApproxMVBB-config.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
 SET(ApproxMVBB_CMAKE_CONFIG_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config.cmake") 
-configure_file(
+CONFIGURE_FILE(
   ${PROJECT_SOURCE_DIR}/approxmvbb-config.cmake.in
   ${ApproxMVBB_CMAKE_CONFIG_FILE} @ONLY
 )
@@ -110,7 +120,7 @@ configure_file(
 # Generate ApproxMVBB-config-version.cmake file which needs to be installed afterwards
 SET(ApproxMVBB_LIBRARY_NAME $<TARGET_FILE_NAME:ApproxMVBB>)
 SET(ApproxMVBB_CMAKE_CONFIG_VERSION_FILE "${PROJECT_BINARY_DIR}/approxmvbb-config-version.cmake") 
-configure_file(
+CONFIGURE_FILE(
   ${PROJECT_SOURCE_DIR}/approxmvbb-config-version.cmake.in
   ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE} @ONLY
 )
@@ -119,12 +129,12 @@ configure_file(
 
 
 MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
-install(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
+INSTALL(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
         DESTINATION ${CMAKE_CONFIG_FOLDER}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 MESSAGE( STATUS "Installing dependency cmake find scripts for 'eigen3,meta,pugixml' to ${CMAKE_CONFIG_FOLDER}")
-install(FILES  ${ApproxMVBB_ROOT_DIR}/cmake/FindEigen3.cmake  
+INSTALL(FILES  ${ApproxMVBB_ROOT_DIR}/cmake/FindEigen3.cmake  
                ${ApproxMVBB_ROOT_DIR}/cmake/FindMeta.cmake 
                ${ApproxMVBB_ROOT_DIR}/cmake/FindPugiXML.cmake 
         DESTINATION ${CMAKE_CONFIG_FOLDER}
