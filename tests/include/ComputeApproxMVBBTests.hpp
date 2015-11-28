@@ -13,7 +13,6 @@
 #include <fstream>
 #include <set>
 
-
 #include "TestConfig.hpp"
 
 #include "ApproxMVBB/ComputeApproxMVBB.hpp"
@@ -482,7 +481,7 @@ void minAreaBoxTest() {
 
 class DiameterTest {
 public:
-  
+
     template<typename TMatrix>
     void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
                       unsigned int optLoops = 10, PREC epsilon = 0.001, unsigned int samplePoints = 400) {
