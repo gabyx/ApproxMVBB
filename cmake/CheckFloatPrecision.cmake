@@ -22,8 +22,7 @@
 include(CheckCSourceRuns)
 
 macro(check_float_precision)
-
- SET(CMAKE_REQUIRED_FLAGS ${CMAKE_C
+ 
  check_c_source_runs("
   #include <stdio.h>
   #include <string.h>
