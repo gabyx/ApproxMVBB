@@ -28,10 +28,33 @@ IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
 ENDIF()
 MESSAGE(STATUS "Project name is: " ${ApproxMVBBProjectName})
 PROJECT(${ApproxMVBBProjectName})
-
-#Set 
+ 
 SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
+
+# PRECISION ISSUES ====================================================================================================
+# From http://christian-seiler.de/projekte/fpmath/
+#x86 platforms support two types of floating point instruction sets nowadays: 
+#The classical x87 floating point unit and the new MMX/SSE instructions that can even perform parallel calculations.
+#The characteristics of the x87 FPU are:
+
+    #Different instructions for loading and storing different types of floating point numbers from and to memory.
+    #A single instruction set for performing calculations.
+    #An internal precision with which all calculations are done.
+    #Instructions to change the internal precision
+    #Support for single, double and double-extended precision.
+#The characteristics of the MMX/SSE instructions are:
+
+    #Different instructions for loading and storing different types of floating point numbers from and to memory.
+    #Different instructions for performing caluclations depending on the data types in the registers.
+    #Calculation precision is dependent on operhand types.
+    #Supports only single and double precision
+    #Support for parallel computation.
+# What we wont in this library is, only the GeometricPredicates need "double precision" (not extended precision)
+# That means either by using only sse instruction set this is enforced or by manually setting the FPU unit to double precision
+# so far we manually set it to double precision in the Predicates,
+# on Windows (64bit) we cannot change FPU precision, so we use the sse flag to ensure only "double precision"
+#========================================================================================================================
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
@@ -83,7 +106,12 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
         
   ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
     MESSAGE(WARNING "MSVC is not supported yet, trying to set compiler flags anyway!")
-		SET(CMAKE_CXX_FLAGS "-std=c++11" CACHE STRING "Flags for CXX Compiler" FORCE)
+    # add some flags
+		SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "/arch:SSE2" CACHE STRING "Flags for CXX Compiler" FORCE)
+    # We cannot control the FPU unit in 64bit mode, this flag makes MSVC to not use x87 stuff in 64bit (or 32bit) mode
+    # so no extended precision should be used, if that does not work, there is the flag /fp:strict
+		# NOTE: SSE is already enabled for x64 compiler
+		# as per http://stackoverflow.com/questions/1067630/sse2-option-in-visual-c-x64
   ENDIF()
 ENDIF()
 
