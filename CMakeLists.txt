@@ -83,7 +83,9 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
         
   ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
     MESSAGE(WARNING "MSVC is not supported yet, trying to set compiler flags anyway!")
-		SET(CMAKE_CXX_FLAGS "-std=c++11" CACHE STRING "Flags for CXX Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS "/arch:SSE2" CACHE STRING "Flags for CXX Compiler" FORCE)
+		# NOTE: SSE is already enabled for x64 compiler
+		# as per http://stackoverflow.com/questions/1067630/sse2-option-in-visual-c-x64
   ENDIF()
 ENDIF()
 

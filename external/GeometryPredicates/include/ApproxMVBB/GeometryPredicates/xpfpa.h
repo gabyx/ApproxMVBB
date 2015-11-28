@@ -68,7 +68,38 @@
 # pragma fenv_access (on)
 #endif // _MSC_VER
 
-#ifdef HAVE__CONTROLFP_S
+// MSVC does NOT support _control_fp stuff on x64!
+// Define everything as NOP.
+#if defined(_MSC_VER) && defined(_WIN64 )
+
+// float.h defines _controlfp_s
+# include <float.h>
+
+# define XPFPA_DECLARE()
+
+# define XPFPA_SWITCH_DOUBLE()
+# define XPFPA_SWITCH_SINGLE()
+# define XPFPA_SWITCH_DOUBLE_EXTENDED()
+# define XPFPA_RESTORE()
+// We do NOT use the volatile return trick since _controlfp_s is a function
+// call and thus FP registers are saved in memory anyway. However, we do use
+// a variable to ensure that the expression passed into val will be evaluated
+// *before* switching back contexts.
+# define XPFPA_RETURN_DOUBLE(val) \
+			            { \
+                return (val); \
+			            }
+# define XPFPA_RETURN_SINGLE(val) \
+			            { \
+                return (val); \
+			            }
+// This won't work, but we add a macro for it anyway.
+# define XPFPA_RETURN_DOUBLE_EXTENDED(val) \
+			            { \
+                return (val); \
+			            }
+
+#elif HAVE__CONTROLFP_S
 
 // float.h defines _controlfp_s
 # include <float.h>
