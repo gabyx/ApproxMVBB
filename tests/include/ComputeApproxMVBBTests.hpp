@@ -718,6 +718,20 @@ public:
             mvbbTest(62,t,true,0.001,3,5,10,10);
         }
 
+
+        {
+            ApproxMVBB::Matrix3Dyn t(3,8);
+            t.col(0) = ApproxMVBB::Vector3(0,0,0);
+            t.col(1) = ApproxMVBB::Vector3(1,0,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
+            t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            t.col(4) = ApproxMVBB::Vector3(0,0,1);
+            t.col(5) = ApproxMVBB::Vector3(1,0,1);
+            t.col(6) = ApproxMVBB::Vector3(1,1,1);
+            t.col(7) = ApproxMVBB::Vector3(0,1,1);
+            mvbbTest(621,t,true,0.001,400,5,10,10);
+        }
+
         {
             // generate points
             auto v = generatePoints3D(100);
