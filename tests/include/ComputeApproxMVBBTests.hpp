@@ -748,6 +748,16 @@ public:
         }
 
         {
+            ApproxMVBB::Matrix3Dyn t(3,4);
+            t.col(0) = ApproxMVBB::Vector3(0,0,0);
+            t.col(1) = ApproxMVBB::Vector3(1,0,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
+            t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            //applyRandomRotTrans(t);
+            mvbbTest(622,t,true,0.001,400,2,2,2);
+        }
+
+        {
             // generate points
             auto v = generatePoints3D(100);
 

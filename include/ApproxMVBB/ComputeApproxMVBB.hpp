@@ -11,6 +11,8 @@
 #define ApproxMVBB_ComputeApproxMVBB_hpp
 
 #include "ApproxMVBB/Config/Config.hpp"
+#include "ApproxMVBB/Common/LogDefines.hpp"
+
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
@@ -129,21 +131,28 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
 
 /**
 * Function to optimize oriented bounding box volume.
-* Projecting several times into the direction of the axis of the current oobb,
+* Projecting nLoops times into the direction of the axis of the current oobb,
 * constructing the mvbb and overwriting the current oobb if volume is smaller
+* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume * volumeAcceptFactor, which determines the tolerance when a new volume is accepted
+* @param minBoxExtent is the minmum extent direction a box must have, to make the volume not zero and comparable to other volumes
+*        which is useful for degenerate cases, such as all points in a surface
 */
 template<typename Derived>
 APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
-                   OOBB oobb, unsigned int times = 10) {
+                                     OOBB oobb,
+                                     unsigned int nLoops = 10,
+                                     PREC volumeAcceptFactor = 1e-6,
+                                     PREC minBoxExtent = 1e-12
+                                     ) {
 
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
-    if( oobb.volume() == 0.0 || times == 0) {
+    if( oobb.volume() == 0.0 || nLoops == 0) {
         return oobb;
     }
 
     // Define the volume lower bound above we accept a new volume as
-    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+    PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
 
     unsigned int cacheIdx = 0; // current write Idx into the cache
@@ -151,7 +160,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
 
     Vector3 dir;
     ProjectedPointSet proj;
-    for(unsigned int loop = 0; loop < times; ++loop ) {
+    for(unsigned int loop = 0; loop < nLoops; ++loop ) {
 
         // Determine Direction (choose x or y axis)
         //std::cout << oobb.m_q_KI.matrix() << std::endl;
@@ -174,6 +183,9 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
         //std::cout << "Optimizing dir: " << dir << std::endl;
         OOBB o = proj.computeMVBB( dir, points);
 
+        // Expand box such the volume is not zero for points in a plane
+        o.expandToMinExtentAbsolute(minBoxExtent);
+
         if( o.volume() < oobb.volume() && o.volume()>volumeAcceptTol) {
             oobb = o;
         }
@@ -187,21 +199,29 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
 * Function to optimize oriented bounding box volume.
 * This performs an exhaustive grid search over a given tighly fitted bounding box (use approximateMVBBDiam)
 * to find a tighter volume.
-* @param gridSize of the 3d Grid
+* @param gridSize is half the grid size of the 3d test grid in each direction, for example gridDimX , gridDimY, gridDimZ = [-gridSize,gridSize]
 * @param optLoops how many optimization loops are preformed
 *        for the oobb computed in the given discrete sampled direction in the grid  (see optimizeMVBB)
+* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume * volumeAcceptFactor, which determines the tolerance when a new volume is accepted
+* @param minBoxExtent is the minmum extent direction a box must have, to make the volume not zero and comparable to other volumes
+*        which is useful for degenerate cases, such as all points in a surface
 */
 template<typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & points,
                                OOBB oobb,
                                PREC epsilon,
                                const unsigned int gridSize = 5,
-                               const unsigned int optLoops = 6
+                               const unsigned int optLoops = 6,
+                               PREC volumeAcceptFactor = 1e-6,
+                               PREC minBoxExtent = 1e-12
                                ) {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
+    // Extent input oobb
+    oobb.expandToMinExtentAbsolute(minBoxExtent);
+
     // Define the volume lower bound above we accept a new volume as
-    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+    PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
     //Get the direction of the input OOBB in I frame:
     Vector3 dir1 = oobb.getDirection(0);
@@ -211,6 +231,8 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
     Vector3 dir;
 
     ProjectedPointSet proj;
+
+    ApproxMVBB_MSGLOG_L3( "gridSearch: dir: " << dir.transpose() << std::endl; )
 
     for(int x = -int(gridSize); x <= (int)gridSize; ++x ) {
         for(int  y = -int(gridSize); y <= (int)gridSize; ++y ) {
@@ -223,16 +245,21 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
 
                 // Make direction
                 dir = x*dir1 + y*dir2 + z*dir3;
-                //std::cout << "dir: " << dir.transpose() << std::endl;
+                ApproxMVBB_MSGLOG_L3( "gridSearch: dir: " << dir.transpose() << std::endl; )
 
                 // Compute MVBB in dirZ
                 auto res = proj.computeMVBB(dir,points);
 
+                // Expand to minimal extent for points in a surface or line
+                res.expandToMinExtentAbsolute(minBoxExtent);
+
                 if(optLoops){
-                    res = optimizeMVBB(points,res,optLoops);
+                    res = optimizeMVBB(points,res,optLoops,volumeAcceptFactor,minBoxExtent);
                 }
 
                 if(res.volume() < oobb.volume() && res.volume()>volumeAcceptTol ) {
+
+                    ApproxMVBB_MSGLOG_L2( "gridSearch: new volume: " << res.volume() << std::endl <<  "for dir: " << dir.transpose() << std::endl; )
                     oobb = res;
                 }
 
@@ -260,16 +287,18 @@ APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
 	auto pp = estimateDiameter<3, ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC> >(points, epsilon);
 
 	ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC> dirZ = pp.first - pp.second;
-    if( ( pp.second.array() >=  pp.first.array()).all() ) {
+
+    // TODO: Is this direction inversion needed? not really ?
+    if( ( dirZ.array() <= 0.0).all() ) {
         dirZ *= -1;
     }
+
     // If direction zero, use (1,0)
     if( (dirZ.array() == 0.0).all() ) {
         dirZ.setZero();
         dirZ(0)= 1;
     }
-    //std::cout <<"estimated 3d diameter: " << dirZ.transpose() << " eps: " << epsilon << std::endl;
-
+    ApproxMVBB_MSGLOG_L1("estimated 3d diameter: " << dirZ.transpose() << " eps: " << epsilon << std::endl;)
 
     // Compute MVBB in dirZ
     ProjectedPointSet proj;
