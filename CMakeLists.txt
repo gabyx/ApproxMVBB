@@ -104,7 +104,7 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
         
-  ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
+  ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC )
     MESSAGE(WARNING "MSVC is not supported yet, trying to set compiler flags anyway!")
     # add some flags
 		SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "/arch:SSE2" CACHE STRING "Flags for CXX Compiler" FORCE)
@@ -139,21 +139,24 @@ ENDIF()
 
 # ========================================================================================================================================
 # Dependencies 
+# On Visual Studio, KDTree examples don't compile. So only add the required minimal dependencies:
 # Define Eigen =====================
 FIND_PACKAGE(Eigen3 REQUIRED)
 SET(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
 # ==================================
-
-# Define PugiXML ===================
-FIND_PACKAGE(PugiXML REQUIRED)
+# Define PugiXML and Meta ==========
+IF (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL MSVC)
+    FIND_PACKAGE(PugiXML REQUIRED)
+    FIND_PACKAGE(Meta REQUIRED)
+ENDIF()
 # ==================================
-
-# Define Meta ======================
-FIND_PACKAGE(Meta REQUIRED)
-# ==================================
-SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
-SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
-SET(ApproxMVBB_TARGETS_DEP ${Meta_TARGET})
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL MSVC)
+    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR})
+ELSE()
+    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR})
+    SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
+    SET(ApproxMVBB_TARGETS_DEP ${Meta_TARGET})
+ENDIF()
 # ========================================================================================================================================
 
 
@@ -167,7 +170,11 @@ MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )
 SET(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
 
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_TESTS)
-SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
+IF (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL MSVC)
+    SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
+ELSE()
+    SET(ApproxMVBB_BUILD_TESTS OFF CACHE BOOL "Build the tests")
+ENDIF()
 
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
 SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
