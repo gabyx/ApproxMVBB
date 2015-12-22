@@ -22,6 +22,7 @@
 include(CheckCSourceRuns)
 
 macro(check_float_precision)
+ 
  check_c_source_runs("
   #include <stdio.h>
   #include <string.h>
@@ -90,9 +91,12 @@ macro(check_float_precision)
   }
  
   int main (int argc, char **argv) {
+    
+    # not available on x64 platforms
     #if defined(_MSC_VER) && defined(_WIN64 )
         return 1;
     #else
+    
     double d = div (2877.0, 1000000.0);
     char buf[255];
     sprintf(buf, \"%.30f\", d);
@@ -120,6 +124,7 @@ macro(check_float_precision)
   }
  
   int main (int argc, char **argv) {
+    # not available on x64 platforms
     #if defined(_MSC_VER) && defined(_WIN64 )
         return 1;
     #else

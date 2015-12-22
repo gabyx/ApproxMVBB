@@ -13,7 +13,6 @@
 #include <fstream>
 #include <set>
 
-
 #include "TestConfig.hpp"
 
 #include "ApproxMVBB/ComputeApproxMVBB.hpp"
@@ -482,7 +481,7 @@ void minAreaBoxTest() {
 
 class DiameterTest {
 public:
-  
+
     template<typename TMatrix>
     void diameterTest(unsigned int N, const TMatrix & v, bool dump = true,
                       unsigned int optLoops = 10, PREC epsilon = 0.001, unsigned int samplePoints = 400) {
@@ -547,6 +546,21 @@ public:
             t.setRandom();
             diameterTest(2,t);
         }
+
+
+        {
+            ApproxMVBB::Matrix3Dyn t(3,8);
+            t.col(0) = ApproxMVBB::Vector3(0,0,0);
+            t.col(1) = ApproxMVBB::Vector3(1,0,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
+            t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            t.col(4) = ApproxMVBB::Vector3(0,0,1);
+            t.col(5) = ApproxMVBB::Vector3(1,0,1);
+            t.col(6) = ApproxMVBB::Vector3(1,1,1);
+            t.col(7) = ApproxMVBB::Vector3(0,1,1);
+            diameterTest(621,t,true,1,0.001,4);
+        }
+
 
         {
             // generate points
@@ -717,6 +731,30 @@ public:
             ApproxMVBB::Matrix3Dyn t(3,3);
             t.setRandom();
             mvbbTest(62,t,true,0.001,3,5,10,10);
+        }
+
+
+        {
+            ApproxMVBB::Matrix3Dyn t(3,8);
+            t.col(0) = ApproxMVBB::Vector3(0,0,0);
+            t.col(1) = ApproxMVBB::Vector3(1,0,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
+            t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            t.col(4) = ApproxMVBB::Vector3(0,0,1);
+            t.col(5) = ApproxMVBB::Vector3(1,0,1);
+            t.col(6) = ApproxMVBB::Vector3(1,1,1);
+            t.col(7) = ApproxMVBB::Vector3(0,1,1);
+            mvbbTest(621,t,true,0.001,400,5,10,10);
+        }
+
+        {
+            ApproxMVBB::Matrix3Dyn t(3,4);
+            t.col(0) = ApproxMVBB::Vector3(0,0,0);
+            t.col(1) = ApproxMVBB::Vector3(1,0,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
+            t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            //applyRandomRotTrans(t);
+            mvbbTest(622,t,true,0.001,400,2,2,2);
         }
 
         {
