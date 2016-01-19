@@ -135,14 +135,15 @@ IF(MULTITHREADED_BUILD)
 ENDIF()
 # ========================================================================================================================================
 
+
+
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # On Visual Studio, KDTree examples don't compile. So only add the required minimal dependencies:
   SET(ApproxMVBB_SUPPORT_KDTREE OFF CACHE BOOL "Support KdTree implementation (NOT SUPPORTED for MSVC!)")
 ELSE()
   MARK_AS_ADVANCED(ApproxMVBB_SUPPORT_KDTREE)
-  SET(ApproxMVBB_SUPPORT_KDTREE OFF CACHE BOOL "Support KdTree implementation (makes dependecies availabe in install, makes examples and tests)")
+  SET(ApproxMVBB_SUPPORT_KDTREE ON CACHE BOOL "Support KdTree implementation (makes dependecies availabe in install, makes examples and tests)")
 ENDIF()
-
 
 
 # Dependencies ===========================================================================================================================
