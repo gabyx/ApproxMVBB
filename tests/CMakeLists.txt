@@ -3,6 +3,9 @@
 #The name of the project ====================================================================
 PROJECT("ApproxMVBBTests")
 
+INCLUDE(AddGTestExternalProject)
+list(APPEND ApproxMVBB_DEPENDING_TARGETS googletest)
+
 MARK_AS_ADVANCED( ApproxMVBB_TESTS_HIGH_PERFORMANCE)
 SET(ApproxMVBB_TESTS_HIGH_PERFORMANCE OFF CACHE BOOL "Switch on high-performance tests, these require a lot of RAM and AdditionalFiles need to be in place")
 
