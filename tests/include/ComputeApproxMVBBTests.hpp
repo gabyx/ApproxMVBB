@@ -712,25 +712,26 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-         {
+        int testCounter = 0;
+        {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,1);
             t.setRandom();
-            mvbbTest(60,t,true,0.001,1,5,10,10);
+            mvbbTest(testCounter++,t,true,0.001,1,5,10,10);
         }
 
         {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,2);
             t.setRandom();
-            mvbbTest(61,t,true,0.001,2,5,10,10);
+            mvbbTest(testCounter++,t,true,0.001,2,5,10,10);
         }
 
         {
             // generate points
             ApproxMVBB::Matrix3Dyn t(3,3);
             t.setRandom();
-            mvbbTest(62,t,true,0.001,3,5,10,10);
+            mvbbTest(testCounter++,t,true,0.001,3,5,10,10);
         }
 
 
@@ -744,17 +745,47 @@ public:
             t.col(5) = ApproxMVBB::Vector3(1,0,1);
             t.col(6) = ApproxMVBB::Vector3(1,1,1);
             t.col(7) = ApproxMVBB::Vector3(0,1,1);
-            mvbbTest(621,t,true,0.001,400,5,10,10);
+            mvbbTest(testCounter++,t,true,0.001,400,5,10,10);
         }
 
         {
             ApproxMVBB::Matrix3Dyn t(3,4);
             t.col(0) = ApproxMVBB::Vector3(0,0,0);
             t.col(1) = ApproxMVBB::Vector3(1,0,0);
-            t.col(2) = ApproxMVBB::Vector3(1,1,0);
             t.col(3) = ApproxMVBB::Vector3(0,1,0);
+            t.col(2) = ApproxMVBB::Vector3(1,1,0);
             //applyRandomRotTrans(t);
-            mvbbTest(622,t,true,0.001,400,2,2,2);
+            mvbbTest(testCounter++,t,true,0.001,400,2,2,2);
+        }
+
+        {
+            // Some patches
+            int testC = testCounter*1000;
+            for(int i=0;i<10;++i){
+                ApproxMVBB::Matrix3Dyn t(3,4);
+                t.col(0) = ApproxMVBB::Vector3(0,0,0);
+                t.col(1) = ApproxMVBB::Vector3(1,0,0);
+                t.col(2) = ApproxMVBB::Vector3(1,1,0);
+                t.col(3) = ApproxMVBB::Vector3(0,1,0);
+                applyRandomRotTrans(t);
+                mvbbTest(testC++,t,true,0.001,400,4,4,4);
+            }
+
+            // Some planes
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<ApproxMVBB::PREC> dis(0, 1);
+            for(int i=0;i<10;++i){
+                // Some planes
+                ApproxMVBB::Matrix3Dyn t(3,500);
+                for(int i=0;i<t.cols();++i){
+                    t.col(i) = ApproxMVBB::Vector3(dis(gen),dis(gen),0);
+                }
+                //applyRandomRotTrans(t);
+                mvbbTest(testC++,t,true,0.001,200,4,4,4);
+            }
+
+            testCounter++;
         }
 
         {
@@ -766,7 +797,7 @@ public:
                 t.col(i) = v[i];
             }
             applyRandomRotTrans(t);
-            mvbbTest(1,t);
+            mvbbTest(testCounter++,t);
         }
 
         {
@@ -779,7 +810,7 @@ public:
                 t.col(i) = v[i];
             }
             applyRandomRotTrans(t);
-            mvbbTest(2,t);
+            mvbbTest(testCounter++,t);
 
 
         }
@@ -823,7 +854,7 @@ public:
                 t.col(i) = v[i];
             }
             applyRandomRotTrans(t);
-            mvbbTest(3,t,true,0.1);
+            mvbbTest(testCounter++,t,true,0.1);
         }
 
 
@@ -863,7 +894,7 @@ public:
                 }
 
                 PointFunctions::applyRandomRotTrans(t);
-                mvbbTest(/*k*51+*/k + 4,t,true,0.1,400,5,3,6);
+                mvbbTest(testCounter++,t,true,0.1,400,5,3,6);
             }
         //}
 
