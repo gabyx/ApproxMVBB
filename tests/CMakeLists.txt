@@ -30,7 +30,6 @@ SET(INCLUDE_FILES
 
 #include directories
 set(INCLUDE_DIRS
-    ${EIGEN_INCLUDE_DIR}
     ${ApproxMVBB_INC_DIRS}
     ${PROJECT_SOURCE_DIR}/include/
     ${PROJECT_BINARY_DIR}/include/

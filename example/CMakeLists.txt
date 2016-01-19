@@ -1,5 +1,5 @@
 ADD_SUBDIRECTORY(approxMVBB)
-# Only add KDTree stuff if not using MSVC
-IF (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL MSVC)
+
+IF(ApproxMVBB_SUPPORT_KDTREE)
     ADD_SUBDIRECTORY(kdTreeFiltering)
 ENDIF()
