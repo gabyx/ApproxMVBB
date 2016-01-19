@@ -105,7 +105,7 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
         
   ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
-    MESSAGE(WARNING "MSVC is not supported yet, trying to set compiler flags anyway!")
+    MESSAGE(WARNING "MSVC is partially supported (Visual Studio 2013 Update 5), trying to set compiler flags anyway!")
     # add some flags
 		SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "/arch:SSE2" CACHE STRING "Flags for CXX Compiler" FORCE)
     # We cannot control the FPU unit in 64bit mode, this flag makes MSVC to not use x87 stuff in 64bit (or 32bit) mode
@@ -137,31 +137,38 @@ ENDIF()
 
 
 
-# ========================================================================================================================================
-# Dependencies 
-# Define Eigen =====================
+IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # On Visual Studio, KDTree examples don't compile. So only add the required minimal dependencies:
+  SET(ApproxMVBB_SUPPORT_KDTREE OFF CACHE BOOL "Support KdTree implementation (NOT SUPPORTED for MSVC!)")
+ELSE()
+  MARK_AS_ADVANCED(ApproxMVBB_SUPPORT_KDTREE)
+  SET(ApproxMVBB_SUPPORT_KDTREE ON CACHE BOOL "Support KdTree implementation (makes dependecies availabe in install, makes examples and tests)")
+ENDIF()
+
+
+# Dependencies ===========================================================================================================================
+
+# Define Eigen 
 FIND_PACKAGE(Eigen3 REQUIRED)
 SET(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
 # ==================================
 
-# Define PugiXML ===================
-FIND_PACKAGE(PugiXML REQUIRED)
-# ==================================
+# Define Pugixxml and Meta if KdTree Support is selected
+IF (ApproxMVBB_SUPPORT_KDTREE)
+    FIND_PACKAGE(PugiXML REQUIRED)
+    FIND_PACKAGE(Meta REQUIRED)
+    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR})
+    SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
+    SET(ApproxMVBB_TARGETS_DEP ${Meta_TARGET})
+ELSE()    
+    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR})
+ENDIF()
 
-# Define Meta ======================
-FIND_PACKAGE(Meta REQUIRED)
-# ==================================
-SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
-SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
-SET(ApproxMVBB_TARGETS_DEP ${Meta_TARGET})
 # ========================================================================================================================================
-
-
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
 SET(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
-
 
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )
 SET(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
@@ -172,12 +179,10 @@ SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
 SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
 
+
 IF(ApproxMVBB_BUILD_EXAMPLE)
    SET(ApproxMVBB_BUILD_LIBRARY On CACHE BOOL "Build a shared library" FORCE)
 ENDIF()
-
-
-
 
 
 

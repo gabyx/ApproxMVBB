@@ -17,8 +17,11 @@ SET(INCLUDE_FILES
 # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
 # We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
 IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
+ELSE()
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   /DApproxMVBB_BUILD_LIBRARY")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DApproxMVBB_BUILD_LIBRARY")
 ENDIF()
 
 
@@ -83,10 +86,17 @@ INSTALL(TARGETS ApproxMVBB
         ARCHIVE DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
 
 MESSAGE( STATUS "Installing include folders:" ${ApproxMVBB_INCLUDE_DIR} " to ${ApproxMVBB_INC_INSTALL_DIR}")
+# do not install KdTree headers:
+IF( NOT ApproxMVBB_SUPPORT_KDTREE)
+  SET(ApproxMVBB_KDTREE_INCF_PATTERN "*KdTree.hpp")
+ELSE()
+  SET(ApproxMVBB_KDTREE_INCF_PATTERN OFF)
+ENDIF()
+
 INSTALL(DIRECTORY  ${ApproxMVBB_INCLUDE_DIR}  DESTINATION ${ApproxMVBB_INC_INSTALL_DIR}
         FILE_PERMISSIONS      OWNER_READ OWNER_WRITE               GROUP_READ               WORLD_READ
         DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-        FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE)
+        FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" PATTERN "*.cmake" EXCLUDE PATTERN ${ApproxMVBB_KDTREE_INCF_PATTERN} EXCLUDE)
 
 
 MESSAGE( STATUS "Installing external include folders:" ${ApproxMVBB_EXTERNAL_INCLUDE_DIRS} " to ${ApproxMVBB_INC_INSTALL_DIR}/ApproxMVBB")
