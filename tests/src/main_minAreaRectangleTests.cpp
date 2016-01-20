@@ -107,8 +107,8 @@ using namespace PointFunctions;
 using namespace ApproxMVBB::MinAreaRectangleTest;
 
 TEST(MinAreaRectangleTest, PointsRandom10) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix2Dyn t(2,10);
@@ -227,8 +227,8 @@ TEST(MinAreaRectangleTest, Points2DRectFail) {
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 TEST(MinAreaRectangleTest, PointsRandom10M) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(-1.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(-1.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         ApproxMVBB::Matrix2Dyn t(2,10000000);

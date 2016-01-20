@@ -90,7 +90,7 @@ namespace DiameterOOBBTest {
 
         std::cout << "Start Sampling Test "+ name +"" << std::endl;
         Matrix3Dyn sampled;
-        static std::mt19937 rng(TestFunctions::randomSeed); // always generate the same indices in samplePointsGrid
+        std::mt19937 rng(TestFunctions::randomSeed); // always generate the same indices in samplePointsGrid
         START_TIMER(start2)
         ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb, rng);
         STOP_TIMER_SEC(count2, start2)
@@ -138,8 +138,8 @@ using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterOOBBTest;
 
 TEST(DiameterOOBBTest, PointsRandom500) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix3Dyn t(3,500);
@@ -148,8 +148,8 @@ TEST(DiameterOOBBTest, PointsRandom500) {
 }
 
 TEST(DiameterOOBBTest, PointsRandom10000) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix3Dyn t(3,10000);
@@ -172,8 +172,8 @@ TEST(DiameterOOBBTest, UnitCube) {
 }
 
 TEST(DiameterOOBBTest, PointsSimulation) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
@@ -188,8 +188,8 @@ TEST(DiameterOOBBTest, PointsSimulation) {
 }
 
 TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
@@ -203,8 +203,8 @@ TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
 }
 
 TEST(DiameterOOBBTest, Bunny) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
@@ -219,8 +219,8 @@ TEST(DiameterOOBBTest, Bunny) {
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 TEST(DiameterOOBBTest, PointsRandom14M) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
@@ -229,8 +229,8 @@ TEST(DiameterOOBBTest, PointsRandom14M) {
 
 
 TEST(DiameterOOBBTest, Lucy) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
         Matrix3Dyn t(3,v.size());
@@ -243,8 +243,8 @@ TEST(DiameterOOBBTest, Lucy) {
 #endif
 
 TEST(DiameterOOBBTest, Plane) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         Matrix3Dyn t(3,3);
@@ -253,8 +253,8 @@ TEST(DiameterOOBBTest, Plane) {
 }
 
 TEST(DiameterOOBBTest, PointClouds) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         for(unsigned int k=0; k<51; k++) {
@@ -271,8 +271,8 @@ TEST(DiameterOOBBTest, PointClouds) {
 
 TEST(DiameterOOBBTest, UnitPatches2D) {
         // Some patches
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);

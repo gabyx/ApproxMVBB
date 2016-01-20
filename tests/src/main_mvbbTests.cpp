@@ -129,8 +129,8 @@ using namespace ApproxMVBB::MVBBTests;
 
 
 TEST(MVBBTest, PointsRandom1) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix3Dyn t(3,1);
@@ -139,8 +139,8 @@ TEST(MVBBTest, PointsRandom1) {
 }
 
 TEST(MVBBTest, PointsRandom2) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix3Dyn t(3,2);
@@ -149,8 +149,8 @@ TEST(MVBBTest, PointsRandom2) {
 }
 
 TEST(MVBBTest, PointsRandom3) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // generate points
         Matrix3Dyn t(3,2);
@@ -184,8 +184,8 @@ TEST(MVBBTest, UnitRectangle) {
 TEST(MVBBTest, Rectangles) {
         srand(0);
         srand48(0);
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         // Some patches
         for(int i=0;i<10;++i){
@@ -201,8 +201,8 @@ TEST(MVBBTest, Rectangles) {
 
 TEST(MVBBTest, UnitPatches2D) {
         // Some patches
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);
@@ -216,8 +216,8 @@ TEST(MVBBTest, UnitPatches2D) {
 
 TEST(MVBBTest, PointsRandom100) {
         // Some patches
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         ApproxMVBB::Matrix3Dyn t(3,100);
         t = t.unaryExpr( f );
@@ -227,8 +227,8 @@ TEST(MVBBTest, PointsRandom100) {
 
 TEST(MVBBTest, PointsRandom10000) {
         // Some patches
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         ApproxMVBB::Matrix3Dyn t(3,10000);
         t = t.unaryExpr( f );
@@ -238,8 +238,8 @@ TEST(MVBBTest, PointsRandom10000) {
 
 
 TEST(MVBBTest, Bunny) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
@@ -254,8 +254,8 @@ TEST(MVBBTest, Bunny) {
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 TEST(MVBBTest, PointsRandom140M) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
@@ -263,8 +263,8 @@ TEST(MVBBTest, PointsRandom140M) {
 }
 
 TEST(MVBBTest, Lucy) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
         Matrix3Dyn t(3,v.size());
@@ -277,8 +277,8 @@ TEST(MVBBTest, Lucy) {
 #endif
 
 TEST(MVBBTest, PointClouds) {
-        static std::mt19937 rng(TestFunctions::randomSeed);
-        static std::uniform_real_distribution<PREC> uni(0.0,1.0);
+        std::mt19937 rng(TestFunctions::randomSeed);
+        std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
         for(unsigned int k=0; k<51; k++) {
