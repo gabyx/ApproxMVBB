@@ -44,6 +44,10 @@ namespace DiameterOOBBTest {
         return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
     }
 
+    std::string getPointsDumpPath(std::string name,std::string suffix=".bin"){
+        return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+suffix;
+    }
+
     std::string getFileOutPath(std::string name, std::string suffix=".bin"){
         return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
     }
@@ -62,8 +66,8 @@ namespace DiameterOOBBTest {
         setRandomSeedStd(name);
 
         if(dump) {
-            dumpPointsMatrixBinary(ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +".bin",v);
-            dumpPointsMatrix(ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +".txt",v);
+            dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
+            dumpPointsMatrix( getPointsDumpPath(name,".txt"),v);
         }
 
         std::cout << "\n\nStart approximateMVBBDiam Test "+ name +"" << std::endl;

@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <fstream>
+#include <functional>
 
 #include <gtest/gtest.h>
 
@@ -73,12 +74,42 @@ namespace TestFunctions{
         l.close();
     }
 
+
+    int isBigEndian(void);
+
+    template <typename T>
+    T swapEndian(T u)
+    {
+        ApproxMVBB_STATIC_ASSERTM(sizeof(char) == 1, "char != 8 bit");
+
+        union
+        {
+            T u;
+            unsigned char u8[sizeof(T)];
+        } source, dest;
+
+        source.u = u;
+
+        for (size_t k = 0; k < sizeof(T); k++)
+            dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+        return dest.u;
+    }
+
     template<class Matrix>
     void dumpPointsMatrixBinary(std::string filename, const Matrix& matrix){
         std::ofstream out(filename,std::ios::out | std::ios::binary | std::ios::trunc);
         typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+        ApproxMVBB_STATIC_ASSERT( sizeof(typename Matrix::Index) == 8 )
+        char bigEndian = isBigEndian();
+
+        out.write((char*) (&bigEndian), sizeof(char));
         out.write((char*) (&rows), sizeof(typename Matrix::Index));
         out.write((char*) (&cols), sizeof(typename Matrix::Index));
+
+        typename Matrix::Index bytes = sizeof(typename Matrix::Scalar);
+        out.write((char*) (&bytes), sizeof(typename Matrix::Index ));
+
         out.write((char*) matrix.data(), rows*cols*sizeof(typename Matrix::Scalar) );
         out.close();
     }
@@ -86,12 +117,34 @@ namespace TestFunctions{
     void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeader=true){
         std::ifstream in(filename,std::ios::in | std::ios::binary);
         typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+        ApproxMVBB_STATIC_ASSERT( sizeof(typename Matrix::Index) == 8 )
+        char bigEndian = 0; // assume all input files with no headers are little endian!
+
         if(withHeader){
+            in.read((char*) (&bigEndian), sizeof(char));
             in.read((char*) (&rows),sizeof(typename Matrix::Index));
             in.read((char*) (&cols),sizeof(typename Matrix::Index));
+            typename Matrix::Index bytes;
+            in.read((char*) (&bytes), sizeof(typename Matrix::Index ));
+            if(bytes != sizeof(typename Matrix::Scalar)){
+                ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << " Scalar bytes: " << bytes);
+            }
+
+            // swap endianness if file has other type
+            if(isBigEndian() != bigEndian ){
+                rows = swapEndian(rows);
+                cols = swapEndian(cols);
+                bytes = swapEndian(bytes);
+            }
             matrix.resize(rows, cols);
         }
         in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );
+
+        // swap endianness of whole matrix if file has other type
+        if(isBigEndian() != bigEndian ){
+            auto f = [](const typename Matrix::Scalar & v){return swapEndian(v);};
+            matrix = matrix.unaryExpr( f );
+        }
         in.close();
     }
 

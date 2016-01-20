@@ -46,6 +46,10 @@ namespace ConvexHullTest {
         return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
     }
 
+    std::string getPointsDumpPath(std::string  name,std::string suffix=".bin"){
+        return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+suffix;
+    }
+
     std::string getFileOutPath(std::string name, std::string suffix=".bin"){
         return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
     }
@@ -59,8 +63,8 @@ namespace ConvexHullTest {
         using namespace PointFunctions;
 
         if(dumpPoints) {
-            dumpPointsMatrixBinary( ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) + ".bin",v);
-            //dumpPointsMatrix("./ConvexHullTest"+ name +".txt",v);
+            dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
+            dumpPointsMatrix( getPointsDumpPath(name,".txt"),v);
         }
         std::cout << "\n\nStart ConvexHull Test "<< name << "" << std::endl;
         START_TIMER(start)

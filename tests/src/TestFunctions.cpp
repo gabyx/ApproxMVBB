@@ -23,6 +23,17 @@ namespace TestFunctions{
         return h;
     }
 
+    int isBigEndian(void)
+    {
+        union {
+            uint32_t i;
+            char c[4];
+        } bint = {0x01020304};
+
+        return bint.c[0] == 1;
+    }
+
+
     void dumpOOBB(std::string filePath, const OOBB & oobb) {
 
         std::ofstream l;
