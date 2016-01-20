@@ -205,7 +205,7 @@ Building and Visualizing the Tests
 Building and installing the basic tests is done by:
 
     $ cd Build
-    $ make ApproxMVBBTests
+    $ make build_and_test
     
   
 **Note:**

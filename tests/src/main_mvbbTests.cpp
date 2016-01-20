@@ -44,6 +44,10 @@ namespace MVBBTests {
         return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
     }
 
+    std::string getFileInAddPath(std::string name){
+        return ApproxMVBB_TESTS_INPUT_FILES_ADD_DIR "/" + name;
+    }
+
     std::string getPointsDumpPath(std::string name,std::string suffix=".bin"){
         return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+suffix;
     }
@@ -249,20 +253,20 @@ TEST(MVBBTest, Bunny) {
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
-TEST(MVBBTest, PointsRandom14M) {
+TEST(MVBBTest, PointsRandom140M) {
         static std::mt19937 rng(TestFunctions::randomSeed);
         static std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom14M",t,false,0.01,400,5,0,5);
+        mvbbTest("PointsRandom140M",t,false,0.01,400,5,0,5);
 }
 
 TEST(MVBBTest, Lucy) {
         static std::mt19937 rng(TestFunctions::randomSeed);
         static std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
-        auto v = getPointsFromFile3D(getFileInPath("Lucy.txt"));
+        auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
             t.col(i) = v[i];

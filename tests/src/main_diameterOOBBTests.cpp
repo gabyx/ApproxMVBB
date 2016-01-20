@@ -44,6 +44,10 @@ namespace DiameterOOBBTest {
         return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
     }
 
+    std::string getFileInAddPath(std::string name){
+        return ApproxMVBB_TESTS_INPUT_FILES_ADD_DIR "/" + name;
+    }
+
     std::string getPointsDumpPath(std::string name,std::string suffix=".bin"){
         return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+suffix;
     }
@@ -228,7 +232,7 @@ TEST(DiameterOOBBTest, Lucy) {
         static std::mt19937 rng(TestFunctions::randomSeed);
         static std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
-        auto v = getPointsFromFile3D(getFileInPath("Lucy.txt"));
+        auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
             t.col(i) = v[i];
