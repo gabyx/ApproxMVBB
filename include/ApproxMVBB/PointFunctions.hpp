@@ -30,6 +30,20 @@ namespace PointFunctions {
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
+    template<typename Derived, typename Gen>
+    void applyRandomRotTrans(MatrixBase<Derived> & points, Gen & g) {
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3, Eigen::Dynamic)
+        Quaternion q;
+        q.coeffs() = q.coeffs().unaryExpr(g); // TODO: Check if q=[0,0,0,0] is correctly normalized !! otherwise crash! NaN
+        q.normalize();
+        Matrix33 R = q.matrix();
+        Vector3 trans;
+        trans = trans.unaryExpr(g);
+        trans.setRandom();
+        points = R*points;
+        points.colwise() += trans;
+    }
+
     template<typename Derived>
     void applyRandomRotTrans(MatrixBase<Derived> & points) {
 
@@ -42,7 +56,6 @@ namespace PointFunctions {
         trans.setRandom();
         points = R*points;
         points.colwise() += trans;
-        std::cout << "Applied Transformation" << std::endl;
     }
 
 

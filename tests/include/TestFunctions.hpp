@@ -9,8 +9,10 @@
 #ifndef TestFunctions_hpp
 #define TestFunctions_hpp
 
+#include <stdlib.h>
 #include <fstream>
 
+#include <gtest/gtest.h>
 
 #include "ApproxMVBB/Config/Config.hpp"
 #include "ApproxMVBB/Common/AssertionDebug.hpp"
@@ -27,6 +29,29 @@ namespace TestFunctions{
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
+    static const int randomSeed = 314159;
+
+    // TODO not std lib conform!
+    std::size_t setRandomSeedStd(std::string name);
+
+    template<typename A, typename B>
+    void assertAlmostEqualArrays(const A & a, const B & b, PREC absError = 1e-6)
+    {
+        using ScalarA = typename A::Scalar;
+        using ScalarB = typename B::Scalar;
+
+        ApproxMVBB_STATIC_ASSERTM( (std::is_same<ScalarA,ScalarB>::value) , "Precision not the same!")
+
+        ASSERT_EQ( a.size() , b.size() );
+
+        const ScalarA * pA = a.data();
+        const ScalarA * pAend = a.data() + a.size();
+        const ScalarB * pB = b.data();
+        for(;pA != pAend; ++pA, ++pB){
+            ASSERT_NEAR(*pA,*pB,absError);
+        }
+    }
+
 
     template<typename Derived>
     void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived> & v) {
@@ -37,23 +62,37 @@ namespace TestFunctions{
             ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
         }
 
-        for(unsigned int i=0; i<v.cols(); i++) {
-            l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+        if(v.cols() != 0){
+            unsigned int i=0;
+            for(; i<v.cols()-1; i++) {
+                l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+            }
+            l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep);
         }
+
         l.close();
     }
 
-    template<int M>
-    void dumpPointsMatrixBinary(std::string filePath, const MatrixStatDyn<M> & v) {
-
-        std::ofstream l;
-        l.open(filePath.c_str(),std::ios::binary);
-        if(!l.good()){
-            ApproxMVBB_ERRORMSG("Could not open binary file: " << filePath << std::endl)
+    template<class Matrix>
+    void dumpPointsMatrixBinary(std::string filename, const Matrix& matrix){
+        std::ofstream out(filename,std::ios::out | std::ios::binary | std::ios::trunc);
+        typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+        out.write((char*) (&rows), sizeof(typename Matrix::Index));
+        out.write((char*) (&cols), sizeof(typename Matrix::Index));
+        out.write((char*) matrix.data(), rows*cols*sizeof(typename Matrix::Scalar) );
+        out.close();
+    }
+    template<class Matrix>
+    void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeader=true){
+        std::ifstream in(filename,std::ios::in | std::ios::binary);
+        typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+        if(withHeader){
+            in.read((char*) (&rows),sizeof(typename Matrix::Index));
+            in.read((char*) (&cols),sizeof(typename Matrix::Index));
+            matrix.resize(rows, cols);
         }
-
-        l.write(reinterpret_cast<const char*>(v.data()), v.size()*sizeof(PREC));
-        l.close();
+        in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );
+        in.close();
     }
 
     template<typename Container>
@@ -64,34 +103,27 @@ namespace TestFunctions{
         if(!l.good()){
             ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
         }
-
-        for(auto & v: c) {
-            l << v.transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+        if(c.size()!=0){
+            auto e = c.begin() + (c.size() - 1);
+            auto it = c.begin();
+            for(; it != e; ++it) {
+                l << it->transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+            }
+            l << (it)->transpose().format(MyMatrixIOFormat::SpaceSep);
         }
         l.close();
     }
 
-    void dumpOOBB(std::string filePath, OOBB & oobb);
-
-    template<int M>
-    void getPointsFromFileBinary(std::string filePath,  MatrixStatDyn<M> & v) {
-        std::ifstream l;
-        l.open(filePath.c_str(),std::ios::binary);
-        if(!l.good()){
-            ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-        }
-
-       l.read(reinterpret_cast<char*>(v.data()), v.size()*sizeof(PREC));
-        l.close();
-    }
+    void readOOBB(std::string filePath, Vector3 & minP, Vector3 & maxP, Matrix33 & R_KI);
+    void dumpOOBB(std::string filePath, const OOBB & oobb);
 
     Vector3List getPointsFromFile3D(std::string filePath);
 
     Vector2List getPointsFromFile2D(std::string filePath);
 
-    Vector2List generatePoints2D(unsigned int n=4);
-
-    Vector3List generatePoints3D(unsigned int n=4);
+//    Vector2List generatePoints2D(unsigned int n=4);
+//
+//    Vector3List generatePoints3D(unsigned int n=4);
 
     template<typename Derived, typename IndexSet>
     Derived filterPoints(MatrixBase<Derived> & v, IndexSet & s){

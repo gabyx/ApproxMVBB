@@ -9,8 +9,11 @@
 #ifndef TestConfig_hpp
 #define TestConfig_hpp
 
-	
-	#cmakedefine ApproxMVBB_TESTS_HIGH_PERFORMANCE
-	
 
+  #cmakedefine ApproxMVBB_TESTS_HIGH_PERFORMANCE
+  
+  
+  #define ApproxMVBB_TESTS_INPUT_FILES_DIR         "@ApproxMVBB_TESTS_INPUT_FILES_DIR@"
+  #define ApproxMVBB_TESTS_VALIDATION_FILES_DIR    "@ApproxMVBB_TESTS_VALIDATION_FILES_DIR@"
+  #define ApproxMVBB_TESTS_OUTPUT_FILES_DIR               "@ApproxMVBB_TESTS_OUTPUT_FILES_DIR@"
 #endif
