@@ -33,8 +33,11 @@ env:
     
     # biicode credentials 
     - BIICODE_USER="gabyx"
-
-
+script:
+    - cmake
+#
+#
+#
 # Install dependencies
 before_install:
   
