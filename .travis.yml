@@ -13,7 +13,7 @@ addons:
     - clang-3.7
 os:
   - linux
-  - os x
+  #- os x
 language: cpp
 compiler:
   - gcc
