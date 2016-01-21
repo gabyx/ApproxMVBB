@@ -56,7 +56,8 @@ namespace ApproxMVBB{
         
     #endif
     
-    
+    // Force log level
+    #define ApproxMVBB_FORCE_MSGLOG_LEVEL @ApproxMVBB_FORCE_MSGLOG_LEVEL@
 }
 
 

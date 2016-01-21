@@ -25,6 +25,10 @@
     #define ApproxMVBB_MSGLOG_LEVEL 0 // 0 = no output
 #endif
 
+#if ApproxMVBB_FORCE_MSGLOG_LEVEL > 0
+    #define ApproxMVBB_MSGLOG_LEVEL ApproxMVBB_FORCE_MSGLOG_LEVEL // force the output level if set in the config!
+#endif
+
 #define ApproxMVBB_MSGLOG_L1(message )  { ApproxMVBB_LOGLEVEL(1, ApproxMVBB_MSGLOG_LEVEL, message) }
 #define ApproxMVBB_MSGLOG_L2(message )  { ApproxMVBB_LOGLEVEL(2, ApproxMVBB_MSGLOG_LEVEL, message) }
 #define ApproxMVBB_MSGLOG_L3(message )  { ApproxMVBB_LOGLEVEL(3, ApproxMVBB_MSGLOG_LEVEL, message) }

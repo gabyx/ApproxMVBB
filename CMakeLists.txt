@@ -179,6 +179,8 @@ SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
 SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
 
+MARK_AS_ADVANCED( ApproxMVBB_FORCE_MSGLOG_LEVEL)
+SET(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = no output by default!")
 
 IF(ApproxMVBB_BUILD_EXAMPLE)
    SET(ApproxMVBB_BUILD_LIBRARY On CACHE BOOL "Build a shared library" FORCE)

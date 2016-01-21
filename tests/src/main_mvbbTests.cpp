@@ -106,7 +106,7 @@ namespace MVBBTests {
             readOOBB( getFileValidationPath(name,".txt") , minP, maxP, R_KI);
             std::cout <<"valid minP: " <<  minP.transpose() << " and " << oobb.m_minPoint.transpose() << std::endl;
             std::cout <<"valid maxP: " << maxP.transpose() << " and " << oobb.m_maxPoint.transpose() << std::endl;
-            std::cout <<"valid R_IK: " << oobb.m_q_KI.matrix()  << " and " << std::endl << R_KI << std::endl;
+            std::cout <<"valid R_IK: " << std::endl << oobb.m_q_KI.matrix()  << " and " << std::endl << R_KI << std::endl;
             assertAlmostEqualArrays(oobb.m_minPoint,minP);
             assertAlmostEqualArrays(oobb.m_maxPoint,maxP);
             assertAlmostEqualArrays(oobb.m_q_KI.matrix(),R_KI);
