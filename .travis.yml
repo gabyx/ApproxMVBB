@@ -1,12 +1,3 @@
-install:
-# /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-# /usr/bin/clang is 3.4, lets override with modern one.
-- if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-- echo ${PATH}
-- echo ${CXX}
-- ${CXX} --version
-- ${CXX} -v
 addons:
   apt:
     # List of whitelisted in travis packages for ubuntu-precise can be found here:
@@ -22,6 +13,7 @@ addons:
     - clang-3.7
 os:
   - linux
+  - os x
 language: cpp
 compiler:
   - gcc
@@ -33,13 +25,10 @@ env:
     
     # biicode credentials 
     - BIICODE_USER="gabyx"
-script:
-    - cmake
-#
-#
-#
+
+
 # Install dependencies
-before_install:
+install:
   
   #install a newer cmake since at this time Travis only has version 2.8.7
   - echo "yes" | sudo add-apt-repository --yes ppa:kalakris/cmake
@@ -49,12 +38,22 @@ before_install:
   
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
+  
+  # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  # /usr/bin/clang is 3.4, lets override with modern one.
+  - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+  - echo ${PATH}
+  - echo ${CXX}
+  - ${CXX} --version
+  - ${CXX} -v
+  
   #- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   #- sudo apt-get update -qq
   #- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq -y --force-yes g++-${GCC_VERSION}; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+  #- if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
   #- if [ "$CXX" = "clang++" ]; then sudo apt-get install -qq -y --force-yes clang-${CLANG_VERSION}; fi
-  - if [ "$CXX" = "clang++" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+  #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
   
   ## Install libc++ if tests are run with clang++
   #- if [ "$CXX" == "clang++" ]; then export LIBCXX=On; fi
@@ -87,8 +86,8 @@ before_install:
   - cd ${ROOT_PATH}/pugixmlBuild
   - cmake ../pugixml/scripts/ -DCMAKE_INSTALL_PREFIX=/usr/local
   - sudo make VERBOSE=1 install
-  
-install:
+
+script:
   - cd $CHECKOUT_PATH
   - if [ ! -d build ]; then mkdir build; fi
   - cd build
@@ -101,21 +100,31 @@ install:
   #- if [ "$CXX" == "clang++" ]; then CXX_FLAGS="${CXX_FLAGS}" ; fi
   #- if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"  ; fi
   #- if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L/usr/lib/ -lc++"; fi
-
+  
+  # make ApproxMVBB
+  - echo "Build ApproxMVBB:"
   - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
   - make VERBOSE=1
   - make install
-  
   - cd ..
+  
+  # make install and library usage!
+  - echo "Install and test if ApproxMVBB links:"
   - mkdir buildLibUsage
   - cd buildLibUsage
   - INSTALL=$(find $CHECKOUT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
   - cmake ../example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL
   - make VERBOSE=1
-    
+  - cd ..
+  
+  # run unit tests
+  - echo "Run Unit Tests:"
+  - cd build
+  - make build_and_test
+  
+  
   #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
   #- bii --version
-
 
 after_success:
   - cd $CHECKOUT_PATH
