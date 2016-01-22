@@ -67,19 +67,18 @@ namespace DiameterOOBBTest {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        std::cout << " Set random hash for std : " << setRandomSeedStd(name) << std::endl;
 
         if(dump) {
             dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
             dumpPointsMatrix( getPointsDumpPath(name,".txt"),v);
         }
 
-        std::cout << "\n\nStart approximateMVBBDiam Test "+ name +"" << std::endl;
+        std::cout << "\n\nStart approximateMVBBDiam test "+ name +"" << std::endl;
         START_TIMER(start)
         auto oobb = ApproxMVBB::approximateMVBBDiam(v,epsilon,optLoops);
         STOP_TIMER_SEC(count, start)
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
-        std::cout << "End approximateMVBBDiam Test "+ name << std::endl;
+        std::cout << "End approximateMVBBDiam test "+ name << std::endl;
 
         oobb.expand(1e-10);
         if(!checkPointsInOOBB(v,oobb)) {
@@ -88,14 +87,14 @@ namespace DiameterOOBBTest {
             std::cout << "All points in OOBB!" << std::endl;
         }
 
-        std::cout << "Start Sampling Test "+ name +"" << std::endl;
+        std::cout << "Start Sampling test "+ name +"" << std::endl;
         Matrix3Dyn sampled;
         std::mt19937 rng(TestFunctions::randomSeed); // always generate the same indices in samplePointsGrid
         START_TIMER(start2)
         ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb, rng);
         STOP_TIMER_SEC(count2, start2)
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
-        std::cout << "End Sampling Test "+ name << std::endl;
+        std::cout << "End Sampling test "+ name << std::endl;
 
         //oobb = ApproxMVBB::optimizeMVBB(sampled,oobb,2);
 
@@ -132,27 +131,35 @@ using namespace TestFunctions;
 using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterOOBBTest;
 
-TEST(DiameterOOBBTest, PointsRandom500) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+
+MY_TEST(DiameterOOBBTest, PointsRandom3) {
+MY_TEST_RANDOM_STUFF(PointsRandom3)
+        // generate points
+        Matrix3Dyn t(3,3);
+        t = t.unaryExpr( f );
+        diameterTest("PointsRandom3",t);
+}
+
+
+MY_TEST(DiameterOOBBTest, PointsRandom500) {
+MY_TEST_RANDOM_STUFF(PointsRandom500)
         // generate points
         Matrix3Dyn t(3,500);
         t = t.unaryExpr( f );
         diameterTest("PointsRandom500",t);
 }
 
-TEST(DiameterOOBBTest, PointsRandom10000) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+
+MY_TEST(DiameterOOBBTest, PointsRandom10000) {
+MY_TEST_RANDOM_STUFF(PointsRandom10000)
         // generate points
         Matrix3Dyn t(3,10000);
         t = t.unaryExpr( f );
         diameterTest("PointsRandom10000",t);
 }
 
-TEST(DiameterOOBBTest, UnitCube) {
+MY_TEST(DiameterOOBBTest, UnitCube) {
+MY_TEST_RANDOM_STUFF(UnitCube)
         Matrix3Dyn t(3,8);
         t.col(0) = ApproxMVBB::Vector3(0,0,0);
         t.col(1) = ApproxMVBB::Vector3(1,0,0);
@@ -166,11 +173,8 @@ TEST(DiameterOOBBTest, UnitCube) {
         diameterTest("UnitCube",t,true,1,0.001,4);
 }
 
-TEST(DiameterOOBBTest, PointsSimulation) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
-
+MY_TEST(DiameterOOBBTest, PointsSimulation) {
+MY_TEST_RANDOM_STUFF(PointsSimulation)
         auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
 
         Matrix3Dyn t(3,v.size());
@@ -182,11 +186,8 @@ TEST(DiameterOOBBTest, PointsSimulation) {
         diameterTest("PointsSimulation",t);
 }
 
-TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
-
+MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
+MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
         auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
@@ -197,11 +198,8 @@ TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
         diameterTest("PointsSimulationFailMVBB",t,true,10);
 }
 
-TEST(DiameterOOBBTest, Bunny) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
-
+MY_TEST(DiameterOOBBTest, Bunny) {
+MY_TEST_RANDOM_STUFF(Bunny)
         auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
@@ -213,20 +211,16 @@ TEST(DiameterOOBBTest, Bunny) {
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
-TEST(DiameterOOBBTest, PointsRandom14M) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+MY_TEST(DiameterOOBBTest, PointsRandom14M) {
+MY_TEST_RANDOM_STUFF(PointsRandom14M)
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
         diameterTest("PointsRandom14M",t,false,0,0.01);
 }
 
 
-TEST(DiameterOOBBTest, Lucy) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+MY_TEST(DiameterOOBBTest, Lucy) {
+MY_TEST_RANDOM_STUFF(Lucy)
         auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
@@ -237,20 +231,15 @@ TEST(DiameterOOBBTest, Lucy) {
 }
 #endif
 
-TEST(DiameterOOBBTest, Plane) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
-
+MY_TEST(DiameterOOBBTest, Plane) {
+MY_TEST_RANDOM_STUFF(Plane)
         Matrix3Dyn t(3,3);
         t = t.unaryExpr( f );
         diameterTest("Plane",t,true,10,0.001,2,false);
 }
 
-TEST(DiameterOOBBTest, PointClouds) {
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+MY_TEST(DiameterOOBBTest, PointClouds) {
+MY_TEST_RANDOM_STUFF(PointClouds)
 
         for(unsigned int k=0; k<51; k++) {
             auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) +".txt"));
@@ -264,11 +253,8 @@ TEST(DiameterOOBBTest, PointClouds) {
         }
 }
 
-TEST(DiameterOOBBTest, UnitPatches2D) {
-        // Some patches
-        std::mt19937 rng(TestFunctions::randomSeed);
-        std::uniform_real_distribution<PREC> uni(0.0,1.0);
-        auto f = [&](PREC) { return uni(rng); };
+MY_TEST(DiameterOOBBTest, UnitPatches2D) {
+MY_TEST_RANDOM_STUFF(UnitPatches2D)
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);
             for(int i=0;i<t.cols();++i){
@@ -278,7 +264,8 @@ TEST(DiameterOOBBTest, UnitPatches2D) {
         }
 }
 
-//TEST(DISABLED_DiameterOOBBTest, Plane) {
+//MY_TEST(DISABLED_DiameterOOBBTest, Plane) {
+//MY_TEST_RANDOM_STUFF(Plane)
 //
 //        Matrix3Dyn t(3,3);
 //        t.setConstant(std::numeric_limits<PREC>::signaling_NaN());

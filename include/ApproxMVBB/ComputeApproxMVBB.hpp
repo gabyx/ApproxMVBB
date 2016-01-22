@@ -235,8 +235,6 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
 
     ProjectedPointSet proj;
 
-    ApproxMVBB_MSGLOG_L3( "gridSearch: dir: " << dir.transpose() << std::endl; )
-
     for(int x = -int(gridSize); x <= (int)gridSize; ++x ) {
         for(int  y = -int(gridSize); y <= (int)gridSize; ++y ) {
             for(int z = 0; z <= (int)gridSize; ++z ) {
@@ -258,8 +256,8 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
                 if(optLoops){
                     res = optimizeMVBB(points,res,optLoops,volumeAcceptFactor,minBoxExtent);
                 }
-
-                if(res.volume() < oobb.volume() && res.volume()>volumeAcceptTol ) {
+                ApproxMVBB_MSGLOG_L3( "gridSearch: volume: " << res.volume() << std::endl;)
+                if(res.volume() < oobb.volume() /*&& res.volume()>volumeAcceptTol */) {
 
                     ApproxMVBB_MSGLOG_L2( "gridSearch: new volume: " << res.volume() << std::endl <<  "for dir: " << dir.transpose() << std::endl; )
                     oobb = res;
@@ -341,6 +339,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
     } else {
         oobb = approximateMVBBGridSearch(points,oobb,epsilon,gridSize,mvbbGridSearchOptLoops);
     }
+
     return oobb;
 }
 

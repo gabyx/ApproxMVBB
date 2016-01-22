@@ -24,6 +24,17 @@
 #include "ApproxMVBB/OOBB.hpp"
 
 
+#define MY_TEST(name1 , name2 ) TEST(name1, name2)
+
+#define MY_TEST_RANDOM_STUFF(name) \
+        std::string testName = #name ; \
+        auto seed = setRandomSeedStd(#name); \
+        std::cout << "Set random hash for std : " << seed << std::endl; \
+        std::mt19937 rng(seed); \
+        std::uniform_real_distribution<PREC> uni(0.0,1.0); \
+        auto f = [&](PREC) { return uni(rng); };
+
+
 namespace ApproxMVBB{
 
 namespace TestFunctions{

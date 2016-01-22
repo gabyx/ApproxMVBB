@@ -59,8 +59,8 @@ public:
         Vector2 m_u;   ///< vector of first side (x-Axis)  (normalized)
         Vector2 m_v;   ///< vector of second side (y-Axis) (normalized)
 
-        PREC m_uL = 1.0;     ///< Scalar factor direction u
-        PREC m_vL = 1.0;     ///< Scalar factor direction v
+        PREC m_uL = 0.0;     ///< Length in direction u
+        PREC m_vL = 0.0;     ///< Length direction v
 
         PREC m_area = 0.0;
     };
@@ -138,17 +138,22 @@ private:
             }
 
         }else if(uF && !vF){
+            // set u to normalized
+            m_minBox.m_u    = uN;
             // adjust v direction
-            m_minBox.m_v(0) = -m_minBox.m_u(1);
-            m_minBox.m_v(1) = m_minBox.m_u(0);
+            m_minBox.m_v(0) = -uN(1);
+            m_minBox.m_v(1) =  uN(0);
 
             m_minBox.m_uL = uNorm;
             m_minBox.m_vL = 0.0;
 
         }else if(!uF && vF){
+            // set v to normalized
+            m_minBox.m_v    = vN;
+
             // adjust u direction
-            m_minBox.m_u(0) = -m_minBox.m_v(1);
-            m_minBox.m_u(1) = m_minBox.m_v(0);
+            m_minBox.m_u(0) = -vN(1);
+            m_minBox.m_u(1) =  vN(0);
 
             m_minBox.m_uL = 0.0;
             m_minBox.m_vL = vNorm;

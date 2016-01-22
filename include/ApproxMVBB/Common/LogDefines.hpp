@@ -23,7 +23,7 @@
 #else
     #ifndef NDEBUG
     // Debug!
-        #define ApproxMVBB_MSGLOG_LEVEL 1 // 0 = no output
+        #define ApproxMVBB_MSGLOG_LEVEL 2 // 0 = no output
     #else
         #define ApproxMVBB_MSGLOG_LEVEL 0 // 0 = no output
     #endif
