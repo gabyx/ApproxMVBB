@@ -118,9 +118,9 @@ script:
   - cd ..
   
   # run unit tests
-  #- echo "Run Unit Tests:"
-  #- cd build
-  #- make build_and_test
+  - echo "Run Unit Tests:"
+  - cd build
+  - make build_and_test
   
   
   #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
