@@ -80,41 +80,26 @@ namespace TestFunctions{
             Matrix33 R_KI;
             readOOBB(filePath, minP, maxP, R_KI, points);
 
-            Vector3List pointsValid = validOOBB.getCornerPoints();
+            Vector3List pointsV = validOOBB.getCornerPoints();
+
+
+            Matrix3Dyn  pV(3,pointsV.size());
+            Matrix3Dyn  p(3,points.size());
+
+            for(unsigned int i=0;i<pointsV.size();++i){
+               pV.col(i)= pointsV[i];
+            }
+            for(unsigned int i=0;i<points.size();++i){
+               p.col(i) = points[i];
+            }
 
             std::cout << "Compare Corners: valid <-> computed" << std::endl;
-            for(auto &p: pointsValid){
-                std::cout << p.transpose() << std::endl;
-            }
+            std::cout << pV << std::endl;
             std::cout << "and" << std::endl;
-            for(auto &p: points){
-                std::cout << p.transpose() << std::endl;
-            }
+            std::cout << p << std::endl;
 
-            // Check all 8 points
-            int indexMatched[8] = {0}; // initializes all to zero!
-            unsigned int nMatched = 0;
-            unsigned int i = 0;
-            unsigned int pointIdx = 0;
-            while( pointIdx < 8){
-                if( i < 8){
-                    if( !indexMatched[i] ){
-                        // check points[pointIdx] against i-th valid one
-                        if ( assertNearArrays("points[pointIdx]", "pointsValid[i]", points[pointIdx],pointsValid[i]) ){
-                            indexMatched[i] = 1; ++nMatched;
-                        }
-                    }else{
-                        ++i;
-                        continue;
-                    }
-                }
+            EXPECT_TRUE( assertNearArrayColsRows<true>(p, pV) ) << "Not all corner points of OOBB equal to validation OOBB in file: " << filePath;
 
-                // all indices i checked go to next point, reset check idx
-                i = 0;
-                ++pointIdx;
-            }
-
-            ASSERT_EQ(nMatched, 8) << "Not all points of OOBB equal to validation OOBB in file: ";
             std::cout << filePath << std::endl
             <<"valid minP: " << std::endl << minP.transpose() << " and " << std::endl << validOOBB.m_minPoint.transpose() << std::endl
             <<"valid maxP: " << std::endl << maxP.transpose() << " and " << std::endl  << validOOBB.m_maxPoint.transpose() << std::endl

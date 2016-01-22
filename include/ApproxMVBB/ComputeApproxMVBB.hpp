@@ -241,7 +241,6 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
         for(int  y = -int(gridSize); y <= (int)gridSize; ++y ) {
             for(int z = 0; z <= (int)gridSize; ++z ) {
 
-
                 if( MathFunctions::gcd3(x,y,z)> 1 ||  ((x==0) && (y==0) &&  (z==0))  ) {
                     continue;
                 }

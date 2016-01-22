@@ -66,7 +66,8 @@ namespace MVBBTests {
                   unsigned int nPoints = 400,
                   unsigned int gridSize = 5,
                   unsigned int mvbbDiamOptLoops = 2,
-                  unsigned int gridSearchOptLoops = 10
+                  unsigned int gridSearchOptLoops = 10,
+                  bool checkVolume = true
                  ) {
         using namespace PointFunctions;
         using namespace TestFunctions;
@@ -102,8 +103,9 @@ namespace MVBBTests {
         try{
 
             readOOBBAndCheck( oobb, getFileValidationPath(name,".txt") );
-
-            ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;
+            if(checkVolume){
+                ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;
+            }
         }
         catch( ApproxMVBB::Exception & e){
             ASSERT_TRUE(false) << "Exception in checking inside test!"  << e.what() << std::endl;
@@ -127,7 +129,7 @@ TEST(MVBBTest, PointsRandom1) {
         // generate points
         Matrix3Dyn t(3,1);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom1",t,true,0.001,1,5,10,10);
+        mvbbTest("PointsRandom1",t,true,0.001,1,5,10,10,false);
 }
 
 TEST(MVBBTest, PointsRandom2) {
@@ -137,7 +139,7 @@ TEST(MVBBTest, PointsRandom2) {
         // generate points
         Matrix3Dyn t(3,2);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom2",t,true,0.001,2,5,10,10);
+        mvbbTest("PointsRandom2",t,true,0.001,2,5,10,10,false);
 }
 
 TEST(MVBBTest, PointsRandom3) {
@@ -147,7 +149,7 @@ TEST(MVBBTest, PointsRandom3) {
         // generate points
         Matrix3Dyn t(3,2);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom2",t,true,0.001,3,5,10,10);
+        mvbbTest("PointsRandom2",t,true,0.001,3,5,10,10,false);
 }
 
 TEST(MVBBTest, UnitCube) {
@@ -170,7 +172,7 @@ TEST(MVBBTest, UnitRectangle) {
         t.col(1) = ApproxMVBB::Vector3(1,0,0);
         t.col(3) = ApproxMVBB::Vector3(0,1,0);
         t.col(2) = ApproxMVBB::Vector3(1,1,0);
-        mvbbTest("UnitRectangle",t,true,0.001,400,2,2,2);
+        mvbbTest("UnitRectangle",t,true,0.001,400,2,2,2,false);
 }
 
 TEST(MVBBTest, Rectangles) {
@@ -187,7 +189,7 @@ TEST(MVBBTest, Rectangles) {
             t.col(2) = ApproxMVBB::Vector3(1,1,0);
             t.col(3) = ApproxMVBB::Vector3(0,1,0);
             applyRandomRotTrans(t,f);
-            mvbbTest("Rectangles-Nr-" + std::to_string(i),t,true,0.001,400,4,4,4);
+            mvbbTest("Rectangles-Nr-" + std::to_string(i),t,true,0.001,400,4,4,4,false);
         }
 }
 
@@ -201,7 +203,7 @@ TEST(MVBBTest, UnitPatches2D) {
             for(int i=0;i<t.cols();++i){
                 t.col(i) = ApproxMVBB::Vector3(uni(rng),uni(rng),0);
             }
-            mvbbTest("UnitPatches2D-Nr-" + std::to_string(i),t,true,0.001,200,4,4,4);
+            mvbbTest("UnitPatches2D-Nr-" + std::to_string(i),t,true,0.001,200,4,4,4,false);
         }
 }
 

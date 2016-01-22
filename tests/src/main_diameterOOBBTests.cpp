@@ -112,7 +112,7 @@ namespace DiameterOOBBTest {
             Matrix3Dyn valid = sampled;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
             readPointsMatrixBinary( getFileValidationPath(name,"2.bin") , valid);
-            ASSERT_PRED_FORMAT2( assertNearArrays ,sampled,valid);
+            EXPECT_TRUE( assertNearArrays(sampled,valid));
 
             if(checkVolume){
                 ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;

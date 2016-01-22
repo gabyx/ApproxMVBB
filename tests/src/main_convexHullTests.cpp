@@ -95,7 +95,7 @@ namespace ConvexHullTest {
         TMatrix valid = qHull;
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
-        ASSERT_PRED_FORMAT2( assertNearArrays , qHull, valid );
+        EXPECT_TRUE( assertNearArrays(qHull,valid)  );
     }
 
 //    void test() {

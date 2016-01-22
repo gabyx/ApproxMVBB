@@ -94,7 +94,9 @@ namespace MinAreaRectangleTest {
         TMatrix valid = p;
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
-        ASSERT_PRED_FORMAT2( assertNearArrays ,p,valid);
+
+        // Assert all cols of p are in valid
+        EXPECT_TRUE( assertNearArrayColsRows<true>(p,valid) ) ;
 
     }
 

@@ -17,6 +17,7 @@
 
 #include "ApproxMVBB/Config/Config.hpp"
 #include "ApproxMVBB/Common/AssertionDebug.hpp"
+#include "ApproxMVBB/Common/SfinaeMacros.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
 #include "ApproxMVBB/PointFunctions.hpp"
@@ -36,33 +37,78 @@ namespace TestFunctions{
     // TODO not std lib conform!
     std::size_t setRandomSeedStd(std::string name);
 
+
     template<typename A, typename B>
-    ::testing::AssertionResult assertNearArrays(  const char * a_expr,
-                                                  const char * b_expr,
-                                                  const A & a,
-                                                  const B & b,
-                                                  PREC absError = 1e-6)
+    ::testing::AssertionResult assertNearArrays(  const A & a,
+                            const B & b,
+                            PREC absError = 1e-6)
     {
-        using ScalarA = typename A::Scalar;
-        using ScalarB = typename B::Scalar;
+      if(a.size()!=b.size()){ return ::testing::AssertionFailure() << "not same size";}
+      if(a.rows()!=b.rows()){ return ::testing::AssertionFailure() << "not same rows";}
+      if( (( a - b ).array().abs() >= absError).any() ){
+          return ::testing::AssertionFailure() <<"not near: absTol:" << absError;
+      }
+      return ::testing::AssertionSuccess();
+    }
 
-        ApproxMVBB_STATIC_ASSERTM( (std::is_same<ScalarA,ScalarB>::value) , "Precision not the same!")
 
-        if(a.size() != b.size() ){
-            return ::testing::AssertionFailure() << "A and B not the same size";
-        }
 
-        const ScalarA * pA = a.data();
-        const ScalarA * pAend = a.data() + a.size();
-        const ScalarB * pB = b.data();
-        for(;pA != pAend; ++pA, ++pB){
-            if( std::abs(*pA - *pB) >= absError){
-                return ::testing::AssertionFailure() << "A and B not the same size: " << *pA << " != " << *pB << " absTol: " << absError;
+    template<bool matchCols , typename A, typename B,
+             ApproxMVBB_SFINAE_ENABLE_IF( matchCols == true )
+            >
+    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,const B & b, std::size_t j)
+    {
+         return assertNearArrays(a.col(i), b.col(j));
+    }
+    template<bool matchCols , typename A, typename B,
+             ApproxMVBB_SFINAE_ENABLE_IF( matchCols == false )
+            >
+    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,const B & b, std::size_t j)
+    {
+         return assertNearArrays(a.row(i), b.row(j));
+    }
+
+
+    template<bool matchCols = true, typename A, typename B>
+    ::testing::AssertionResult assertNearArrayColsRows(const A & a,
+                                                       const B & b){
+
+            if(a.size()!=b.size()){ return ::testing::AssertionFailure() << "not same size";}
+            if(a.rows()!=b.rows()){ return ::testing::AssertionFailure() << "not same rows";}
+
+            // Check all points
+            std::vector<bool> indexMatched;
+            if(matchCols){
+                indexMatched.resize(a.cols(),false);
+            }else{
+                indexMatched.resize(a.rows(),false);
             }
+            auto s = indexMatched.size();
+            std::size_t nMatched = 0;
+            std::size_t i = 0;
+            std::size_t pointIdx = 0;
+            while( pointIdx < s){
+                if( i < s){
+                    if( !indexMatched[i] ){
+                        // check points[pointIdx] against i-th valid one
+                        if ( assertNearArrayColsRows_cr<matchCols>(a,pointIdx,b,i)){
+                            indexMatched[i] = 1; ++nMatched;
+                        }
+                    }else{
+                        ++i;
+                        continue;
+                    }
+                }
+                // all indices i checked go to next point, reset check idx
+                i = 0;
+                ++pointIdx;
+            }
+
+        if(nMatched != s){
+          return ::testing::AssertionFailure() << "Matched only " << nMatched << "/" << s ;
         }
         return ::testing::AssertionSuccess();
     }
-
 
     template<typename Derived>
     void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived> & v) {
@@ -156,6 +202,38 @@ namespace TestFunctions{
             matrix = matrix.unaryExpr( f );
         }
         in.close();
+    }
+
+    template<typename List, typename Derived>
+    void convertMatrixToListRows(const MatrixBase<Derived> & M,
+                                 List& points){
+
+        if (List::value_type::RowsAtCompileTime == M.cols()) {
+           points.resize(M.rows());
+           for(std::size_t i = 0 ; i < M.rows(); ++i){
+              points[i] = M.row(i);
+           }
+        }else{
+           ApproxMVBB_ERRORMSG("points cannot be converted into list with vector size: " << List::value_type::RowsAtCompileTime)
+        }
+    }
+    template<typename List, typename Derived>
+    void convertMatrixToListCols(const MatrixBase<Derived> & M,
+                                 List& points){
+
+        if (List::value_type::RowsAtCompileTime == M.rows()) {
+           points.resize(M.cols());
+           for(std::size_t i = 0 ; i < M.cols(); ++i){
+              points[i] = M.col(i);
+           }
+        }else{
+           ApproxMVBB_ERRORMSG("points cannot be converted into list with vector size: " << List::value_type::RowsAtCompileTime)
+        }
+    }
+
+    template<typename List, typename Derived>
+    void convertMatrixToList_assCols(const MatrixBase<Derived> & M, List& points){
+
     }
 
     template<typename Container>
