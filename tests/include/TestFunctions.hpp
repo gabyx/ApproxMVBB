@@ -30,7 +30,8 @@ namespace TestFunctions{
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
-    static const int randomSeed = 314159;
+    //static const int randomSeed = 314159;
+    static const int randomSeed = 0;
 
     // TODO not std lib conform!
     std::size_t setRandomSeedStd(std::string name);

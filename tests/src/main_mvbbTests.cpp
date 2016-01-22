@@ -87,7 +87,7 @@ namespace MVBBTests {
 
 
 
-        oobb.expandToMinExtentRelative(0.1);
+        //oobb.expandToMinExtentRelative(0.1);
 
         // Make all points inside OOBB!
         Matrix33 A_KI = oobb.m_q_KI.matrix().transpose(); // faster to store the transformation matrix first

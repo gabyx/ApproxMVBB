@@ -82,8 +82,17 @@ namespace TestFunctions{
 
             Vector3List pointsValid = validOOBB.getCornerPoints();
 
+            std::cout << "Compare Corners: valid <-> computed" << std::endl;
+            for(auto &p: pointsValid){
+                std::cout << p.transpose() << std::endl;
+            }
+            std::cout << "and" << std::endl;
+            for(auto &p: points){
+                std::cout << p.transpose() << std::endl;
+            }
+
             // Check all 8 points
-            bool indexMatched[8] = {false};
+            int indexMatched[8] = {0}; // initializes all to zero!
             unsigned int nMatched = 0;
             unsigned int i = 0;
             unsigned int pointIdx = 0;
@@ -92,7 +101,7 @@ namespace TestFunctions{
                     if( !indexMatched[i] ){
                         // check points[pointIdx] against i-th valid one
                         if ( assertNearArrays("points[pointIdx]", "pointsValid[i]", points[pointIdx],pointsValid[i]) ){
-                            indexMatched[i] = true; ++nMatched;
+                            indexMatched[i] = 1; ++nMatched;
                         }
                     }else{
                         ++i;
@@ -105,8 +114,8 @@ namespace TestFunctions{
                 ++pointIdx;
             }
 
-            ASSERT_EQ(nMatched, 8) << "Not all points of OOBB equal to validation OOBB in file: "
-            << filePath << std::endl
+            ASSERT_EQ(nMatched, 8) << "Not all points of OOBB equal to validation OOBB in file: ";
+            std::cout << filePath << std::endl
             <<"valid minP: " << std::endl << minP.transpose() << " and " << std::endl << validOOBB.m_minPoint.transpose() << std::endl
             <<"valid maxP: " << std::endl << maxP.transpose() << " and " << std::endl  << validOOBB.m_maxPoint.transpose() << std::endl
             <<"valid R_IK: " << std::endl << R_KI  << " and " << std::endl << validOOBB.m_q_KI.matrix() << std::endl;
