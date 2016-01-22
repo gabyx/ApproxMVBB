@@ -71,7 +71,7 @@ namespace MVBBTests {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        setRandomSeedStd(name);
+        std::cout << " Set random hash for std : " << setRandomSeedStd(name) << std::endl;
 
         if(dumpPoints) {
                 dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
@@ -100,16 +100,8 @@ namespace MVBBTests {
 
         // Check
         try{
-            Vector3 minP;
-            Vector3 maxP;
-            Matrix33 R_KI;
-            readOOBB( getFileValidationPath(name,".txt") , minP, maxP, R_KI);
-            std::cout <<"valid minP: " <<  minP.transpose() << " and " << oobb.m_minPoint.transpose() << std::endl;
-            std::cout <<"valid maxP: " << maxP.transpose() << " and " << oobb.m_maxPoint.transpose() << std::endl;
-            std::cout <<"valid R_IK: " << std::endl << oobb.m_q_KI.matrix()  << " and " << std::endl << R_KI << std::endl;
-            assertAlmostEqualArrays(oobb.m_minPoint,minP);
-            assertAlmostEqualArrays(oobb.m_maxPoint,maxP);
-            assertAlmostEqualArrays(oobb.m_q_KI.matrix(),R_KI);
+
+            readOOBBAndCheck( oobb, getFileValidationPath(name,".txt") );
 
             ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;
         }
@@ -281,7 +273,7 @@ TEST(MVBBTest, PointClouds) {
         std::uniform_real_distribution<PREC> uni(0.0,1.0);
         auto f = [&](PREC) { return uni(rng); };
 
-        for(unsigned int k=0; k<51; k++) {
+        for(unsigned int k=0; k<1; k++) {
             auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) +".txt"));
             Matrix3Dyn t(3,v.size());
             for(unsigned int i = 0; i<v.size(); ++i) {

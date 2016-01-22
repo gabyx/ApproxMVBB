@@ -67,7 +67,7 @@ namespace DiameterOOBBTest {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        setRandomSeedStd(name);
+        std::cout << " Set random hash for std : " << setRandomSeedStd(name) << std::endl;
 
         if(dump) {
             dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
@@ -105,19 +105,14 @@ namespace DiameterOOBBTest {
 
         // Check OOBB
         try{
-            Vector3 minP;
-            Vector3 maxP;
-            Matrix33 R_KI;
-            readOOBB( getFileValidationPath(name,".txt") , minP, maxP, R_KI);
-            assertAlmostEqualArrays(oobb.m_minPoint,minP);
-            assertAlmostEqualArrays(oobb.m_maxPoint,maxP);
-            assertAlmostEqualArrays(oobb.m_q_KI.matrix(),R_KI);
+
+            readOOBBAndCheck( oobb, getFileValidationPath(name,".txt") );
 
             // Check Sampled points
             Matrix3Dyn valid = sampled;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
             readPointsMatrixBinary( getFileValidationPath(name,"2.bin") , valid);
-            assertAlmostEqualArrays(sampled,valid);
+            ASSERT_PRED_FORMAT2( assertNearArrays ,sampled,valid);
 
             if(checkVolume){
                 ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;

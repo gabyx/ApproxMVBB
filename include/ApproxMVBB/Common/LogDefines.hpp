@@ -18,15 +18,15 @@
 #define ApproxMVBB_LOGLEVEL(level,setlevel,message) { if( level <= setlevel ){  ApproxMVBB_LOG(message); } }
 
 // Message Log ==================================================================================
-#ifndef NDEBUG
-// Debug!
-    #define ApproxMVBB_MSGLOG_LEVEL 1 // 0 = no output
-#else
-    #define ApproxMVBB_MSGLOG_LEVEL 0 // 0 = no output
-#endif
-
 #if ApproxMVBB_FORCE_MSGLOG_LEVEL > 0
     #define ApproxMVBB_MSGLOG_LEVEL ApproxMVBB_FORCE_MSGLOG_LEVEL // force the output level if set in the config!
+#else
+    #ifndef NDEBUG
+    // Debug!
+        #define ApproxMVBB_MSGLOG_LEVEL 1 // 0 = no output
+    #else
+        #define ApproxMVBB_MSGLOG_LEVEL 0 // 0 = no output
+    #endif
 #endif
 
 #define ApproxMVBB_MSGLOG_L1(message )  { ApproxMVBB_LOGLEVEL(1, ApproxMVBB_MSGLOG_LEVEL, message) }

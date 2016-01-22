@@ -62,7 +62,7 @@ namespace MinAreaRectangleTest {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        setRandomSeedStd(name);
+        std::cout << " Set random hash for std : " << setRandomSeedStd(name) << std::endl;
 
         dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
         dumpPointsMatrix( getPointsDumpPath(name,".txt"),v);
@@ -94,7 +94,7 @@ namespace MinAreaRectangleTest {
         TMatrix valid = p;
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
-        assertAlmostEqualArrays(p,valid);
+        ASSERT_PRED_FORMAT2( assertNearArrays ,p,valid);
 
     }
 

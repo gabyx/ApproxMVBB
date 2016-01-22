@@ -62,6 +62,8 @@ namespace ConvexHullTest {
         using namespace TestFunctions;
         using namespace PointFunctions;
 
+        std::cout << " Set random hash for std : " << setRandomSeedStd(name) << std::endl;
+
         if(dumpPoints) {
             dumpPointsMatrixBinary( getPointsDumpPath(name,".bin") ,v);
             dumpPointsMatrix( getPointsDumpPath(name,".txt"),v);
@@ -93,7 +95,7 @@ namespace ConvexHullTest {
         TMatrix valid = qHull;
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
-        assertAlmostEqualArrays(qHull,valid);
+        ASSERT_PRED_FORMAT2( assertNearArrays , qHull, valid );
     }
 
 //    void test() {

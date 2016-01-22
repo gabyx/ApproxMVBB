@@ -36,21 +36,30 @@ namespace TestFunctions{
     std::size_t setRandomSeedStd(std::string name);
 
     template<typename A, typename B>
-    void assertAlmostEqualArrays(const A & a, const B & b, PREC absError = 1e-6)
+    ::testing::AssertionResult assertNearArrays(  const char * a_expr,
+                                                  const char * b_expr,
+                                                  const A & a,
+                                                  const B & b,
+                                                  PREC absError = 1e-6)
     {
         using ScalarA = typename A::Scalar;
         using ScalarB = typename B::Scalar;
 
         ApproxMVBB_STATIC_ASSERTM( (std::is_same<ScalarA,ScalarB>::value) , "Precision not the same!")
 
-        ASSERT_EQ( a.size() , b.size() );
+        if(a.size() != b.size() ){
+            return ::testing::AssertionFailure() << "A and B not the same size";
+        }
 
         const ScalarA * pA = a.data();
         const ScalarA * pAend = a.data() + a.size();
         const ScalarB * pB = b.data();
         for(;pA != pAend; ++pA, ++pB){
-            ASSERT_NEAR(*pA,*pB,absError);
+            if( std::abs(*pA - *pB) >= absError){
+                return ::testing::AssertionFailure() << "A and B not the same size: " << *pA << " != " << *pB << " absTol: " << absError;
+            }
         }
+        return ::testing::AssertionSuccess();
     }
 
 
@@ -167,7 +176,8 @@ namespace TestFunctions{
         l.close();
     }
 
-    void readOOBB(std::string filePath, Vector3 & minP, Vector3 & maxP, Matrix33 & R_KI);
+    void readOOBB(std::string filePath, Vector3 & minP, Vector3 & maxP, Matrix33 & R_KI,  Vector3List & pointList);
+    void readOOBBAndCheck( OOBB & validOOBB, std::string filePath);
     void dumpOOBB(std::string filePath, const OOBB & oobb);
 
     Vector3List getPointsFromFile3D(std::string filePath);

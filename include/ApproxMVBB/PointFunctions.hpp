@@ -39,7 +39,7 @@ namespace PointFunctions {
         Matrix33 R = q.matrix();
         Vector3 trans;
         trans = trans.unaryExpr(g);
-        trans.setRandom();
+        trans.unaryExpr(g);
         points = R*points;
         points.colwise() += trans;
     }
