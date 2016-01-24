@@ -203,10 +203,11 @@ To come
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
-
+** Note the tests validation will fail currently. However the results can still be visualized and should be correct. I am currently working on making the tests meaningfull and correct on any platform which is not an easy task due to random stuff happening during the optimization loops.**
     $ cd Build
     $ make build_and_test
-    
+
+
   
 **Note:**
 > To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
