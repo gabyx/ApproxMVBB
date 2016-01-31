@@ -38,8 +38,8 @@ install:
   
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
-  - echo "ROOT_PATH: $ROOT_PATH"
-  - echo "CHECKOUT_PATH: $CHECKOUT_PATH"
+  - echo "ROOT_PATH= $ROOT_PATH"
+  - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
   
   # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
