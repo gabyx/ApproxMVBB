@@ -116,7 +116,7 @@ script:
   - mkdir buildLibUsage
   - cd buildLibUsage
   - INSTALL=$(find $CHECKOUT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
-  - echo "Install dir: $INSTALL"
+  - echo "Install dir= $INSTALL"
   - cmake ../example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL
   - make VERBOSE=1
   - cd ..
