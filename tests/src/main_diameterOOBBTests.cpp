@@ -89,9 +89,8 @@ namespace DiameterOOBBTest {
 
         std::cout << "Start Sampling test "+ name +"" << std::endl;
         Matrix3Dyn sampled;
-        std::mt19937 rng(TestFunctions::randomSeed); // always generate the same indices in samplePointsGrid
         START_TIMER(start2)
-        ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb, rng);
+        ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb, TestFunctions::randomSeed);
         STOP_TIMER_SEC(count2, start2)
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling test "+ name << std::endl;

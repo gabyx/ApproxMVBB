@@ -10,155 +10,10 @@
 #include <iostream>
 #include <limits>
 
-#include <stdio.h>
-#include <ApproxMVBB/Diameter/Utils/util.h>
+#include <ApproxMVBB/Diameter/Utils/util.hpp>
 
 namespace ApproxMVBB{
 namespace Diameter{
-
-/* verbose when reducing
- */
-static int _verbose_when_reducing_ = 0;
-
-void _VerboseWhenReducing()
-{
-  _verbose_when_reducing_ = 1;
-}
-void _NoVerboseWhenReducing()
-{
-  _verbose_when_reducing_ = 0;
-}
-int _GetVerboseWhenReducing()
-{
-  return( _verbose_when_reducing_ );
-}
-
-
-
-/* reduction in the iterative search of the double normal
- */
-static int _reduction_mode_in_iterative_ = 1;
-void _SetReductionModeInIterative( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-    _reduction_mode_in_iterative_ = m;
-    break;
-  case 2 :
-  default :
-    break;
-  }
-}
-int _GetReductionModeInIterative()
-{
-  return( _reduction_mode_in_iterative_ );
-}
-
-
-
-
-/* 'reduction' of diameter
- */
-static int _reduction_mode_of_diameter_ = 1;
-void _SetReductionModeOfDiameter( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-  case 2 :
-    _reduction_mode_of_diameter_ = m;
-    break;
-  default :
-    break;
-  }
-}
-int _GetReductionModeOfDiameter()
-{
-  return( _reduction_mode_of_diameter_ );
-}
-
-
-
-/* 'reduction' of double normals
- */
-static int _reduction_mode_of_dbleNorm_ = 1;
-void _SetReductionModeOfDbleNorm( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-  case 2 :
-    _reduction_mode_of_dbleNorm_ = m;
-    break;
-  default :
-    break;
-  }
-}
-int _GetReductionModeOfDbleNorm()
-{
-  return( _reduction_mode_of_dbleNorm_ );
-}
-
-
-
-
-/* reduction by processing couple of double normals
- */
-static int _try_to_reduce_Q_ = 1;
-
-void _DoTryToReduceQ()
-{
-  _try_to_reduce_Q_ = 1;
-}
-void _DoNotTryToReduceQ()
-{
-  _try_to_reduce_Q_ = 0;
-}
-int _GetTryToReduceQ()
-{
-  return( _try_to_reduce_Q_ );
-}
-
-
-
-
-
-static int _Q_scan_ = 0;
-void _SetQscanToForward()
-{
-  _Q_scan_ = 1;
-}
-void _SetQscanToBackward()
-{
-  _Q_scan_ = 0;
-}
-int _GetQscan()
-{
-  return( _Q_scan_ );
-}
-
-
-
-
-static int _tight_bounds_ = 0;
-void _DoTryToGetTightBounds()
-{
-  _tight_bounds_ = 1;
-}
-void _DoNotTryToGetTightBounds()
-{
-  _tight_bounds_ = 0;
-}
-int _GetTightBounds()
-{
-  return( _tight_bounds_ );
-}
-
-
-
-
-
 
 /* partially sort a list of points
 
@@ -186,7 +41,7 @@ int _GetTightBounds()
 
 */
 
-int _LastPointOutsideSphereWithDiameter( typeSegment *theSeg,
+int _LastPointOutsideSphereWithDiameter( TypeSegment *theSeg,
 					 const double squareDiameter,
 					 double **theList,
 					 const int first,
@@ -528,23 +383,7 @@ int _LastPointOutsideSphereWithDiameter( typeSegment *theSeg,
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int _LastPointOutsideSphereAndBoundWithDiameter( typeSegment *theSeg,
+int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
 						 const double squareDiameter,
 						 double **theList,
 						 const int first,
@@ -936,22 +775,7 @@ int _LastPointOutsideSphereAndBoundWithDiameter( typeSegment *theSeg,
   return( -1 );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void _CountPointsInSpheres( typeSegment *theSeg,
+void _CountPointsInSpheres( TypeSegment *theSeg,
 			    const double squareDiameter,
 			    double **theList,
 			    const int first,
@@ -1027,22 +851,6 @@ void _CountPointsInSpheres( typeSegment *theSeg,
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Find the farthest point from a sphere
 
    returned value :
@@ -1056,7 +864,7 @@ void _CountPointsInSpheres( typeSegment *theSeg,
 */
 
 
-int _FarthestPointFromSphere( typeSegment *theSeg,
+int _FarthestPointFromSphere( TypeSegment *theSeg,
 			      double **theList,
 			      const int first,
 			      int *last,
@@ -1190,19 +998,7 @@ int _FarthestPointFromSphere( typeSegment *theSeg,
   return( -1 );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-double _MaximalSegmentInTwoLists( typeSegment *theSeg,
+double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
 				  const int index1,
 				  double **theList1,
 				  int *first1,
@@ -1316,18 +1112,7 @@ double _MaximalSegmentInTwoLists( typeSegment *theSeg,
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-double _MaximalSegmentInOneList( typeSegment *theSeg,
+double _MaximalSegmentInOneList( TypeSegment *theSeg,
 				 const int index,
 				 double **theList,
 				 int *first,
@@ -1389,13 +1174,6 @@ double _MaximalSegmentInOneList( typeSegment *theSeg,
   *last  = l;
   return( theSeg->squareDiameter );
 }
-
-
-
-
-
-
-
 
 double _MaximalDistanceFromPoint( int *index,
 				  const double *ref,
@@ -1465,12 +1243,6 @@ double _MaximalDistanceFromPoint( int *index,
 }
 
 
-
-
-
-
-
-
 /* Swap two points
  */
 
@@ -1482,17 +1254,13 @@ void _SwapPoints( double **theList, const int i, const int j )
   theList[j] = tmp;
 }
 
-
-
-
-
 static int _base_ =  100000000;
 
-void _InitCounter( typeCounter *c )
+void _InitCounter( TypeCounter *c )
 {
   c->c1 = c->c2 = 0;
 }
-void _AddToCounter( typeCounter *c, const int i )
+void _AddToCounter( TypeCounter *c, const int i )
 {
   c->c2 += i;
   while ( c->c2 >= _base_ ) {
@@ -1504,14 +1272,14 @@ void _AddToCounter( typeCounter *c, const int i )
     c->c1 --;
   }
 }
-double _GetCounterAverage( typeCounter *c, const int i )
+double _GetCounterAverage( TypeCounter *c, const int i )
 {
   return( (_base_ / (double)i ) * c->c1 + c->c2 / (double)i );
 }
 
 
 #ifdef _STATS_
-typeCounter scalarProducts;
+TypeCounter scalarProducts;
 
 void _InitScalarProductCounter()
 {
@@ -1629,11 +1397,6 @@ double _ScalarProduct2D( const double *a, const double *b,
 	  (b[1]-a[1])*(d[1]-c[1]) );
 }
 
-
-
-
-
-
 int _FindPointInList( double **theList,
 		      const int first,
 		      const int last,
@@ -1676,7 +1439,7 @@ int _FindPointInList( double **theList,
 
 
 
-double _QuadraticDiameterInOneList( typeSegment *theDiam,
+double _QuadraticDiameterInOneList( TypeSegment *theDiam,
 				    double **theList,
 				    const int first,
 				    const int last,
@@ -1745,7 +1508,7 @@ double _QuadraticDiameterInOneList( typeSegment *theDiam,
 
 
 
-double _QuadraticDiameterInTwoLists( typeSegment *theDiam,
+double _QuadraticDiameterInTwoLists( TypeSegment *theDiam,
 				     int   *index1,
 				     int   *index2,
 				     double **theList1,

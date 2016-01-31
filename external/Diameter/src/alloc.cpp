@@ -8,7 +8,7 @@
 // ========================================================================================
 
 
-#include <ApproxMVBB/Diameter/Utils/alloc.h>
+#include <ApproxMVBB/Diameter/Utils/alloc.hpp>
 
 namespace ApproxMVBB{
 namespace Diameter{
@@ -35,27 +35,20 @@ void *_AllocateListOfPoints( const int n, const int dim )
   return( b );
 }
 
-
-
-
-
-
-
-
 void *_AllocateListOfSegments( const int n )
 {
   void *b = NULL;
-  typeSegment *d;
+  TypeSegment *d;
   int i;
 
 
   if ( n <= 0  ) return(NULL);
 
-  b = (void*)malloc( n * sizeof( typeSegment ) );
+  b = (void*)malloc( n * sizeof( TypeSegment ) );
 
   if ( b == (void *)NULL )  return( (void *)NULL );
 
-  d = (typeSegment *)b;
+  d = (TypeSegment *)b;
   for ( i=0; i<n; i++ ) {
     d[i].extremity1 = (double*)NULL;
     d[i].extremity2 = (double*)NULL;
@@ -66,31 +59,24 @@ void *_AllocateListOfSegments( const int n )
   return( b );
 }
 
-
-
-
-
-
-
 #define _NALLOC_ 20
 
-
-int _AddSegmentToList( typeSegment *s, typeListOfSegments *list )
+int _AddSegmentToList( TypeSegment *s, TypeListOfSegments *list )
 {
-  typeSegment *d;
+  TypeSegment *d;
 
   if ( list->nalloc <= 0 )
     list->n = list->nalloc = 0;
 
   if ( list->n >= list->nalloc ) {
 
-    d = (typeSegment *)_AllocateListOfSegments( list->nalloc + _NALLOC_ );
+    d = (TypeSegment *)_AllocateListOfSegments( list->nalloc + _NALLOC_ );
     if ( d == NULL ) {
       return( 0 );
     }
 
     if ( list->nalloc > 0 ) {
-      memcpy( d, list->seg, list->nalloc*sizeof(typeSegment) );
+      memcpy( d, list->seg, list->nalloc*sizeof(TypeSegment) );
       free( list->seg );
     }
 

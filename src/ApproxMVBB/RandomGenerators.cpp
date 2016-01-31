@@ -7,21 +7,6 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#ifndef ApproxMVBB_Diameter_TypeSegment_hpp
-#define ApproxMVBB_Diameter_TypeSegment_hpp
+#include "ApproxMVBB/RandomGenerators.hpp"
 
-namespace ApproxMVBB{
-namespace Diameter{
-
-    struct TypeSegment {
-      double *extremity1;
-      double *extremity2;
-      double squareDiameter;
-      int reduction_mode;
-    };
-
-}
-}
-#endif // ApproxMVBB_Diameter_TypeSegment_hpp
-
-
+#include <ctime>

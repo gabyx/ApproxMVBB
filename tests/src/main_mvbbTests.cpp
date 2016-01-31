@@ -79,7 +79,7 @@ namespace MVBBTests {
 
         std::cout << "\n\nStart MVBBTest Test "+ name +"" << std::endl;
         START_TIMER(start)
-        auto oobb = ApproxMVBB::approximateMVBB(v,eps,nPoints,gridSize,mvbbDiamOptLoops,gridSearchOptLoops,std::mt19937(314159));
+        auto oobb = ApproxMVBB::approximateMVBB(v,eps,nPoints,gridSize,mvbbDiamOptLoops,gridSearchOptLoops, TestFunctions::randomSeed);
         STOP_TIMER_SEC(count, start)
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
         std::cout << "End MVBBTest "+ name << std::endl;

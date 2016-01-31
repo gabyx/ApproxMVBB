@@ -10,34 +10,28 @@
 #ifndef ApproxMVBB_Diameter_Utils_alloc_h
 #define ApproxMVBB_Diameter_Utils_alloc_h
 
-
 #include <stdlib.h>
-#include <string.h>
+
+#include "ApproxMVBB/Config/Config.hpp"
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
 #include "ApproxMVBB/Diameter/TypeSegment.hpp"
 
 namespace ApproxMVBB{
 namespace Diameter{
 
-extern void *_AllocateListOfPoints( const int n, const int dim );
+APPROXMVBB_EXPORT void *_AllocateListOfPoints( const int n, const int dim );
+
+APPROXMVBB_EXPORT void *_AllocateListOfSegments( const int n );
 
 
-
-
-
-extern void *_AllocateListOfSegments( const int n );
-
-
-
-typedef struct {
+struct TypeListOfSegments {
   int n;
   int nalloc;
-  typeSegment *seg;
-} typeListOfSegments;
+  TypeSegment *seg;
+} ;
 
-
-
-extern int _AddSegmentToList( typeSegment *s, typeListOfSegments *list );
+APPROXMVBB_EXPORT int _AddSegmentToList( TypeSegment *s, TypeListOfSegments *list );
 
 }
 }

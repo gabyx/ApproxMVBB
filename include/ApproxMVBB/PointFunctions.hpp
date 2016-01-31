@@ -199,8 +199,12 @@ namespace PointFunctions {
         return index;
     }
 
-    template<unsigned int Dimension,typename TVector,typename Derived>
-    std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points, const PREC epsilon) {
+    template<unsigned int Dimension,
+             typename TVector,
+             typename Derived>
+    std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points, 
+                                                const PREC epsilon,
+                                                std::size_t seed = RandomGenerators::defaultSeed) {
 
         ApproxMVBB_STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
 
@@ -212,9 +216,10 @@ namespace PointFunctions {
         for(decltype(size) i=0; i<size; ++i) {
             pList[i] = const_cast<PREC*>(pp.col(i).data());
         }
-
-        Diameter::typeSegment pairP;
-        Diameter::estimateDiameter(&pairP,pList,0,(int)(size-1),Dimension,epsilon);
+                
+        Diameter::TypeSegment pairP;
+        DiameterEstimator diamEstimator(seed);
+        diamEstimator.estimateDiameter(&pairP,pList,0,(int)(size-1),Dimension,epsilon);
 
         MatrixMap<TVector> p1(pairP.extremity1);
         MatrixMap<TVector> p2(pairP.extremity2);
