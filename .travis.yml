@@ -38,6 +38,8 @@ install:
   
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
+  - echo "ROOT_PATH: $ROOT_PATH"
+  - echo "CHECKOUT_PATH: $CHECKOUT_PATH"
   
   # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
@@ -69,6 +71,7 @@ install:
 
   # Install eigen3
   - hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
+  - cd ${ROOT_PATH}/eigen3 && hg update 3.2
   - mkdir ${ROOT_PATH}/eigen3Build
   - cd ${ROOT_PATH}/eigen3Build
   - cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=/usr/local
