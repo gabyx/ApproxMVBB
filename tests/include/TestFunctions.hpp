@@ -50,7 +50,7 @@ namespace TestFunctions{
     template<typename A, typename B>
     ::testing::AssertionResult assertNearArrays(  const A & a,
                             const B & b,
-                            PREC absError = 1e-6)
+                            PREC absError = 1e-3)
     {
       if(a.size()!=b.size()){ return ::testing::AssertionFailure() << "not same size";}
       if(a.rows()!=b.rows()){ return ::testing::AssertionFailure() << "not same rows";}
@@ -65,14 +65,16 @@ namespace TestFunctions{
     template<bool matchCols , typename A, typename B,
              ApproxMVBB_SFINAE_ENABLE_IF( matchCols == true )
             >
-    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,const B & b, std::size_t j)
+    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,
+                                                          const B & b, std::size_t j)
     {
          return assertNearArrays(a.col(i), b.col(j));
     }
     template<bool matchCols , typename A, typename B,
              ApproxMVBB_SFINAE_ENABLE_IF( matchCols == false )
             >
-    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,const B & b, std::size_t j)
+    ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,
+                                                          const B & b, std::size_t j)
     {
          return assertNearArrays(a.row(i), b.row(j));
     }
@@ -98,14 +100,14 @@ namespace TestFunctions{
             std::size_t pointIdx = 0;
             while( pointIdx < s){
                 if( i < s){
-                    if( !indexMatched[i] ){
-                        // check points[pointIdx] against i-th valid one
-                        if ( assertNearArrayColsRows_cr<matchCols>(a,pointIdx,b,i)){
-                            indexMatched[i] = 1; ++nMatched;
-                        }
-                    }else{
+                    if( indexMatched[i] ){
                         ++i;
                         continue;
+                    }
+                    // check points[pointIdx] against i-th valid one
+                    if ( assertNearArrayColsRows_cr<matchCols>(a,pointIdx,b,i)){
+                        indexMatched[i] = true;
+                        ++nMatched;
                     }
                 }
                 // all indices i checked go to next point, reset check idx
