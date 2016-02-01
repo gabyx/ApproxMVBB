@@ -90,7 +90,7 @@ namespace DiameterOOBBTest {
         std::cout << "Start Sampling test "+ name +"" << std::endl;
         Matrix3Dyn sampled;
         START_TIMER(start2)
-        ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb, TestFunctions::randomSeed);
+        ApproxMVBB::samplePointsGrid(sampled,v,samplePoints,oobb);
         STOP_TIMER_SEC(count2, start2)
         std::cout << "Timings: " << count2 << " sec for " <<sampled.cols() << " points" << std::endl;
         std::cout << "End Sampling test "+ name << std::endl;
@@ -117,7 +117,7 @@ namespace DiameterOOBBTest {
             }
         }
         catch( ApproxMVBB::Exception & e){
-            ASSERT_TRUE(false) << "Exception in checking inside test!"  << e.what() << std::endl;
+            ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;
         }
 
     }
@@ -136,7 +136,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom3)
         // generate points
         Matrix3Dyn t(3,3);
         t = t.unaryExpr( f );
-        diameterTest("PointsRandom3",t);
+        diameterTest(testName,t,true,10,0.001,3,false);
 }
 
 
@@ -145,7 +145,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom500)
         // generate points
         Matrix3Dyn t(3,500);
         t = t.unaryExpr( f );
-        diameterTest("PointsRandom500",t);
+        diameterTest(testName,t);
 }
 
 
@@ -154,7 +154,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom10000)
         // generate points
         Matrix3Dyn t(3,10000);
         t = t.unaryExpr( f );
-        diameterTest("PointsRandom10000",t);
+        diameterTest(testName,t);
 }
 
 MY_TEST(DiameterOOBBTest, UnitCube) {
@@ -169,7 +169,7 @@ MY_TEST_RANDOM_STUFF(UnitCube)
         t.col(6) = ApproxMVBB::Vector3(1,1,1);
         t.col(7) = ApproxMVBB::Vector3(0,1,1);
 
-        diameterTest("UnitCube",t,true,1,0.001,4);
+        diameterTest(testName,t,true,1,0.001,4);
 }
 
 MY_TEST(DiameterOOBBTest, PointsSimulation) {
@@ -182,7 +182,7 @@ MY_TEST_RANDOM_STUFF(PointsSimulation)
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        diameterTest("PointsSimulation",t);
+        diameterTest(testName,t);
 }
 
 MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB) {
@@ -194,7 +194,7 @@ MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        diameterTest("PointsSimulationFailMVBB",t,true,10);
+        diameterTest(testName,t,true,10);
 }
 
 MY_TEST(DiameterOOBBTest, Bunny) {
@@ -206,7 +206,7 @@ MY_TEST_RANDOM_STUFF(Bunny)
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        diameterTest("Bunny",t,false,10,1);
+        diameterTest(testName,t,false,10,1);
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
@@ -214,7 +214,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom14M) {
 MY_TEST_RANDOM_STUFF(PointsRandom14M)
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
-        diameterTest("PointsRandom14M",t,false,0,0.01);
+        diameterTest(testName,t,false,0,0.01);
 }
 
 
@@ -226,7 +226,7 @@ MY_TEST_RANDOM_STUFF(Lucy)
             t.col(i) = v[i];
         }
         applyRandomRotTrans(t,f);
-        diameterTest("Lucy",t,false,3,100);
+        diameterTest(testName,t,false,3,100);
 }
 #endif
 
@@ -234,7 +234,7 @@ MY_TEST(DiameterOOBBTest, Plane) {
 MY_TEST_RANDOM_STUFF(Plane)
         Matrix3Dyn t(3,3);
         t = t.unaryExpr( f );
-        diameterTest("Plane",t,true,10,0.001,2,false);
+        diameterTest(testName,t,true,10,0.001,2,false);
 }
 
 MY_TEST(DiameterOOBBTest, PointClouds) {
@@ -268,7 +268,7 @@ MY_TEST_RANDOM_STUFF(UnitPatches2D)
 //
 //        Matrix3Dyn t(3,3);
 //        t.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-//        diameterTest("Plane",t,true,10,0.001,2);
+//        diameterTest(testName,t,true,10,0.001,2);
 //}
 
 

@@ -41,14 +41,14 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       const MatrixBase<Derived> & points,
                       const unsigned int nPoints,
                       OOBB & oobb,
-                      std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed 
-                      ) 
+                      std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
+                      )
 {
 
-    if(nPoints >= points.cols() || nPoints < 2) {
-        ApproxMVBB_ERRORMSG("Wrong arguments!" << "nPoints: " << nPoints << " points: " << points.cols() << std::endl )
+    if(nPoints > points.cols() || nPoints < 2) {
+        ApproxMVBB_ERRORMSG("Wrong arguments!" << "sample nPoints: (>2) " << nPoints << " of points: " << points.cols() << std::endl )
     }
-    
+
     newPoints.resize(3,nPoints);
 
     //total points = bottomPoints=gridSize^2  + topPoints=gridSize^2
@@ -147,7 +147,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
                                      unsigned int nLoops = 10,
                                      PREC volumeAcceptFactor = 1e-6,
                                      PREC minBoxExtent = 1e-12
-                                     ) 
+                                     )
 {
 
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
@@ -219,7 +219,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
                                const unsigned int optLoops = 6,
                                PREC volumeAcceptFactor = 1e-6,
                                PREC minBoxExtent = 1e-12
-                               ) 
+                               )
 {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
@@ -282,14 +282,14 @@ template<typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
                          const PREC epsilon,
                          const unsigned int optLoops = 10,
-                         std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed 
-                        ) 
+                         std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
+                        )
 {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
     using namespace PointFunctions;
 	auto pp = estimateDiameter<
-                                3, 
+                                3,
                                 ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC>
 	                          >(points, epsilon, seed );
 
@@ -326,15 +326,15 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
                      const unsigned int gridSize = 5,
                      const unsigned int mvbbDiamOptLoops = 0,
                      const unsigned int mvbbGridSearchOptLoops = 6,
-                     std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed 
+                     std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
                      )
 {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
-    
+
     // Get get MVBB from estimated diameter direction
     // take care forwarding means not using gen anymore !
     auto oobb = approximateMVBBDiam(points,epsilon,mvbbDiamOptLoops, seed );
-    
+
     // Check if we sample the point cloud
     if(pointSamples<points.cols()) {
 

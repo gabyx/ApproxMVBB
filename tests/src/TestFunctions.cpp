@@ -14,12 +14,12 @@
 namespace ApproxMVBB{
 namespace TestFunctions{
 
-//    static const int randomSeed = 314159;
-
-    std::size_t setRandomSeedStd(std::string name){
-        auto h = std::hash<std::string>{}(name);
-        srand48(h);
-        srand(h);
+    std::size_t hashString(std::string s){
+        std::size_t h = 3141459;
+        for(char & c : s )
+        {
+            h = h * 101  +  c;
+        }
         return h;
     }
 

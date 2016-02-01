@@ -94,7 +94,8 @@ namespace MinAreaRectangleTest {
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
 
         // Assert all cols of p are in valid
-        EXPECT_TRUE( assertNearArrayColsRows<true>(p,valid) ) ;
+        EXPECT_TRUE( assertNearArrayColsRows<true>(p,valid) ) << "Valid Points:" << std::endl << valid.transpose()
+        << std::endl << " computed:" << std::endl << p.transpose() << std::endl;
 
     }
 
@@ -111,7 +112,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom10)
         // generate points
         Matrix2Dyn t(2,10);
         t = t.unaryExpr( f );
-        minRectTest("PointsRandom10",t);
+        minRectTest(testName,t);
 }
 
 MY_TEST(MinAreaRectangleTest, UnitRectangle) {
@@ -128,7 +129,7 @@ MY_TEST_RANDOM_STUFF(UnitRectangle)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("UnitRectangle",v);
+        minRectTest(testName,v);
 }
 
 
@@ -142,7 +143,7 @@ MY_TEST_RANDOM_STUFF(TwoPoints)
         for(unsigned int i = 0; i<v.size(); ++i) {
             t.col(i) = v[i];
         }
-        minRectTest("TwoPoints",t);
+        minRectTest(testName,t);
 }
 
 
@@ -158,7 +159,7 @@ MY_TEST_RANDOM_STUFF(AlmostLine)
         for(unsigned int i = 0; i<v.size(); ++i) {
             t.col(i) = v[i];
         }
-        minRectTest("AlmostLine",t);
+        minRectTest(testName,t);
 }
 
 MY_TEST(MinAreaRectangleTest, Line3) {
@@ -173,7 +174,7 @@ MY_TEST_RANDOM_STUFF(Line3)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("Line3",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, Line2) {
@@ -187,7 +188,7 @@ MY_TEST_RANDOM_STUFF(Line2)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("Line2",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, Triangle) {
@@ -202,15 +203,15 @@ MY_TEST_RANDOM_STUFF(Triangle)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("Triangle",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, RandomTriangle) {
-MY_TEST_RANDOM_STUFF(Triangle)
+MY_TEST_RANDOM_STUFF(RandomTriangle)
 
         Matrix2Dyn v(2,3);
         v = v.unaryExpr(f);
-        minRectTest("Triangle",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, Point) {
@@ -223,7 +224,7 @@ MY_TEST_RANDOM_STUFF(Point)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("Point",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, PointsOnCricle1000) {
@@ -234,13 +235,13 @@ MY_TEST_RANDOM_STUFF(PointsOnCricle1000)
         for(unsigned int i=0; i<max; i++) {
             t.col(i) = Vector2(std::cos(0.0001/max * i) ,std::sin(0.0001/max * i) );
         }
-        minRectTest("PointsOnCricle1000",t);
+        minRectTest(testName,t);
 }
 
 MY_TEST(MinAreaRectangleTest, NoPoint) {
 MY_TEST_RANDOM_STUFF(NoPoint)
         Matrix2Dyn v(2,0);
-        minRectTest("NoPoint",v);
+        minRectTest(testName,v);
 }
 
 MY_TEST(MinAreaRectangleTest, Points2DRectFail) {
@@ -251,7 +252,7 @@ MY_TEST_RANDOM_STUFF(Points2DRectFail)
         for(unsigned int i = 0; i<t.size(); ++i) {
             v.col(i) = t[i];
         }
-        minRectTest("Points2DRectFail",v);
+        minRectTest(testName,v);
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
@@ -260,7 +261,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom10M)
         // generate points
         ApproxMVBB::Matrix2Dyn t(2,10000000);
         t = t.unaryExpr( f );
-        minRectTest("PointsRandom10M",t);
+        minRectTest(testName,t);
 }
 #endif
 
@@ -269,21 +270,21 @@ MY_TEST_RANDOM_STUFF(PointsBadProjection)
 
         Matrix2Dyn t(2,400);
         readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"),t,false);
-        minRectTest("PointsBadProjection",t);
+        minRectTest(testName,t);
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection2) {
 MY_TEST_RANDOM_STUFF(PointsBadProjection2)
 
         Matrix2Dyn t(2,400);
         readPointsMatrixBinary(getFileInPath("PointsBadProjection2.bin"),t,false);
-        minRectTest("PointsBadProjection2",t);
+        minRectTest(testName,t);
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection3) {
 MY_TEST_RANDOM_STUFF(PointsBadProjection3)
 
         Matrix2Dyn t(2,400);
         readPointsMatrixBinary(getFileInPath("PointsBadProjection3.bin"),t,false);
-        minRectTest("PointsBadProjection3",t);
+        minRectTest(testName,t);
 }
 
 

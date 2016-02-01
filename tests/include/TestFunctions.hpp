@@ -20,6 +20,7 @@
 #include "ApproxMVBB/Common/SfinaeMacros.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
+#include "ApproxMVBB/RandomGenerators.hpp"
 #include "ApproxMVBB/PointFunctions.hpp"
 #include "ApproxMVBB/OOBB.hpp"
 
@@ -28,9 +29,9 @@
 
 #define MY_TEST_RANDOM_STUFF(name) \
         std::string testName = #name ; \
-        auto seed = setRandomSeedStd(#name); \
-        std::cout << "Set random hash for std : " << seed << std::endl; \
-        std::mt19937 rng(seed); \
+        auto seed = hashString(#name); \
+        std::cout << "Seed for this test: " << seed << std::endl; \
+        ApproxMVBB::RandomGenerators::DefaultRandomGen rng(seed); \
         std::uniform_real_distribution<PREC> uni(0.0,1.0); \
         auto f = [&](PREC) { return uni(rng); };
 
@@ -42,11 +43,8 @@ namespace TestFunctions{
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
-    //static const int randomSeed = 314159;
-    static const int randomSeed = 0;
-
     // TODO not std lib conform!
-    std::size_t setRandomSeedStd(std::string name);
+    std::size_t hashString(std::string name);
 
 
     template<typename A, typename B>
@@ -166,11 +164,12 @@ namespace TestFunctions{
     template<class Matrix>
     void dumpPointsMatrixBinary(std::string filename, const Matrix& matrix){
         std::ofstream out(filename,std::ios::out | std::ios::binary | std::ios::trunc);
-        typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+        typename Matrix::Index rows=matrix.rows();
+        typename Matrix::Index cols=matrix.cols();
         ApproxMVBB_STATIC_ASSERT( sizeof(typename Matrix::Index) == 8 )
-        char bigEndian = isBigEndian();
+        bool bigEndian = isBigEndian();
 
-        out.write((char*) (&bigEndian), sizeof(char));
+        out.write((char*) (&bigEndian), sizeof(bool));
         out.write((char*) (&rows), sizeof(typename Matrix::Index));
         out.write((char*) (&cols), sizeof(typename Matrix::Index));
 
@@ -183,19 +182,22 @@ namespace TestFunctions{
     template<class Matrix>
     void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeader=true){
         std::ifstream in(filename,std::ios::in | std::ios::binary);
-        typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+
+        if(!in.is_open()){
+            ApproxMVBB_ERRORMSG("cannot open file: " << filename);
+        }
+
+        typename Matrix::Index rows=matrix.rows();
+        typename Matrix::Index cols=matrix.cols();
         ApproxMVBB_STATIC_ASSERT( sizeof(typename Matrix::Index) == 8 )
-        char bigEndian = 0; // assume all input files with no headers are little endian!
+        bool bigEndian = false; // assume all input files with no headers are little endian!
 
         if(withHeader){
-            in.read((char*) (&bigEndian), sizeof(char));
+            in.read((char*) (&bigEndian), sizeof(bool));
             in.read((char*) (&rows),sizeof(typename Matrix::Index));
             in.read((char*) (&cols),sizeof(typename Matrix::Index));
             typename Matrix::Index bytes;
             in.read((char*) (&bytes), sizeof(typename Matrix::Index ));
-            if(bytes != sizeof(typename Matrix::Scalar)){
-                ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << " Scalar bytes: " << bytes);
-            }
 
             // swap endianness if file has other type
             if(isBigEndian() != bigEndian ){
@@ -203,6 +205,11 @@ namespace TestFunctions{
                 cols = swapEndian(cols);
                 bytes = swapEndian(bytes);
             }
+            if(bytes != sizeof(typename Matrix::Scalar)){
+                ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << "bigEndian: " << bigEndian
+                                    << ", rows: " << rows << ", cols: " << cols <<", scalar bytes: " << bytes);
+            }
+
             matrix.resize(rows, cols);
         }
         in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );

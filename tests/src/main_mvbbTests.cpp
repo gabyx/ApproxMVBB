@@ -79,7 +79,7 @@ namespace MVBBTests {
 
         std::cout << "\n\nStart MVBBTest Test "+ name +"" << std::endl;
         START_TIMER(start)
-        auto oobb = ApproxMVBB::approximateMVBB(v,eps,nPoints,gridSize,mvbbDiamOptLoops,gridSearchOptLoops, TestFunctions::randomSeed);
+        auto oobb = ApproxMVBB::approximateMVBB(v,eps,nPoints,gridSize,mvbbDiamOptLoops,gridSearchOptLoops);
         STOP_TIMER_SEC(count, start)
         std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
         std::cout << "End MVBBTest "+ name << std::endl;
@@ -126,7 +126,7 @@ MY_TEST_RANDOM_STUFF(TwoPoints)
         t.col(0) = Vector3(0,0,0);
         t.col(1) = Vector3(1,1,1);
 
-        mvbbTest("TwoPoints",t,true,0.001,400,5,10,10,false);
+        mvbbTest(testName,t,true,0.001,400,5,10,10,false);
 }
 
 
@@ -135,7 +135,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom1)
         // generate points
         Matrix3Dyn t(3,1);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom1",t,true,0.001,400,5,10,10,false);
+        mvbbTest(testName,t,true,0.001,400,5,10,10,false);
 }
 
 MY_TEST(MVBBTest, PointsRandom2) {
@@ -143,7 +143,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom2)
         // generate points
         Matrix3Dyn t(3,2);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom2",t,true,0.001,400,5,10,10,false);
+        mvbbTest(testName,t,true,0.001,400,5,10,10,false);
 }
 
 MY_TEST(MVBBTest, PointsRandom3) {
@@ -151,7 +151,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom3)
         // generate points
         Matrix3Dyn t(3,3);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom3",t,true,0.001,400,5,10,10,false);
+        mvbbTest(testName,t,true,0.001,400,5,10,10,false);
 }
 
 MY_TEST(MVBBTest, UnitCube) {
@@ -165,7 +165,7 @@ MY_TEST_RANDOM_STUFF(UnitCube)
         t.col(5) = ApproxMVBB::Vector3(1,0,1);
         t.col(6) = ApproxMVBB::Vector3(1,1,1);
         t.col(7) = ApproxMVBB::Vector3(0,1,1);
-        mvbbTest("UnitCube",t,true,0.001,400,5,10,10);
+        mvbbTest(testName,t,true,0.001,400,5,10,10);
 }
 
 
@@ -176,7 +176,7 @@ MY_TEST_RANDOM_STUFF(UnitRectangle)
         t.col(1) = ApproxMVBB::Vector3(1,0,0);
         t.col(3) = ApproxMVBB::Vector3(0,1,0);
         t.col(2) = ApproxMVBB::Vector3(1,1,0);
-        mvbbTest("UnitRectangle",t,true,0.001,400,2,2,2,false);
+        mvbbTest(testName,t,true,0.001,400,2,2,2,false);
 }
 
 MY_TEST(MVBBTest, Rectangles) {
@@ -210,7 +210,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom100)
         ApproxMVBB::Matrix3Dyn t(3,100);
         t = t.unaryExpr( f );
         applyRandomRotTrans(t,f);
-        mvbbTest("PointsRandom100",t);
+        mvbbTest(testName,t);
 }
 
 MY_TEST(MVBBTest, PointsRandom10000) {
@@ -218,7 +218,7 @@ MY_TEST_RANDOM_STUFF(PointsRandom10000)
         ApproxMVBB::Matrix3Dyn t(3,10000);
         t = t.unaryExpr( f );
         applyRandomRotTrans(t,f);
-        mvbbTest("PointsRandom10000",t);
+        mvbbTest(testName,t);
 }
 
 
@@ -231,7 +231,7 @@ MY_TEST_RANDOM_STUFF(Bunny)
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        mvbbTest("Bunny",t,true,0.1);
+        mvbbTest(testName,t,true,0.1);
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
@@ -239,7 +239,7 @@ MY_TEST(MVBBTest, PointsRandom140M) {
 MY_TEST_RANDOM_STUFF(PointsRandom140M)
         Matrix3Dyn t(3,140000000);
         t = t.unaryExpr( f );
-        mvbbTest("PointsRandom140M",t,false,0.01,400,5,0,5);
+        mvbbTest(testName,t,false,0.01,400,5,0,5);
 }
 
 MY_TEST(MVBBTest, Lucy) {
@@ -250,7 +250,7 @@ MY_TEST_RANDOM_STUFF(Lucy)
             t.col(i) = v[i];
         }
         applyRandomRotTrans(t,f);
-        mvbbTest("Lucy",t,false,100,400,5,0,5);
+        mvbbTest(testName,t,false,100,400,5,0,5);
 }
 #endif
 
