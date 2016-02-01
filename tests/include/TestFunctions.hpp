@@ -100,14 +100,13 @@ namespace TestFunctions{
             std::size_t pointIdx = 0;
             while( pointIdx < s){
                 if( i < s){
-                    if( indexMatched[i] ){
-                        ++i;
-                        continue;
-                    }
                     // check points[pointIdx] against i-th valid one
-                    if ( assertNearArrayColsRows_cr<matchCols>(a,pointIdx,b,i)){
+                    if ( !indexMatched[i] && assertNearArrayColsRows_cr<matchCols>(a,pointIdx,b,i)){
                         indexMatched[i] = true;
                         ++nMatched;
+                    }else{
+                        ++i;
+                        continue;
                     }
                 }
                 // all indices i checked go to next point, reset check idx
