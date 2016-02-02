@@ -7,7 +7,7 @@ sudo apt-get update -qq
 sudo apt-get install cmake
 cmake --version
 
-export INSTALL_PREFIX= "/usr/local/"
+export INSTALL_PREFIX="/usr/local/"
 
 if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
 if [ "$CXX" = "clang++" ] ; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi

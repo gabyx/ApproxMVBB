@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #install prefix
-export INSTALL_PREFIX= "/usr/local/"
+export INSTALL_PREFIX="/usr/local/"
 
 # install additional stuff
 brew update
