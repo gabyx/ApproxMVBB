@@ -65,7 +65,7 @@ namespace DiameterTest {
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-
+        TMatrix in = v;
         std::cout << "\n\nStart estimateDiam test "+ name +"" << std::endl;
         START_TIMER(start)
         auto pp = estimateDiameter< 3 >(v, epsilon);
@@ -88,6 +88,7 @@ namespace DiameterTest {
             Matrix3Dyn inputPointsV;
             readPointsMatrixBinary( getFileValidationPath(name,"2.bin"), inputPointsV );
 
+            EXPECT_TRUE( (in.array() == v.array()).all() ) << " estimate diameter changed the point cloud! should not happed!";
 
             EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
             << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
