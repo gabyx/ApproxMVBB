@@ -206,7 +206,7 @@ MY_TEST_RANDOM_STUFF(Bunny)
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        diameterTest(testName,t,false,10,1,40);
+        diameterTest(testName,t,false,10,1);
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
