@@ -256,9 +256,7 @@ MY_TEST(DiameterOOBBTest, UnitPatches2D) {
 MY_TEST_RANDOM_STUFF(UnitPatches2D)
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);
-            for(int i=0;i<t.cols();++i){
-                t = t.unaryExpr(f);
-            }
+            t = t.unaryExpr(f);
             diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t,true,10,0.0,400,false);
         }
 }
