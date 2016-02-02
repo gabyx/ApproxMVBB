@@ -101,7 +101,7 @@ double DiameterEstimator::estimateDiameterInOneList(
     }
     if ( f == l )
     {
-        theDiam->theDiam->extremity1 = theList[f];
+        theDiam->extremity1 = theList[f];
         theDiam->extremity2 = theList[l];
         return( 0.0 );
     }
