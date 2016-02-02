@@ -32,12 +32,12 @@ env:
 
 # Install dependencies
 install:
-  - chmod u+x ./travis/install_${TRAVIS_OS_NAME}.sh
+  - chmod +x ./travis/install_${TRAVIS_OS_NAME}.sh
   - ./travis/install_${TRAVIS_OS_NAME}.sh
  
 
 script:
-  - chmod u+x ./travis/build.sh
+  - chmod +x ./travis/build.sh
   - ./travis/build.sh
 
 after_success:
