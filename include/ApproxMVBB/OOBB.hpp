@@ -30,6 +30,8 @@ public:
         this->reset();
     }
 
+    OOBB(const OOBB &) = default;
+
     OOBB(const Vector3 & l,
          const Vector3 & u,
          const Matrix33 & A_IK);

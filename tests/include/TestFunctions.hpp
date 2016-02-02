@@ -275,7 +275,7 @@ namespace TestFunctions{
     }
 
     void readOOBB(std::string filePath, Vector3 & minP, Vector3 & maxP, Matrix33 & R_KI,  Vector3List & pointList);
-    void readOOBBAndCheck( OOBB & validOOBB, std::string filePath);
+    OOBB readOOBBAndCheck( OOBB & oobb, std::string filePath);
     void dumpOOBB(std::string filePath, const OOBB & oobb);
 
     Vector3List getPointsFromFile3D(std::string filePath);
