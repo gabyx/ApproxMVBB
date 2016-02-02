@@ -6,12 +6,17 @@ export INSTALL_PREFIX="/usr/local/"
 # install additional stuff
 brew update
 brew tap homebrew/versions
-brew install gcc49
+brew link --overwrite gcc49
+
+ls -l "/usr/local/Cellar/gcc/4.9.1/"
+
+export PATH="/usr/local/Cellar/gcc49/4.9.3;$PATH"
 
 brew install isl --HEAD
-brew install --cc=gcc-4.9 --HEAD llvm36 --with-asan --with-clang --with-libcxx --rtti --all-targets
+brew install --cc=gcc-4.9 --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets
 
-export PATH="/usr/local/Cellar/llvm35/HEAD/bin/clang++-3.6;$PATH"
+find "/usr/local/Cellar/" -name "clang++-3.7"
+export PATH="/usr/local/Cellar/llvm35/HEAD/bin/clang++-3.7;$PATH"
  
 
 if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
