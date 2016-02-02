@@ -1,6 +1,7 @@
 #!/bin/bash
 
  # init submodules
+echo "Init submodules"
 git submodule init
 git submodule update
 # only for hig perf. tests
