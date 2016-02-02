@@ -43,7 +43,7 @@ public:
         //std::cout <<"projected points" <<std::endl;
 
         // Estimate diameter in 2d projective plane
-        std::pair<Vector2,Vector2> pp = estimateDiameter<2,Vector2>(m_p,epsilon);
+        std::pair<Vector2,Vector2> pp = estimateDiameter<2>(m_p,epsilon);
 
 
         Vector2 dirX = pp.first - pp.second;

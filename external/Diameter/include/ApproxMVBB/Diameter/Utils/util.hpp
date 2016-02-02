@@ -22,10 +22,10 @@
 
 namespace ApproxMVBB{
 namespace Diameter{
-    
+
     APPROXMVBB_EXPORT int _LastPointOutsideSphereWithDiameter( TypeSegment *theSeg,
                      const double squareDiameter,
-                     double **theList,
+                     const double **theList,
                      const int first,
                      int *last,
                      const int dim,
@@ -33,7 +33,7 @@ namespace Diameter{
 
     APPROXMVBB_EXPORT int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
                          const double squareDiameter,
-                         double **theList,
+                         const double **theList,
                          const int first,
                          int *last,
                          const int dim,
@@ -41,7 +41,7 @@ namespace Diameter{
                          double *bound );
 
     APPROXMVBB_EXPORT int _FarthestPointFromSphere( TypeSegment *theSeg,
-                  double **theList,
+                  const double **theList,
                   const int first,
                   int *last,
                   const int dim,
@@ -52,7 +52,7 @@ namespace Diameter{
 
     APPROXMVBB_EXPORT void _CountPointsInSpheres( TypeSegment *theSeg,
                 const double squareDiameter,
-                double **theList,
+                const double **theList,
                 const int first,
                 const int last,
                 const int dim );
@@ -62,24 +62,24 @@ namespace Diameter{
 
     APPROXMVBB_EXPORT double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
                   const int index1,
-                  double **theList1,
+                  const double **theList1,
                   int *first1,
                   int *last1,
-                  double **theList2,
+                  const double **theList2,
                   int *first2,
                   int *last2,
                   int dim );
 
     APPROXMVBB_EXPORT double _MaximalSegmentInOneList( TypeSegment *theSeg,
                     const int index,
-                    double **theList,
+                    const double **theList,
                     int *first,
                     int *last,
                     const int dim );
 
     APPROXMVBB_EXPORT double _MaximalDistanceFromPoint( int *index,
                      const double *ref,
-                     double **theList,
+                     const double **theList,
                      const int first,
                      const int last,
                      const int dim );
@@ -91,7 +91,7 @@ namespace Diameter{
 
 
     APPROXMVBB_EXPORT double _QuadraticDiameterInOneList( TypeSegment *theDiam,
-                       double **theList,
+                       const double **theList,
                        const int first,
                        const int last,
                        const int dim );
@@ -99,16 +99,16 @@ namespace Diameter{
     APPROXMVBB_EXPORT double _QuadraticDiameterInTwoLists( TypeSegment *theDiam,
                      int   *index1,
                      int   *index2,
-                     double **theList1,
+                     const double **theList1,
                      const int first1,
                      const int last1,
-                     double **theList2,
+                     const double **theList2,
                      const int first2,
                      const int last2,
                      const int dim );
 
 
-    APPROXMVBB_EXPORT void _SwapPoints( double **theList, const int i, const int j );
+    APPROXMVBB_EXPORT void _SwapPoints( const double **theList, const int i, const int j );
 
     struct TypeCounter{
         int c1;
@@ -133,15 +133,12 @@ namespace Diameter{
     /* dot products
     ab.cd = ( (b[i]-a[i]) . (d[i]-c[i]) )
     */
-    APPROXMVBB_EXPORT double _ScalarProduct( const double *a, const double *b,
-               const double *c, const double *d, const int dim );
-    APPROXMVBB_EXPORT double _ScalarProduct3D( const double *a, const double *b,
-             const double *c, const double *d );
-    APPROXMVBB_EXPORT double _ScalarProduct2D( const double *a, const double *b,
-             const double *c, const double *d );
+    APPROXMVBB_EXPORT double _ScalarProduct( const double *a, const double *b, const double *c, const double *d, const int dim );
+    APPROXMVBB_EXPORT double _ScalarProduct3D( const double *a, const double *b, const double *c, const double *d );
+    APPROXMVBB_EXPORT double _ScalarProduct2D( const double *a, const double *b, const double *c, const double *d );
 
 
-    APPROXMVBB_EXPORT int _FindPointInList( double **theList,
+    APPROXMVBB_EXPORT int _FindPointInList( const double **theList,
               const int first,
               const int last,
               double x0,

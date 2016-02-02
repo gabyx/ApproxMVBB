@@ -14,8 +14,8 @@ namespace ApproxMVBB{
 namespace Diameter{
 
     struct TypeSegment {
-      double *extremity1;
-      double *extremity2;
+      const double *extremity1;
+      const double *extremity2;
       double squareDiameter;
       int reduction_mode;
     };

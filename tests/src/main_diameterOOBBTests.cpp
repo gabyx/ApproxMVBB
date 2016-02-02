@@ -110,7 +110,7 @@ namespace DiameterOOBBTest {
             Matrix3Dyn valid = sampled;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
             readPointsMatrixBinary( getFileValidationPath(name,"2.bin") , valid);
-            EXPECT_TRUE( assertNearArrays(sampled,valid));
+            EXPECT_TRUE( assertNearArray(sampled,valid));
 
             if(checkVolume){
                 ASSERT_GT(oobb.volume() , 1e-6)  << "Volume too small: " << oobb.volume() << std::endl;
@@ -202,11 +202,11 @@ MY_TEST_RANDOM_STUFF(Bunny)
         auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
-        t.col(i) = v[i];
+                t.col(i) = v[i];
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
-        diameterTest(testName,t,false,10,1);
+        diameterTest(testName,t,false,10,1,40);
 }
 
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE

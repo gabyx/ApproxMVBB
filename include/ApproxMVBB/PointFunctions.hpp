@@ -200,36 +200,38 @@ namespace PointFunctions {
     }
 
     template<unsigned int Dimension,
-             typename TVector,
              typename Derived>
-    std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points,
-                                                const PREC epsilon,
-                                                std::size_t seed = RandomGenerators::defaultSeed) {
+    auto estimateDiameter(  const MatrixBase<Derived> & points,
+                            const PREC epsilon,
+                            std::size_t seed = RandomGenerators::defaultSeed)
+                                -> std::pair<VectorStat<Dimension>,VectorStat<Dimension> >
+    {
 
         ApproxMVBB_STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
-        ApproxMVBB_STATIC_ASSERT(std::is_same<typename Derived::Scalar, PREC>::value)
+        ApproxMVBB_STATIC_ASSERTM((std::is_same<typename Derived::Scalar, PREC>::value), "estimate diameter can only accept double so far")
 
         MatrixBase<Derived> & pp = const_cast< MatrixBase<Derived> &>(points);
 
         // Construct pointer list
-        auto size = pp.cols();
-        PREC* * pList = new PREC*[size];
+        auto size = points.cols();
+        PREC const *  *pList = new PREC const*[size];
         for(decltype(size) i=0; i<size; ++i) {
-            pList[i] = const_cast<PREC*>(pp.col(i).data());
+            pList[i] = points.col(i).data() ;
         }
 
         Diameter::TypeSegment pairP;
         DiameterEstimator diamEstimator(seed);
         diamEstimator.estimateDiameter(&pairP,pList,0,(int)(size-1),Dimension,epsilon);
 
-        MatrixMap<TVector> p1(pairP.extremity1);
-        MatrixMap<TVector> p2(pairP.extremity2);
+        using Vector2d = MyMatrix::VectorStat<double,Dimension>;
+        const MatrixMap<const Vector2d> p1(pairP.extremity1);
+        const MatrixMap<const Vector2d> p2(pairP.extremity2);
 
         //    std::cout << "p1: " << p1.transpose() << std::endl
         //              << "p2: " << p2.transpose() << std::endl
         //              << " l: " << std::sqrt(pairP.squareDiameter) << std::endl;
         delete[] pList;
-        return std::pair<TVector,TVector>(p1,p2);
+        return std::pair<VectorStat<Dimension>,VectorStat<Dimension> >(p1,p2);
 
     }
 

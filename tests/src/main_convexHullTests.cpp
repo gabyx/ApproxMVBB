@@ -93,7 +93,7 @@ namespace ConvexHullTest {
         TMatrix valid = qHull;
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
-        EXPECT_TRUE( assertNearArrays(qHull,valid)  );
+        EXPECT_TRUE( assertNearArray(qHull,valid)  );
     }
 
 //    void MY_TEST() {

@@ -22,37 +22,37 @@ namespace ApproxMVBB{
 */
 class APPROXMVBB_EXPORT DiameterEstimator{
     public:
-    
+
     DiameterEstimator(std::size_t seed): m_gen(seed) {}
     DiameterEstimator(): m_gen{} {}
-    
+
     /** Raw function to estimate the diameter of a point cloud
     *   @param theDiam returns the diameter info
     *   @param theList input point cloud (look at example how to call this function)
     *   @param first First index into the point cloud
     *   @param dim dimension of the points
-    *   @param epsilon the accuracy of the diameter estimation such that 
+    *   @param epsilon the accuracy of the diameter estimation such that
                [diam_min, diam_max] <= epsilon, and [diam_min, diam_max] contains the true
                diameter
-    
+
     */
     double estimateDiameter(Diameter::TypeSegment *theDiam,
-                          double **theList,
+                          const double **theList,
                           const int first,
                           const int last,
                           const int dim,
                           double epsilon);
-                                              
+
     private:
-    
+
     double estimateDiameterInOneList(Diameter::TypeSegment *theDiam,
-                                     double **theList,
+                                     const double **theList,
                                      const int first,
                                      const int last,
                                      const int dim,
                                      double _epsilon_ );
-    
-    
+
+
     /** some settings from the original code ================================*/
     /** verbose when reducing*/
     int _verbose_when_reducing_ = 0;
@@ -130,10 +130,10 @@ class APPROXMVBB_EXPORT DiameterEstimator{
     inline void _DoNotTryToGetTightBounds(){ _tight_bounds_ = 0;}
     inline int _GetTightBounds(){ return _tight_bounds_ ; }
     /**=====================================================================*/
-    
+
     RandomGenerators::DefaultRandomGen m_gen; ///< Random number generator
     std::uniform_real_distribution<double> m_uni{0.0,1.0};
-    
+
     int getRandomInt( int min, int max ){
       if ( min <= max ){
         return( (int)(std::floor( min + m_uni(m_gen)*(double)(max-min+1.0) )) );
@@ -141,7 +141,7 @@ class APPROXMVBB_EXPORT DiameterEstimator{
         return( (int)(std::floor( max + m_uni(m_gen)*(double)(min-max+1.0) )) );
       }
     }
-    
+
 };
 }
 

@@ -136,9 +136,9 @@ public:
     /** Get direction vectors in I Frame */
     inline Vector3 getDirection(unsigned int i) const{
         ApproxMVBB_ASSERTMSG(i<3,"Index wrong: " << i)
-        Vector3 d = Vector3::Zeros;
+        Vector3 d = Vector3::Zero();
         d(i) = 1.0;
-        return (m_q_KI * d).noalias(); // A_IK* d;
+        return m_q_KI * d; // A_IK* d;
     }
 
     /** Get all corner points in I Frame

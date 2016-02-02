@@ -203,25 +203,31 @@ To come
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
-
-    $ cd Build
+    
+    $ cd ApproxMVBB
+    $ git submodule init    
+    $ git submodule update
+    $ cd ../Build
     $ make build_and_test
     
-**Note the tests validation will fail currently. However the results can still be visualized and should be correct. I am currently working on making the tests meaningfull and correct on any platform which is not an easy task due to random stuff happening during the optimization loops.**
+**Note the tests validation will fail currently. 
+However the results can still be visualized and should be correct. 
+I am currently working on making the tests meaningfull and correct 
+on any platform which is not an easy task due to random stuff happening during the optimization loops.**
 
   
 **Note:**
-> To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
-> 140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
-> to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
-> and additionally initialize the submodule ``additional`` and unzip the files:
+To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
+to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
+and additionally initialize the submodule ``additional`` and unzip the files:
 
->     $ cd ApproxMVBB
->     $ git submodule init
->     $ git submodule update
->     $ cd addtional/tests/files; cat Lucy* | tar xz 
+     $ cd ApproxMVBB
+     $ git submodule init
+     $ git submodule update
+     $ cd addtional/tests/files; cat Lucy* | tar xz 
 
-> and rebuild the tests. (this will copy the additional files next to the executable)
+and rebuild the tests. (this will copy the additional files next to the executable)
 
 
 Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the following tests:

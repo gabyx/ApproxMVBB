@@ -43,7 +43,7 @@ namespace Diameter{
 
 int _LastPointOutsideSphereWithDiameter( TypeSegment *theSeg,
 					 const double squareDiameter,
-					 double **theList,
+					 const double **theList,
 					 const int first,
 					 int *last,
 					 const int dim,
@@ -385,7 +385,7 @@ int _LastPointOutsideSphereWithDiameter( TypeSegment *theSeg,
 
 int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
 						 const double squareDiameter,
-						 double **theList,
+						 const double **theList,
 						 const int first,
 						 int *last,
 						 const int dim,
@@ -777,7 +777,7 @@ int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
 
 void _CountPointsInSpheres( TypeSegment *theSeg,
 			    const double squareDiameter,
-			    double **theList,
+			    const double **theList,
 			    const int first,
 			    const int last,
 			    const int dim )
@@ -865,7 +865,7 @@ void _CountPointsInSpheres( TypeSegment *theSeg,
 
 
 int _FarthestPointFromSphere( TypeSegment *theSeg,
-			      double **theList,
+			      const double **theList,
 			      const int first,
 			      int *last,
 			      const int dim,
@@ -1000,10 +1000,10 @@ int _FarthestPointFromSphere( TypeSegment *theSeg,
 
 double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
 				  const int index1,
-				  double **theList1,
+				  const double **theList1,
 				  int *first1,
 				  int *last1,
-				  double **theList2,
+				  const double **theList2,
 				  int *first2,
 				  int *last2,
 				  int dim )
@@ -1019,7 +1019,7 @@ double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
 
   int i2;
 
-  double *ref;
+  const double *ref;
 
   double d, dprevious;
 
@@ -1114,7 +1114,7 @@ double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
 
 double _MaximalSegmentInOneList( TypeSegment *theSeg,
 				 const int index,
-				 double **theList,
+				 const double **theList,
 				 int *first,
 				 int *last,
 				 const int dim )
@@ -1123,7 +1123,7 @@ double _MaximalSegmentInOneList( TypeSegment *theSeg,
   int l=*last;
 
   int i = index;
-  double *ref;
+  const double *ref;
 
   double d, dprevious;
 
@@ -1177,7 +1177,7 @@ double _MaximalSegmentInOneList( TypeSegment *theSeg,
 
 double _MaximalDistanceFromPoint( int *index,
 				  const double *ref,
-				  double **theList,
+				  const double **theList,
 				  const int first,
 				  const int last,
 				  const int dim )
@@ -1246,9 +1246,9 @@ double _MaximalDistanceFromPoint( int *index,
 /* Swap two points
  */
 
-void _SwapPoints( double **theList, const int i, const int j )
+void _SwapPoints( const double **theList, const int i, const int j )
 {
-  double *tmp;
+  const double *tmp;
   tmp = theList[i];
   theList[i] = theList[j];
   theList[j] = tmp;
@@ -1397,7 +1397,7 @@ double _ScalarProduct2D( const double *a, const double *b,
 	  (b[1]-a[1])*(d[1]-c[1]) );
 }
 
-int _FindPointInList( double **theList,
+int _FindPointInList( const double **theList,
 		      const int first,
 		      const int last,
 		      double x0,
@@ -1440,7 +1440,7 @@ int _FindPointInList( double **theList,
 
 
 double _QuadraticDiameterInOneList( TypeSegment *theDiam,
-				    double **theList,
+				    const double **theList,
 				    const int first,
 				    const int last,
 				    const int dim )
@@ -1511,10 +1511,10 @@ double _QuadraticDiameterInOneList( TypeSegment *theDiam,
 double _QuadraticDiameterInTwoLists( TypeSegment *theDiam,
 				     int   *index1,
 				     int   *index2,
-				     double **theList1,
+				     const double **theList1,
 				     const int first1,
 				     const int last1,
-				     double **theList2,
+				     const double **theList2,
 				     const int first2,
 				     const int last2,
 				     const int dim )

@@ -48,7 +48,7 @@ namespace TestFunctions{
 
 
     template<typename A, typename B>
-    ::testing::AssertionResult assertNearArrays(  const A & a,
+    ::testing::AssertionResult assertNearArray(  const A & a,
                             const B & b,
                             PREC absError = 1e-6)
     {
@@ -68,7 +68,7 @@ namespace TestFunctions{
     ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,
                                                           const B & b, std::size_t j)
     {
-         return assertNearArrays(a.col(i), b.col(j));
+         return assertNearArray(a.col(i), b.col(j));
     }
     template<bool matchCols , typename A, typename B,
              ApproxMVBB_SFINAE_ENABLE_IF( matchCols == false )
@@ -76,7 +76,7 @@ namespace TestFunctions{
     ::testing::AssertionResult assertNearArrayColsRows_cr(const A & a, std::size_t i,
                                                           const B & b, std::size_t j)
     {
-         return assertNearArrays(a.row(i), b.row(j));
+         return assertNearArray(a.row(i), b.row(j));
     }
 
 
