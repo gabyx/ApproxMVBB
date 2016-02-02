@@ -237,6 +237,7 @@ MY_TEST_RANDOM_STUFF(UnitPatches2D)
             for(int i=0;i<t.cols();++i){
                 t.col(i)[0] = uni(rng); // compiler should not switch these two statements!
                 t.col(i)[1] = uni(rng);
+                t.col(i)[2] = 0.0;
             }
             diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t);
         }
