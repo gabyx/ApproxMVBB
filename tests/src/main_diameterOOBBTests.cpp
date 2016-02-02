@@ -190,7 +190,7 @@ MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
         auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
         Matrix3Dyn t(3,v.size());
         for(unsigned int i = 0; i<v.size(); ++i) {
-        t.col(i) = v[i];
+                t.col(i) = v[i];
         }
         applyRandomRotTrans(t,f);
         std::cout << "Applied Transformation" << std::endl;
@@ -257,7 +257,7 @@ MY_TEST_RANDOM_STUFF(UnitPatches2D)
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);
             for(int i=0;i<t.cols();++i){
-                t.col(i) = ApproxMVBB::Vector3(uni(rng),uni(rng),0);
+                t = t.unaryExpr(f);
             }
             diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t,true,10,0.0,400,false);
         }
