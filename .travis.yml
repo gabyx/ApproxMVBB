@@ -13,11 +13,14 @@ addons:
     - clang-3.7
 os:
   - linux
-  #- os x
+  - osx
+  
 language: cpp
+
 compiler:
   - gcc
   - clang
+  
 env:
   global:
     - GCC_VERSION="4.9"
@@ -29,112 +32,13 @@ env:
 
 # Install dependencies
 install:
-  
-  # init submodules
-  - git submodule init
-  - git submodule update
-  # only for hig perf. tests
-  #- cd addtional/tests/files; cat Lucy* | tar xz
-  
-  #install a newer cmake since at this time Travis only has version 2.8.7
-  - echo "yes" | sudo add-apt-repository --yes ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install cmake
-  - cmake --version
-  
-  - export ROOT_PATH=`pwd`/../;
-  - export CHECKOUT_PATH=`pwd`;
-  - echo "ROOT_PATH= $ROOT_PATH"
-  - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-  
-  # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-  # /usr/bin/clang is 3.4, lets override with modern one.
-  - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-  - echo ${PATH}
-  - echo ${CXX}
-  - ${CXX} --version
-  - ${CXX} -v
-  
-  #- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  #- sudo apt-get update -qq
-  #- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq -y --force-yes g++-${GCC_VERSION}; fi
-  #- if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
-  #- if [ "$CXX" = "clang++" ]; then sudo apt-get install -qq -y --force-yes clang-${CLANG_VERSION}; fi
-  #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
-  
-  ## Install libc++ if tests are run with clang++
-  #- if [ "$CXX" == "clang++" ]; then export LIBCXX=On; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd libcxx/lib && bash buildit; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo mkdir /usr/include/c++/v1; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
-  #- if [ -n "$LIBCXX" -a "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
-  #- if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"; fi
-  #- if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_FLAGS} -L/usr/lib/ -lc++"; fi
-
-  # Install eigen3
-  - hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
-  - cd ${ROOT_PATH}/eigen3 && hg update 3.2
-  - mkdir ${ROOT_PATH}/eigen3Build
-  - cd ${ROOT_PATH}/eigen3Build
-  - cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=/usr/local
-  - sudo make VERBOSE=1 install
-  
-  # Install meta
-  - git clone https://github.com/ericniebler/meta.git ${ROOT_PATH}/meta
-  - sudo cp -r ${ROOT_PATH}/meta/include/* /usr/local/include/
-  - ls -a /usr/local/include/meta
-  
-  # Install pugixml
-  - git clone https://github.com/zeux/pugixml.git ${ROOT_PATH}/pugixml
-  - perl -pi -e 's/\/\/\s*#define\s*PUGIXML_HAS_LONG_LONG/#define PUGIXML_HAS_LONG_LONG/g' ${ROOT_PATH}/pugixml/src/pugiconfig.hpp 
-  - mkdir ${ROOT_PATH}/pugixmlBuild
-  - cd ${ROOT_PATH}/pugixmlBuild
-  - cmake ../pugixml/scripts/ -DCMAKE_INSTALL_PREFIX=/usr/local
-  - sudo make VERBOSE=1 install
+  - chmod u+x ./travis/install_${TRAVIS_OS_NAME}.sh
+  - ./travis/install_${TRAVIS_OS_NAME}.sh
+ 
 
 script:
-  - cd $CHECKOUT_PATH
-  - if [ ! -d build ]; then mkdir build; fi
-  - cd build
-  
-  - export CXX_FLAGS="-std=c++11"
-  - export CXX_LINKER_FLAGS=""
-  
-  - if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
-  
-  #- if [ "$CXX" == "clang++" ]; then CXX_FLAGS="${CXX_FLAGS}" ; fi
-  #- if [ -n "$LIBCXX" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"  ; fi
-  #- if [ -n "$LIBCXX" ]; then CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L/usr/lib/ -lc++"; fi
-  
-  # make ApproxMVBB
-  - echo "Build ApproxMVBB:"
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
-  - make VERBOSE=1
-  - make install
-  - cd ..
-  
-  # make install and library usage!
-  - echo "Install and test if ApproxMVBB links:"
-  - mkdir buildLibUsage
-  - cd buildLibUsage
-  - INSTALL=$(find $CHECKOUT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
-  - echo "Install dir= $INSTALL"
-  - cmake ../example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL
-  - make VERBOSE=1
-  - cd ..
-  
-  # run unit tests
-  - echo "Run Unit Tests:"
-  - cd build
-  - make build_and_test
-  
-  
-  #- wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh
-  #- bii --version
+  - chmod u+x ./travis/build.sh
+  - ./travis/build.sh
 
 after_success:
   - cd $CHECKOUT_PATH
