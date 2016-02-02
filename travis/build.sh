@@ -1,4 +1,10 @@
 #!/bin/bash
+
+export ROOT_PATH=`pwd`/../;
+export CHECKOUT_PATH=`pwd`;
+echo "ROOT_PATH= $ROOT_PATH"
+echo "CHECKOUT_PATH= $CHECKOUT_PATH"
+
 echo "Go to $CHECKOUT_PATH"
 cd $CHECKOUT_PATH
 if [ ! -d build ]; then mkdir build; fi
