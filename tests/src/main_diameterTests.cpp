@@ -82,17 +82,21 @@ namespace DiameterTest {
         dumpPointsMatrixBinary( getFileOutPath(name,"2.bin") ,v);   // dump generated points
 
         // CHECK
-        Matrix3Dyn diamV(3,2);
-        readPointsMatrixBinary( getFileValidationPath(name,".bin"), diamV );
-        Matrix3Dyn inputPointsV;
-        readPointsMatrixBinary( getFileValidationPath(name,"2.bin"), inputPointsV );
+        try{
+            Matrix3Dyn diamV(3,2);
+            readPointsMatrixBinary( getFileValidationPath(name,".bin"), diamV );
+            Matrix3Dyn inputPointsV;
+            readPointsMatrixBinary( getFileValidationPath(name,"2.bin"), inputPointsV );
 
 
-        EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
-        << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
+            EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
+            << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
 
-        EXPECT_TRUE( assertNearArray(v,inputPointsV) ) ;
-
+            EXPECT_TRUE( assertNearArray(v,inputPointsV) ) ;
+        }
+        catch( ApproxMVBB::Exception & e){
+            ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;
+        }
     }
 
 };
@@ -145,49 +149,49 @@ MY_TEST_RANDOM_STUFF(UnitCube)
         diameterTest(testName,t);
 }
 
-MY_TEST(DiameterTest, PointsSimulation) {
-MY_TEST_RANDOM_STUFF(PointsSimulation)
-        auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
-
-        Matrix3Dyn t(3,v.size());
-        for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-        }
-        applyRandomRotTrans(t,f);
-        std::cout << "Applied Transformation" << std::endl;
-        diameterTest(testName,t);
-}
-
-MY_TEST(DiameterTest, PointsSimulationFailMVBB) {
-MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
-        auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
-        Matrix3Dyn t(3,v.size());
-        for(unsigned int i = 0; i<v.size(); ++i) {
-        t.col(i) = v[i];
-        }
-        applyRandomRotTrans(t,f);
-        std::cout << "Applied Transformation" << std::endl;
-        diameterTest(testName,t);
-}
-
-MY_TEST(DiameterTest, Bunny) {
-MY_TEST_RANDOM_STUFF(Bunny)
-        auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
-        Matrix3Dyn t(3,v.size());
-        for(unsigned int i = 0; i<v.size(); ++i) {
-                t.col(i) = v[i];
-        }
-        applyRandomRotTrans(t,f);
-        std::cout << "Applied Transformation" << std::endl;
-        diameterTest(testName,t);
-}
+//MY_TEST(DiameterTest, PointsSimulation) {
+//MY_TEST_RANDOM_STUFF(PointsSimulation)
+//        auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
+//
+//        Matrix3Dyn t(3,v.size());
+//        for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//        }
+//        applyRandomRotTrans(t,f);
+//        std::cout << "Applied Transformation" << std::endl;
+//        diameterTest(testName,t);
+//}
+//
+//MY_TEST(DiameterTest, PointsSimulationFailMVBB) {
+//MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
+//        auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
+//        Matrix3Dyn t(3,v.size());
+//        for(unsigned int i = 0; i<v.size(); ++i) {
+//        t.col(i) = v[i];
+//        }
+//        applyRandomRotTrans(t,f);
+//        std::cout << "Applied Transformation" << std::endl;
+//        diameterTest(testName,t);
+//}
+//
+//MY_TEST(DiameterTest, Bunny) {
+//MY_TEST_RANDOM_STUFF(Bunny)
+//        auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
+//        Matrix3Dyn t(3,v.size());
+//        for(unsigned int i = 0; i<v.size(); ++i) {
+//                t.col(i) = v[i];
+//        }
+//        applyRandomRotTrans(t,f);
+//        std::cout << "Applied Transformation" << std::endl;
+//        diameterTest(testName,t);
+//}
 //
 //#ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 //MY_TEST(DiameterTest, PointsRandom14M) {
 //MY_TEST_RANDOM_STUFF(PointsRandom14M)
 //        Matrix3Dyn t(3,140000000);
 //        t = t.unaryExpr( f );
-//        diameterTest(testName,t,false,0,0.01);
+//        diameterTest(testName,t);
 //}
 //
 //
@@ -199,17 +203,17 @@ MY_TEST_RANDOM_STUFF(Bunny)
 //            t.col(i) = v[i];
 //        }
 //        applyRandomRotTrans(t,f);
-//        diameterTest(testName,t,false,3,100);
+//        diameterTest(testName,t);
 //}
 //#endif
-//
-//MY_TEST(DiameterTest, Plane) {
-//MY_TEST_RANDOM_STUFF(Plane)
-//        Matrix3Dyn t(3,3);
-//        t = t.unaryExpr( f );
-//        diameterTest(testName,t,true,10,0.001,2,false);
-//}
-//
+
+MY_TEST(DiameterTest, Plane) {
+MY_TEST_RANDOM_STUFF(Plane)
+        Matrix3Dyn t(3,3);
+        t = t.unaryExpr( f );
+        diameterTest(testName,t,true);
+}
+
 //MY_TEST(DiameterTest, PointClouds) {
 //MY_TEST_RANDOM_STUFF(PointClouds)
 //
@@ -221,28 +225,28 @@ MY_TEST_RANDOM_STUFF(Bunny)
 //            }
 //
 //            applyRandomRotTrans(t,f);
-//            diameterTest("PointClouds-Nr"+std::to_string(k),t,true,4,0.1);
+//            diameterTest("PointClouds-Nr"+std::to_string(k),t);
 //        }
 //}
+
+MY_TEST(DiameterTest, UnitPatches2D) {
+MY_TEST_RANDOM_STUFF(UnitPatches2D)
+        for(int i=0;i<10;++i){
+            ApproxMVBB::Matrix3Dyn t(3,500);
+            for(int i=0;i<t.cols();++i){
+                t.col(i) = ApproxMVBB::Vector3(uni(rng),uni(rng),0);
+            }
+            diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t);
+        }
+}
+
+//MY_TEST(DISABLED_DiameterTest, Plane) {
+//MY_TEST_RANDOM_STUFF(Plane)
 //
-//MY_TEST(DiameterTest, UnitPatches2D) {
-//MY_TEST_RANDOM_STUFF(UnitPatches2D)
-//        for(int i=0;i<10;++i){
-//            ApproxMVBB::Matrix3Dyn t(3,500);
-//            for(int i=0;i<t.cols();++i){
-//                t.col(i) = ApproxMVBB::Vector3(uni(rng),uni(rng),0);
-//            }
-//            diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t,true,10,0.0,400,false);
-//        }
+//        Matrix3Dyn t(3,3);
+//        t.setConstant(std::numeric_limits<PREC>::signaling_NaN());
+//        diameterTest(testName,t);
 //}
-//
-////MY_TEST(DISABLED_DiameterTest, Plane) {
-////MY_TEST_RANDOM_STUFF(Plane)
-////
-////        Matrix3Dyn t(3,3);
-////        t.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-////        diameterTest(testName,t,true,10,0.001,2);
-////}
 
 
 
