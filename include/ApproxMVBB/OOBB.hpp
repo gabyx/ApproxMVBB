@@ -136,8 +136,9 @@ public:
     /** Get direction vectors in I Frame */
     inline Vector3 getDirection(unsigned int i) const{
         ApproxMVBB_ASSERTMSG(i<3,"Index wrong: " << i)
-        Vector3 d; d.setZero(); d(i) = 1.0;
-        return m_q_KI * d; // A_IK* d;
+        Vector3 d = Vector3::Zeros;
+        d(i) = 1.0;
+        return (m_q_KI * d).noalias(); // A_IK* d;
     }
 
     /** Get all corner points in I Frame
@@ -151,13 +152,13 @@ public:
         Vector3List points(8);
         Array3 ex = extent();
         points[0] =   m_minPoint /*+ Array3(0,0,0) * extent*/ ;
-        points[1] =   m_minPoint + (Array3(1,0,0) * ex).matrix();
-        points[2] =   m_minPoint + (Array3(0,1,0) * ex).matrix();
-        points[3] =   m_minPoint + (Array3(1,1,0) * ex).matrix();
+        points[1] =   m_minPoint + (Array3(1.0, 0.0, 0.0) * ex).matrix();
+        points[2] =   m_minPoint + (Array3(0.0, 1.0, 0.0) * ex).matrix();
+        points[3] =   m_minPoint + (Array3(1.0, 1.0, 0.0) * ex).matrix();
 
-        points[4] =   m_minPoint + (Array3(0,0,1) * ex).matrix();
-        points[5] =   m_minPoint + (Array3(1,0,1) * ex).matrix();
-        points[6] =   m_minPoint + (Array3(0,1,1) * ex).matrix();
+        points[4] =   m_minPoint + (Array3(0.0, 0.0, 1.0) * ex).matrix();
+        points[5] =   m_minPoint + (Array3(1.0, 0.0, 1.0) * ex).matrix();
+        points[6] =   m_minPoint + (Array3(0.0, 1.0, 1.0) * ex).matrix();
         points[7] =   m_maxPoint /*+ Array3(1,1,1) * extent */;
 
         if(coordinateSystemIsI){
