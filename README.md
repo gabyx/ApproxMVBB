@@ -210,10 +210,8 @@ Building and installing the basic tests is done by:
     $ cd ../Build
     $ make build_and_test
     
-**Note the tests validation will fail currently. 
-However the results can still be visualized and should be correct. 
-I am currently working on making the tests meaningfull and correct 
-on any platform which is not an easy task due to random stuff happening during the optimization loops.**
+**Note that if the tests fail, submit a new issue and report which test failed. 
+The results can still be visualized and should be correct. **
 
   
 **Note:**
@@ -225,7 +223,7 @@ and additionally initialize the submodule ``additional`` and unzip the files:
      $ cd ApproxMVBB
      $ git submodule init
      $ git submodule update
-     $ cd addtional/tests/files; cat Lucy* | tar xz 
+     $ cd additional/tests/files; cat Lucy* | tar xz 
 
 and rebuild the tests. (this will copy the additional files next to the executable)
 
