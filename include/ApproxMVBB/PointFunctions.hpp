@@ -226,6 +226,8 @@ namespace PointFunctions {
         const MatrixMap<const Vector2d> p1(pairP.extremity1);
         const MatrixMap<const Vector2d> p2(pairP.extremity2);
 
+
+
         ApproxMVBB_MSGLOG_L2( "p1: " << p1.transpose() << std::endl
                       << "p2: " << p2.transpose() << std::endl
                       << " l: " << std::sqrt(pairP.squareDiameter) << std::endl);

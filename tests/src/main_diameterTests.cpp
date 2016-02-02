@@ -235,7 +235,8 @@ MY_TEST_RANDOM_STUFF(UnitPatches2D)
         for(int i=0;i<10;++i){
             ApproxMVBB::Matrix3Dyn t(3,500);
             for(int i=0;i<t.cols();++i){
-                t.col(i) = ApproxMVBB::Vector3(uni(rng),uni(rng),0);
+                t.col(i)[0] = uni(rng); // compiler should not switch these two statements!
+                t.col(i)[1] = uni(rng);
             }
             diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t);
         }
