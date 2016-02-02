@@ -203,11 +203,10 @@ namespace PointFunctions {
              typename Derived>
     auto estimateDiameter(  const MatrixBase<Derived> & points,
                             const PREC epsilon,
-                            std::size_t seed = RandomGenerators::defaultSeed)
-                                -> std::pair<VectorStat<Dimension>,VectorStat<Dimension> >
+                            std::size_t seed = RandomGenerators::defaultSeed) -> std::pair<VectorStat<Dimension>,VectorStat<Dimension> >
     {
 
-        ApproxMVBB_STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
+        ApproxMVBB_STATIC_ASSERTM(Derived::RowsAtCompileTime == Dimension, "input points matrix need to be (Dimension x N) ");
         ApproxMVBB_STATIC_ASSERTM((std::is_same<typename Derived::Scalar, PREC>::value), "estimate diameter can only accept double so far")
 
         MatrixBase<Derived> & pp = const_cast< MatrixBase<Derived> &>(points);
@@ -227,11 +226,12 @@ namespace PointFunctions {
         const MatrixMap<const Vector2d> p1(pairP.extremity1);
         const MatrixMap<const Vector2d> p2(pairP.extremity2);
 
-        //    std::cout << "p1: " << p1.transpose() << std::endl
-        //              << "p2: " << p2.transpose() << std::endl
-        //              << " l: " << std::sqrt(pairP.squareDiameter) << std::endl;
+        ApproxMVBB_MSGLOG_L2( "p1: " << p1.transpose() << std::endl
+                      << "p2: " << p2.transpose() << std::endl
+                      << " l: " << std::sqrt(pairP.squareDiameter) << std::endl);
+
         delete[] pList;
-        return std::pair<VectorStat<Dimension>,VectorStat<Dimension> >(p1,p2);
+        return {p1,p2};
 
     }
 

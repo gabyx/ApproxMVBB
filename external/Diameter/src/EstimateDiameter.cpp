@@ -25,7 +25,7 @@ namespace ApproxMVBB{
 
     double DiameterEstimator::estimateDiameter(
                 Diameter::TypeSegment *theDiam,
-                const double **theList,
+                double const**theList,
                 const int first,
                 const int last,
                 const int dim,
@@ -41,7 +41,7 @@ namespace ApproxMVBB{
 
     double DiameterEstimator::estimateDiameterInOneList(
              Diameter::TypeSegment *theDiam,
-             const double **theList,
+             double const**theList,
              const int first,
              const int last,
              const int dim,

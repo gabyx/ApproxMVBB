@@ -37,7 +37,7 @@ class APPROXMVBB_EXPORT DiameterEstimator{
 
     */
     double estimateDiameter(Diameter::TypeSegment *theDiam,
-                          const double **theList,
+                          double const**theList,
                           const int first,
                           const int last,
                           const int dim,
@@ -46,7 +46,7 @@ class APPROXMVBB_EXPORT DiameterEstimator{
     private:
 
     double estimateDiameterInOneList(Diameter::TypeSegment *theDiam,
-                                     const double **theList,
+                                     double const**theList,
                                      const int first,
                                      const int last,
                                      const int dim,

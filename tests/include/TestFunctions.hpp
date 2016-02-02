@@ -48,9 +48,9 @@ namespace TestFunctions{
 
 
     template<typename A, typename B>
-    ::testing::AssertionResult assertNearArray(  const A & a,
-                            const B & b,
-                            PREC absError = 1e-6)
+    ::testing::AssertionResult assertNearArray( const A & a,
+                                                const B & b,
+                                                PREC absError = 1e-6)
     {
       if(a.size()!=b.size()){ return ::testing::AssertionFailure() << "not same size";}
       if(a.rows()!=b.rows()){ return ::testing::AssertionFailure() << "not same rows";}
