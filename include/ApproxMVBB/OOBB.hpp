@@ -163,7 +163,7 @@ public:
 
         if(coordinateSystemIsI){
             for(auto & p : points){
-                p = m_q_KI * p; //    I_p = A_IK * K_p
+                p = (m_q_KI * p).eval(); //    I_p = A_IK * K_p
             }
         }
 
