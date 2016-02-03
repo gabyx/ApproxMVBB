@@ -41,7 +41,6 @@ matrix:
 
 # Install dependencies
 install:
-  - rm -r ./*
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
   - echo "ROOT_PATH= $ROOT_PATH"
