@@ -19,25 +19,25 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         
-  #- env: CLANG_VERSION="3.7"
-    #os: linux
-    #dist: trusty
-    #compiler: clang
-    #addons:
-      #apt:
-        #packages:
-        #- clang-3.7
-        #sources:
-        #- ubuntu-toolchain-r-test
-        #- llvm-toolchain-precise-3.7
+  - env: CLANG_VERSION="3.7"
+    os: linux
+    dist: trusty
+    compiler: clang
+    addons:
+      apt:
+        packages:
+        - clang-3.7
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-precise-3.7
         
-  #- env: GCC_VERSION="4.9"
-    #os: osx
-    #compiler: gcc
+  - env: GCC_VERSION="4.9"
+    os: osx
+    compiler: gcc
     
-  #- env: CLANG_VERSION="3.7"
-    #os: osx
-    #compiler: clang
+  - env: CLANG_VERSION="3.7"
+    os: osx
+    compiler: clang
 
 # Install dependencies
 install:
