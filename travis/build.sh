@@ -13,6 +13,11 @@ cd build
 export CXX_FLAGS="-std=c++11"
 export CXX_LINKER_FLAGS=""
 
+
+echo "Path set to ${PATH}"
+echo "CXX set to ${CXX}"
+echo "CC set to ${CC}"
+
 if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
 
 # make ApproxMVBB
