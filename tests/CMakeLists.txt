@@ -28,16 +28,17 @@ download_project(PROJ                googletest
 # when building with Visual Studio
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+
+add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 # When using CMake 2.8.11 or later, header path dependencies
 # are automatically added to the gtest and gmock targets.
 # For earlier CMake versions, we have to explicitly add the
 # required directories to the header search path ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gtest_SOURCE_DIR}/include"
-                        "${gmock_SOURCE_DIR}/include")
-endif()
+#if (CMAKE_VERSION VERSION_LESS 2.8.11)
+    #include_directories("${gtest_SOURCE_DIR}/include"
+                        #"${gmock_SOURCE_DIR}/include")
+#endif()
 # ==============================================================================================
 
 
@@ -127,27 +128,7 @@ endif()
 
 
 
-#add_custom_command(TARGET ${EXEC_NAME1} ${EXEC_NAME2} ${EXEC_NAME3} ${EXEC_NAME4} POST_BUILD
-    #COMMAND 
-          #${CMAKE_COMMAND}
-          #-E
-          #copy_directory ${PROJECT_SOURCE_DIR}/files/ ${PROJECT_BINARY_DIR}
-#)
-
-#if(ApproxMVBB_TESTS_HIGH_PERFORMANCE)
-
-#SET(highperfTestFiles ${ApproxMVBB_ROOT_DIR}/additional/tests/files/Lucy.txt)
-
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    #COMMAND 
-          #${CMAKE_COMMAND}
-          #-E
-          #copy ${highperfTestFiles} ${PROJECT_BINARY_DIR}
-#)
-#endif()
-
-
-add_custom_command(TARGET ${EXEC_NAME1} ${EXEC_NAME2} POST_BUILD
+add_custom_command(TARGET ${EXEC_NAME1} ${EXEC_NAME2} ${EXEC_NAME3} ${EXEC_NAME4} ${EXEC_NAME5} POST_BUILD
     COMMAND 
           ${CMAKE_COMMAND}
           -E
