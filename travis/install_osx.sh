@@ -10,7 +10,7 @@ export INSTALL_PREFIX="/usr/local/"
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 
-if [ "$CXX" = "g++" ]; then 
+if [ "$CXX" = "g++" ] || [ "$CXX" = "clang++" ] ; then 
   brew update || echo "suppress failures in order to ignore warnings"
   brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
   brew install gcc49  || echo "suppress failures in order to ignore warnings"
