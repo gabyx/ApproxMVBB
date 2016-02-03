@@ -5,8 +5,6 @@
 cd $ROOT_PATH
 
 
-
-
 export CXX_FLAGS="-std=c++11"
 export CXX_LINKER_FLAGS=""
 if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
@@ -14,11 +12,13 @@ if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
 # make ApproxMVBB
 echo "Build ApproxMVBB:"
 cd $CHECKOUT_PATH
+pwd
   ### init submodules
   #git submodule init
   #git submodule update
   ## only for hig perf. tests
   ##- cd addtional/tests/files; cat Lucy* | tar xz
+  git fetch -t
   git --version
   git describe --tags --abbrev=0
 
