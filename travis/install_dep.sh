@@ -1,9 +1,12 @@
 #!/bin/bash
 
- # init submodules
-echo "Init submodules"
-git submodule init
-git submodule update
+set -ev # exit on errors
+
+# travis does that already
+## init submodules
+#echo "Init submodules"
+#git submodule init
+#git submodule update
 # only for hig perf. tests
 #- cd addtional/tests/files; cat Lucy* | tar xz
 

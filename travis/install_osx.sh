@@ -27,7 +27,6 @@ echo "CXX set to ${CXX}"
 echo "CC set to ${CC}"
 
 ${CXX} --version
-${CXX} -v
 
 chmod +x ./travis/install_dep.sh
 ./travis/install_dep.sh
