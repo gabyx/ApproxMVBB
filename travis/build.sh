@@ -1,7 +1,7 @@
 #!/bin/bash
 # "BUILD ========================================================================"
 
-echo "Go to $CHECKOUT_PATH"
+# "Go to $CHECKOUT_PATH"
 cd $CHECKOUT_PATH
 
 if [ ! -d build ]; then mkdir build; fi
@@ -30,7 +30,7 @@ make VERBOSE=1
 cd ..
 
 # run unit tests
-echo "Run Unit Tests:"
+#"Run Unit Tests:"
 cd build
 make build_and_test
 
