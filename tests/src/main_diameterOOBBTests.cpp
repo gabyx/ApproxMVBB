@@ -118,7 +118,16 @@ namespace DiameterOOBBTest {
             Matrix3Dyn valid = sampled;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
             readPointsMatrixBinary( getFileValidationPath(name,"2.bin") , valid);
-            EXPECT_TRUE( assertNearArray(sampled,valid));
+            
+            if(sampled.cols() > 100){
+                EXPECT_TRUE( assertNearArray(sampled,valid));
+            }
+            else{
+                EXPECT_TRUE( assertNearArray(sampled,valid)) << std::endl 
+                << "valid points:" << valid.transpose()  << std::endl << "and:" << std::endl
+                << sampled.transpose() ;
+            }
+            
         }
         catch( ApproxMVBB::Exception & e){
             ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;

@@ -123,27 +123,31 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
             // comment in if you want the top/bottom points of the grid
             //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
             //a.head<2>()*=dxdyInv.inverse();
-            ApproxMVBB_MSGLOG_L2( k << ", " << ((k%30==0)? "\n" : "") )
+            ApproxMVBB_MSGLOG_L2( boundaryPoints[i].topIdx-1 << ", " << ((k%30==0)? "\n" : "") )
             newPoints.col(k++) =  points.col(boundaryPoints[i].topIdx-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             if(boundaryPoints[i].topIdx != boundaryPoints[i].bottomIdx) {
                 // comment in if you want the bottom points of the grid
                 //Array3 a(i % gridSize,i/gridSize,0);
                 //a.head<2>()*=dxdyInv.inverse();
-                ApproxMVBB_MSGLOG_L2( k << ", " )
+                ApproxMVBB_MSGLOG_L2( boundaryPoints[i].bottomIdx-1 << ", " )
                 newPoints.col(k++) = points.col(boundaryPoints[i].bottomIdx-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             }
         }
     }
-    ApproxMVBB_MSGLOG_L2( "]" << std::endl )
+    
     // Add random points!
     // Random indices if too little points
     if( k < nPoints ){
         RandomGenerators::DefaultRandomGen gen(seed);
         std::uniform_int_distribution<IndexType> dis(0, points.cols()-1);
+        IndexType s;
         while( k < nPoints) {
-            newPoints.col(k++) = points.col( dis(gen) ); //= Vector3(0,0,0);//
+            s = dis(gen);
+            ApproxMVBB_MSGLOG_L2( s << ", " )
+            newPoints.col(k++) = points.col( s ); //= Vector3(0,0,0);//
         }
     }
+    ApproxMVBB_MSGLOG_L2( "]" << std::endl )
 }
 
 /**
