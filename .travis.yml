@@ -37,6 +37,7 @@ matrix:
     
   - env: CLANG_VERSION="3.7"
     os: osx
+    osx_image: xcode7
     compiler: clang
 
 # Install dependencies
