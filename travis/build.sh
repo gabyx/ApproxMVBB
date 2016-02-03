@@ -16,6 +16,7 @@ if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
 echo "Build ApproxMVBB:"
 
 cd $CHECKOUT_PATH
+git --version
 git describe --tags --abbrev=0
 cd $ROOT_PATH
 
