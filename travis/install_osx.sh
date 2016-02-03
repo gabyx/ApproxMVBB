@@ -11,10 +11,10 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 
 
 if [ "$CXX" = "g++" ]; then 
-  brew update
-  brew tap homebrew/versions
-  brew install gcc49
-  brew link --overwrite gcc49
+  brew update || echo "suppress failures in order to ignore warnings"
+  brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
+  brew install gcc49  || echo "suppress failures in order to ignore warnings"
+  brew link --overwrite gcc49 || echo "suppress failures in order to ignore warnings"
   export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
 fi
 
