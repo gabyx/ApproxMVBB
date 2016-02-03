@@ -1,8 +1,8 @@
 #!/bin/bash
 # "BUILD ========================================================================"
 
-# "Go to $CHECKOUT_PATH"
-cd $CHECKOUT_PATH
+# "Go to $ROOT_PATH"
+cd $ROOT_PATH
 
 if [ ! -d build ]; then mkdir build; fi
 cd build
@@ -29,7 +29,6 @@ cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE
 make VERBOSE=1
 cd ..
 
-# run unit tests
 #"Run Unit Tests:"
 cd build
 make build_and_test
