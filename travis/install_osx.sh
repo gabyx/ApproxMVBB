@@ -9,6 +9,11 @@ cd $ROOT_PATH
 export INSTALL_PREFIX="/usr/local/"
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
+echo "Path set to ${PATH}"
+echo "CXX set to ${CXX}"
+echo "CC set to ${CC}"
+
+
 
 if [ "$CXX" = "g++" ] || [ "$CXX" = "clang++" ] ; then 
   brew update || echo "suppress failures in order to ignore warnings"

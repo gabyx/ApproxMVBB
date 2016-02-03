@@ -94,7 +94,7 @@ namespace MinAreaRectangleTest {
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
 
         // Assert all cols of p are in valid
-        EXPECT_TRUE( assertNearArrayColsRows<true>(p,valid) ) << "Valid Points:" << std::endl << valid.transpose()
+        EXPECT_TRUE( assertNearArrayColsRows<false>(p,valid) ) << "Valid Points:" << std::endl << valid.transpose()
         << std::endl << " computed:" << std::endl << p.transpose() << std::endl;
 
     }
