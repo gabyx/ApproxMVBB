@@ -16,6 +16,7 @@ os:
   - osx
 
 sudo: required
+dist: trusty
 
 language: cpp
 
