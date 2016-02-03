@@ -38,7 +38,5 @@ ${CXX} --version
 chmod +x ./travis/install_dep.sh
 . ./travis/install_dep.sh
 
-exit 0
-
 # "DEPENDECIES COMPLETE ================================================================="
  

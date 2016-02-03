@@ -29,5 +29,3 @@ mkdir ${ROOT_PATH}/pugixmlBuild
 cd ${ROOT_PATH}/pugixmlBuild
 cmake ../pugixml/scripts/ -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 sudo make VERBOSE=1 install
-
-exit 0

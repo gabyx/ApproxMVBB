@@ -35,5 +35,3 @@ cd build
 make build_and_test
 
 # "BUILD COMPLETE ================================================================"
-
-exit 0
