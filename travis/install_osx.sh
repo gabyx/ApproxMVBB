@@ -26,7 +26,7 @@ if [ "$CXX" = "clang++" ] ; then
 fi
 
 # Cmake
-brew install cmake
+brew install cmake || echo "suppress failures in order to ignore warnings"
 
 echo "Path set to ${PATH}"
 cmake --version
