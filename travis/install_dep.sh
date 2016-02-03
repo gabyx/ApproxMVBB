@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ev # exit on errors
+set -e # exit on errors
 
 ## init submodules
 #git submodule init

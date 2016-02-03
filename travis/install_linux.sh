@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ev # exit on error
+set -e # exit on error
 
 # "DEPENDECIES ========================================================================"
 
