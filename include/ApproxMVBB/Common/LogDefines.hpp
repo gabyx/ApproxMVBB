@@ -16,6 +16,8 @@
 
 #define ApproxMVBB_LOG(message )  { std::cout << message ; }
 #define ApproxMVBB_LOGLEVEL(level,setlevel,message) { if( level <= setlevel ){  ApproxMVBB_LOG(message); } }
+#define ApproxMVBB_LOGLEVEL_SCOPE(level) { if( level <= setlevel ) { }
+#define ApproxMVBB_LOGLEVEL_SCOPE_END { } }
 
 // Message Log ==================================================================================
 #if ApproxMVBB_FORCE_MSGLOG_LEVEL > 0

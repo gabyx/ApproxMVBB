@@ -44,7 +44,8 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
                       )
 {
-
+    using IndexType = typename Derived::Index;
+    
     if(nPoints > points.cols() || nPoints < 2) {
         ApproxMVBB_ERRORMSG("Wrong arguments!" << "sample nPoints: (>2) " << nPoints << " of points: " << points.cols() << std::endl )
     }
@@ -58,10 +59,19 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     //std::cout << oobb.m_minPoint.transpose() << std::endl;
     oobb.setZAxisLongest();
 
-    unsigned int halfSampleSize = gridSize*gridSize;
-    std::vector< std::pair<unsigned int , PREC > > topPoints(halfSampleSize,    std::pair<unsigned int,PREC>{} );    // grid of indices of the top points (indexed from 1 )
-    std::vector< std::pair<unsigned int , PREC > > bottomPoints(halfSampleSize, std::pair<unsigned int,PREC>{} ); // grid of indices of the bottom points (indexed from 1 )
-
+    IndexType halfSampleSize = gridSize*gridSize;
+    
+    struct BottomTopPoints{
+        IndexType bottomIdx = 0;
+        PREC bottomZ;
+    
+        IndexType topIdx = 0;
+        PREC topZ; 
+    };
+    
+    // grid of the bottom/top points in Z direction (indexed from 1 )
+    std::vector< BottomTopPoints > boundaryPoints(halfSampleSize); 
+       
     using LongInt = long long int;
     MyMatrix::Array2<LongInt> idx; // Normalized P
     //std::cout << oobb.extent() << std::endl;
@@ -72,8 +82,8 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     Matrix33 A_KI(oobb.m_q_KI.matrix().transpose());
 
     // Register points in grid
-    auto size = points.cols();
-    for(unsigned int i=0; i<size; ++i) {
+    IndexType size = points.cols();
+    for(IndexType i=0; i<size; ++i) {
 
         K_p = A_KI * points.col(i);
         // get x index in grid
@@ -82,51 +92,54 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
         idx(0) = std::max(   std::min( LongInt(gridSize-1), idx(0)),  0LL   );
         idx(1) = std::max(   std::min( LongInt(gridSize-1), idx(1)),  0LL   );
         //std::cout << idx.transpose() << std::endl;
-        unsigned int pos = idx(0) + idx(1)*gridSize;
-
+        
         // Register points in grid
-        // if z axis of p is > topPoints[pos]  -> set new top point at pos
-        // if z axis of p is < bottom[pos]     -> set new bottom point at pos
-
-        if( topPoints[pos].first == 0) {
-            topPoints[pos].first  = bottomPoints[pos].first  = i+1;
-            topPoints[pos].second = bottomPoints[pos].second = K_p(2);
+        // if z component of p is > pB.topZ  -> set new top point at pos
+        // if z component of p is < pB.bottomZ    -> set new bottom point at pos
+        auto & pB = boundaryPoints[idx(0) + idx(1)*gridSize];
+        
+        if( pB.bottomIdx == 0) {
+            pB.bottomIdx  = pB.topIdx  = i+1;
+            pB.bottomZ = pB.topZ       = K_p(2);
         } else {
-            if( topPoints[pos].second < K_p(2) ) {
-                topPoints[pos].first = i+1;
-                topPoints[pos].second = K_p(2);
-            }
-            if( bottomPoints[pos].second > K_p(2) ) {
-                bottomPoints[pos].first = i+1;
-                bottomPoints[pos].second = K_p(2);
+            if( pB.topZ < K_p(2) ) {
+                pB.topIdx = i+1;
+                pB.topZ = K_p(2);
+            }else{
+                if( pB.bottomZ > K_p(2) ) {
+                    pB.bottomIdx = i+1;
+                    pB.bottomZ = K_p(2);
+                }
             }
         }
     }
 
     // Copy top and bottom points
-    unsigned int k=0;
-
+    IndexType k=0;
+    ApproxMVBB_MSGLOG_L2("Sampled Points incides: [ ")
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    for(unsigned int i=0; i<halfSampleSize; ++i) {
-        if( topPoints[i].first != 0 ) {
-            // comment in if you want the points top points of the grid
-//            Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
-//            a.head<2>()*=dxdyInv.inverse();
-            newPoints.col(k++) =  points.col(topPoints[i].first-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
-            if(topPoints[i].first != bottomPoints[i].first) {
+    for(IndexType i=0; i<halfSampleSize; ++i) {
+        if( boundaryPoints[i].bottomIdx != 0 ) {
+            // comment in if you want the top/bottom points of the grid
+            //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
+            //a.head<2>()*=dxdyInv.inverse();
+            ApproxMVBB_MSGLOG_L2( k << ", " << ((k%30==0)? "\n" : "") )
+            newPoints.col(k++) =  points.col(boundaryPoints[i].topIdx-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+            if(boundaryPoints[i].topIdx != boundaryPoints[i].bottomIdx) {
                 // comment in if you want the bottom points of the grid
-//                Array3 a(i % gridSize,i/gridSize,0);
-//                a.head<2>()*=dxdyInv.inverse();
-                newPoints.col(k++) = points.col(bottomPoints[i].first-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+                //Array3 a(i % gridSize,i/gridSize,0);
+                //a.head<2>()*=dxdyInv.inverse();
+                ApproxMVBB_MSGLOG_L2( k << ", " )
+                newPoints.col(k++) = points.col(boundaryPoints[i].bottomIdx-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             }
         }
     }
-
+    ApproxMVBB_MSGLOG_L2( "]" << std::endl )
     // Add random points!
     // Random indices if too little points
     if( k < nPoints ){
         RandomGenerators::DefaultRandomGen gen(seed);
-        std::uniform_int_distribution<unsigned int> dis(0, points.cols()-1);
+        std::uniform_int_distribution<IndexType> dis(0, points.cols()-1);
         while( k < nPoints) {
             newPoints.col(k++) = points.col( dis(gen) ); //= Vector3(0,0,0);//
         }
