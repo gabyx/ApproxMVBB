@@ -76,14 +76,13 @@ namespace MinAreaRectangleTest {
         std::cout << "End MinAreaRectangle Test "+ name +"" << std::endl;
         auto rect = c.getMinRectangle();
 
-        Matrix2Dyn p(2,7);
+        Matrix2Dyn p(2,6);
         p.col(0) =  rect.m_p;
         p.col(1) =  rect.m_p + rect.m_u*rect.m_uL ;
         p.col(2) =  rect.m_p + rect.m_u*rect.m_uL + rect.m_v*rect.m_vL ;
         p.col(3) =  rect.m_p + rect.m_v*rect.m_vL ;
-        p.col(4) =  rect.m_p;
-        p.col(5) =  rect.m_u;
-        p.col(6) =  rect.m_v;
+        p.col(4) =  rect.m_u;
+        p.col(5) =  rect.m_v;
 
         dumpPointsMatrixBinary(getFileOutPath(name) ,p);
         //dumpPointsMatrix(getFileOutPath(name,".txt"),p);
@@ -94,7 +93,7 @@ namespace MinAreaRectangleTest {
         readPointsMatrixBinary( getFileValidationPath(name) , valid);
 
         // Assert all cols of p are in valid
-        EXPECT_TRUE( assertNearArrayColsRows<false>(p,valid) ) << "Valid Points:" << std::endl << valid.transpose()
+        EXPECT_TRUE( assertNearArrayColsRows<true>(p,valid) ) << "Valid Points:" << std::endl << valid.transpose()
         << std::endl << " computed:" << std::endl << p.transpose() << std::endl;
 
     }

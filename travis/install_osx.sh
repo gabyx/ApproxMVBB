@@ -9,13 +9,8 @@ cd $ROOT_PATH
 export INSTALL_PREFIX="/usr/local/"
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-echo "Path set to ${PATH}"
-echo "CXX set to ${CXX}"
-echo "CC set to ${CC}"
 
-
-
-if [ "$CXX" = "g++" ] || [ "$CXX" = "clang++" ] ; then 
+if [ "$CXX" = "g++" ] ; then 
   brew update || echo "suppress failures in order to ignore warnings"
   brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
   brew install gcc49  || echo "suppress failures in order to ignore warnings"
@@ -23,10 +18,14 @@ if [ "$CXX" = "g++" ] || [ "$CXX" = "clang++" ] ; then
   export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
 fi
 
-
 if [ "$CXX" = "clang++" ] ; then 
-  brew install isl --HEAD
-  brew install --cc=gcc-4.9 --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets
+  brew update || echo "suppress failures in order to ignore warnings"
+  brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
+  brew install gcc49  || echo "suppress failures in order to ignore warnings"
+  brew link --overwrite gcc49 || echo "suppress failures in order to ignore warnings"
+  
+  brew install isl --HEAD || echo "suppress failures in order to ignore warnings"
+  brew install --cc=gcc-4.9 --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets || echo "suppress failures in order to ignore warnings"
   export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
 fi
 
