@@ -18,7 +18,7 @@ if [ "$CXX" = "g++" ] ; then
   export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
 fi
 
-if [ "$CXX" = "clang++" ] ; then 
+#if [ "$CXX" = "clang++" ] ; then 
   # brew update || echo "suppress failures in order to ignore warnings"
 #   brew doctor || echo "suppress failures in order to ignore warnings"
 #   brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
@@ -29,7 +29,7 @@ if [ "$CXX" = "clang++" ] ; then
 #   brew install isl --HEAD || echo "suppress failures in order to ignore warnings"
 #   brew install --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets || echo "suppress failures in order to ignore warnings"
 #   export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
-fi
+#fi
 
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
