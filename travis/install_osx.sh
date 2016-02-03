@@ -24,10 +24,10 @@ if [ "$CXX" = "clang++" ] ; then
   brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
   brew install xz || echo "suppress failures in order to ignore warnings"
   brew install gcc49  || echo "suppress failures in order to ignore warnings"
-  brew link --overwrite gcc49 || echo "suppress failures in order to ignore warnings"
+  #brew link --overwrite gcc49 || echo "suppress failures in order to ignore warnings"
   
   brew install isl --HEAD || echo "suppress failures in order to ignore warnings"
-  brew install --cc=gcc-4.9 --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets || echo "suppress failures in order to ignore warnings"
+  brew install --HEAD llvm37 --with-asan --with-clang --with-libcxx --rtti --all-targets || echo "suppress failures in order to ignore warnings"
   export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
 fi
 
