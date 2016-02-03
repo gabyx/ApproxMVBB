@@ -33,7 +33,7 @@ cd $ROOT_PATH
 echo "Install and test if ApproxMVBB links:"
 mkdir $ROOT_PATH/buildLibUsage
 cd $ROOT_PATH/buildLibUsage
-INSTALL=$(find $CHECKOUT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
+INSTALL=$(find $ROOT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
 echo "Install dir= $INSTALL"
 cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL
 make VERBOSE=1
