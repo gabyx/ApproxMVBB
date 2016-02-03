@@ -12,6 +12,7 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 # install additional stuff
 brew update
 brew tap homebrew/versions
+brew install gcc49
 brew link --overwrite gcc49
 
 ls -l "/usr/local/Cellar/gcc/4.9.1/"
@@ -24,6 +25,9 @@ brew install --cc=gcc-4.9 --HEAD llvm37 --with-asan --with-clang --with-libcxx -
 find "/usr/local/Cellar/" -name "clang++-3.7"
 export PATH="/usr/local/Cellar/llvm35/HEAD/bin/clang++-3.7;$PATH"
  
+ 
+# Cmake
+brew install cmake
 
 if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
 if [ "$CXX" = "clang++" ] ; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
