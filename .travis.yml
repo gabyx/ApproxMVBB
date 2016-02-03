@@ -1,37 +1,42 @@
-addons:
-  apt:
+sudo: required
+language: cpp
+
+matrix:
+  include:
     # List of whitelisted in travis packages for ubuntu-precise can be found here:
     #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
     # List of whitelisted in travis apt-sources:
     #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
-    sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.7
-    packages:
-    - gcc-4.9
-    - g++-4.9
-    - clang-3.7
-os:
-  - linux
-  - osx
-
-sudo: required
-dist: trusty
-
-language: cpp
-
-compiler:
-  - gcc
-  - clang
-  
-env:
-  global:
-    - GCC_VERSION="4.9"
-    - CLANG_VERSION="3.7"
-    
-    # biicode credentials 
-    - BIICODE_USER="gabyx"
-
+  - env: GCC_VERSION="4.9"
+    os: linux
+    dist: trusty
+    compiler: gcc
+    addons:
+      apt:
+        packages:
+        - gcc-4.9
+        - g++-4.9
+        sources:
+        - ubuntu-toolchain-r-test
+        
+  - env: CLANG_VERSION="3.7"
+    os: linux
+    dist: trusty
+    compiler: clang
+    addons:
+      apt:
+        packages:
+        - clang-3.7
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-precise-3.7
+        
+  - env: GCC_VERSION="4.9"
+    os: osx
+    compiler: gcc
+  - env: CLANG_VERSION="3.7"
+    os: osx
+    compiler: clang
 
 # Install dependencies
 install:
