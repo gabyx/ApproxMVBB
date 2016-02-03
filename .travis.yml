@@ -34,6 +34,7 @@ matrix:
   - env: GCC_VERSION="4.9"
     os: osx
     compiler: gcc
+    
   - env: CLANG_VERSION="3.7"
     os: osx
     compiler: clang
@@ -46,13 +47,13 @@ install:
   - echo "ROOT_PATH= $ROOT_PATH"
   - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
   
-  - chmod +x ./travis/install_${TRAVIS_OS_NAME}.sh
-  - . ./travis/install_${TRAVIS_OS_NAME}.sh
+  - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
+  - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
  
 
 script:
-  - chmod +x ./travis/build.sh
-  - . ./travis/build.sh
+  - chmod +x $CHECKOUT_PATH/travis/build.sh
+  - . $CHECKOUT_PATH/travis/build.sh
 
 after_success:
   - cd $CHECKOUT_PATH

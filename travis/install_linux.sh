@@ -28,7 +28,7 @@ echo "CC set to ${CC}"
 ${CXX} --version
 cmake --version
 
-chmod +x ./travis/install_dep.sh
+chmod +x $CHECKOUT_PATH/travis/install_dep.sh
 # run the command in this process -> env varibales!
-. ./travis/install_dep.sh
+. $CHECKOUT_PATH/travis/install_dep.sh
 # "DEPENDECIES COMPLETE ================================================================="

@@ -35,8 +35,8 @@ cmake --version
 
 ${CXX} --version
 
-chmod +x ./travis/install_dep.sh
-. ./travis/install_dep.sh
+chmod +x $CHECKOUT_PATH/travis/install_dep.sh
+. $CHECKOUT_PATH/travis/install_dep.sh
 
 # "DEPENDECIES COMPLETE ================================================================="
  
