@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "BUILD ========================================================================"
 export ROOT_PATH=`pwd`/../;
 export CHECKOUT_PATH=`pwd`;
 echo "ROOT_PATH= $ROOT_PATH"
@@ -41,3 +41,5 @@ cd ..
 echo "Run Unit Tests:"
 cd build
 make build_and_test
+
+echo "BUILD COMPLETE ================================================================"
