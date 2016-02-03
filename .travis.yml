@@ -35,12 +35,12 @@ env:
 # Install dependencies
 install:
   - chmod +x ./travis/install_${TRAVIS_OS_NAME}.sh
-  - ./travis/install_${TRAVIS_OS_NAME}.sh
+  - . ./travis/install_${TRAVIS_OS_NAME}.sh
  
 
 script:
   - chmod +x ./travis/build.sh
-  - ./travis/build.sh
+  - . ./travis/build.sh
 
 after_success:
   - cd $CHECKOUT_PATH

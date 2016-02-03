@@ -20,10 +20,10 @@ echo "CXX set to ${CXX}"
 echo "CC set to ${CC}"
 
 ${CXX} --version
-${CXX} -v
 
 chmod +x ./travis/install_dep.sh
-./travis/install_dep.sh
+# run the command in this process -> env varibales!
+. ./travis/install_dep.sh
 
 exit 0
 echo "DEPENDECIES COMPLETE ================================================================="

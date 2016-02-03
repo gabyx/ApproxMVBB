@@ -11,12 +11,6 @@ set -ev # exit on errors
 #- cd addtional/tests/files; cat Lucy* | tar xz
 
 
-export ROOT_PATH=`pwd`/../;
-export CHECKOUT_PATH=`pwd`;
-echo "ROOT_PATH= $ROOT_PATH"
-echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-
-
 # Install eigen3
 hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
 cd ${ROOT_PATH}/eigen3 && hg update 3.2

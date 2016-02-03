@@ -1,13 +1,5 @@
 #!/bin/bash
 echo "BUILD ========================================================================"
-export ROOT_PATH=`pwd`/../;
-export CHECKOUT_PATH=`pwd`;
-echo "ROOT_PATH= $ROOT_PATH"
-echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-
-echo "Path set to ${PATH}"
-echo "CXX set to ${CXX}"
-echo "CC set to ${CC}"
 
 echo "Go to $CHECKOUT_PATH"
 cd $CHECKOUT_PATH
