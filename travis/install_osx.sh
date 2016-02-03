@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -ev # exit on errors
+
+# "DEPENDECIES ========================================================================"
+
 #install prefix
 export INSTALL_PREFIX="/usr/local/"
 
@@ -29,7 +33,9 @@ echo "CC set to ${CC}"
 ${CXX} --version
 
 chmod +x ./travis/install_dep.sh
-./travis/install_dep.sh
+. ./travis/install_dep.sh
 
-exit $?
-  
+exit 0
+
+# "DEPENDECIES COMPLETE ================================================================="
+ 

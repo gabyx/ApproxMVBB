@@ -2,7 +2,7 @@
 
 set -ev # exit on error
 
-echo "DEPENDECIES ========================================================================"
+# "DEPENDECIES ========================================================================"
 
 #install a newer cmake since at this time Travis only has version 2.8.7
 echo "yes" | sudo add-apt-repository --yes ppa:kalakris/cmake
@@ -26,4 +26,4 @@ chmod +x ./travis/install_dep.sh
 . ./travis/install_dep.sh
 
 exit 0
-echo "DEPENDECIES COMPLETE ================================================================="
+# "DEPENDECIES COMPLETE ================================================================="
