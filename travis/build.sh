@@ -4,8 +4,7 @@
 # "Go to $ROOT_PATH"
 cd $ROOT_PATH
 
-if [ ! -d $ROOT_PATH/build ]; then mkdir $ROOT_PATH/build; fi
-cd $ROOT_PATH/build
+
 
 
 export CXX_FLAGS="-std=c++11"
@@ -14,12 +13,17 @@ if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
 
 # make ApproxMVBB
 echo "Build ApproxMVBB:"
-
 cd $CHECKOUT_PATH
-git --version
-git describe --tags --abbrev=0
-cd $ROOT_PATH
+  ### init submodules
+  #git submodule init
+  #git submodule update
+  ## only for hig perf. tests
+  ##- cd addtional/tests/files; cat Lucy* | tar xz
+  git --version
+  git describe --tags --abbrev=0
 
+if [ ! -d $ROOT_PATH/build ]; then mkdir $ROOT_PATH/build; fi
+cd $ROOT_PATH/build
 cmake $CHECKOUT_PATH -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
 make VERBOSE=1
 make install

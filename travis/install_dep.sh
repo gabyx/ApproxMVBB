@@ -4,13 +4,6 @@ set -e # exit on errors
 
 cd $ROOT_PATH
 
-## init submodules
-#git submodule init
-#git submodule update
-# only for hig perf. tests
-#- cd addtional/tests/files; cat Lucy* | tar xz
-
-
 # Install eigen3 =======================================================
 hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
 cd ${ROOT_PATH}/eigen3 && hg update 3.2
