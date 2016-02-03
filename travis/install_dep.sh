@@ -2,6 +2,8 @@
 
 set -e # exit on errors
 
+cd $ROOT_PATH
+
 ## init submodules
 #git submodule init
 #git submodule update

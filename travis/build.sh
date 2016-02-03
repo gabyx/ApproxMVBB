@@ -4,8 +4,8 @@
 # "Go to $ROOT_PATH"
 cd $ROOT_PATH
 
-if [ ! -d build ]; then mkdir build; fi
-cd build
+if [ ! -d $ROOT_PATH/build ]; then mkdir $ROOT_PATH/build; fi
+cd $ROOT_PATH/build
 
 
 export CXX_FLAGS="-std=c++11"
@@ -17,20 +17,20 @@ echo "Build ApproxMVBB:"
 cmake $CHECKOUT_PATH -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
 make VERBOSE=1
 make install
-cd ..
+cd $ROOT_PATH
 
 # make install and library usage!
 echo "Install and test if ApproxMVBB links:"
-mkdir buildLibUsage
-cd buildLibUsage
+mkdir $ROOT_PATH/buildLibUsage
+cd $ROOT_PATH/buildLibUsage
 INSTALL=$(find $CHECKOUT_PATH/build/install/lib/cmake/ApproxMVBB* -type d)
 echo "Install dir= $INSTALL"
 cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL
 make VERBOSE=1
-cd ..
+cd $ROOT_PATH
 
 #"Run Unit Tests:"
-cd build
+cd $ROOT_PATH/build
 make build_and_test
 
 # "BUILD COMPLETE ================================================================"
