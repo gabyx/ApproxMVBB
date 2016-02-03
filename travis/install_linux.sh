@@ -16,8 +16,6 @@ sudo ./cmake-3.2.2-Linux-x86_64.sh --skip-license --prefix=$INSTALL_PREFIX
 
 
 
-
-
 if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
 if [ "$CXX" = "clang++" ] ; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
 
