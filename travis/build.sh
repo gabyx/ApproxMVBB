@@ -3,6 +3,7 @@
 
 echo "Go to $CHECKOUT_PATH"
 cd $CHECKOUT_PATH
+
 if [ ! -d build ]; then mkdir build; fi
 cd build
 

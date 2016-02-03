@@ -34,6 +34,12 @@ env:
 
 # Install dependencies
 install:
+
+  - export ROOT_PATH=`pwd`/../;
+  - export CHECKOUT_PATH=`pwd`;
+  - echo "ROOT_PATH= $ROOT_PATH"
+  - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
+  
   - chmod +x ./travis/install_${TRAVIS_OS_NAME}.sh
   - . ./travis/install_${TRAVIS_OS_NAME}.sh
  

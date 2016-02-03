@@ -3,9 +3,11 @@
 set -ev # exit on errors
 
 # "DEPENDECIES ========================================================================"
+cd $ROOT_PATH
 
-#install prefix
+#install prefix and path
 export INSTALL_PREFIX="/usr/local/"
+export PATH=$INSTALL_PREFIX/bin:$PATH
 
 # install additional stuff
 brew update
@@ -29,6 +31,7 @@ if [ "$CXX" = "clang++" ] ; then export CXX="clang++-${CLANG_VERSION}" CC="clang
 echo "Path set to ${PATH}"
 echo "CXX set to ${CXX}"
 echo "CC set to ${CC}"
+cmake --version
 
 ${CXX} --version
 
