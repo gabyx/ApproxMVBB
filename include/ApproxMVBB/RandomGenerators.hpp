@@ -166,7 +166,11 @@ namespace RandomGenerators{
     
     /** Define the Uniform distributions for the library and for the tests */
     #ifdef ApproxMVBB_BUILD_TESTS
-        #warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
+        #ifdef ApproxMVBB_BUILD_LIBRARY
+            #error "ApproxMVBB: Using non-standart uniform distributions for testing!"
+        #else
+            #warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
+        #endif
         template<typename T>
         using DefaultUniformUIntDistribution = AlmostUniformUIntDistribution<T>;
         template<typename T>

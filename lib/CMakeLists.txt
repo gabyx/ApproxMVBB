@@ -14,17 +14,6 @@ SET(INCLUDE_FILES
     ${ApproxMVBB_INC}
 )
 
-# Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
-# We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
-IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden  -DApproxMVBB_BUILD_LIBRARY")
-ELSE()
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   /DApproxMVBB_BUILD_LIBRARY")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DApproxMVBB_BUILD_LIBRARY")
-ENDIF()
-
-
 #include directories
 SET(INCLUDE_DIRS
     ${EIGEN_INCLUDE_DIR}
@@ -51,8 +40,16 @@ TARGET_LINK_LIBRARIES(ApproxMVBB ${LINK_LIBS})
 SET_TARGET_PROPERTIES(ApproxMVBB PROPERTIES 
     VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
 )
+
 # set build flag, for import/export specifiers in platform.hpp
-TARGET_COMPILE_DEFINITIONS(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY)
+# Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
+# We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
+IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    target_compile_options(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY -fvisibility=hidden)
+ELSE()
+    target_compile_options(ApproxMVBB PRIVATE /DApproxMVBB_BUILD_LIBRARY)
+ENDIF()
+
 
 
 SET(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")

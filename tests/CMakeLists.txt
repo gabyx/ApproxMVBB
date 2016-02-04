@@ -80,8 +80,14 @@ set(INCLUDE_DIRS
 
 include_directories(${INCLUDE_DIRS})
 
-# Add build flag for testing
-SET(CMAKE_CXX_FLAGS "-DApproxMVBB_BUILD_TESTS ${CMAKE_CXX_FLAGS}" )
+# Define function to define compile definitions for all tests
+function(defineCompileDefs Target)
+    IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+        target_compile_options(${Target} PRIVATE -DApproxMVBB_BUILD_TESTS )
+    ELSE()
+        target_compile_options(${Target} PRIVATE /DApproxMVBB_BUILD_TESTS )
+    ENDIF()
+endfunction()
 
 # ConvexHull
 SET(EXEC_NAME1 ${PROJECT_NAME}-ConvexHull)
