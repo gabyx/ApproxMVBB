@@ -3,8 +3,12 @@
 #The name of the library project ====================================================================
 PROJECT("ApproxMVBBLib")
 
+# Options ==============================================================
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY_STATIC  )
 SET(ApproxMVBB_BUILD_LIBRARY_STATIC OFF CACHE BOOL "Build a static library")
+
+MARK_AS_ADVANCED(ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INCLUDE_INSTALL_DIR )
+# ======================================================================
 
 SET(SOURCE_FILES
     ${ApproxMVBB_SRC}
@@ -24,7 +28,7 @@ INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SET(LINK_LIBS ${ApproxMVBB_LINK_LIBS})
 
-# Make Targets shared/static
+# Make targets library shared/static ============================================
 IF(ApproxMVBB_BUILD_LIBRARY_STATIC)
 ADD_LIBRARY(ApproxMVBB STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 SET_TARGET_PROPERTIES(ApproxMVBB PROPERTIES OUTPUT_NAME ApproxMVBBStatic)
@@ -44,16 +48,46 @@ SET_TARGET_PROPERTIES(ApproxMVBB PROPERTIES
 # set build flag, for import/export specifiers in platform.hpp
 # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
 # We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
-IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
     target_compile_options(ApproxMVBB PRIVATE -DApproxMVBB_BUILD_LIBRARY -fvisibility=hidden)
 ELSE()
     target_compile_options(ApproxMVBB PRIVATE /DApproxMVBB_BUILD_LIBRARY)
 ENDIF()
+# ======================================================================
+
+# Make target library for tests ================================================
+IF(ApproxMVBB_BUILD_TESTS)
+  IF(ApproxMVBB_BUILD_LIBRARY_STATIC)
+  ADD_LIBRARY(ApproxMVBBForTestsOnly STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
+  SET_TARGET_PROPERTIES(ApproxMVBBForTestsOnly PROPERTIES OUTPUT_NAME ApproxMVBBForTestsOnlyStatic)
+  ELSE()
+  ADD_LIBRARY(ApproxMVBBForTestsOnly SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
+  ENDIF()
+
+  IF( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
+      ADD_DEPENDENCIES(ApproxMVBBForTestsOnly ${ApproxMVBB_DEPENDING_TARGETS})
+  ENDIF()
+
+  TARGET_LINK_LIBRARIES(ApproxMVBBForTestsOnly ${LINK_LIBS})
+  SET_TARGET_PROPERTIES(ApproxMVBBForTestsOnly PROPERTIES 
+      VERSION ${ApproxMVBB_VERSION_STRING} SOVERSION ${ApproxMVBB_VERSION_STRING}
+  )
+
+  # set build flag, for import/export specifiers in platform.hpp
+  # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
+  # We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
+  IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
+      target_compile_options(ApproxMVBBForTestsOnly PRIVATE -DApproxMVBB_BUILD_LIBRARY -DApproxMVBB_BUILD_TESTS -fvisibility=hidden)
+  ELSE()
+      target_compile_options(ApproxMVBBForTestsOnly PRIVATE /DApproxMVBB_BUILD_LIBRARY /DApproxMVBB_BUILD_TESTS)
+  ENDIF()
+ENDIF()
+# ======================================================================
 
 
 
-SET(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")
-SET(ApproxMVBB_LIBRARY_NAME_DBG "ApproxMVBB${CMAKE_DEBUG_POSTFIX}")
+SET(ApproxMVBB_LIBRARY_NAME_REL "ApproxMVBB")                       # used for cmake config
+SET(ApproxMVBB_LIBRARY_NAME_DBG "ApproxMVBB${CMAKE_DEBUG_POSTFIX}") # used for cmake config
 SET(ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER "ApproxMVBB/Config/Config.hpp")
 
 # Install stuff (default location is not some where on the system! for safty reasons
@@ -64,7 +98,7 @@ ENDIF()
 # Set install directories (if changed CMAKE_INSTALL_PREFIX adjust values)
 SET(ApproxMVBB_LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "Install dir library")
 SET(ApproxMVBB_INC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/ApproxMVBB CACHE STRING "Install dir includes")
-MARK_AS_ADVANCED(ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INCLUDE_INSTALL_DIR )
+
 
 IF(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
     SET(INSTALL_PREFIX_LAST_VALUE ${CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Last install prefix value")
@@ -76,13 +110,14 @@ IF(NOT( CMAKE_INSTALL_PREFIX STREQUAL INSTALL_PREFIX_LAST_VALUE ) )
     MARK_AS_ADVANCED(FORCE ApproxMVBB_LIB_INSTALL_DIR ApproxMVBB_INC_INSTALL_DIR )
 ENDIF()
 
-# INSTALLING FILES
+# INSTALLING FILES ================================================================================================================================
 MESSAGE( STATUS "Installing library to " "${ApproxMVBB_LIB_INSTALL_DIR}")
 INSTALL(TARGETS ApproxMVBB 
         LIBRARY DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${ApproxMVBB_LIB_INSTALL_DIR})
 
 MESSAGE( STATUS "Installing include folders:" ${ApproxMVBB_INCLUDE_DIR} " to ${ApproxMVBB_INC_INSTALL_DIR}")
+
 # do not install KdTree headers:
 IF( NOT ApproxMVBB_SUPPORT_KDTREE)
   SET(ApproxMVBB_KDTREE_INCF_PATTERN "*KdTree.hpp")
@@ -111,7 +146,7 @@ INSTALL(DIRECTORY  ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB
 
 
 
-# Make configuration files for cmake
+# Make configuration files for cmake ============================================================================
 
 SET(CMAKE_CONFIG_FOLDER ${ApproxMVBB_LIB_INSTALL_DIR}/cmake/ApproxMVBB-${ApproxMVBB_VERSION_STRING})
 
@@ -134,7 +169,6 @@ CONFIGURE_FILE(
 #=========================
 
 
-
 MESSAGE( STATUS "Installing cmake config files to ${CMAKE_CONFIG_FOLDER}")
 INSTALL(FILES  ${ApproxMVBB_CMAKE_CONFIG_FILE} ${ApproxMVBB_CMAKE_CONFIG_VERSION_FILE}
         DESTINATION ${CMAKE_CONFIG_FOLDER}
@@ -146,3 +180,5 @@ INSTALL(FILES  ${ApproxMVBB_ROOT_DIR}/cmake/FindEigen3.cmake
                ${ApproxMVBB_ROOT_DIR}/cmake/FindPugiXML.cmake 
         DESTINATION ${CMAKE_CONFIG_FOLDER}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
+# ==================================================================================================================

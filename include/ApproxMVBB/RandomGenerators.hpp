@@ -16,13 +16,13 @@
 #include <type_traits>
 #include <cstdint>
 #include <random>
-#include <limits> 
+#include <limits>
 
 namespace ApproxMVBB{
 namespace RandomGenerators{
 
    /** This is a fixed-increment version of Java 8's SplittableRandom generator
-   See http://dx.doi.org/10.1145/2714064.2660195 and 
+   See http://dx.doi.org/10.1145/2714064.2660195 and
    http://docs.oracle.com/javase/8/docs/api/java/util/SplittableRandom.html
 
    It is a very fast generator passing BigCrush, and it can be useful if
@@ -34,14 +34,14 @@ namespace RandomGenerators{
     private:
         uint64_t x; //< The state can be seeded with any value.
     public:
-    
+
         SplitMix64(const SplitMix64 & gen) = default;
-        SplitMix64(SplitMix64 && gen) = default; 
-    
+        SplitMix64(SplitMix64 && gen) = default;
+
         SplitMix64(uint64_t seed);
         void seed(uint64_t seed);
         uint64_t operator()();
-        
+
          // for standard random
         using result_type = uint64_t;
         static constexpr result_type min(){ return std::numeric_limits<result_type>::min(); }
@@ -56,20 +56,20 @@ namespace RandomGenerators{
 
            The state must be seeded so that it is not everywhere zero. If you have
            a 64-bit seed, we suggest to seed a splitmix64 generator and use its
-           output to fill s. 
+           output to fill s.
     */
     class APPROXMVBB_EXPORT XorShift128Plus{
         private:
         uint64_t s[2];
-    
+
         public:
         XorShift128Plus(const XorShift128Plus & gen) = default;
-        XorShift128Plus(XorShift128Plus && gen) = default; 
-        
+        XorShift128Plus(XorShift128Plus && gen) = default;
+
         XorShift128Plus(uint64_t seed);
-        /** Take time() to seed this generator */ 
+        /** Take time() to seed this generator */
         XorShift128Plus();
-        
+
         void seed(uint64_t seed);
         /** Generate random number */
         uint64_t operator()();
@@ -78,7 +78,7 @@ namespace RandomGenerators{
            to 2^64 calls to next(); it can be used to generate 2^64
            non-overlapping subsequences for parallel computations. */
         void jump();
-        
+
           // for standard random
         using result_type = uint64_t;
         static constexpr result_type min(){ return std::numeric_limits<result_type>::min(); }
@@ -97,16 +97,16 @@ namespace RandomGenerators{
         private:
         uint64_t s[16];
         int p = 0;
-    
+
         public:
         XorShift1024Star(const XorShift1024Star & gen) = default;
-        XorShift1024Star(XorShift1024Star && gen) = default; 
-        
-        
+        XorShift1024Star(XorShift1024Star && gen) = default;
+
+
         XorShift1024Star(uint64_t seed);
-        /** Take time() to seed this generator */ 
+        /** Take time() to seed this generator */
         XorShift1024Star();
-    
+
         void seed(uint64_t seed);
         /** Generate random number */
         uint64_t operator()();
@@ -115,62 +115,58 @@ namespace RandomGenerators{
         to 2^512 calls to next(); it can be used to generate 2^512
         non-overlapping subsequences for parallel computations. */
         void jump();
-        
+
           // for standard random
         using result_type = uint64_t;
         static constexpr result_type min(){ return std::numeric_limits<result_type>::min(); }
         static constexpr result_type max(){ return std::numeric_limits<result_type>::max(); }
     };
-    
+
     /** A fast portable, non-truly uniform integer distribution */
     template<typename T>
     class AlmostUniformUIntDistribution{
         public:
             ApproxMVBB_STATIC_ASSERT( std::is_unsigned<T>::value );
-            
+
             AlmostUniformUIntDistribution(T min,T max): m_min(min), m_max(max) {
                 m_nRange = m_max - m_min + 1;
             }
-            
+
             template<typename G>
             T operator()(G & g){
                 return ((double)g() / ((double)(G::max()-G::min()) + 1.0)) * m_nRange + m_min;
             }
-            
+
         private:
         T m_min,m_max,m_nRange;
     };
-    
+
     /** A fast portable, non-truly uniform real distribution */
     template<typename T>
     class AlmostUniformRealDistribution{
         public:
             ApproxMVBB_STATIC_ASSERT( std::is_floating_point<T>::value );
-            
+
             AlmostUniformRealDistribution(T min,T max): m_min(min), m_max(max) {
                 m_nRange = m_max - m_min + 1;
             }
-            
+
             template<typename G>
             T operator()(G & g){
                 return  ((T)g() / (T)(G::max()-G::min())) * m_nRange + m_min;
             }
-            
+
         private:
         T m_min,m_max,m_nRange;
     };
-       
+
     /** Default random generator definitions */
     static const uint64_t defaultSeed = 314159;
     using DefaultRandomGen =  XorShift128Plus;
-    
+
     /** Define the Uniform distributions for the library and for the tests */
     #ifdef ApproxMVBB_BUILD_TESTS
-        #ifdef ApproxMVBB_BUILD_LIBRARY
-            #error "ApproxMVBB: Using non-standart uniform distributions for testing!"
-        #else
-            #warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
-        #endif
+        #warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
         template<typename T>
         using DefaultUniformUIntDistribution = AlmostUniformUIntDistribution<T>;
         template<typename T>
@@ -181,8 +177,8 @@ namespace RandomGenerators{
         template<typename T>
         using DefaultUniformRealDistribution = std::uniform_real_distribution<T>;
     #endif
-    
-    
+
+
 }
 }
 
@@ -208,12 +204,12 @@ inline XorShift128Plus::XorShift128Plus(uint64_t sd){
     seed(sd);
 }
 
-/** Take time() to seed this generator */ 
+/** Take time() to seed this generator */
 inline XorShift128Plus::XorShift128Plus(){
     seed(time(NULL));
 }
 
-inline void XorShift128Plus::seed(uint64_t sd){ 
+inline void XorShift128Plus::seed(uint64_t sd){
     s[0] = SplitMix64{sd}();
     s[1] = s[0] ;
 }
@@ -225,11 +221,11 @@ inline uint64_t XorShift128Plus::operator()(){
     s[0] = s0;
     s1 ^= s1 << 23; // a
     s[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5); // b, c
-    return s[1] + s0; 
+    return s[1] + s0;
 }
 
 
-       
+
 inline void XorShift128Plus::jump() {
     static const uint64_t JUMP[] = { 0x8a5cd789635d2dff, 0x121fd2155c472f96 };
 
@@ -249,17 +245,17 @@ inline void XorShift128Plus::jump() {
 }
 
 
-    
+
 inline XorShift1024Star::XorShift1024Star(uint64_t sd){
     seed(sd);
 }
 
-/** Take time() to seed this generator */ 
+/** Take time() to seed this generator */
 inline XorShift1024Star::XorShift1024Star(){
     seed(time(NULL));
 }
 
-inline void XorShift1024Star::seed(uint64_t sd){ 
+inline void XorShift1024Star::seed(uint64_t sd){
     uint64_t ss = SplitMix64{sd}();
     for(auto & v : s){
         v = ss;
