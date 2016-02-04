@@ -20,85 +20,98 @@
 #include "CPUTimer.hpp"
 
 
-namespace ApproxMVBB {
+namespace ApproxMVBB
+{
 
-namespace DiameterTest {
+namespace DiameterTest
+{
 
-    std::string genTestName( std::string name){
-        return "DiameterTest-" + name;
+std::string genTestName( std::string name)
+{
+    return "DiameterTest-" + name;
+}
+
+template<typename T = PREC>
+std::string getPrecAbrev();
+
+template<>
+std::string getPrecAbrev<double>()
+{
+    return "double";
+}
+template<>
+std::string getPrecAbrev<float>()
+{
+    return "float";
+}
+
+std::string getFileInPath(std::string name)
+{
+    return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
+}
+
+std::string getFileInAddPath(std::string name)
+{
+    return ApproxMVBB_TESTS_INPUT_FILES_ADD_DIR "/" + name;
+}
+
+std::string getPointsDumpPath(std::string name,std::string suffix=".bin")
+{
+    return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+"Points-Out"+suffix;
+}
+
+std::string getFileOutPath(std::string name, std::string suffix=".bin")
+{
+    return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
+}
+std::string getFileValidationPath(std::string name, std::string suffix=".bin")
+{
+    return ApproxMVBB_TESTS_VALIDATION_FILES_DIR "/" + getPrecAbrev()+"/"+genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
+}
+
+template<typename TMatrix>
+void diameterTest(std::string name, const TMatrix & v, PREC epsilon = 0.001)
+{
+
+    using namespace PointFunctions;
+    using namespace TestFunctions;
+
+    TMatrix in = v;
+    std::cout << "\n\nStart estimateDiam test "+ name +"" << std::endl;
+    START_TIMER(start)
+    auto pp = estimateDiameter< 3 >(v, epsilon);
+    STOP_TIMER_SEC(count, start)
+    std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
+    std::cout << "End estimateDiam test "+ name << std::endl;
+
+
+
+    Matrix3Dyn diam(3,2);
+    diam.col(0) = pp.first;
+    diam.col(1) = pp.second;
+    dumpPointsMatrixBinary( getFileOutPath(name,".bin" ),diam); // dumps diameter
+    dumpPointsMatrixBinary( getFileOutPath(name,"2.bin"),v);    // dump generated points
+
+    // CHECK
+    try
+    {
+        Matrix3Dyn diamV(3,2);
+        readPointsMatrixBinary( getFileValidationPath(name,".bin"), diamV );
+        Matrix3Dyn inputPointsV;
+        readPointsMatrixBinary( getFileValidationPath(name,"2.bin"), inputPointsV );
+
+        EXPECT_TRUE( (in.array() == v.array()).all() ) << " estimate diameter changed the point cloud! should not happed!";
+
+        EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
+                << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
+
+        EXPECT_TRUE( assertNearArray(v,inputPointsV) ) << "input points not the same as valid ones";
     }
-
-    template<typename T = PREC>
-    std::string getPrecAbrev();
-
-    template<>
-    std::string getPrecAbrev<double>(){
-        return "double";
+    catch( ApproxMVBB::Exception & e)
+    {
+        ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;
     }
-    template<>
-    std::string getPrecAbrev<float>(){
-        return "float";
-    }
-
-    std::string getFileInPath(std::string name){
-        return ApproxMVBB_TESTS_INPUT_FILES_DIR "/" + name;
-    }
-
-    std::string getFileInAddPath(std::string name){
-        return ApproxMVBB_TESTS_INPUT_FILES_ADD_DIR "/" + name;
-    }
-
-    std::string getPointsDumpPath(std::string name,std::string suffix=".bin"){
-        return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name)+"-"+getPrecAbrev()+"Points-Out"+suffix;
-    }
-
-    std::string getFileOutPath(std::string name, std::string suffix=".bin"){
-        return ApproxMVBB_TESTS_OUTPUT_FILES_DIR "/" + genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
-    }
-    std::string getFileValidationPath(std::string name, std::string suffix=".bin"){
-        return ApproxMVBB_TESTS_VALIDATION_FILES_DIR "/" + getPrecAbrev()+"/"+genTestName(name) +"-"+getPrecAbrev()+"-"+"Out"+suffix;
-    }
-
-    template<typename TMatrix>
-    void diameterTest(std::string name, const TMatrix & v, PREC epsilon = 0.001) {
-
-        using namespace PointFunctions;
-        using namespace TestFunctions;
-
-        TMatrix in = v;
-        std::cout << "\n\nStart estimateDiam test "+ name +"" << std::endl;
-        START_TIMER(start)
-        auto pp = estimateDiameter< 3 >(v, epsilon);
-        STOP_TIMER_SEC(count, start)
-        std::cout << "Timings: " << count << " sec for " <<v.cols() << " points" << std::endl;
-        std::cout << "End estimateDiam test "+ name << std::endl;
-
-
-
-        Matrix3Dyn diam(3,2);
-        diam.col(0) = pp.first;
-        diam.col(1) = pp.second;
-        dumpPointsMatrixBinary( getFileOutPath(name,".bin" ),diam); // dumps diameter
-        dumpPointsMatrixBinary( getFileOutPath(name,"2.bin") ,v);   // dump generated points
-
-        // CHECK
-        try{
-            Matrix3Dyn diamV(3,2);
-            readPointsMatrixBinary( getFileValidationPath(name,".bin"), diamV );
-            Matrix3Dyn inputPointsV;
-            readPointsMatrixBinary( getFileValidationPath(name,"2.bin"), inputPointsV );
-
-            EXPECT_TRUE( (in.array() == v.array()).all() ) << " estimate diameter changed the point cloud! should not happed!";
-
-            EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
-            << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
-
-            EXPECT_TRUE( assertNearArray(v,inputPointsV) ) << "input points not the same as valid ones";
-        }
-        catch( ApproxMVBB::Exception & e){
-            ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;
-        }
-    }
+}
 
 };
 };
@@ -109,106 +122,124 @@ using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterTest;
 
 
-MY_TEST(DiameterTest, RandomGenerator) {
-MY_TEST_RANDOM_STUFF(RandomGenerator)
-        // generate points
+MY_TEST(DiameterTest, RandomGenerator)
+{
+    MY_TEST_RANDOM_STUFF(RandomGenerator)
+    // generate points
+    {
+        std::cout << "Test: DefaultUniformUIntDistribution" <<std::endl;
+        MyMatrix::VectorDyn<unsigned int> t(30);
+        RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+        RandomGenerators::DefaultUniformUIntDistribution<unsigned int> specialUni(0,30);
+        auto f1 = [&](int)
         {
-          MyMatrix::VectorDyn<unsigned int> t(30);
-          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
-          RandomGenerators::DefaultUniformUIntDistribution<unsigned int> specialUni(0,30);
-          auto f1 = [&](int){return specialUni(specialGen);};
-          t = t.unaryExpr( f1 );
+            return specialUni(specialGen);
+        };
+        t = t.unaryExpr( f1 );
 
-          dumpPointsMatrixBinary(getFileOutPath(testName),t);
+        dumpPointsMatrixBinary(getFileOutPath(testName),t);
 
-          // Check
-          decltype(t) tvalid;
-          readPointsMatrixBinary( getFileValidationPath(testName),tvalid);
+        // Check
+        decltype(t) tvalid;
+        readPointsMatrixBinary( getFileValidationPath(testName),tvalid);
 
-          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
-          << " vector valid: " << std::endl << t.transpose()
-          << "and: " << std::endl
-          << tvalid.transpose() << std::endl;
-        }
+        EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+                << " vector valid: " << std::endl << t.transpose()
+                        << "and: " << std::endl
+                        << tvalid.transpose() << std::endl;
+    }
+
+    {
+        std::cout << "Test: DefaultUniformRealDistribution" <<std::endl;
+        MyMatrix::VectorDyn<PREC> t(30);
+        RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+        RandomGenerators::DefaultUniformRealDistribution<PREC> specialUni(0,30);
+        auto f1 = [&](int)
         {
-          MyMatrix::VectorDyn<PREC> t(30);
-          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
-          RandomGenerators::DefaultUniformRealDistribution<PREC> specialUni(0,30);
-          auto f1 = [&](int){return specialUni(specialGen);};
-          t = t.unaryExpr( f1 );
+            return specialUni(specialGen);
+        };
+        t = t.unaryExpr( f1 );
 
-          dumpPointsMatrixBinary(getFileOutPath(testName,"2.bin"),t);
+        dumpPointsMatrixBinary(getFileOutPath(testName,"2.bin"),t);
 
-          // Check
-          decltype(t) tvalid;
-          readPointsMatrixBinary( getFileValidationPath(testName,"2.bin"),tvalid);
+        // Check
+        decltype(t) tvalid;
+        readPointsMatrixBinary( getFileValidationPath(testName,"2.bin"),tvalid);
 
-          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
-          << " vector valid: " << std::endl << t.transpose()
-          << "and: " << std::endl
-          << tvalid.transpose() << std::endl;
-        }
+        EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+                << " vector valid: " << std::endl << t.transpose()
+                        << "and: " << std::endl
+                        << tvalid.transpose() << std::endl;
+    }
 
+    {
+        std::cout << "Test: DefaultRandomGen" <<std::endl;
+        using T = RandomGenerators::DefaultRandomGen::result_type;
+        MyMatrix::VectorDyn<T> t(30);
+        RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+        auto f1 = [&](T)
         {
-          using T = RandomGenerators::DefaultRandomGen::result_type;
-          MyMatrix::VectorDyn<T> t(30);
-          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
-          auto f1 = [&](T){return specialGen();};
-          t = t.unaryExpr( f1 );
+            return specialGen();
+        };
+        t = t.unaryExpr( f1 );
 
-          dumpPointsMatrixBinary(getFileOutPath(testName,"3.bin"),t);
-          // Check
-         // Check
-          decltype(t) tvalid;
-          readPointsMatrixBinary( getFileValidationPath(testName,"3.bin"),tvalid);
+        dumpPointsMatrixBinary(getFileOutPath(testName,"3.bin"),t);
+        // Check
+        // Check
+        decltype(t) tvalid;
+        readPointsMatrixBinary( getFileValidationPath(testName,"3.bin"),tvalid);
 
-          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
-          << " vector valid: " << std::endl << t.transpose()
-          << "and: " << std::endl
-          << tvalid.transpose() << std::endl;
-        }
+        EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+                << " vector valid: " << std::endl << t.transpose()
+                        << "and: " << std::endl
+                        << tvalid.transpose() << std::endl;
+    }
 }
 
 
-MY_TEST(DiameterTest, PointsRandom3) {
-MY_TEST_RANDOM_STUFF(PointsRandom3)
-        // generate points
-        Matrix3Dyn t(3,3);
-        t = t.unaryExpr( f );
-        diameterTest(testName,t);
+MY_TEST(DiameterTest, PointsRandom3)
+{
+    MY_TEST_RANDOM_STUFF(PointsRandom3)
+    // generate points
+    Matrix3Dyn t(3,3);
+    t = t.unaryExpr( f );
+    diameterTest(testName,t);
 }
 
 
-MY_TEST(DiameterTest, PointsRandom500) {
-MY_TEST_RANDOM_STUFF(PointsRandom500)
-        // generate points
-        Matrix3Dyn t(3,500);
-        t = t.unaryExpr( f );
-        diameterTest(testName,t);
+MY_TEST(DiameterTest, PointsRandom500)
+{
+    MY_TEST_RANDOM_STUFF(PointsRandom500)
+    // generate points
+    Matrix3Dyn t(3,500);
+    t = t.unaryExpr( f );
+    diameterTest(testName,t);
 }
 
 
-MY_TEST(DiameterTest, PointsRandom10000) {
-MY_TEST_RANDOM_STUFF(PointsRandom10000)
-        // generate points
-        Matrix3Dyn t(3,10000);
-        t = t.unaryExpr( f );
-        diameterTest(testName,t);
+MY_TEST(DiameterTest, PointsRandom10000)
+{
+    MY_TEST_RANDOM_STUFF(PointsRandom10000)
+    // generate points
+    Matrix3Dyn t(3,10000);
+    t = t.unaryExpr( f );
+    diameterTest(testName,t);
 }
 
-MY_TEST(DiameterTest, UnitCube) {
-MY_TEST_RANDOM_STUFF(UnitCube)
-        Matrix3Dyn t(3,8);
-        t.col(0) = ApproxMVBB::Vector3(0,0,0);
-        t.col(1) = ApproxMVBB::Vector3(1,0,0);
-        t.col(2) = ApproxMVBB::Vector3(1,1,0);
-        t.col(3) = ApproxMVBB::Vector3(0,1,0);
-        t.col(4) = ApproxMVBB::Vector3(0,0,1);
-        t.col(5) = ApproxMVBB::Vector3(1,0,1);
-        t.col(6) = ApproxMVBB::Vector3(1,1,1);
-        t.col(7) = ApproxMVBB::Vector3(0,1,1);
+MY_TEST(DiameterTest, UnitCube)
+{
+    MY_TEST_RANDOM_STUFF(UnitCube)
+    Matrix3Dyn t(3,8);
+    t.col(0) = ApproxMVBB::Vector3(0,0,0);
+    t.col(1) = ApproxMVBB::Vector3(1,0,0);
+    t.col(2) = ApproxMVBB::Vector3(1,1,0);
+    t.col(3) = ApproxMVBB::Vector3(0,1,0);
+    t.col(4) = ApproxMVBB::Vector3(0,0,1);
+    t.col(5) = ApproxMVBB::Vector3(1,0,1);
+    t.col(6) = ApproxMVBB::Vector3(1,1,1);
+    t.col(7) = ApproxMVBB::Vector3(0,1,1);
 
-        diameterTest(testName,t);
+    diameterTest(testName,t);
 }
 
 //MY_TEST(DiameterTest, PointsSimulation) {
@@ -269,11 +300,12 @@ MY_TEST_RANDOM_STUFF(UnitCube)
 //}
 //#endif
 
-MY_TEST(DiameterTest, Plane) {
-MY_TEST_RANDOM_STUFF(Plane)
-        Matrix3Dyn t(3,3);
-        t = t.unaryExpr( f );
-        diameterTest(testName,t,true);
+MY_TEST(DiameterTest, Plane)
+{
+    MY_TEST_RANDOM_STUFF(Plane)
+    Matrix3Dyn t(3,3);
+    t = t.unaryExpr( f );
+    diameterTest(testName,t,true);
 }
 
 //MY_TEST(DiameterTest, PointClouds) {
@@ -291,14 +323,16 @@ MY_TEST_RANDOM_STUFF(Plane)
 //        }
 //}
 
-MY_TEST(DiameterTest, UnitPatches2D) {
-MY_TEST_RANDOM_STUFF(UnitPatches2D)
-        for(int i=0;i<10;++i){
-            ApproxMVBB::Matrix3Dyn t(3,500);
-            t = t.unaryExpr(f);
-            t.row(2).setZero();
-            diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t);
-        }
+MY_TEST(DiameterTest, UnitPatches2D)
+{
+    MY_TEST_RANDOM_STUFF(UnitPatches2D)
+    for(int i=0; i<10; ++i)
+    {
+        ApproxMVBB::Matrix3Dyn t(3,500);
+        t = t.unaryExpr(f);
+        t.row(2).setZero();
+        diameterTest("UnitPatches2D-Nr-" + std::to_string(i),t);
+    }
 }
 
 //MY_TEST(DISABLED_DiameterTest, Plane) {
@@ -311,7 +345,8 @@ MY_TEST_RANDOM_STUFF(UnitPatches2D)
 
 
 
-int main(int argc, char **argv) {
-        testing::InitGoogleTest(&argc, argv);
-        return RUN_ALL_TESTS();
+int main(int argc, char **argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
