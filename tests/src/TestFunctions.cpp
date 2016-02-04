@@ -93,10 +93,10 @@ namespace TestFunctions{
                p.col(i) = points[i];
             }
 
-            std::cout << "Compare Corners: valid <-> computed" << std::endl;
-            std::cout << pV << std::endl;
-            std::cout << "and" << std::endl;
+            std::cout << "Compare Corners: valid:" << std::endl;
             std::cout << p << std::endl;
+            std::cout << "and:" << std::endl;
+            std::cout << pV << std::endl;
 
             EXPECT_TRUE( assertNearArrayColsRows<true>(p, pV) ) << "Not all corner points of OOBB equal to validation OOBB in file: " << filePath;
 

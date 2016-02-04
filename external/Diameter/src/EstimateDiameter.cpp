@@ -116,8 +116,7 @@ double DiameterEstimator::estimateDiameterInOneList(
 
         /* find a double normal
          */
-        newEstimate = _MaximalSegmentInOneList( &theSeg, index, theList,
-                &f, &l, dim );
+        newEstimate = _MaximalSegmentInOneList( &theSeg, index, theList, &f, &l, dim );
 
         /* if we get a better estimation
          */
@@ -294,7 +293,7 @@ double DiameterEstimator::estimateDiameterInOneList(
     /* do you have enough precision?
      */
     index2 = index;
-    upperSquareDiameter = theDiam->squareDiameter * (1 + epsilon) * (1 + epsilon);
+    upperSquareDiameter = theDiam->squareDiameter * (1.0 + epsilon) * (1.0 + epsilon);
 
 
     index1  = _LastPointOutsideSphereWithDiameter( theDiam, upperSquareDiameter,

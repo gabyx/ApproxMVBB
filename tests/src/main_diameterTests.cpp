@@ -109,6 +109,48 @@ using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterTest;
 
 
+MY_TEST(DiameterTest, RandomGenerator) {
+MY_TEST_RANDOM_STUFF(RandomGenerator)
+        // generate points
+        {
+          MyMatrix::VectorDyn<unsigned int> t(30);
+          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+          RandomGenerators::DefaultUniformUIntDistribution<unsigned int> specialUni(0,30);
+          auto f1 = [&](int){return specialUni(specialGen);};
+          t = t.unaryExpr( f1 );
+
+          dumpPointsMatrixBinary(getFileOutPath(testName),t);
+
+          // Check
+          decltype(t) tvalid;
+          readPointsMatrixBinary( getFileValidationPath(testName),tvalid);
+
+          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+          << " vector valid: " << std::endl << t.transpose()
+          << "and: " << std::endl
+          << tvalid.transpose() << std::endl;
+        }
+        {
+          MyMatrix::VectorDyn<PREC> t(30);
+          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+          RandomGenerators::DefaultUniformRealDistribution<PREC> specialUni(0,30);
+          auto f1 = [&](int){return specialUni(specialGen);};
+          t = t.unaryExpr( f1 );
+
+          dumpPointsMatrixBinary(getFileOutPath(testName,"2.bin"),t);
+
+          // Check
+          decltype(t) tvalid;
+          readPointsMatrixBinary( getFileValidationPath(testName,"2.bin"),tvalid);
+
+          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+          << " vector valid: " << std::endl << t.transpose()
+          << "and: " << std::endl
+          << tvalid.transpose() << std::endl;
+        }
+}
+
+
 MY_TEST(DiameterTest, PointsRandom3) {
 MY_TEST_RANDOM_STUFF(PointsRandom3)
         // generate points

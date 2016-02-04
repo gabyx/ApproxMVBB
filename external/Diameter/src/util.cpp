@@ -775,80 +775,80 @@ int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
   return( -1 );
 }
 
-void _CountPointsInSpheres( TypeSegment *theSeg,
-			    const double squareDiameter,
-			    const double **theList,
-			    const int first,
-			    const int last,
-			    const int dim )
-{
-  double minThreshold;
-  double medThreshold;
-  double maxThreshold;
-
-  double ab  = sqrt( theSeg->squareDiameter );
-  double ab2 = theSeg->squareDiameter;
-
-  double R  = sqrt( squareDiameter );
-  double R2 = squareDiameter;
-
-  int n[5] = {0,0,0,0,0};
-  int i;
-
-  double mamb, am2;
-
-  minThreshold = (R - .86602540378443864676*ab)
-    * (R - .86602540378443864676*ab)
-    - 0.25 * ab2;
-
-  medThreshold = 0.5 * ab2 + 0.25 * R2
-    - .43301270189221932338 * R * sqrt( 4 * ab2 - R2 );
-
-  maxThreshold = 0.25 * (R2 - ab2);
-
-
-  for ( i=first; i<=last; i++ ) {
-
-    mamb = _ScalarProduct( theList[i], theSeg->extremity1,
-			   theList[i], theSeg->extremity2, dim );
-
-    if ( mamb > maxThreshold ) {
-      n[0] ++ ;
-      continue;
-    }
-
-    if ( mamb > medThreshold ) {
-      n[1] ++ ;
-      continue;
-    }
-
-    if ( mamb > minThreshold ) {
-      am2 = _SquareDistance( theList[i], theSeg->extremity1, dim );
-      if ( 3.0 * ( am2 * ab2 - (am2 - mamb)*(am2 - mamb) )
-	   - (R2 - ab2 - mamb)*(R2 - ab2 - mamb) < 0 ) {
-	n[2] ++;
-	continue;
-      }
-      n[3] ++;
-      continue;
-    }
-
-    n[4] ++;
-  }
-
-  printf(" diametre courant = %g  -  double normale = %g\n",
-	 R, ab );
-  printf(" %8d points dont\n", last-first+1 );
-  printf(" - %6d : candidats extremites       R=%g\n", n[0], sqrt(maxThreshold+0.25*ab2) );
-  printf(" - %6d : rien a faire               R=%g\n", n[1], sqrt(medThreshold+0.25*ab2)  );
-  printf(" - %6d : a tester                   \n", n[2]+n[3] );
-  printf("   + %6d : a eliminer\n", n[2] );
-  printf("   + %6d : a conserver\n", n[3] );
-  printf(" - %6d : elimines directement       R=%g\n", n[4], sqrt(minThreshold+0.25*ab2)  );
-  printf("----------\n" );
-  printf(" %8d\n", n[0]+n[1]+n[2]+n[3]+n[4] );
-
-}
+//void _CountPointsInSpheres( TypeSegment *theSeg,
+//			    const double squareDiameter,
+//			    const double **theList,
+//			    const int first,
+//			    const int last,
+//			    const int dim )
+//{
+//  double minThreshold;
+//  double medThreshold;
+//  double maxThreshold;
+//
+//  double ab  = sqrt( theSeg->squareDiameter );
+//  double ab2 = theSeg->squareDiameter;
+//
+//  double R  = sqrt( squareDiameter );
+//  double R2 = squareDiameter;
+//
+//  int n[5] = {0,0,0,0,0};
+//  int i;
+//
+//  double mamb, am2;
+//
+//  minThreshold = (R - .86602540378443864676*ab)
+//    * (R - .86602540378443864676*ab)
+//    - 0.25 * ab2;
+//
+//  medThreshold = 0.5 * ab2 + 0.25 * R2
+//    - .43301270189221932338 * R * sqrt( 4 * ab2 - R2 );
+//
+//  maxThreshold = 0.25 * (R2 - ab2);
+//
+//
+//  for ( i=first; i<=last; i++ ) {
+//
+//    mamb = _ScalarProduct( theList[i], theSeg->extremity1,
+//			   theList[i], theSeg->extremity2, dim );
+//
+//    if ( mamb > maxThreshold ) {
+//      n[0] ++ ;
+//      continue;
+//    }
+//
+//    if ( mamb > medThreshold ) {
+//      n[1] ++ ;
+//      continue;
+//    }
+//
+//    if ( mamb > minThreshold ) {
+//      am2 = _SquareDistance( theList[i], theSeg->extremity1, dim );
+//      if ( 3.0 * ( am2 * ab2 - (am2 - mamb)*(am2 - mamb) )
+//	   - (R2 - ab2 - mamb)*(R2 - ab2 - mamb) < 0 ) {
+//	n[2] ++;
+//	continue;
+//      }
+//      n[3] ++;
+//      continue;
+//    }
+//
+//    n[4] ++;
+//  }
+//
+//  printf(" diametre courant = %g  -  double normale = %g\n",
+//	 R, ab );
+//  printf(" %8d points dont\n", last-first+1 );
+//  printf(" - %6d : candidats extremites       R=%g\n", n[0], sqrt(maxThreshold+0.25*ab2) );
+//  printf(" - %6d : rien a faire               R=%g\n", n[1], sqrt(medThreshold+0.25*ab2)  );
+//  printf(" - %6d : a tester                   \n", n[2]+n[3] );
+//  printf("   + %6d : a eliminer\n", n[2] );
+//  printf("   + %6d : a conserver\n", n[3] );
+//  printf(" - %6d : elimines directement       R=%g\n", n[4], sqrt(minThreshold+0.25*ab2)  );
+//  printf("----------\n" );
+//  printf(" %8d\n", n[0]+n[1]+n[2]+n[3]+n[4] );
+//
+//}
 
 
 /* Find the farthest point from a sphere
