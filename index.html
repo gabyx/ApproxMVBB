@@ -22,7 +22,7 @@
       <h1></h1>
 
 <h1>
-<a id="approxmvbb---" class="anchor" href="#approxmvbb---" aria-hidden="true"><span class="octicon octicon-link"></span></a>ApproxMVBB <a href="https://travis-ci.org/gabyx/ApproxMVBB"><img src="https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master" alt="Build Status"></a> <img src="https://img.shields.io/badge/c%2B%2B-11/14-green.svg" alt="C++"> <img src="https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg" alt="Deps">
+<a id="approxmvbb----" class="anchor" href="#approxmvbb----" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ApproxMVBB <a href="https://travis-ci.org/gabyx/ApproxMVBB"><img src="https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master" alt="Build Status"></a> <img src="https://img.shields.io/badge/c%2B%2B-11/14-green.svg" alt="C++"> <img src="https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg" alt="Deps"> <img src="https://img.shields.io/badge/system-osx,linux,%7Bwindows%7D-lightgrey.svg" alt="System">
 </h1>
 
 <p><a href="http://gabyx.github.io/ApproxMVBB/">Homepage</a></p>
@@ -30,7 +30,7 @@
 <hr>
 
 <h2>
-<a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
+<a id="fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" class="anchor" href="#fast-algorithms-to-compute-an-approximation-of-the-minimal-volume-oriented-bounding-box-of-a-point-cloud-in-3d" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.</h2>
 
 <p>Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developped for research in <a href="http://www.zfm.ethz.ch/%7Enuetzig/?page=research">Granular Rigidbody Dynamics</a>.
@@ -57,7 +57,7 @@ quality criteria during the splitting process,</li>
 <hr>
 
 <h2>
-<a id="installation--dependencies" class="anchor" href="#installation--dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation &amp; Dependencies</h2>
+<a id="installation--dependencies" class="anchor" href="#installation--dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation &amp; Dependencies</h2>
 
 <p>To build the library, the tests and the example you need the built tool <a href="http://www.cmake.org">cmake</a>.
 This library has these light-weight dependencies:</p>
@@ -98,7 +98,7 @@ In the <code>CMakeCache.txt</code> file you can specify what you want to build
 
 <p>Finally, build and install the project:</p>
 
-<div class="highlight highlight-source-shell"><pre>    $ make all   /<span class="pl-k">*</span> can be ApproxMVBB <span class="pl-k">for</span> <span class="pl-smi">the</span> library or ApproxMVBBExample or ApproxMVBBTests <span class="pl-k">*</span>/
+<div class="highlight highlight-source-shell"><pre>    $ make all   /<span class="pl-k">*</span> can be ApproxMVBB <span class="pl-k">for</span> the library or ApproxMVBBExample or ApproxMVBBTests <span class="pl-k">*</span>/
     $ make install</pre></div>
 
 <p>To build in parallel use the <code>-jN</code> flag in the <code>make</code> commmand, where <code>N</code>denotes the number of parallel threads to use.</p>
@@ -124,7 +124,7 @@ The installation installs also scripts <code>approxmvbb-config.cmake</code> and 
 <hr>
 
 <h2>
-<a id="supported-platforms" class="anchor" href="#supported-platforms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported Platforms</h2>
+<a id="supported-platforms" class="anchor" href="#supported-platforms" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Platforms</h2>
 
 <p>The code has been tested on Linux and OS X with compilers <code>clang</code> and <code>gcc</code>. 
 It should work for Windows as well, but has not been tested.</p>
@@ -132,7 +132,7 @@ It should work for Windows as well, but has not been tested.</p>
 <hr>
 
 <h2>
-<a id="example-usage-approximation-mvbb" class="anchor" href="#example-usage-approximation-mvbb" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage: Approximation MVBB</h2>
+<a id="example-usage-approximation-mvbb" class="anchor" href="#example-usage-approximation-mvbb" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Usage: Approximation MVBB</h2>
 
 <p>Please see the <code>example/approxMVBB/main.cpp</code> in the source directory.
 Given a point cloud with <code>n=10000</code> points sampled in the unit cube in 3D 
@@ -212,7 +212,7 @@ Each found minimal bounding box candidate <code>G</code> and its directions <cod
 <hr>
 
 <h2>
-<a id="example-usage-generating-a-kdtree-and-outlier-filtering" class="anchor" href="#example-usage-generating-a-kdtree-and-outlier-filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Usage: Generating a KdTree and Outlier Filtering</h2>
+<a id="example-usage-generating-a-kdtree-and-outlier-filtering" class="anchor" href="#example-usage-generating-a-kdtree-and-outlier-filtering" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Usage: Generating a KdTree and Outlier Filtering</h2>
 
 <p>The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
 but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
@@ -243,30 +243,33 @@ To come</p>
 <hr>
 
 <h2>
-<a id="building-and-visualizing-the-tests" class="anchor" href="#building-and-visualizing-the-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Visualizing the Tests</h2>
+<a id="building-and-visualizing-the-tests" class="anchor" href="#building-and-visualizing-the-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building and Visualizing the Tests</h2>
 
 <p>Building and installing the basic tests is done by:</p>
 
-<pre><code>$ cd Build
-$ make ApproxMVBBTests
+<pre><code>$ cd ApproxMVBB
+$ git submodule init    
+$ git submodule update
+$ cd ../Build
+$ make build_and_test
 </code></pre>
 
-<p><strong>Note:</strong></p>
+<p>*<em>Note that if the tests fail, submit a new issue and report which test failed. 
+The results can still be visualized and should be correct. *</em></p>
 
-<blockquote>
-<p>To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+<p><strong>Note:</strong>
+To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
 140 million points and some polygonal statue <code>lucy.txt</code> succesfully you need 
 to set the cmake variable <code>ApproxMVBB_TESTS_HIGH_PERFORMANCE</code> to <code>ON</code>
 and additionally initialize the submodule <code>additional</code> and unzip the files:</p>
 
-<pre><code>$ cd ApproxMVBB
-$ git submodule init
-$ git submodule update
-$ cd addtional/tests/files; cat Lucy* | tar xz 
+<pre><code> $ cd ApproxMVBB
+ $ git submodule init
+ $ git submodule update
+ $ cd additional/tests/files; cat Lucy* | tar xz 
 </code></pre>
 
 <p>and rebuild the tests. (this will copy the additional files next to the executable)</p>
-</blockquote>
 
 <p>Executing the test application <code>cd tests; ./ApproxMVBBTests</code> will then run the following tests:</p>
 
@@ -292,7 +295,7 @@ $ ipython noteboook
 <hr>
 
 <h2>
-<a id="benchmark" class="anchor" href="#benchmark" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benchmark</h2>
+<a id="benchmark" class="anchor" href="#benchmark" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Benchmark</h2>
 
 <p>Here are some short benchmarks from the tests folder:   </p>
 
@@ -335,14 +338,14 @@ It seems to take a long time for 140 million points. The most ineffiecient task 
 <hr>
 
 <h2>
-<a id="licensing" class="anchor" href="#licensing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Licensing</h2>
+<a id="licensing" class="anchor" href="#licensing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Licensing</h2>
 
 <p>This source code is released under MPL 2.0. </p>
 
 <hr>
 
 <h2>
-<a id="author-and-acknowledgements" class="anchor" href="#author-and-acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author and Acknowledgements</h2>
+<a id="author-and-acknowledgements" class="anchor" href="#author-and-acknowledgements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author and Acknowledgements</h2>
 
 <p>ApproxMVBB was written by Gabriel Nützi, with source code from <a href="http://www-sop.inria.fr/members/Gregoire.Malandain/diameter/">Grégoire Malandain &amp; Jean-Daniel Boissonnat</a> 
 for the approximation of the diameter of a point cloud.
