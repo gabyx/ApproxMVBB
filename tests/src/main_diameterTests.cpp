@@ -113,6 +113,23 @@ MY_TEST(DiameterTest, RandomGenerator) {
 MY_TEST_RANDOM_STUFF(RandomGenerator)
         // generate points
         {
+          RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
+          auto f1 = [&](int){return specialGen;};
+          t = t.unaryExpr( f1 );
+
+          dumpPointsMatrixBinary(getFileOutPath(testName),t);
+
+          // Check
+          decltype(t) tvalid;
+          readPointsMatrixBinary( getFileValidationPath(testName),tvalid);
+
+          EXPECT_TRUE( (t.array() == tvalid.array()).all() )
+          << " vector valid: " << std::endl << t.transpose()
+          << "and: " << std::endl
+          << tvalid.transpose() << std::endl;
+        }
+
+        {
           MyMatrix::VectorDyn<unsigned int> t(30);
           RandomGenerators::DefaultRandomGen specialGen(RandomGenerators::defaultSeed);
           RandomGenerators::DefaultUniformUIntDistribution<unsigned int> specialUni(0,30);
