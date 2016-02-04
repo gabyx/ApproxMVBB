@@ -80,6 +80,8 @@ set(INCLUDE_DIRS
 
 include_directories(${INCLUDE_DIRS})
 
+# Add build flag for testing
+SET(CMAKE_CXX_FLAGS "-DApproxMVBB_BUILD_TESTS ${CMAKE_CXX_FLAGS}" )
 
 # ConvexHull
 SET(EXEC_NAME1 ${PROJECT_NAME}-ConvexHull)

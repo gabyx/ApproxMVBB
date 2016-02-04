@@ -139,7 +139,9 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     // Random indices if too little points
     if( k < nPoints ){
         RandomGenerators::DefaultRandomGen gen(seed);
-        std::uniform_int_distribution<IndexType> dis(0, points.cols()-1);
+        RandomGenerators::DefaultUniformUIntDistribution< 
+                                typename std::make_unsigned<IndexType>::type 
+                           > dis(0, points.cols()-1);
         IndexType s;
         while( k < nPoints) {
             s = dis(gen);

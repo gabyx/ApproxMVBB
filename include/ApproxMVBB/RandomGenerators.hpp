@@ -10,9 +10,12 @@
 #define ApproxMVBB_RandomGenerator_hpp
 
 #include "ApproxMVBB/Config/Config.hpp"
+#include "ApproxMVBB/Common/StaticAssert.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
+#include <type_traits>
 #include <cstdint>
+#include <random>
 #include <limits> 
 
 namespace ApproxMVBB{
@@ -118,11 +121,64 @@ namespace RandomGenerators{
         static constexpr result_type min(){ return std::numeric_limits<result_type>::min(); }
         static constexpr result_type max(){ return std::numeric_limits<result_type>::max(); }
     };
-
-
+    
+    /** A fast portable, non-truly uniform integer distribution */
+    template<typename T>
+    class AlmostUniformUIntDistribution{
+        public:
+            ApproxMVBB_STATIC_ASSERT( std::is_unsigned<T>::value );
+            
+            AlmostUniformUIntDistribution(T min,T max): m_min(min), m_max(max) {
+                m_nRange = m_max - m_min + 1;
+            }
+            
+            template<typename G>
+            T operator()(G & g){
+                return ((double)g() / ((double)(G::max()-G::min()) + 1.0)) * m_nRange + m_min;
+            }
+            
+        private:
+        T m_min,m_max,m_nRange;
+    };
+    
+    /** A fast portable, non-truly uniform real distribution */
+    template<typename T>
+    class AlmostUniformRealDistribution{
+        public:
+            ApproxMVBB_STATIC_ASSERT( std::is_floating_point<T>::value );
+            
+            AlmostUniformRealDistribution(T min,T max): m_min(min), m_max(max) {
+                m_nRange = m_max - m_min + 1;
+            }
+            
+            template<typename G>
+            T operator()(G & g){
+                return  ((T)g() / (T)(G::max()-G::min())) * m_nRange + m_min;
+            }
+            
+        private:
+        T m_min,m_max,m_nRange;
+    };
+       
     /** Default random generator definitions */
     static const uint64_t defaultSeed = 314159;
     using DefaultRandomGen =  XorShift128Plus;
+    
+    /** Define the Uniform distributions for the library and for the tests */
+    #ifdef ApproxMVBB_BUILD_TESTS
+        #warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
+        template<typename T>
+        using DefaultUniformUIntDistribution = AlmostUniformUIntDistribution<T>;
+        template<typename T>
+        using DefaultUniformRealDistribution = AlmostUniformRealDistribution<T>;
+    #else
+        template<typename T>
+        using DefaultUniformUIntDistribution = std::uniform_int_distribution<T>;
+        template<typename T>
+        using DefaultUniformRealDistribution = std::uniform_real_distribution<T>;
+    #endif
+    
+    
 }
 }
 

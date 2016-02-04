@@ -106,7 +106,7 @@ double DiameterEstimator::estimateDiameterInOneList(
         return( 0.0 );
     }
 
-    index = getRandomInt( first, last );
+    index = getRandomInt( f, l );
     do
     {
 

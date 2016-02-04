@@ -93,7 +93,7 @@ namespace DiameterTest {
             EXPECT_TRUE( assertNearArrayColsRows(diam,diamV)) << "Diameter valid: " << std::endl << diamV
             << std::endl << "Diameter computed: " << std::endl << diam << std::endl;
 
-            EXPECT_TRUE( assertNearArray(v,inputPointsV) ) ;
+            EXPECT_TRUE( assertNearArray(v,inputPointsV) ) << "input points not the same as valid ones";
         }
         catch( ApproxMVBB::Exception & e){
             ASSERT_TRUE(false) << "Exception in checking inside test!: "  << e.what() << std::endl;

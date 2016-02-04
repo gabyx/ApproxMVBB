@@ -23,8 +23,7 @@ namespace ApproxMVBB{
 class APPROXMVBB_EXPORT DiameterEstimator{
     public:
 
-    DiameterEstimator(std::size_t seed): m_gen(seed) {}
-    DiameterEstimator(): m_gen{} {}
+    DiameterEstimator(std::size_t seed = RandomGenerators::defaultSeed) : m_gen(seed) {}
 
     /** Raw function to estimate the diameter of a point cloud
     *   @param theDiam returns the diameter info
@@ -132,13 +131,13 @@ class APPROXMVBB_EXPORT DiameterEstimator{
     /**=====================================================================*/
 
     RandomGenerators::DefaultRandomGen m_gen; ///< Random number generator
-    std::uniform_real_distribution<double> m_uni{0.0,1.0};
-
-    int getRandomInt( int min, int max ){
+    
+    /** TODO: ugly cast, I dont want to change the estimater code */
+    int getRandomInt( unsigned int min, unsigned int max ){
       if ( min <= max ){
-        return( (int)(std::floor( min + m_uni(m_gen)*(double)(max-min+1.0) )) );
+        return static_cast<int>(RandomGenerators::DefaultUniformUIntDistribution<unsigned int>{min,max}(m_gen));
       }else{
-        return( (int)(std::floor( max + m_uni(m_gen)*(double)(min-max+1.0) )) );
+        return static_cast<int>(RandomGenerators::DefaultUniformUIntDistribution<unsigned int>{max,min}(m_gen));
       }
     }
 
