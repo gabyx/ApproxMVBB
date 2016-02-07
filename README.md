@@ -1,9 +1,10 @@
 ==========
-ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB) ![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg) ![System](https://img.shields.io/badge/system-osx,linux,{windows}-lightgrey.svg)
+ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB)
 ==========
 
-[Homepage](http://gabyx.github.io/ApproxMVBB/)
+![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg) ![System](https://img.shields.io/badge/system-osx,linux,{windows}-lightgrey.svg)
 
+[Homepage](http://gabyx.github.io/ApproxMVBB/)
 
 ----------------------------------------
 Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.
