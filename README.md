@@ -12,7 +12,7 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developped for research in [Granular Rigidbody Dynamics](http://www.zfm.ethz.ch/~nuetzig/?page=research).
-This small standart compliant C++11 library can either be built into a shared object library 
+This small standard compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
 It includes code for :
     
@@ -34,7 +34,7 @@ It includes code for :
 ---------------------------
 Installation & Dependencies
 ---------------------------
-To build the library, the tests and the example you need the built tool [cmake](
+To build the library, the tests and the example you need the build tool [cmake](
 http://www.cmake.org).
 This library has these light-weight dependencies:
 
