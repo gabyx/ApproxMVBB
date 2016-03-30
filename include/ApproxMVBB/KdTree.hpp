@@ -47,8 +47,8 @@ namespace ApproxMVBB{
 
         template<typename T>
         using isDefault =   meta::or_<
-                                meta::eval<std::is_same<T,TakeDefault> >,
-                                meta::eval<std::is_same<T,void> >
+                                meta::_t<std::is_same<T,TakeDefault> >,
+                                meta::_t<std::is_same<T,void> >
                             >;
     }
 
@@ -595,7 +595,9 @@ namespace ApproxMVBB{
 
         inline bool checkPosition(AABB<Dimension> & aabb) {
             ApproxMVBB_ASSERTMSG( m_splitPosition >= aabb.m_minPoint(m_splitAxis)
-                    && m_splitPosition <= aabb.m_maxPoint(m_splitAxis), " split position wrong")
+                    && m_splitPosition <= aabb.m_maxPoint(m_splitAxis),
+                    "split position wrong: " << m_splitPosition << " min: " << aabb.m_minPoint.transpose()
+                    << " max: " << aabb.m_maxPoint.transpose() )
 
             if( (m_splitPosition - aabb.m_minPoint(m_splitAxis)) <= m_minExtent ||
                     (aabb.m_maxPoint(m_splitAxis) - m_splitPosition) <= m_minExtent  ) {
@@ -1858,7 +1860,7 @@ namespace ApproxMVBB{
 
     /** Tree stuff ============================================================================*/
     template<typename Traits>
-    using SplitHeuristicPointDataDefault =   meta::apply<meta::bind_front<
+    using SplitHeuristicPointDataDefault =   meta::invoke<meta::bind_front<
                                                         meta::quote<SplitHeuristicPointData>,
                                                         LinearQualityEvaluator
                                                         >, Traits>;
