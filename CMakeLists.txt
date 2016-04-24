@@ -28,13 +28,13 @@ IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
 ENDIF()
 MESSAGE(STATUS "Project name is: " ${ApproxMVBBProjectName})
 PROJECT(${ApproxMVBBProjectName})
- 
+
 SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
 
 # PRECISION ISSUES ====================================================================================================
 # From http://christian-seiler.de/projekte/fpmath/
-#x86 platforms support two types of floating point instruction sets nowadays: 
+#x86 platforms support two types of floating point instruction sets nowadays:
 #The classical x87 floating point unit and the new MMX/SSE instructions that can even perform parallel calculations.
 #The characteristics of the x87 FPU are:
 
@@ -89,7 +89,7 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
         SET(CMAKE_RANLIB  "/usr/bin/local/llvm-ranlib" CACHE STRING "ranlib tool" FORCE )
 
 	ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" )
-        
+
         MESSAGE(STATUS "Setting Values for Intel")
 		SET(MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL TRUE CACHE INTERNAL "x" FORCE)
 		SET(CMAKE_C_FLAGS                "" CACHE STRING "Flags for C Compiler" FORCE)
@@ -103,7 +103,7 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release minsize builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
-        
+
   ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
     MESSAGE(WARNING "MSVC is partially supported (Visual Studio 2013 Update 5), trying to set compiler flags anyway!")
     # add some flags
@@ -136,33 +136,32 @@ ENDIF()
 # ========================================================================================================================================
 
 
-
-IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  # On Visual Studio, KDTree examples don't compile. So only add the required minimal dependencies:
-  SET(ApproxMVBB_SUPPORT_KDTREE OFF CACHE BOOL "Support KdTree implementation (NOT SUPPORTED for MSVC!)")
-ELSE()
-  MARK_AS_ADVANCED(ApproxMVBB_SUPPORT_KDTREE)
-  SET(ApproxMVBB_SUPPORT_KDTREE ON CACHE BOOL "Support KdTree implementation (makes dependecies availabe in install, makes examples and tests)")
-ENDIF()
-
-
 # Dependencies ===========================================================================================================================
-
-# Define Eigen 
+# Define Eigen
 FIND_PACKAGE(Eigen3 REQUIRED)
 SET(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
-# ==================================
+LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR})
 
-# Define Meta if KdTree Support is selected
-IF (ApproxMVBB_SUPPORT_KDTREE)
-    FIND_PACKAGE(Meta REQUIRED)
-    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR} ${Meta_INCLUDE_DIR})
-    SET(ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
-ELSE()    
-    SET(ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR})
+
+# Try to find Meta and PugiXML if possible
+FIND_PACKAGE(Meta)
+LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${Meta_INCLUDE_DIR})
+SET(ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
+IF(META_FOUND)
+  SET(ApproxMVBB_SUPPORT_KDTREE ON)
 ENDIF()
 
+FIND_PACKAGE(PugiXML)
+LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${PUGIXML_INCLUDE_DIR} )
+LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
+IF(PUGIXML_FOUND)
+  SET(ApproxMVBB_SUPPORT_XML ON)
+ENDIF()
 # ========================================================================================================================================
+
+
+# ==================================
+
 
 
 MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
@@ -194,22 +193,19 @@ MESSAGE(STATUS "Added ${MYPROJECT_CXX_FLAGS} to CMAKE_CXX and CMAKE_C_FLAGS: ${C
 INCLUDE(DefineApproxMVBBSources)
 
 SET(ApproxMVBB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/ApproxMVBB")
-SET(ApproxMVBB_EXTERNAL_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/Diameter/include/ApproxMVBB/Diameter" 
+SET(ApproxMVBB_EXTERNAL_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/Diameter/include/ApproxMVBB/Diameter"
                                     "${PROJECT_SOURCE_DIR}/external/GeometryPredicates/include/ApproxMVBB/GeometryPredicates")
-                                    
+
 #Include all relevant sources
-INCLUDE_ALL_APPROXMVBB_SOURCE(  ApproxMVBB_SRC 
-                                ApproxMVBB_INC 
-                                ApproxMVBB_INC_DIRS 
+INCLUDE_ALL_APPROXMVBB_SOURCE(  ApproxMVBB_SRC
+                                ApproxMVBB_INC
+                                ApproxMVBB_INC_DIRS
                                 ApproxMVBB_DEPENDING_TARGETS
                                 ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
-SET(ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS} ${ApproxMVBB_INC_DIRS_DEP})
+LIST(APPEND ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS_DEP})
 SET(ApproxMVBB_LINK_LIBS ${ApproxMVBB_LIBRARIES_DEP})
-SET(ApproxMVBB_DEPENDING_TARGETS ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEPENDING_TARGETS_DEP})
-
-
-
+LIST(APPEND ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEPENDING_TARGETS_DEP})
 
 
 IF(ApproxMVBB_BUILD_LIBRARY)

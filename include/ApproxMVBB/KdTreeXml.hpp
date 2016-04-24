@@ -1,3 +1,15 @@
+// ========================================================================================
+//  ApproxMVBB
+//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
+//
+//  This Source Code Form is subject to the terms of the Mozilla Public
+//  License, v. 2.0. If a copy of the MPL was not distributed with this
+//  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// ========================================================================================
+
+#ifndef ApproxMVBB_KdTreeXml_hpp
+#define ApproxMVBB_KdTreeXml_hpp
+
 #include <pugixml.hpp>
 
 #include "KdTree.hpp"
@@ -12,6 +24,7 @@ namespace ApproxMVBB{
     public:
         using XMLNodeType = pugi::xml_node;
 
+        /** Append all points in \p obj to the XML node \p root */
         template<typename TTraits>
         static void appendToXML(PointData<TTraits> const & obj, XMLNodeType & root){
             using PointGetter = typename PointData<TTraits>::PointGetter;
@@ -24,6 +37,7 @@ namespace ApproxMVBB{
             node.append_child(nodePCData).set_value( ss.str().c_str() );
         }
 
+        /** Append the data of the base kdTree class \p obj to the XML node \p kdNode */
         template<typename Traits>
         static void appendToXML(TreeBase<Traits> const & obj, XMLNodeType kdNode){
             using NodeType = typename TreeBase<Traits>::NodeType;
@@ -97,7 +111,7 @@ namespace ApproxMVBB{
                 aabb.append_child(nodePCData).set_value( s.c_str() );
             }
         }
-
+        /** Append the kdTree statistics \p obj to the XML node \p kdNode */
         static void appendToXML(const TreeStatistics & obj, XMLNodeType & kdNode){
 
             auto stat = kdNode.append_child("Statistics");
@@ -116,6 +130,7 @@ namespace ApproxMVBB{
             stat.append_attribute("m_avgNeighbours").set_value( obj.m_avgNeighbours );
         }
 
+        /** Main function to append the whole data of the kdTree \p obj to the XML node \p root */
         template<typename TTraits>
         static void appendToXML(const Tree<TTraits> & obj, XMLNodeType & root, bool aligned = true,
                        const Matrix33 & A_IK = Matrix33::Identity()
@@ -140,6 +155,7 @@ namespace ApproxMVBB{
 
         }
 
+        /** Main function to append the whole data of a simple kdTree \p obj to the XML node \p root */
         template<typename TTraits>
         static void appendToXML(const TreeSimple<TTraits> & obj,
                          XMLNodeType root,
@@ -166,5 +182,5 @@ namespace ApproxMVBB{
     };
 
     }
-
 }
+#endif
