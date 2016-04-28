@@ -76,7 +76,7 @@ Finally, build and install the project:
 **Cmake Find Scripts**   
 The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
 ```cmake
-    find_package(ApproxMVBB [version] [Required] )
+    find_package(ApproxMVBB [version] [COMPONENTS [SUPPORT_KDTREE] [SUPPORT_XML] ] [Required] )
 ```
 which defines the following variables if ApproxMVBB has been found successfully:
 ```cmake
@@ -86,6 +86,8 @@ which defines the following variables if ApproxMVBB has been found successfully:
     ApproxMVBB_LIBRARY_DGB  #- Debug library
     ApproxMVBB_LIBRARIES    #- libraries to link with
 ```    
+The components `SUPPORT_KDTREE` additionally loads the dependency [meta](https://github.com/ericniebler/meta) for the `KdTree.hpp` header and `SUPPORT_XML` loads [pugixml](https://github.com/zeux/pugixml) for the `KdTreeXml.hpp` header.
+
 If you installed the library into non-system generic location you can set the cmake variable ``$ApproxMVBB_DIR`` before invoking the ``find_library`` command:
 ```cmake
     set(ApproxMVBB_DIR "path/to/installation/lib/cmake")

@@ -61,6 +61,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp     
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTree.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTreeXml.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
         
         ${ApproxMVBB_DIAM_INC}

@@ -98,8 +98,8 @@ namespace MinAreaRectangleTest {
 
     }
 
-};
-};
+}
+}
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

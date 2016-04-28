@@ -8,6 +8,8 @@
 # ApproxMVBB_LIBRARY_REL  - Release library
 # ApproxMVBB_LIBRARY_DGB  - Debug library
 # ApproxMVBB_LIBRARIES - libraries to link with
+# ApproxMVBB_COMPILE_DEFINITIONS - compile definitions which should be
+# added to your project, they only define some macros for safety checks when including headers.
 
 macro(make_library_set PREFIX)
   if (${PREFIX}_FWK)
@@ -47,12 +49,12 @@ macro(findpkg_finish PREFIX)
         message(FATAL_ERROR "Required library ${PREFIX} not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake.")
       endif ()
     endif ()
-    
+
     # add dependency libraries
     if (${PREFIX}_LIBRARIES_DEP)
         list(APPEND ${PREFIX}_LIBRARIES ${${PREFIX}_LIBRARIES_DEP})
     endif()
-    
+
     mark_as_advanced(${PREFIX}_INCLUDE_DIR ${PREFIX}_LIBRARY ${PREFIX}_LIBRARY_REL ${PREFIX}_LIBRARY_DBG ${PREFIX}_LIBRARY_FWK)
   endif ()
 endmacro(findpkg_finish)
@@ -63,13 +65,13 @@ set( ApproxMVBB_CXX_FLAGS "-std=c++11" CACHE STRING "Build flags when linking wi
 
 #Find Include Headers
 find_path(ApproxMVBB_INCLUDE_DIR NAMES "@ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER@" HINTS @ApproxMVBB_INC_INSTALL_DIR@ ${ApproxMVBB_DIR})
-#message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
+message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
 
 #Find libraries in @ApproxMVBB_LIBRARY_INSTALL_PATH@
 find_library(ApproxMVBB_LIBRARY_REL NAMES "@ApproxMVBB_LIBRARY_NAME_REL@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
 find_library(ApproxMVBB_LIBRARY_DBG NAMES "@ApproxMVBB_LIBRARY_NAME_DBG@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
-#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_REL})
-#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_DBG})
+message(STATUS "ApproxMVBB found (release lib): " ${ApproxMVBB_LIBRARY_REL})
+message(STATUS "ApproxMVBB found (debug lib): " ${ApproxMVBB_LIBRARY_DBG})
 
 
 
@@ -82,24 +84,32 @@ message(STATUS "Try finding Eigen3")
 # Define Eigen =====================
 find_package(Eigen3 REQUIRED)
 set(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
+list(APPEND ApproxMVBB_INCLUDE_DIR ${EIGEN_INCLUDE_DIR})
 # ==================================
 
-# if library should support KDTree include pugixml,meta
-IF(@ApproxMVBB_SUPPORT_KDTREE@)
-  message(STATUS "Library supports KdTree")
-  message(STATUS "Try finding PugiXML")
-  # Define PugiXML ===================
-  find_package(PugiXML REQUIRED)
-  # ==================================
-  message(STATUS "Try finding Meta")
-  # Define Meta ======================
-  find_package(Meta REQUIRED)
-  # ==================================
-  list(APPEND ApproxMVBB_INCLUDE_DIR ${EIGEN_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR} ${Meta_INCLUDE_DIR}) 
-  SET(ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
-  SET(ApproxMVBB_DEPENDING_TARGETS ${Meta_TARGET})
-ELSE()
-  list(APPEND ApproxMVBB_INCLUDE_DIR ${EIGEN_INCLUDE_DIR})
+# Define Meta if KdTree Support is selected
+IF ( ";${ApproxMVBB_FIND_COMPONENTS};" MATCHES ";SUPPORT_KDTREE;" )
+    message(STATUS "ApproxMVBB: add support for KdTree")
+    message(STATUS "Try finding Meta")
+    # Define Meta ======================
+    find_package(Meta REQUIRED)
+    # ==================================
+    LIST(APPEND ApproxMVBB_INCLUDE_DIR ${Meta_INCLUDE_DIR})
+    SET(ApproxMVBB_DEPENDING_TARGETS ${Meta_TARGET})
+    LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "-DApproxMVBB_SUPPORT_KDTREE")
+ENDIF()
+
+IF ( ";${ApproxMVBB_FIND_COMPONENTS};" MATCHES ";SUPPORT_XML;" )
+  message(STATUS "ApproxMVBB: add support for XML")
+  message(STATUS "Try finding pugixml")
+  FIND_PACKAGE(PugiXML REQUIRED)
+  LIST(APPEND ApproxMVBB_INCLUDE_DIR   ${PUGIXML_INCLUDE_DIR} )
+  LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
+  LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "-DApproxMVBB_SUPPORT_XML")
+ENDIF()
+
+IF(ApproxMVBB_COMPILE_DEFINITIONS)
+  message(STATUS "ApproxMVBB: add compile definitions '\${ApproxMVBB_COMPILE_DEFINITIONS}' = '${ApproxMVBB_COMPILE_DEFINITIONS}' to your target.")
 ENDIF()
 # ========================================================================================================================================
 
@@ -125,4 +135,5 @@ MARK_AS_ADVANCED(
     ApproxMVBB_LIBRARY_DBG
     ApproxMVBB_LIBRARIES
     ApproxMVBB_DEPENDING_TARGETS
+    ApproxMVBB_COMPILE_DEFINITIONS
 )

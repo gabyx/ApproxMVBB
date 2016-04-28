@@ -77,7 +77,7 @@ double DiameterEstimator::estimateDiameterInOneList(
     int i, j, k, n;
     int index1, index2;
 
-    int suspicion_of_convex_hull = 0;
+    int suspicion_of_convex_hull = 0; // not used
     int fdn, ldn, idn;
 
     double epsilon = _epsilon_;
