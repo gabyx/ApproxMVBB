@@ -27,7 +27,7 @@ ADD_EXECUTABLE(libraryUsage ./main.cpp)
 # link with ApproxMVBB
 MESSAGE(STATUS "Linking with: " ${ApproxMVBB_LIBRARIES})
 target_link_libraries(libraryUsage ${ApproxMVBB_LIBRARIES})
-target_compile_definitions( ${ApproxMVBB_COMPILE_DEFINITIONS})
+target_compile_definitions(libraryUsage PRIVATE ${ApproxMVBB_COMPILE_DEFINITIONS})
 
 # add dependecies (if any)
 if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")

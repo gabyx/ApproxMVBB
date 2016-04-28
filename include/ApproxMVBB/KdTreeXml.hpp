@@ -10,6 +10,10 @@
 #ifndef ApproxMVBB_KdTreeXml_hpp
 #define ApproxMVBB_KdTreeXml_hpp
 
+#ifndef ApproxMVBB_SUPPORT_XML
+  #warning "Your using the KdTreeXml header, which needs to be linked with the Xml library!"
+#endif
+
 #include <pugixml.hpp>
 
 #include "KdTree.hpp"

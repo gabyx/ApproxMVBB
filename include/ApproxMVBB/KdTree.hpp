@@ -10,7 +10,6 @@
 #ifndef ApproxMVBB_KdTree_hpp
 #define ApproxMVBB_KdTree_hpp
 
-
 #include <type_traits>
 #include <initializer_list>
 #include <memory>

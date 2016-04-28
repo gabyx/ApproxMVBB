@@ -9,7 +9,7 @@
 # ApproxMVBB_LIBRARY_DGB  - Debug library
 # ApproxMVBB_LIBRARIES - libraries to link with
 # ApproxMVBB_COMPILE_DEFINITIONS - compile definitions which should be
-added to your project, they only define some macros for safety checks when including headers.
+# added to your project, they only define some macros for safety checks when including headers.
 
 
 macro(make_library_set PREFIX)
@@ -66,13 +66,13 @@ set( ApproxMVBB_CXX_FLAGS "-std=c++11" CACHE STRING "Build flags when linking wi
 
 #Find Include Headers
 find_path(ApproxMVBB_INCLUDE_DIR NAMES "@ApproxMVBB_INCLUDE_CHARATERISTIC_HEADER@" HINTS @ApproxMVBB_INC_INSTALL_DIR@ ${ApproxMVBB_DIR})
-#message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
+message(STATUS "ApproxMVBB include dir:  " ${ApproxMVBB_INCLUDE_DIR})
 
 #Find libraries in @ApproxMVBB_LIBRARY_INSTALL_PATH@
 find_library(ApproxMVBB_LIBRARY_REL NAMES "@ApproxMVBB_LIBRARY_NAME_REL@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
 find_library(ApproxMVBB_LIBRARY_DBG NAMES "@ApproxMVBB_LIBRARY_NAME_DBG@" HINTS @ApproxMVBB_LIB_INSTALL_DIR@ ${ApproxMVBB_DIR} NO_DEFAULT_PATH)
-#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_REL})
-#message(STATUS "FOUND " ${ApproxMVBB_LIBRARY_DBG})
+message(STATUS "ApproxMVBB found (release lib): " ${ApproxMVBB_LIBRARY_REL})
+message(STATUS "ApproxMVBB found (debug lib): " ${ApproxMVBB_LIBRARY_DBG})
 
 
 
@@ -97,7 +97,7 @@ IF (ApproxMVBB_SUPPORT_KDTREE)
     # ==================================
     LIST(APPEND ApproxMVBB_INCLUDE_DIR ${Meta_INCLUDE_DIR})
     SET(ApproxMVBB_DEPENDING_TARGETS ${Meta_TARGET})
-    LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "ApproxMVBB_SUPPORT_KDTREE")
+    LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "-DApproxMVBB_SUPPORT_KDTREE")
 ENDIF()
 
 IF(ApproxMVBB_SUPPORT_XML)
@@ -106,7 +106,11 @@ IF(ApproxMVBB_SUPPORT_XML)
   FIND_PACKAGE(PugiXML REQUIRED)
   LIST(APPEND ApproxMVBB_INCLUDE_DIR   ${PUGIXML_INCLUDE_DIR} )
   LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
-  LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "ApproxMVBB_SUPPORT_XML")
+  LIST(APPEND ApproxMVBB_COMPILE_DEFINITIONS "-DApproxMVBB_SUPPORT_XML")
+ENDIF()
+
+IF(ApproxMVBB_COMPILE_DEFINITIONS)
+  message(STATUS "ApproxMVBB: add compile definitions '\${ApproxMVBB_COMPILE_DEFINITIONS}' = '${ApproxMVBB_COMPILE_DEFINITIONS}' to your target.")
 ENDIF()
 # ========================================================================================================================================
 
