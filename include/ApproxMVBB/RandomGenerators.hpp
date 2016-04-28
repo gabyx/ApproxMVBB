@@ -126,7 +126,7 @@ namespace RandomGenerators{
     template<typename T>
     class AlmostUniformUIntDistribution{
         public:
-            ApproxMVBB_STATIC_ASSERT( std::is_unsigned<T>::value );
+            ApproxMVBB_STATIC_ASSERT( std::is_unsigned<T>::value )
 
             AlmostUniformUIntDistribution(T min,T max): m_min(min), m_max(max) {
                 m_nRange = m_max - m_min + 1;
@@ -145,7 +145,7 @@ namespace RandomGenerators{
     template<typename T>
     class AlmostUniformRealDistribution{
         public:
-            ApproxMVBB_STATIC_ASSERT( std::is_floating_point<T>::value );
+            ApproxMVBB_STATIC_ASSERT( std::is_floating_point<T>::value )
 
             AlmostUniformRealDistribution(T min,T max): m_min(min), m_max(max) {
                 m_nRange = m_max - m_min + 1;
@@ -231,7 +231,7 @@ inline void XorShift128Plus::jump() {
 
     uint64_t s0 = 0;
     uint64_t s1 = 0;
-    for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
+    for(unsigned int i = 0; i < sizeof(JUMP) / sizeof (*JUMP); i++)
         for(int b = 0; b < 64; b++) {
             if (JUMP[i] & 1ULL << b) {
                 s0 ^= s[0];
@@ -286,7 +286,7 @@ inline void XorShift1024Star::jump() {
     };
 
     uint64_t t[16] = { 0 };
-    for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
+    for(unsigned int i = 0; i < sizeof(JUMP) / sizeof (*JUMP); i++)
         for(int b = 0; b < 64; b++) {
             if (JUMP[i] & 1ULL << b)
                 for(int j = 0; j < 16; j++)

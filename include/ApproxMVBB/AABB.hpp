@@ -85,7 +85,7 @@ public:
     AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {}
 
     AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
-        ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
+        ApproxMVBB_ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
         "AABB initialized wrongly! min/max: " << m_minPoint.transpose() <<"/" << m_maxPoint.transpose());
     }
 

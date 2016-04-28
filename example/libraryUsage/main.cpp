@@ -14,6 +14,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/KdTree.hpp"
+#include "ApproxMVBB/KdTreeXml.hpp"
 
 ApproxMVBB_DEFINE_MATRIX_TYPES
 ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
@@ -122,7 +123,7 @@ int  main( int  argc, char  ** argv ) {
         std::cout << "Saving KdTree XML to: " << file << std::endl;
 
         pugi::xml_document dataXML;
-        tree.appendToXML(dataXML);
+        KdTree::XML::appendToXML(tree, dataXML);
         dataXML.save_file(file.c_str(),"    ");
     }
 
