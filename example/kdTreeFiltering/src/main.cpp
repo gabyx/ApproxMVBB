@@ -16,7 +16,7 @@
 #include "ApproxMVBB/KdTree.hpp"
 
 #ifdef ApproxMVBB_SUPPORT_XML
-  #include <pugixml.hpp>
+  #include "ApproxMVBB/KdTreeXml.hpp"
 #endif
 
 // Not part of library:
@@ -216,7 +216,7 @@ void doKdTree(std::string file){
 
 int  main( int , char  **  ) {
 
-    doKdTree("./Bunny.txt")
+    doKdTree("./Bunny.txt");
     //doKdTree("./Lucy.txt");
     return 0;
 }

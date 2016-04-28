@@ -24,9 +24,9 @@ include_directories(${INCLUDE_DIRS})
 ADD_EXECUTABLE(${PROJECT_NAME}  ${SOURCE_FILES} ${INCLUDE_FILES} )
 target_link_libraries(${PROJECT_NAME} "ApproxMVBB" ${PUGIXML_LIBRARIES})
 
-add_definitions("ApproxMVBB_SUPPORT_KDTREE")
+add_definitions("-DApproxMVBB_SUPPORT_KDTREE")
 IF(ApproxMVBB_SUPPORT_XML)
-  add_definitions("ApproxMVBB_SUPPORT_XML")
+  add_definitions("-DApproxMVBB_SUPPORT_XML")
 ENDIF()
 
 if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")
