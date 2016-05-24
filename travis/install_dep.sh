@@ -6,7 +6,7 @@ cd $ROOT_PATH
 
 # Install eigen3 =======================================================
 hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
-cd ${ROOT_PATH}/eigen3 && hg update 3.2
+cd ${ROOT_PATH}/eigen3 && hg update default
 mkdir ${ROOT_PATH}/eigen3Build
 cd ${ROOT_PATH}/eigen3Build
 cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
