@@ -62,9 +62,9 @@ The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https
 In the `CMakeCache.txt` file you can specify what you want to build 
 ( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
 
-To install the library and the header files at a specific location `/usr/local/include/` run cmake with::
+To install the library and the header files at a specific location `/usr/local/` run cmake with::
 ```bash
-    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
+    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
 ```
 Finally, build and install the project:
 ```bash
