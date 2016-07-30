@@ -22,5 +22,5 @@ git clone https://github.com/zeux/pugixml.git ${ROOT_PATH}/pugixml
 perl -pi -e 's/\/\/\s*#define\s*PUGIXML_HAS_LONG_LONG/#define PUGIXML_HAS_LONG_LONG/g' ${ROOT_PATH}/pugixml/src/pugiconfig.hpp 
 mkdir ${ROOT_PATH}/pugixmlBuild
 cd ${ROOT_PATH}/pugixmlBuild
-cmake ../pugixml/scripts/ -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+cmake ../pugixml -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
 sudo make VERBOSE=1 install
