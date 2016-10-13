@@ -17,6 +17,7 @@
 #include <cstdint>
 #include <random>
 #include <limits>
+#include <time.h>
 
 namespace ApproxMVBB{
 namespace RandomGenerators{
