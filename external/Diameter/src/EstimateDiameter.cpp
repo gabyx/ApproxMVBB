@@ -354,8 +354,8 @@ double DiameterEstimator::estimateDiameterInOneList(
     {
         for ( n = theDoubleNormals.n-1; n >= 0; n -- )
         {
-            _CountPointsInSpheres( &theDoubleNormals.seg[ n ], theDiam->squareDiameter,
-                    theList, f, l, dim );
+            /*_CountPointsInSpheres( &theDoubleNormals.seg[ n ], theDiam->squareDiameter,
+                    theList, f, l, dim );*/
         }
     }
 
