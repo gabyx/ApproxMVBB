@@ -13,6 +13,7 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include "ApproxMVBB/Common/LogDefines.hpp"
 
+#include <array>
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
