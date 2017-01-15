@@ -45,7 +45,7 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       )
 {
     using IndexType = typename Derived::Index;
-    
+
     if(nPoints > points.cols() || nPoints < 2) {
         ApproxMVBB_ERRORMSG("Wrong arguments!" << "sample nPoints: (>2) " << nPoints << " of points: " << points.cols() << std::endl )
     }
@@ -60,18 +60,18 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     oobb.setZAxisLongest();
 
     IndexType halfSampleSize = gridSize*gridSize;
-    
+
     struct BottomTopPoints{
         IndexType bottomIdx = 0;
         PREC bottomZ;
-    
+
         IndexType topIdx = 0;
-        PREC topZ; 
+        PREC topZ;
     };
-    
+
     // grid of the bottom/top points in Z direction (indexed from 1 )
-    std::vector< BottomTopPoints > boundaryPoints(halfSampleSize); 
-       
+    std::vector< BottomTopPoints > boundaryPoints(halfSampleSize);
+
     using LongInt = long long int;
     MyMatrix::Array2<LongInt> idx; // Normalized P
     //std::cout << oobb.extent() << std::endl;
@@ -92,12 +92,12 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
         idx(0) = std::max(   std::min( LongInt(gridSize-1), idx(0)),  0LL   );
         idx(1) = std::max(   std::min( LongInt(gridSize-1), idx(1)),  0LL   );
         //std::cout << idx.transpose() << std::endl;
-        
+
         // Register points in grid
         // if z component of p is > pB.topZ  -> set new top point at pos
         // if z component of p is < pB.bottomZ    -> set new bottom point at pos
         auto & pB = boundaryPoints[idx(0) + idx(1)*gridSize];
-        
+
         if( pB.bottomIdx == 0) {
             pB.bottomIdx  = pB.topIdx  = i+1;
             pB.bottomZ = pB.topZ       = K_p(2);
@@ -134,13 +134,13 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
             }
         }
     }
-    
+
     // Add random points!
     // Random indices if too little points
     if( k < nPoints ){
         RandomGenerators::DefaultRandomGen gen(seed);
-        RandomGenerators::DefaultUniformUIntDistribution< 
-                                typename std::make_unsigned<IndexType>::type 
+        RandomGenerators::DefaultUniformUIntDistribution<
+                                typename std::make_unsigned<IndexType>::type
                            > dis(0, points.cols()-1);
         IndexType s;
         while( k < nPoints) {
@@ -179,8 +179,25 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
     PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
 
+
+//    // Parallel Loop Start ===============================================================
+//    #ifdef ApproxMVBB_OPENMP_SUPPORT
+//        #pragma omp declare reduction(volumeIsSmaller:OOBB: \
+//                                            omp_in.volume()<omp_out.volume() ? omp_out=omp_in : omp_out \
+//                                     ) initializer(omp_priv(omp_orig))
+//
+//        #pragma omp parallel for schedule(dynamic,1) \
+//                                 shared(points) \
+//                                 reduction(volumeIsSmaller:oobb) \
+//                                 ApproxMVBB_OPENMP_NUMTHREADS
+//
+//
+//        for(unsigned int parallelIdx = 0; parallelIdx < 12 ; ++parallelIdx ) {
+//
+//    #endif
+
     unsigned int cacheIdx = 0; // current write Idx into the cache
-    Vector3 dirCache[3]; // save the last three directions (avoiding cycling in choosen axis)
+    std::array<Vector3,3> dirCache; // save the last three directions (avoiding cycling in choosen axis)
 
     Vector3 dir;
     ProjectedPointSet proj;
@@ -190,7 +207,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
         //std::cout << oobb.m_q_KI.matrix() << std::endl;
         dir = oobb.getDirection(0);
 
-        // check against all chache values
+        // check against all cache values
         for(unsigned char i=0; i<3 && i<loop; ++i) {
             PREC dotp = std::abs(dir.dot(dirCache[i])); //
             if( std::abs(dotp - 1.0) <= 1e-3 ) {
@@ -214,6 +231,11 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
             oobb = o;
         }
     }
+
+//    // Parallell Loop End =====================================================================
+//    #ifdef ApproxMVBB_OPENMP_SUPPORT
+//        }
+//    #endif
 
     return  oobb;
 }
@@ -246,17 +268,29 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
     oobb.expandToMinExtentAbsolute(minBoxExtent);
 
     // Define the volume lower bound above we accept a new volume as
-    PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
+    // PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
     //Get the direction of the input OOBB in I frame:
     Vector3 dir1 = oobb.getDirection(0);
     Vector3 dir2 = oobb.getDirection(1);
     Vector3 dir3 = oobb.getDirection(2);
 
-    Vector3 dir;
+
 
     ProjectedPointSet proj;
+    Vector3 dir;
 
+    #ifdef ApproxMVBB_OPENMP_SUPPORT
+        #pragma omp declare reduction(volumeIsSmaller:OOBB: \
+                                            omp_in.volume()<omp_out.volume() ? omp_out=omp_in : omp_out \
+                                     ) initializer(omp_priv(omp_orig))
+
+        #pragma omp parallel for schedule(dynamic,4) collapse(3) \
+                                 shared(points) \
+                                 private(proj,dir) \
+                                 reduction(volumeIsSmaller:oobb) \
+                                 ApproxMVBB_OPENMP_NUMTHREADS
+    #endif
     for(int x = -int(gridSize); x <= (int)gridSize; ++x ) {
         for(int  y = -int(gridSize); y <= (int)gridSize; ++y ) {
             for(int z = 0; z <= (int)gridSize; ++z ) {
@@ -266,7 +300,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
                 }
 
                 // Make direction
-                dir = x*dir1 + y*dir2 + z*dir3;
+                Vector3 dir = x*dir1 + y*dir2 + z*dir3;
                 ApproxMVBB_MSGLOG_L3( "gridSearch: dir: " << dir.transpose() << std::endl; )
 
                 // Compute MVBB in dirZ

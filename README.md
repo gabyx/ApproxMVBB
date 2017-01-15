@@ -16,7 +16,7 @@ This small standard compliant C++11 library can either be built into a shared ob
 or directly be included in an existing C++ project. 
 It includes code for :
     
-- computing an approximation of an oriented minimal volume box,
+- computing an approximation of an oriented minimal volume box (multithreading support: OpenMP),
 - computing the convex hull of a point cloud in 2d,
 - computing the minimal area rectangle of a 2d point cloud,
 - 2d projections of point clouds,
@@ -71,7 +71,8 @@ Finally, build and install the project:
     $ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
     $ make install
 ``` 
- To build in parallel use the ``-jN`` flag in the `make` commmand, where ``N``denotes the number of parallel threads to use.
+By default the multithreading support is enabled if OpenMP is found! (see #Multithreading-Support)
+To build in parallel use the ``-jN`` flag in the `make` commmand, where ``N``denotes the number of parallel threads to use.
 
 **Cmake Find Scripts**   
 The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
@@ -252,7 +253,7 @@ The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotT
 --------------------------
 Benchmark
 --------------------------
-Here are some short benchmarks from the tests folder:   
+Here are some short benchmarks (single core) from the tests folder:   
 
 | Point Cloud  | # Points | ~ CPU Time ``approximateMVBB``|
 | ------------ | --------:| --------:|
@@ -264,8 +265,14 @@ Here are some short benchmarks from the tests folder:
 It seems to take a long time for 140 million points. The most ineffiecient task is to get a good initial bounding box. This takes the most time as diameter computations are performed in 3d and then all points are projected in the found diameter direction in 3d and another diameter in the projected plane in 2d is computed. Afterwards the point cloud is sampled (not just random points, its done with a grid) and convex hull, minimal rectangle computations are performed over the grid directions. These algorithms could be made faster by exploiting the following things:
 * Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)
 * Parllelism for the projection -> (CUDA, threads)
-    
-    
+
+--------------------------
+Multithreading Support
+--------------------------
+You can build the library with OpenMP (by default enabled)
+You can set the cmake cache variables `ApproxMVBB_OPENMP_USE_OPENMP=On` which will further enable `ApproxMVBB_OPENMP_USE_NTHREADS=On/Off`.
+The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. If `Off`, the number of threads is determined at runtime (default). 
+
 --------------------------
 Licensing
 --------------------------
