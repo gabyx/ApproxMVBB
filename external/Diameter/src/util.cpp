@@ -1302,9 +1302,9 @@ double _GetScalarProductAverage( int n )
  */
 double _SquareDistance( const double *a, const double *b, const int dim )
 {
-  register int i;
-  register double d = 0.0;
-  register double ba;
+  int i;
+  double d = 0.0;
+  double ba;
   for ( i=0; i<dim; i++ ) {
     ba = b[i] - a[i];
     d += ba * ba;
@@ -1354,9 +1354,9 @@ double _SquareDistance2D( const double *a, const double *b )
 double _ScalarProduct( const double *a, const double *b,
 		       const double *c, const double *d, const int dim )
 {
-  register int i;
-  register double scalar = 0.0;
-  register double ab, cd;
+  int i;
+  double scalar = 0.0;
+  double ab, cd;
   for ( i=0; i<dim; i++ ) {
     ab = b[i] - a[i];
     cd = d[i] - c[i];
