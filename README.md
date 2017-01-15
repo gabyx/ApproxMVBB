@@ -271,7 +271,8 @@ Multithreading Support
 --------------------------
 You can build the library with OpenMP (by default enabled)
 You can set the cmake cache variables `ApproxMVBB_OPENMP_USE_OPENMP=On` which will further enable `ApproxMVBB_OPENMP_USE_NTHREADS=On/Off`.
-The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. If `Off`, the number of threads is determined at runtime (default). 
+The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. 
+If `Off`, the number of threads is determined at runtime (default). 
 
 --------------------------
 Licensing
