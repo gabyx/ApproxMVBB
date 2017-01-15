@@ -85,7 +85,7 @@ public:
     AABB( const VectorStat<Dim> &p): m_minPoint(p), m_maxPoint(p) {}
 
     AABB( const VectorStat<Dim> &l, const VectorStat<Dim> &u): m_minPoint(l), m_maxPoint(u) {
-        ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
+        ApproxMVBB_ASSERTMSG( (m_maxPoint.array() >= m_minPoint.array()).all(),
         "AABB initialized wrongly! min/max: " << m_minPoint.transpose() <<"/" << m_maxPoint.transpose());
     }
 
@@ -147,7 +147,7 @@ public:
     }
 
     inline bool overlapsSubSpace(const AABB & box, unsigned int fixedAxis) const {
-        ArrayStat<Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
+        MyMatrix::ArrayStat<bool,Dim> t = ((m_maxPoint.array() >= box.m_minPoint.array()) && (m_minPoint.array() <= box.m_maxPoint.array()));
         t(fixedAxis) = true;
         return t.all();
     }

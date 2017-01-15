@@ -26,7 +26,11 @@ void MinAreaRectangle::compute() {
     ApproxMVBB_ASSERTMSG(m_convh.verifyHull(), "Convex hull not ok!")
 
     // Compute Rectangle
+    // computes p,u,v of box (not normalized)
     computeRectangle();
+
+    // Final adjustments (u and v are getting normalized)
+    adjustRectangle();
 }
 
 void MinAreaRectangle::computeRectangle() {
@@ -45,13 +49,11 @@ void MinAreaRectangle::computeRectangle() {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
         m_minBox.m_u.setZero();
         m_minBox.m_v.setZero();
-        adjustRectangle();
         return;
     } else if(nPoints == 2) {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
         m_minBox.m_u = m_p.col(m_hullIdx[1]) - m_p.col(m_hullIdx[0]);
         m_minBox.m_v.setZero();
-        adjustRectangle();
         return;
     }
 
@@ -109,10 +111,6 @@ void MinAreaRectangle::computeRectangle() {
             m_minBox = box;
         }
     }
-
-
-    adjustRectangle();
-
 }
 
 // determine the vertex v for which the edge angle is greater than c.m_currAngle

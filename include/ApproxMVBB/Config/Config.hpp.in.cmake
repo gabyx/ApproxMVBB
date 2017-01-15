@@ -29,6 +29,8 @@ namespace ApproxMVBB{
         #define ApproxMVBB_StaticAssert_INCLUDE_FILE            "@ApproxMVBB_StaticAssert_INCLUDE_FILE@"
         
         #define ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE        "@ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE@"
+        #define ApproxMVBB_MyContainerTypeDefs_INCLUDE_FILE     "@ApproxMVBB_MyContainerTypeDefs_INCLUDE_FILE@"
+        
         #define ApproxMVBB_TypeDefs_INCLUDE_FILE                "@ApproxMVBB_TypeDefs_INCLUDE_FILE@"
         #define ApproxMVBB_AABB_INCLUDE_FILE                    "@ApproxMVBB_AABB_INCLUDE_FILE@"
         #define ApproxMVBB_OOBB_INCLUDE_FILE                    "@ApproxMVBB_OOBB_INCLUDE_FILE@"
@@ -39,7 +41,10 @@ namespace ApproxMVBB{
     #else
         #define ApproxMVBB_AssertionDebug_INCLUDE_FILE          "ApproxMVBB/Common/AssertionDebug.hpp"
         #define ApproxMVBB_Exception_INCLUDE_FILE               "ApproxMVBB/Common/Exception.hpp"
+        
         #define ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE        "ApproxMVBB/Common/MyMatrixTypeDefs.hpp"
+        #define ApproxMVBB_MyContainerTypeDefs_INCLUDE_FILE     "ApproxMVBB/Common/MyContainerTypeDefs.hpp"
+
         #define ApproxMVBB_Platform_INCLUDE_FILE                "ApproxMVBB/Common/Platform.hpp"
         #define ApproxMVBB_StaticAssert_INCLUDE_FILE            "ApproxMVBB/Common/StaticAssert.hpp"
         #define ApproxMVBB_TypeDefs_INCLUDE_FILE                "ApproxMVBB/Common/TypeDefs.hpp"
@@ -51,7 +56,8 @@ namespace ApproxMVBB{
         
     #endif
     
-    
+    // Force log level
+    #define ApproxMVBB_FORCE_MSGLOG_LEVEL @ApproxMVBB_FORCE_MSGLOG_LEVEL@
 }
 
 

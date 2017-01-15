@@ -10,155 +10,10 @@
 #include <iostream>
 #include <limits>
 
-#include <stdio.h>
-#include <ApproxMVBB/Diameter/Utils/util.h>
+#include <ApproxMVBB/Diameter/Utils/util.hpp>
 
 namespace ApproxMVBB{
 namespace Diameter{
-
-/* verbose when reducing
- */
-static int _verbose_when_reducing_ = 0;
-
-void _VerboseWhenReducing()
-{
-  _verbose_when_reducing_ = 1;
-}
-void _NoVerboseWhenReducing()
-{
-  _verbose_when_reducing_ = 0;
-}
-int _GetVerboseWhenReducing()
-{
-  return( _verbose_when_reducing_ );
-}
-
-
-
-/* reduction in the iterative search of the double normal
- */
-static int _reduction_mode_in_iterative_ = 1;
-void _SetReductionModeInIterative( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-    _reduction_mode_in_iterative_ = m;
-    break;
-  case 2 :
-  default :
-    break;
-  }
-}
-int _GetReductionModeInIterative()
-{
-  return( _reduction_mode_in_iterative_ );
-}
-
-
-
-
-/* 'reduction' of diameter
- */
-static int _reduction_mode_of_diameter_ = 1;
-void _SetReductionModeOfDiameter( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-  case 2 :
-    _reduction_mode_of_diameter_ = m;
-    break;
-  default :
-    break;
-  }
-}
-int _GetReductionModeOfDiameter()
-{
-  return( _reduction_mode_of_diameter_ );
-}
-
-
-
-/* 'reduction' of double normals
- */
-static int _reduction_mode_of_dbleNorm_ = 1;
-void _SetReductionModeOfDbleNorm( int m )
-{
-  switch ( m ) {
-  case 0 :
-  case 1 :
-  case 2 :
-    _reduction_mode_of_dbleNorm_ = m;
-    break;
-  default :
-    break;
-  }
-}
-int _GetReductionModeOfDbleNorm()
-{
-  return( _reduction_mode_of_dbleNorm_ );
-}
-
-
-
-
-/* reduction by processing couple of double normals
- */
-static int _try_to_reduce_Q_ = 1;
-
-void _DoTryToReduceQ()
-{
-  _try_to_reduce_Q_ = 1;
-}
-void _DoNotTryToReduceQ()
-{
-  _try_to_reduce_Q_ = 0;
-}
-int _GetTryToReduceQ()
-{
-  return( _try_to_reduce_Q_ );
-}
-
-
-
-
-
-static int _Q_scan_ = 0;
-void _SetQscanToForward()
-{
-  _Q_scan_ = 1;
-}
-void _SetQscanToBackward()
-{
-  _Q_scan_ = 0;
-}
-int _GetQscan()
-{
-  return( _Q_scan_ );
-}
-
-
-
-
-static int _tight_bounds_ = 0;
-void _DoTryToGetTightBounds()
-{
-  _tight_bounds_ = 1;
-}
-void _DoNotTryToGetTightBounds()
-{
-  _tight_bounds_ = 0;
-}
-int _GetTightBounds()
-{
-  return( _tight_bounds_ );
-}
-
-
-
-
-
 
 /* partially sort a list of points
 
@@ -186,9 +41,9 @@ int _GetTightBounds()
 
 */
 
-int _LastPointOutsideSphereWithDiameter( typeSegment *theSeg,
+int _LastPointOutsideSphereWithDiameter( TypeSegment *theSeg,
 					 const double squareDiameter,
-					 double **theList,
+					 const double **theList,
 					 const int first,
 					 int *last,
 					 const int dim,
@@ -528,25 +383,9 @@ int _LastPointOutsideSphereWithDiameter( typeSegment *theSeg,
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int _LastPointOutsideSphereAndBoundWithDiameter( typeSegment *theSeg,
+int _LastPointOutsideSphereAndBoundWithDiameter( TypeSegment *theSeg,
 						 const double squareDiameter,
-						 double **theList,
+						 const double **theList,
 						 const int first,
 						 int *last,
 						 const int dim,
@@ -936,111 +775,80 @@ int _LastPointOutsideSphereAndBoundWithDiameter( typeSegment *theSeg,
   return( -1 );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void _CountPointsInSpheres( typeSegment *theSeg,
-			    const double squareDiameter,
-			    double **theList,
-			    const int first,
-			    const int last,
-			    const int dim )
-{
-  double minThreshold;
-  double medThreshold;
-  double maxThreshold;
-
-  double ab  = sqrt( theSeg->squareDiameter );
-  double ab2 = theSeg->squareDiameter;
-
-  double R  = sqrt( squareDiameter );
-  double R2 = squareDiameter;
-
-  int n[5] = {0,0,0,0,0};
-  int i;
-
-  double mamb, am2;
-
-  minThreshold = (R - .86602540378443864676*ab)
-    * (R - .86602540378443864676*ab)
-    - 0.25 * ab2;
-
-  medThreshold = 0.5 * ab2 + 0.25 * R2
-    - .43301270189221932338 * R * sqrt( 4 * ab2 - R2 );
-
-  maxThreshold = 0.25 * (R2 - ab2);
-
-
-  for ( i=first; i<=last; i++ ) {
-
-    mamb = _ScalarProduct( theList[i], theSeg->extremity1,
-			   theList[i], theSeg->extremity2, dim );
-
-    if ( mamb > maxThreshold ) {
-      n[0] ++ ;
-      continue;
-    }
-
-    if ( mamb > medThreshold ) {
-      n[1] ++ ;
-      continue;
-    }
-
-    if ( mamb > minThreshold ) {
-      am2 = _SquareDistance( theList[i], theSeg->extremity1, dim );
-      if ( 3.0 * ( am2 * ab2 - (am2 - mamb)*(am2 - mamb) )
-	   - (R2 - ab2 - mamb)*(R2 - ab2 - mamb) < 0 ) {
-	n[2] ++;
-	continue;
-      }
-      n[3] ++;
-      continue;
-    }
-
-    n[4] ++;
-  }
-
-  printf(" diametre courant = %g  -  double normale = %g\n",
-	 R, ab );
-  printf(" %8d points dont\n", last-first+1 );
-  printf(" - %6d : candidats extremites       R=%g\n", n[0], sqrt(maxThreshold+0.25*ab2) );
-  printf(" - %6d : rien a faire               R=%g\n", n[1], sqrt(medThreshold+0.25*ab2)  );
-  printf(" - %6d : a tester                   \n", n[2]+n[3] );
-  printf("   + %6d : a eliminer\n", n[2] );
-  printf("   + %6d : a conserver\n", n[3] );
-  printf(" - %6d : elimines directement       R=%g\n", n[4], sqrt(minThreshold+0.25*ab2)  );
-  printf("----------\n" );
-  printf(" %8d\n", n[0]+n[1]+n[2]+n[3]+n[4] );
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//void _CountPointsInSpheres( TypeSegment *theSeg,
+//			    const double squareDiameter,
+//			    const double **theList,
+//			    const int first,
+//			    const int last,
+//			    const int dim )
+//{
+//  double minThreshold;
+//  double medThreshold;
+//  double maxThreshold;
+//
+//  double ab  = sqrt( theSeg->squareDiameter );
+//  double ab2 = theSeg->squareDiameter;
+//
+//  double R  = sqrt( squareDiameter );
+//  double R2 = squareDiameter;
+//
+//  int n[5] = {0,0,0,0,0};
+//  int i;
+//
+//  double mamb, am2;
+//
+//  minThreshold = (R - .86602540378443864676*ab)
+//    * (R - .86602540378443864676*ab)
+//    - 0.25 * ab2;
+//
+//  medThreshold = 0.5 * ab2 + 0.25 * R2
+//    - .43301270189221932338 * R * sqrt( 4 * ab2 - R2 );
+//
+//  maxThreshold = 0.25 * (R2 - ab2);
+//
+//
+//  for ( i=first; i<=last; i++ ) {
+//
+//    mamb = _ScalarProduct( theList[i], theSeg->extremity1,
+//			   theList[i], theSeg->extremity2, dim );
+//
+//    if ( mamb > maxThreshold ) {
+//      n[0] ++ ;
+//      continue;
+//    }
+//
+//    if ( mamb > medThreshold ) {
+//      n[1] ++ ;
+//      continue;
+//    }
+//
+//    if ( mamb > minThreshold ) {
+//      am2 = _SquareDistance( theList[i], theSeg->extremity1, dim );
+//      if ( 3.0 * ( am2 * ab2 - (am2 - mamb)*(am2 - mamb) )
+//	   - (R2 - ab2 - mamb)*(R2 - ab2 - mamb) < 0 ) {
+//	n[2] ++;
+//	continue;
+//      }
+//      n[3] ++;
+//      continue;
+//    }
+//
+//    n[4] ++;
+//  }
+//
+//  printf(" diametre courant = %g  -  double normale = %g\n",
+//	 R, ab );
+//  printf(" %8d points dont\n", last-first+1 );
+//  printf(" - %6d : candidats extremites       R=%g\n", n[0], sqrt(maxThreshold+0.25*ab2) );
+//  printf(" - %6d : rien a faire               R=%g\n", n[1], sqrt(medThreshold+0.25*ab2)  );
+//  printf(" - %6d : a tester                   \n", n[2]+n[3] );
+//  printf("   + %6d : a eliminer\n", n[2] );
+//  printf("   + %6d : a conserver\n", n[3] );
+//  printf(" - %6d : elimines directement       R=%g\n", n[4], sqrt(minThreshold+0.25*ab2)  );
+//  printf("----------\n" );
+//  printf(" %8d\n", n[0]+n[1]+n[2]+n[3]+n[4] );
+//
+//}
 
 
 /* Find the farthest point from a sphere
@@ -1056,8 +864,8 @@ void _CountPointsInSpheres( typeSegment *theSeg,
 */
 
 
-int _FarthestPointFromSphere( typeSegment *theSeg,
-			      double **theList,
+int _FarthestPointFromSphere( TypeSegment *theSeg,
+			      const double **theList,
 			      const int first,
 			      int *last,
 			      const int dim,
@@ -1190,24 +998,12 @@ int _FarthestPointFromSphere( typeSegment *theSeg,
   return( -1 );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-double _MaximalSegmentInTwoLists( typeSegment *theSeg,
+double _MaximalSegmentInTwoLists( TypeSegment *theSeg,
 				  const int index1,
-				  double **theList1,
+				  const double **theList1,
 				  int *first1,
 				  int *last1,
-				  double **theList2,
+				  const double **theList2,
 				  int *first2,
 				  int *last2,
 				  int dim )
@@ -1223,7 +1019,7 @@ double _MaximalSegmentInTwoLists( typeSegment *theSeg,
 
   int i2;
 
-  double *ref;
+  const double *ref;
 
   double d, dprevious;
 
@@ -1316,20 +1112,9 @@ double _MaximalSegmentInTwoLists( typeSegment *theSeg,
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-double _MaximalSegmentInOneList( typeSegment *theSeg,
+double _MaximalSegmentInOneList( TypeSegment *theSeg,
 				 const int index,
-				 double **theList,
+				 const double **theList,
 				 int *first,
 				 int *last,
 				 const int dim )
@@ -1338,7 +1123,7 @@ double _MaximalSegmentInOneList( typeSegment *theSeg,
   int l=*last;
 
   int i = index;
-  double *ref;
+  const double *ref;
 
   double d, dprevious;
 
@@ -1390,16 +1175,9 @@ double _MaximalSegmentInOneList( typeSegment *theSeg,
   return( theSeg->squareDiameter );
 }
 
-
-
-
-
-
-
-
 double _MaximalDistanceFromPoint( int *index,
 				  const double *ref,
-				  double **theList,
+				  const double **theList,
 				  const int first,
 				  const int last,
 				  const int dim )
@@ -1465,34 +1243,24 @@ double _MaximalDistanceFromPoint( int *index,
 }
 
 
-
-
-
-
-
-
 /* Swap two points
  */
 
-void _SwapPoints( double **theList, const int i, const int j )
+void _SwapPoints( const double **theList, const int i, const int j )
 {
-  double *tmp;
+  const double *tmp;
   tmp = theList[i];
   theList[i] = theList[j];
   theList[j] = tmp;
 }
 
-
-
-
-
 static int _base_ =  100000000;
 
-void _InitCounter( typeCounter *c )
+void _InitCounter( TypeCounter *c )
 {
   c->c1 = c->c2 = 0;
 }
-void _AddToCounter( typeCounter *c, const int i )
+void _AddToCounter( TypeCounter *c, const int i )
 {
   c->c2 += i;
   while ( c->c2 >= _base_ ) {
@@ -1504,14 +1272,14 @@ void _AddToCounter( typeCounter *c, const int i )
     c->c1 --;
   }
 }
-double _GetCounterAverage( typeCounter *c, const int i )
+double _GetCounterAverage( TypeCounter *c, const int i )
 {
   return( (_base_ / (double)i ) * c->c1 + c->c2 / (double)i );
 }
 
 
 #ifdef _STATS_
-typeCounter scalarProducts;
+TypeCounter scalarProducts;
 
 void _InitScalarProductCounter()
 {
@@ -1629,12 +1397,7 @@ double _ScalarProduct2D( const double *a, const double *b,
 	  (b[1]-a[1])*(d[1]-c[1]) );
 }
 
-
-
-
-
-
-int _FindPointInList( double **theList,
+int _FindPointInList( const double **theList,
 		      const int first,
 		      const int last,
 		      double x0,
@@ -1676,8 +1439,8 @@ int _FindPointInList( double **theList,
 
 
 
-double _QuadraticDiameterInOneList( typeSegment *theDiam,
-				    double **theList,
+double _QuadraticDiameterInOneList( TypeSegment *theDiam,
+				    const double **theList,
 				    const int first,
 				    const int last,
 				    const int dim )
@@ -1745,13 +1508,13 @@ double _QuadraticDiameterInOneList( typeSegment *theDiam,
 
 
 
-double _QuadraticDiameterInTwoLists( typeSegment *theDiam,
+double _QuadraticDiameterInTwoLists( TypeSegment *theDiam,
 				     int   *index1,
 				     int   *index2,
-				     double **theList1,
+				     const double **theList1,
 				     const int first1,
 				     const int last1,
-				     double **theList2,
+				     const double **theList2,
 				     const int first2,
 				     const int last2,
 				     const int dim )

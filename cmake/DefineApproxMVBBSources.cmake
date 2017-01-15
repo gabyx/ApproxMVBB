@@ -28,7 +28,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
     
     SET(${SRC}
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixTypeDefs.cpp
-              
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/RandomGenerators.cpp  
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp           
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp  
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/OOBB.cpp              
@@ -61,6 +61,7 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp     
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTree.hpp  
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTreeXml.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
         
         ${ApproxMVBB_DIAM_INC}

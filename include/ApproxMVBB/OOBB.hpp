@@ -16,16 +16,21 @@
 #include "ApproxMVBB/AABB.hpp"
 
 namespace ApproxMVBB{
+
+
 class APPROXMVBB_EXPORT OOBB{
 public:
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     ApproxMVBB_DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
     OOBB() {
         this->reset();
     }
+
+    OOBB(const OOBB &) = default;
 
     OOBB(const Vector3 & l,
          const Vector3 & u,
@@ -47,7 +52,7 @@ public:
     }
 
     inline void setZAxisLongest(){
-        typename Vector3::Index i;
+        Vector3::Index i;
         maxExtent(i);
         if(i<2){
             switchZAxis(static_cast<unsigned int>(i));
@@ -81,7 +86,7 @@ public:
         return (m_maxPoint - m_minPoint).maxCoeff();
     }
 
-    inline PREC maxExtent(typename Vector3::Index & i) const{
+    inline PREC maxExtent(Vector3::Index & i) const{
         return (m_maxPoint - m_minPoint).maxCoeff(&i);
     }
 
@@ -89,6 +94,23 @@ public:
         return m_maxPoint(0) <= m_minPoint(0) || m_maxPoint(1) <= m_minPoint(1) || m_maxPoint(2) <= m_minPoint(2);
     }
 
+    /**
+    * Checks if a point overlaps the OOBB
+    * @param p input point which is regar
+    * @param coordinateSystemIsI determines if the the input point p is in the coordinate system I
+             or if false it is regarded to be in the coordinate system of the OOBB, that is, system K
+    */
+    template<typename Derived, bool coordinateSystemIsI = true>
+    inline bool overlaps(const MatrixBase<Derived> &p) const {
+        if(coordinateSystemIsI){
+            // p is in I frame
+            Vector3 t = m_q_KI.inverse() * p; // A_IK^T * I_p
+            return ((t.array() >= m_minPoint.array()) && (t.array() <= m_maxPoint.array())).all();
+        }else{
+            // p is in K Frame!!
+            return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
+        }
+    }
 
     /** Adjust box that all axes have at least a minimal extent of maxExtent*p, if maxExtent*p < eps then all axes to default extent */
     void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
@@ -114,12 +136,41 @@ public:
     }
 
     /** Get direction vectors in I Frame */
-    inline Vector3 getDirection(unsigned int i){
+    inline Vector3 getDirection(unsigned int i) const{
         ApproxMVBB_ASSERTMSG(i<3,"Index wrong: " << i)
-        Vector3 d; d.setZero(); d(i) = 1.0;
+        Vector3 d = Vector3::Zero();
+        d(i) = 1.0;
         return m_q_KI * d; // A_IK* d;
     }
 
+    /** Get all corner points in I Frame
+    *   @return A list of all corner points sorted according to (x,y,z) index in K frame
+    *   @param coordinateSystemIsI determines if the the output points are represented in the coordinate system I
+               or if false they are represented in the coordinate system of the OOBB, that is, system K
+    *   (move semantics make this fast)
+    */
+    template<bool coordinateSystemIsI = true>
+    inline Vector3List getCornerPoints() const{
+        Vector3List points(8);
+        Array3 ex = extent();
+        points[0] =   m_minPoint /*+ Array3(0,0,0) * extent*/ ;
+        points[1] =   m_minPoint + (Array3(1.0, 0.0, 0.0) * ex).matrix();
+        points[2] =   m_minPoint + (Array3(0.0, 1.0, 0.0) * ex).matrix();
+        points[3] =   m_minPoint + (Array3(1.0, 1.0, 0.0) * ex).matrix();
+
+        points[4] =   m_minPoint + (Array3(0.0, 0.0, 1.0) * ex).matrix();
+        points[5] =   m_minPoint + (Array3(1.0, 0.0, 1.0) * ex).matrix();
+        points[6] =   m_minPoint + (Array3(0.0, 1.0, 1.0) * ex).matrix();
+        points[7] =   m_maxPoint /*+ Array3(1,1,1) * extent */;
+
+        if(coordinateSystemIsI){
+            for(auto & p : points){
+                p = (m_q_KI * p).eval(); //    I_p = A_IK * K_p
+            }
+        }
+
+        return points;
+    }
 
     Quaternion m_q_KI;  ///< Rotation of frame I to frame K, corresponds to a transformation A_IK;
     Vector3 m_minPoint; ///< in K Frame

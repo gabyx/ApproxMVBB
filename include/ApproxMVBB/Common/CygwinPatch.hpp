@@ -6,22 +6,23 @@
 //  License, v. 2.0. If a copy of the MPL was not distributed with this
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
+#ifndef CYGWINPATCH_H_
+#define CYGWINPATCH_H_
+#include <string>
+#include <sstream>
 
-#ifndef ApproxMVBB_Diameter_TypeSegment_hpp
-#define ApproxMVBB_Diameter_TypeSegment_hpp
+// This is a patch file for Cygwin-based compilers to overcome a bug present in
+// the compilers. Code adapted from: 
+// http://stackoverflow.com/questions/12975341/to-string-is-not-a-member-of-std-says-so-g
 
-namespace ApproxMVBB{
-namespace Diameter{
+namespace std {
 
-    struct TypeSegment {
-      double const *extremity1;
-      double const *extremity2;
-      double squareDiameter;
-      int reduction_mode;
-    };
-
+	template < typename T > std::string to_string( const T& n )
+	{
+		std::ostringstream stm ;
+		stm << n ;
+		return stm.str() ;
+	}
 }
-}
-#endif // ApproxMVBB_Diameter_TypeSegment_hpp
 
-
+#endif

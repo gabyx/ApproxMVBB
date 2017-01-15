@@ -10,11 +10,11 @@ get_filename_component( ApproxMVBB_DIR ${ApproxMVBB_DIR} ABSOLUTE )
 message(STATUS "ApproxMVBB_DIR:" ${ApproxMVBB_DIR})
 
 
-# add ApproxMVBB and all its dependencies
-find_package(ApproxMVBB REQUIRED)
+# add ApproxMVBB and support for kdTree and XML output
+find_package(ApproxMVBB REQUIRED COMPONENTS SUPPORT_KDTREE SUPPORT_XML)
 
 # add CXX flags from library
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ApproxMVBB_CXX_FLAGS}") 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ApproxMVBB_CXX_FLAGS}")
 
 # add include directory
 include_directories(${ApproxMVBB_INCLUDE_DIR})
@@ -25,6 +25,7 @@ ADD_EXECUTABLE(libraryUsage ./main.cpp)
 # link with ApproxMVBB
 MESSAGE(STATUS "Linking with: " ${ApproxMVBB_LIBRARIES})
 target_link_libraries(libraryUsage ${ApproxMVBB_LIBRARIES})
+target_compile_definitions(libraryUsage PRIVATE ${ApproxMVBB_COMPILE_DEFINITIONS})
 
 # add dependecies (if any)
 if( NOT "${ApproxMVBB_DEPENDING_TARGETS}" STREQUAL "")

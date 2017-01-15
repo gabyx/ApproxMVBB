@@ -30,6 +30,19 @@ namespace PointFunctions {
     ApproxMVBB_DEFINE_MATRIX_TYPES
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 
+    template<typename Derived, typename Gen>
+    void applyRandomRotTrans(MatrixBase<Derived> & points, Gen & g) {
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3, Eigen::Dynamic)
+        Quaternion q;
+        q.coeffs() = q.coeffs().unaryExpr(g); // TODO: Check if q=[0,0,0,0] is correctly normalized !! otherwise crash! NaN
+        q.normalize();
+        Matrix33 R = q.matrix();
+        Vector3 trans;
+        trans = trans.unaryExpr(g);
+        points = R*points;
+        points.colwise() += trans;
+    }
+
     template<typename Derived>
     void applyRandomRotTrans(MatrixBase<Derived> & points) {
 
@@ -42,7 +55,6 @@ namespace PointFunctions {
         trans.setRandom();
         points = R*points;
         points.colwise() += trans;
-        std::cout << "Applied Transformation" << std::endl;
     }
 
 
@@ -186,31 +198,41 @@ namespace PointFunctions {
         return index;
     }
 
-    template<unsigned int Dimension,typename TVector,typename Derived>
-    std::pair<TVector,TVector> estimateDiameter(const MatrixBase<Derived> & points, const PREC epsilon) {
+    template<unsigned int Dimension,
+             typename Derived>
+    auto estimateDiameter(  const MatrixBase<Derived> & points,
+                            const PREC epsilon,
+                            std::size_t seed = RandomGenerators::defaultSeed) -> std::pair<VectorStat<Dimension>,VectorStat<Dimension> >
+    {
 
-        ApproxMVBB_STATIC_ASSERT(Derived::RowsAtCompileTime == Dimension);
+        ApproxMVBB_STATIC_ASSERTM(Derived::RowsAtCompileTime == Dimension, "input points matrix need to be (Dimension x N) ");
+        ApproxMVBB_STATIC_ASSERTM((std::is_same<typename Derived::Scalar, PREC>::value), "estimate diameter can only accept double so far")
 
         MatrixBase<Derived> & pp = const_cast< MatrixBase<Derived> &>(points);
 
         // Construct pointer list
-        auto size = pp.cols();
-        PREC* * pList = new PREC*[size];
+        auto size = points.cols();
+        PREC const *  *pList = new PREC const*[size];
         for(decltype(size) i=0; i<size; ++i) {
-            pList[i] = const_cast<PREC*>(pp.col(i).data());
+            pList[i] = points.col(i).data() ;
         }
 
-        Diameter::typeSegment pairP;
-        Diameter::estimateDiameter(&pairP,pList,0,(int)(size-1),Dimension,epsilon);
+        Diameter::TypeSegment pairP;
+        DiameterEstimator diamEstimator(seed);
+        diamEstimator.estimateDiameter(&pairP,pList,0,(int)(size-1),Dimension,epsilon);
 
-        MatrixMap<TVector> p1(pairP.extremity1);
-        MatrixMap<TVector> p2(pairP.extremity2);
+        using Vector2d = MyMatrix::VectorStat<double,Dimension>;
+        const MatrixMap<const Vector2d> p1(pairP.extremity1);
+        const MatrixMap<const Vector2d> p2(pairP.extremity2);
 
-        //    std::cout << "p1: " << p1.transpose() << std::endl
-        //              << "p2: " << p2.transpose() << std::endl
-        //              << " l: " << std::sqrt(pairP.squareDiameter) << std::endl;
+
+
+        ApproxMVBB_MSGLOG_L2( "p1: " << p1.transpose() << std::endl
+                      << "p2: " << p2.transpose() << std::endl
+                      << " l: " << std::sqrt(pairP.squareDiameter) << std::endl);
+
         delete[] pList;
-        return std::pair<TVector,TVector>(p1,p2);
+        return {p1,p2};
 
     }
 

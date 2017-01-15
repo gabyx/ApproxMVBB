@@ -11,7 +11,7 @@
 #define ApproxMVBB_TypeDefsPoints_hpp
 
 #include "ApproxMVBB/Config/Config.hpp"
-#include ApproxMVBB_MyMatrixTypeDefs_INCLUDE_FILE
+#include ApproxMVBB_TypeDefs_INCLUDE_FILE
 
 namespace ApproxMVBB{
 namespace TypeDefsPoints {

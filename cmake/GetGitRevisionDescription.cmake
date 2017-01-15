@@ -103,7 +103,7 @@ function(git_describe _var)
 	#endif()
 
 	#message(STATUS "Arguments to execute_process: ${ARGN}")
-    #message(STATUS "Hash;" ${hash})
+  #message(STATUS "Hash;" ${hash})
 	execute_process(COMMAND
 		"${GIT_EXECUTABLE}"
 		describe

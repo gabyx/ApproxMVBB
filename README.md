@@ -1,9 +1,10 @@
 ==========
-ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB) ![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg)
+ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=master)](https://travis-ci.org/gabyx/ApproxMVBB)
 ==========
 
-[Homepage](http://gabyx.github.io/ApproxMVBB/)
+![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg) ![System](https://img.shields.io/badge/system-linux,osx,{windows}-lightgrey.svg)
 
+[Homepage](http://gabyx.github.io/ApproxMVBB/)
 
 ----------------------------------------
 Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.
@@ -11,7 +12,7 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developped for research in [Granular Rigidbody Dynamics](http://www.zfm.ethz.ch/~nuetzig/?page=research).
-This small standart compliant C++11 library can either be built into a shared object library 
+This small standard compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
 It includes code for :
     
@@ -33,14 +34,15 @@ It includes code for :
 ---------------------------
 Installation & Dependencies
 ---------------------------
-To build the library, the tests and the example you need the built tool [cmake](
+To build the library, the tests and the example you need the build tool [cmake](
 http://www.cmake.org).
 This library has these light-weight dependencies:
 
 - [Eigen](http://eigen.tuxfamily.org) at least version 3, 
 - [meta](https://github.com/ericniebler/meta), 
-- [pugixml](https://github.com/zeux/pugixml),
+- [pugixml](https://github.com/zeux/pugixml) (install with ``#define PUGIXML_HAS_LONG_LONG`` enabled in pugiconfig.hpp),
 - [python3](https://www.python.org/downloads/)(only for visualization)
+
 Download these and install it on your system.
 
 Download the latest ApproxMVBB code:
@@ -60,9 +62,9 @@ The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https
 In the `CMakeCache.txt` file you can specify what you want to build 
 ( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
 
-To install the library and the header files at a specific location `/usr/local/include/` run cmake with::
+To install the library and the header files at a specific location `/usr/local/` run cmake with::
 ```bash
-    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/include/" ../ApproxMVBB
+    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
 ```
 Finally, build and install the project:
 ```bash
@@ -74,7 +76,7 @@ Finally, build and install the project:
 **Cmake Find Scripts**   
 The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
 ```cmake
-    find_package(ApproxMVBB [version] [Required] )
+    find_package(ApproxMVBB [version] [COMPONENTS [SUPPORT_KDTREE] [SUPPORT_XML] ] [Required] )
 ```
 which defines the following variables if ApproxMVBB has been found successfully:
 ```cmake
@@ -84,6 +86,8 @@ which defines the following variables if ApproxMVBB has been found successfully:
     ApproxMVBB_LIBRARY_DGB  #- Debug library
     ApproxMVBB_LIBRARIES    #- libraries to link with
 ```    
+The components `SUPPORT_KDTREE` additionally loads the dependency [meta](https://github.com/ericniebler/meta) for the `KdTree.hpp` header and `SUPPORT_XML` loads [pugixml](https://github.com/zeux/pugixml) for the `KdTreeXml.hpp` header.
+
 If you installed the library into non-system generic location you can set the cmake variable ``$ApproxMVBB_DIR`` before invoking the ``find_library`` command:
 ```cmake
     set(ApproxMVBB_DIR "path/to/installation/lib/cmake")
@@ -202,23 +206,29 @@ To come
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
-
-    $ cd Build
-    $ make ApproxMVBBTests
     
+    $ cd ApproxMVBB
+    $ git submodule init    
+    $ git submodule update
+    $ cd ../Build
+    $ make build_and_test
+    
+**Note that if the tests fail, submit a new issue and report which test failed. 
+The results can still be visualized and should be correct. **
+
   
 **Note:**
-> To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
-> 140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
-> to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
-> and additionally initialize the submodule ``additional`` and unzip the files:
+To run the test in high-performance mode (needs lots of ram), which tests also points clouds of 
+140 million points and some polygonal statue ``lucy.txt`` succesfully you need 
+to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
+and additionally initialize the submodule ``additional`` and unzip the files:
 
->     $ cd ApproxMVBB
->     $ git submodule init
->     $ git submodule update
->     $ cd addtional/tests/files; cat Lucy* | tar xz 
+     $ cd ApproxMVBB
+     $ git submodule init
+     $ git submodule update
+     $ cd additional/tests/files; cat Lucy* | tar xz 
 
-> and rebuild the tests. (this will copy the additional files next to the executable)
+and rebuild the tests. (this will copy the additional files next to the executable)
 
 
 Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the following tests:
@@ -268,6 +278,6 @@ Author and Acknowledgements
 
 ApproxMVBB was written by Gabriel Nützi, with source code from [Grégoire Malandain & Jean-Daniel Boissonnat](http://www-sop.inria.fr/members/Gregoire.Malandain/diameter/) 
 for the approximation of the diameter of a point cloud.
-I was inspired by the work and algorithms of [Gill Barequet & Sariel Har-Peled](http://sarielhp.org/papers/00/diameter/) for computing a minimal volume bounding box.
+I was inspired by the work and algorithms of [Gill Barequet & Sariel Har-Peled](http://sarielhp.org/p/98/bbox/) for computing a minimal volume bounding box.
 Additionally,  the geometric predicates (orient2d) used in the convex hull algorithm (graham scan) have been taken from the fine work of [Jonathan Richard Shewchuk](http://www.cs.cmu.edu/~quake/robust.html).
 Special thanks go to my significant other which always had an ear during breakfast for this little project :kissing_heart:

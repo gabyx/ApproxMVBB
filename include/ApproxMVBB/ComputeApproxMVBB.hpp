@@ -11,14 +11,16 @@
 #define ApproxMVBB_ComputeApproxMVBB_hpp
 
 #include "ApproxMVBB/Config/Config.hpp"
+#include "ApproxMVBB/Common/LogDefines.hpp"
+
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/TypeDefsPoints.hpp"
 
 
 #include ApproxMVBB_OOBB_INCLUDE_FILE
 #include "ApproxMVBB/GreatestCommonDivisor.hpp"
+#include "ApproxMVBB/RandomGenerators.hpp"
 #include "ApproxMVBB/ProjectedPointSet.hpp"
-
 
 
 namespace ApproxMVBB {
@@ -38,18 +40,17 @@ template<typename Derived>
 APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
                       const MatrixBase<Derived> & points,
                       const unsigned int nPoints,
-                      OOBB & oobb) {
-
-
-    if(nPoints >= points.cols() || nPoints < 2) {
-        ApproxMVBB_ERRORMSG("Wrong arguements!")
+                      OOBB & oobb,
+                      std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
+                      )
+{
+    using IndexType = typename Derived::Index;
+    
+    if(nPoints > points.cols() || nPoints < 2) {
+        ApproxMVBB_ERRORMSG("Wrong arguments!" << "sample nPoints: (>2) " << nPoints << " of points: " << points.cols() << std::endl )
     }
 
     newPoints.resize(3,nPoints);
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<unsigned int> dis(0, points.cols()-1);
 
     //total points = bottomPoints=gridSize^2  + topPoints=gridSize^2
     unsigned int gridSize = std::max( static_cast<unsigned int>( std::sqrt( static_cast<double>(nPoints) / 2.0 )) , 1U );
@@ -58,12 +59,21 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     //std::cout << oobb.m_minPoint.transpose() << std::endl;
     oobb.setZAxisLongest();
 
-    unsigned int halfSampleSize = gridSize*gridSize;
-    std::vector< std::pair<unsigned int , PREC > > topPoints(halfSampleSize,    std::pair<unsigned int,PREC>{} );    // grid of indices of the top points (indexed from 1 )
-    std::vector< std::pair<unsigned int , PREC > > bottomPoints(halfSampleSize, std::pair<unsigned int,PREC>{} ); // grid of indices of the bottom points (indexed from 1 )
-
+    IndexType halfSampleSize = gridSize*gridSize;
+    
+    struct BottomTopPoints{
+        IndexType bottomIdx = 0;
+        PREC bottomZ;
+    
+        IndexType topIdx = 0;
+        PREC topZ; 
+    };
+    
+    // grid of the bottom/top points in Z direction (indexed from 1 )
+    std::vector< BottomTopPoints > boundaryPoints(halfSampleSize); 
+       
     using LongInt = long long int;
-    MyMatrix<LongInt>::Array2 idx; // Normalized P
+    MyMatrix::Array2<LongInt> idx; // Normalized P
     //std::cout << oobb.extent() << std::endl;
     //std::cout << oobb.m_minPoint.transpose() << std::endl;
     Array2 dxdyInv =  Array2(gridSize,gridSize) / oobb.extent().head<2>(); // in K Frame;
@@ -72,8 +82,8 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
     Matrix33 A_KI(oobb.m_q_KI.matrix().transpose());
 
     // Register points in grid
-    auto size = points.cols();
-    for(unsigned int i=0; i<size; ++i) {
+    IndexType size = points.cols();
+    for(IndexType i=0; i<size; ++i) {
 
         K_p = A_KI * points.col(i);
         // get x index in grid
@@ -82,68 +92,91 @@ APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn & newPoints,
         idx(0) = std::max(   std::min( LongInt(gridSize-1), idx(0)),  0LL   );
         idx(1) = std::max(   std::min( LongInt(gridSize-1), idx(1)),  0LL   );
         //std::cout << idx.transpose() << std::endl;
-        unsigned int pos = idx(0) + idx(1)*gridSize;
-
+        
         // Register points in grid
-        // if z axis of p is > topPoints[pos]  -> set new top point at pos
-        // if z axis of p is < bottom[pos]     -> set new bottom point at pos
-
-        if( topPoints[pos].first == 0) {
-            topPoints[pos].first  = bottomPoints[pos].first  = i+1;
-            topPoints[pos].second = bottomPoints[pos].second = K_p(2);
+        // if z component of p is > pB.topZ  -> set new top point at pos
+        // if z component of p is < pB.bottomZ    -> set new bottom point at pos
+        auto & pB = boundaryPoints[idx(0) + idx(1)*gridSize];
+        
+        if( pB.bottomIdx == 0) {
+            pB.bottomIdx  = pB.topIdx  = i+1;
+            pB.bottomZ = pB.topZ       = K_p(2);
         } else {
-            if( topPoints[pos].second < K_p(2) ) {
-                topPoints[pos].first = i+1;
-                topPoints[pos].second = K_p(2);
-            }
-            if( bottomPoints[pos].second > K_p(2) ) {
-                bottomPoints[pos].first = i+1;
-                bottomPoints[pos].second = K_p(2);
+            if( pB.topZ < K_p(2) ) {
+                pB.topIdx = i+1;
+                pB.topZ = K_p(2);
+            }else{
+                if( pB.bottomZ > K_p(2) ) {
+                    pB.bottomIdx = i+1;
+                    pB.bottomZ = K_p(2);
+                }
             }
         }
     }
 
     // Copy top and bottom points
-    unsigned int k=0;
-
+    IndexType k=0;
+    ApproxMVBB_MSGLOG_L2("Sampled Points incides: [ ")
     // k does not overflow -> 2* halfSampleSize = 2*gridSize*gridSize <= nPoints;
-    for(unsigned int i=0; i<halfSampleSize; ++i) {
-        if( topPoints[i].first != 0 ) {
-            // comment in if you want the points top points of the grid
-//            Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
-//            a.head<2>()*=dxdyInv.inverse();
-            newPoints.col(k++) =  points.col(topPoints[i].first-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
-            if(topPoints[i].first != bottomPoints[i].first) {
+    for(IndexType i=0; i<halfSampleSize; ++i) {
+        if( boundaryPoints[i].bottomIdx != 0 ) {
+            // comment in if you want the top/bottom points of the grid
+            //Array3 a(i % gridSize,i/gridSize,oobb.m_maxPoint(2)-oobb.m_minPoint(2));
+            //a.head<2>()*=dxdyInv.inverse();
+            ApproxMVBB_MSGLOG_L2( boundaryPoints[i].topIdx-1 << ", " << ((k%30==0)? "\n" : "") )
+            newPoints.col(k++) =  points.col(boundaryPoints[i].topIdx-1);  //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+            if(boundaryPoints[i].topIdx != boundaryPoints[i].bottomIdx) {
                 // comment in if you want the bottom points of the grid
-//                Array3 a(i % gridSize,i/gridSize,0);
-//                a.head<2>()*=dxdyInv.inverse();
-                newPoints.col(k++) = points.col(bottomPoints[i].first-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
+                //Array3 a(i % gridSize,i/gridSize,0);
+                //a.head<2>()*=dxdyInv.inverse();
+                ApproxMVBB_MSGLOG_L2( boundaryPoints[i].bottomIdx-1 << ", " )
+                newPoints.col(k++) = points.col(boundaryPoints[i].bottomIdx-1); //  A_KI.transpose()*(oobb.m_minPoint + a.matrix()).eval() ;
             }
         }
     }
+    
     // Add random points!
-    while( k < nPoints) {
-        newPoints.col(k++) = points.col( dis(gen) ); //= Vector3(0,0,0);//
+    // Random indices if too little points
+    if( k < nPoints ){
+        RandomGenerators::DefaultRandomGen gen(seed);
+        RandomGenerators::DefaultUniformUIntDistribution< 
+                                typename std::make_unsigned<IndexType>::type 
+                           > dis(0, points.cols()-1);
+        IndexType s;
+        while( k < nPoints) {
+            s = dis(gen);
+            ApproxMVBB_MSGLOG_L2( s << ", " )
+            newPoints.col(k++) = points.col( s ); //= Vector3(0,0,0);//
+        }
     }
+    ApproxMVBB_MSGLOG_L2( "]" << std::endl )
 }
 
 /**
 * Function to optimize oriented bounding box volume.
-* Projecting several times into the direction of the axis of the current oobb,
+* Projecting nLoops times into the direction of the axis of the current oobb,
 * constructing the mvbb and overwriting the current oobb if volume is smaller
+* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume * volumeAcceptFactor, which determines the tolerance when a new volume is accepted
+* @param minBoxExtent is the minmum extent direction a box must have, to make the volume not zero and comparable to other volumes
+*        which is useful for degenerate cases, such as all points in a surface
 */
 template<typename Derived>
 APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
-                   OOBB oobb, unsigned int times = 10) {
+                                     OOBB oobb,
+                                     unsigned int nLoops = 10,
+                                     PREC volumeAcceptFactor = 1e-6,
+                                     PREC minBoxExtent = 1e-12
+                                     )
+{
 
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
-    if( oobb.volume() == 0.0 || times == 0) {
+    if( oobb.volume() == 0.0 || nLoops == 0) {
         return oobb;
     }
 
     // Define the volume lower bound above we accept a new volume as
-    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+    PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
 
     unsigned int cacheIdx = 0; // current write Idx into the cache
@@ -151,7 +184,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
 
     Vector3 dir;
     ProjectedPointSet proj;
-    for(unsigned int loop = 0; loop < times; ++loop ) {
+    for(unsigned int loop = 0; loop < nLoops; ++loop ) {
 
         // Determine Direction (choose x or y axis)
         //std::cout << oobb.m_q_KI.matrix() << std::endl;
@@ -174,6 +207,9 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
         //std::cout << "Optimizing dir: " << dir << std::endl;
         OOBB o = proj.computeMVBB( dir, points);
 
+        // Expand box such the volume is not zero for points in a plane
+        o.expandToMinExtentAbsolute(minBoxExtent);
+
         if( o.volume() < oobb.volume() && o.volume()>volumeAcceptTol) {
             oobb = o;
         }
@@ -187,21 +223,30 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB( const MatrixBase<Derived> & points,
 * Function to optimize oriented bounding box volume.
 * This performs an exhaustive grid search over a given tighly fitted bounding box (use approximateMVBBDiam)
 * to find a tighter volume.
-* @param gridSize of the 3d Grid
+* @param gridSize is half the grid size of the 3d test grid in each direction, for example gridDimX , gridDimY, gridDimZ = [-gridSize,gridSize]
 * @param optLoops how many optimization loops are preformed
 *        for the oobb computed in the given discrete sampled direction in the grid  (see optimizeMVBB)
+* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume * volumeAcceptFactor, which determines the tolerance when a new volume is accepted
+* @param minBoxExtent is the minmum extent direction a box must have, to make the volume not zero and comparable to other volumes
+*        which is useful for degenerate cases, such as all points in a surface
 */
 template<typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & points,
                                OOBB oobb,
                                PREC epsilon,
                                const unsigned int gridSize = 5,
-                               const unsigned int optLoops = 6
-                               ) {
+                               const unsigned int optLoops = 6,
+                               PREC volumeAcceptFactor = 1e-6,
+                               PREC minBoxExtent = 1e-12
+                               )
+{
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
+    // Extent input oobb
+    oobb.expandToMinExtentAbsolute(minBoxExtent);
+
     // Define the volume lower bound above we accept a new volume as
-    PREC volumeAcceptTol = oobb.volume() * 1e-6;
+    PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
     //Get the direction of the input OOBB in I frame:
     Vector3 dir1 = oobb.getDirection(0);
@@ -216,23 +261,27 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
         for(int  y = -int(gridSize); y <= (int)gridSize; ++y ) {
             for(int z = 0; z <= (int)gridSize; ++z ) {
 
-
                 if( MathFunctions::gcd3(x,y,z)> 1 ||  ((x==0) && (y==0) &&  (z==0))  ) {
                     continue;
                 }
 
                 // Make direction
                 dir = x*dir1 + y*dir2 + z*dir3;
-                //std::cout << "dir: " << dir.transpose() << std::endl;
+                ApproxMVBB_MSGLOG_L3( "gridSearch: dir: " << dir.transpose() << std::endl; )
 
                 // Compute MVBB in dirZ
                 auto res = proj.computeMVBB(dir,points);
 
-                if(optLoops){
-                    res = optimizeMVBB(points,res,optLoops);
-                }
+                // Expand to minimal extent for points in a surface or line
+                res.expandToMinExtentAbsolute(minBoxExtent);
 
-                if(res.volume() < oobb.volume() && res.volume()>volumeAcceptTol ) {
+                if(optLoops){
+                    res = optimizeMVBB(points,res,optLoops,volumeAcceptFactor,minBoxExtent);
+                }
+                ApproxMVBB_MSGLOG_L3( "gridSearch: volume: " << res.volume() << std::endl;)
+                if(res.volume() < oobb.volume() /*&& res.volume()>volumeAcceptTol */) {
+
+                    ApproxMVBB_MSGLOG_L2( "gridSearch: new volume: " << res.volume() << std::endl <<  "for dir: " << dir.transpose() << std::endl; )
                     oobb = res;
                 }
 
@@ -251,25 +300,28 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived> & poi
 template<typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
                          const PREC epsilon,
-                         const unsigned int optLoops = 10
-                        ) {
+                         const unsigned int optLoops = 10,
+                         std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
+                        )
+{
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
     using namespace PointFunctions;
+	auto pp = estimateDiameter<3>(points, epsilon, seed );
 
-    auto pp = estimateDiameter<3,Vector3>(points,epsilon);
+	ApproxMVBB::MyMatrix::Vector3<ApproxMVBB::TypeDefsPoints::PREC> dirZ = pp.first - pp.second;
 
-    Vector3 dirZ = pp.first - pp.second;
-    if( ( pp.second.array() >=  pp.first.array()).all() ) {
+    // TODO: Is this direction inversion needed? not really ?
+    if( ( dirZ.array() <= 0.0).all() ) {
         dirZ *= -1;
     }
+
     // If direction zero, use (1,0)
     if( (dirZ.array() == 0.0).all() ) {
         dirZ.setZero();
         dirZ(0)= 1;
     }
-    //std::cout <<"estimated 3d diameter: " << dirZ.transpose() << " eps: " << epsilon << std::endl;
-
+    ApproxMVBB_MSGLOG_L1("estimated 3d diameter: " << dirZ.transpose() << " eps: " << epsilon << std::endl;)
 
     // Compute MVBB in dirZ
     ProjectedPointSet proj;
@@ -283,32 +335,37 @@ APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived> & points,
     return oobb;
 }
 
-template<typename Derived>
+template<typename Derived >
 APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived> & points,
                      const PREC epsilon,
                      const unsigned int pointSamples = 400,
                      const unsigned int gridSize = 5,
                      const unsigned int mvbbDiamOptLoops = 0,
-                     const unsigned int mvbbGridSearchOptLoops = 6
-                     ) {
+                     const unsigned int mvbbGridSearchOptLoops = 6,
+                     std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed
+                     )
+{
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived,3,Eigen::Dynamic)
 
+    // Get get MVBB from estimated diameter direction
+    // take care forwarding means not using gen anymore !
+    auto oobb = approximateMVBBDiam(points,epsilon,mvbbDiamOptLoops, seed );
 
-    // Approx MVBB with Diameter
-    auto oobb = approximateMVBBDiam(points,epsilon,mvbbDiamOptLoops);
-
+    // Check if we sample the point cloud
     if(pointSamples<points.cols()) {
 
         // sample points
         Matrix3Dyn sampled;
-        samplePointsGrid(sampled,points,pointSamples,oobb);
+        samplePointsGrid(sampled,points,pointSamples,oobb, seed);
 
         // Exhaustive grid search with sampled points
         oobb = approximateMVBBGridSearch(sampled,oobb,epsilon,gridSize,mvbbGridSearchOptLoops);
 
     } else {
+        // Exhaustive grid search with sampled points
         oobb = approximateMVBBGridSearch(points,oobb,epsilon,gridSize,mvbbGridSearchOptLoops);
     }
+
     return oobb;
 }
 
