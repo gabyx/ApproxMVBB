@@ -21,7 +21,7 @@ MESSAGE(STATUS "Module path is now set to: " ${CMAKE_MODULE_PATH} )
 INCLUDE(FirstCMakeRun)
 
 
-#The name of the project ====================================================================
+#The name of the project ===============================================
 SET(ApproxMVBBProjectName "ApproxMVBB")
 IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
         SET(ApproxMVBBProjectName  "${ApproxMVBBProjectName}-${PROJECTNAMEPREFIX}")
@@ -32,7 +32,7 @@ PROJECT(${ApproxMVBBProjectName})
 SET(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
 
-# PRECISION ISSUES ====================================================================================================
+# PRECISION ISSUES =====================================================
 # From http://christian-seiler.de/projekte/fpmath/
 #x86 platforms support two types of floating point instruction sets nowadays:
 #The classical x87 floating point unit and the new MMX/SSE instructions that can even perform parallel calculations.
@@ -54,7 +54,7 @@ SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
 # That means either by using only sse instruction set this is enforced or by manually setting the FPU unit to double precision
 # so far we manually set it to double precision in the Predicates,
 # on Windows (64bit) we cannot change FPU precision, so we use the sse flag to ensure only "double precision"
-#========================================================================================================================
+#=======================================================================
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
@@ -117,7 +117,7 @@ ENDIF()
 
 
 
-#Add some multithreaded build support =====================================================================================================
+#Add some multithreaded build support ==================================
 MARK_AS_ADVANCED(MULTITHREADED_BUILD)
 SET(MULTITHREADED_BUILD ON CACHE BOOL "Parallel build with as many threads as possible!")
 IF(MULTITHREADED_BUILD)
@@ -133,10 +133,31 @@ IF(MULTITHREADED_BUILD)
       MESSAGE(STATUS "Added parallel build arguments to CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
     ENDIF()
 ENDIF()
-# ========================================================================================================================================
+# ======================================================================
 
 
-# Dependencies ===========================================================================================================================
+#Optional Stuff ========================================================
+
+MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
+SET(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
+
+MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )
+SET(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
+
+MARK_AS_ADVANCED( ApproxMVBB_BUILD_TESTS)
+SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
+
+MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
+SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
+
+MARK_AS_ADVANCED( ApproxMVBB_FORCE_MSGLOG_LEVEL)
+SET(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")
+
+MARK_AS_ADVANCED( ApproxMVBB_USE_OPENMP)
+SET(ApproxMVBB_USE_OPENMP ON CACHE BOOL "Try to use OpenMp for parallel speedup")
+#=======================================================================
+
+# Dependencies =========================================================
 # Define Eigen
 FIND_PACKAGE(Eigen3 REQUIRED)
 SET(EIGEN_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
@@ -157,37 +178,38 @@ LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
 IF(PUGIXML_FOUND)
   SET(ApproxMVBB_SUPPORT_XML ON)
 ENDIF()
-# ========================================================================================================================================
 
+IF(ApproxMVBB_USE_OPENMP)
 
-# ==================================
+  include(ProcessorCount)
+  ProcessorCount(NPROCESSES)
 
-
-
-MARK_AS_ADVANCED( CMAKE_DEBUG_POSTFIX )
-SET(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
-
-MARK_AS_ADVANCED( ApproxMVBB_BUILD_LIBRARY )
-SET(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
-
-MARK_AS_ADVANCED( ApproxMVBB_BUILD_TESTS)
-SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
-
-MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
-SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
-
-MARK_AS_ADVANCED( ApproxMVBB_FORCE_MSGLOG_LEVEL)
-SET(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")
+  FIND_PACKAGE(OpenMP)
+  IF(OpenMP_FOUND)
+    SET(MYPROJECT_CXX_FLAGS "${MYPROJECT_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    SET(ApproxMVBB_OPENMP_SUPPORT ON)
+    
+    MARK_AS_ADVANCED( ApproxMVBB_OPENMP_USE_NTHREADS)
+    SET(ApproxMVBB_OPENMP_USE_NTHREADS OFF CACHE BOOL "If the number of threads should be fixed, otherwise determined at runtime!")
+    
+    IF(ApproxMVBB_OPENMP_USE_NTHREADS)
+        SET(ApproxMVBB_OPENMP_NTHREADS ${NPROCESSES} CACHE STRING "The number of threads to use.")
+        MARK_AS_ADVANCED( ApproxMVBB_OPENMP_NTHREADS )
+    ENDIF()
+    
+  ELSE()
+    SET(ApproxMVBB_OPENMP_SUPPORT ON)
+  ENDIF()
+ENDIF()
+# ======================================================================
 
 IF(ApproxMVBB_BUILD_EXAMPLE)
-   SET(ApproxMVBB_BUILD_LIBRARY On CACHE BOOL "Build a shared library" FORCE)
+  SET(ApproxMVBB_BUILD_LIBRARY On CACHE BOOL "Build a shared library" FORCE)
 ENDIF()
-
-
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MYPROJECT_CXX_FLAGS}")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MYPROJECT_CXX_FLAGS}")
-MESSAGE(STATUS "Added ${MYPROJECT_CXX_FLAGS} to CMAKE_CXX and CMAKE_C_FLAGS: ${CMAKE_CXX_FLAGS} and ${CMAKE_C_FLAGS}")
+MESSAGE(STATUS "Added '${MYPROJECT_CXX_FLAGS}' to CMAKE_CXX and CMAKE_C_FLAGS: ${CMAKE_CXX_FLAGS} and ${CMAKE_C_FLAGS}")
 
 # Define all MVBB Source files
 INCLUDE(DefineApproxMVBBSources)

@@ -208,8 +208,6 @@ namespace PointFunctions {
         ApproxMVBB_STATIC_ASSERTM(Derived::RowsAtCompileTime == Dimension, "input points matrix need to be (Dimension x N) ");
         ApproxMVBB_STATIC_ASSERTM((std::is_same<typename Derived::Scalar, PREC>::value), "estimate diameter can only accept double so far")
 
-        MatrixBase<Derived> & pp = const_cast< MatrixBase<Derived> &>(points);
-
         // Construct pointer list
         auto size = points.cols();
         PREC const *  *pList = new PREC const*[size];

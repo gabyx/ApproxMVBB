@@ -14,13 +14,17 @@
 
 int  main( int  argc, char  ** argv ) {
 
-    unsigned int nPoints = 10000;
+    unsigned int nPoints = 100000;
 
     std::cout << "Sample "<<nPoints<<" points in unite cube (coordinates are in world frame I) " << std::endl;
-    ApproxMVBB::Matrix3Dyn points(3,10000);
+    ApproxMVBB::Matrix3Dyn points(3,nPoints);
     points.setRandom();
 
-    ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,500,5,0,5);
+    ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,
+                                                        0.001,
+                                                        500,
+                                                        5 /*increasing the grid size decreases speed */
+                                                        ,0,5);
 
     std::cout << "Computed OOBB: " << std::endl
               << "---> lower point in OOBB frame: " << oobb.m_minPoint.transpose() << std::endl

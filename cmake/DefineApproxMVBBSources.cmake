@@ -76,8 +76,10 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
     SET(${DEPENDING_TARGETS} ${ApproxMVBB_GEOMPRED_TARGETS})
 
     # WRITE CONFIGURATION FILE
+    
     INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/WriteConfigFile.cmake)
-    SET(ApproxMVBB_CONFIG_FILE ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp) 
+    SET(ApproxMVBB_CONFIG_FILE ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp)
+    MESSAGE(STATUS "ApproxMVBB: Write config file ${ApproxMVBB_CONFIG_FILE}, ${ApproxMVBB_OPENMP_NTHREADS}")
     ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${ApproxMVBB_ROOT_DIR})
     #=========================
     
