@@ -1,0 +1,8 @@
+title: ApproxMVBB
+description: Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.
+google_analytics: UA-57518221-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
