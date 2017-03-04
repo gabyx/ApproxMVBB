@@ -17,24 +17,23 @@
 
 #include "ApproxMVBB/Diameter/TypeSegment.hpp"
 
-namespace ApproxMVBB{
-namespace Diameter{
+namespace ApproxMVBB
+{
+namespace Diameter
+{
+APPROXMVBB_EXPORT void* _AllocateListOfPoints(const int n, const int dim);
 
-APPROXMVBB_EXPORT void *_AllocateListOfPoints( const int n, const int dim );
+APPROXMVBB_EXPORT void* _AllocateListOfSegments(const int n);
 
-APPROXMVBB_EXPORT void *_AllocateListOfSegments( const int n );
+struct TypeListOfSegments
+{
+    int n;
+    int nalloc;
+    TypeSegment* seg;
+};
 
-
-struct TypeListOfSegments {
-  int n;
-  int nalloc;
-  TypeSegment *seg;
-} ;
-
-APPROXMVBB_EXPORT int _AddSegmentToList( TypeSegment *s, TypeListOfSegments *list );
-
+APPROXMVBB_EXPORT int _AddSegmentToList(TypeSegment* s, TypeListOfSegments* list);
 }
 }
 
 #endif
-
