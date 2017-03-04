@@ -7,8 +7,11 @@
 /** use this macro in sfinae selection in templated functions
  *
  *   template<typename TopoType,
- *            typename std::enable_if<MPILayer::isGridTopoBuilder<TopoType>::value>::type * = nullptr
- *            typename std::enable_if<MPILayer::isPolymorphic<TopoType>::value>::type * = nullptr
+ *            typename
+ * std::enable_if<MPILayer::isGridTopoBuilder<TopoType>::value>::type * =
+ * nullptr
+ *            typename
+ * std::enable_if<MPILayer::isPolymorphic<TopoType>::value>::type * = nullptr
  *   >
  *   void foo(){}
  *
@@ -20,8 +23,6 @@
  *   >
  *   void foo(){}
  */
-#define ApproxMVBB_SFINAE_ENABLE_IF( __meta__ ) \
-    typename std::enable_if< ( __meta__ ) >::type  * = nullptr
-
+#define ApproxMVBB_SFINAE_ENABLE_IF(__meta__) typename std::enable_if<(__meta__)>::type* = nullptr
 
 #endif

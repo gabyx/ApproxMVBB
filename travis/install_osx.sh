@@ -9,6 +9,8 @@ cd $ROOT_PATH
 export INSTALL_PREFIX="/usr/local/"
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
+# travis bug: https://github.com/travis-ci/travis-ci/issues/6307
+rvm get head || true
 
 if [ "$CXX" = "g++" ] ; then 
   brew update || echo "suppress failures in order to ignore warnings"
@@ -45,3 +47,5 @@ chmod +x $CHECKOUT_PATH/travis/install_dep.sh
 
 # "DEPENDECIES COMPLETE ================================================================="
  
+# Workaround for https://github.com/travis-ci/travis-ci/issues/6522
+set +e

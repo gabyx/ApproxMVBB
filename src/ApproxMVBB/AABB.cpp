@@ -1,6 +1,7 @@
 // ========================================================================================
 //  ApproxMVBB
-//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (døt) ch>
+//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz
+//  (døt) ch>
 //
 //  This Source Code Form is subject to the terms of the Mozilla Public
 //  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,7 +11,6 @@
 #include "ApproxMVBB/Config/Config.hpp"
 
 #include ApproxMVBB_AABB_INCLUDE_FILE
-namespace ApproxMVBB{
-
-
+namespace ApproxMVBB
+{
 }
