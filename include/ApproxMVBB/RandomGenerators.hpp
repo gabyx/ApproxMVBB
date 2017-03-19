@@ -193,16 +193,16 @@ using DefaultRandomGen            = XorShift128Plus;
 
 /** Define the Uniform distributions for the library and for the tests */
 #ifdef ApproxMVBB_BUILD_TESTS
-#warning "ApproxMVBB: Using non-standart uniform distributions for testing!"
-template <typename T>
-using DefaultUniformUIntDistribution = AlmostUniformUIntDistribution<T>;
-template <typename T>
-using DefaultUniformRealDistribution = AlmostUniformRealDistribution<T>;
+    #warning "Building ApproxMVBB Tests: Using non-standart uniform distributions for testing!"
+    template <typename T>
+    using DefaultUniformUIntDistribution = AlmostUniformUIntDistribution<T>;
+    template <typename T>
+    using DefaultUniformRealDistribution = AlmostUniformRealDistribution<T>;
 #else
-template <typename T>
-using DefaultUniformUIntDistribution = std::uniform_int_distribution<T>;
-template <typename T>
-using DefaultUniformRealDistribution = std::uniform_real_distribution<T>;
+    template <typename T>
+    using DefaultUniformUIntDistribution = std::uniform_int_distribution<T>;
+    template <typename T>
+    using DefaultUniformRealDistribution = std::uniform_real_distribution<T>;
 #endif
 }
 }

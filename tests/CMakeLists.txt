@@ -146,8 +146,6 @@ add_custom_command(TARGET ${EXEC_NAME1} ${EXEC_NAME2} ${EXEC_NAME3} ${EXEC_NAME4
           copy_directory ${PROJECT_SOURCE_DIR}/python/ ${PROJECT_BINARY_DIR}
 )
 
-
-enable_testing()
 add_test(NAME    ${EXEC_NAME1} COMMAND ${EXEC_NAME1})
 add_test(NAME    ${EXEC_NAME2} COMMAND ${EXEC_NAME2})
 add_test(NAME    ${EXEC_NAME5} COMMAND ${EXEC_NAME5})
