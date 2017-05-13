@@ -5,7 +5,7 @@ ApproxMVBB [![Build Status](https://travis-ci.org/gabyx/ApproxMVBB.svg?branch=ma
 
 [Homepage](http://gabyx.github.io/ApproxMVBB/)
 
-----------------------------------------
+
 Fast algorithms to compute an approximation of the minimal volume oriented bounding box of a point cloud in 3D.
 ----------------------------------------
 
@@ -30,7 +30,7 @@ It includes code for :
 <a href="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png" tag="Cube"  target="_blank"><img src="https://github.com/gabyx/ApproxMVBB/wiki/images/Cube.png"  height="300px" border="10px"/></a>
 </p>
 
----------------------------
+
 Installation & Dependencies
 ---------------------------
 To build the library, the tests and the example you need the build tool [cmake](
@@ -94,13 +94,13 @@ If you installed the library into non-system generic location you can set the cm
     find_package(ApproxMVBB [version] [Required] )
 ```
 
---------------------------
+
 Supported Platforms
 --------------------------
 The code has been tested on Linux and OS X with compilers ``clang`` and ``gcc``. 
 It should work for Windows as well, but has not been tested.
 
----------------------------
+
 Example Usage: Approximation MVBB
 ---------------------------
 Please see the ``example/approxMVBB/main.cpp`` in the source directory.
@@ -172,10 +172,9 @@ computes an approximation of the minimal volume bounding box in the following st
 
 
 
----------------------------
+
 Example Usage: Generating a KdTree and Outlier Filtering
 ---------------------------
-
 The library includes a fast KdTree implementation (which is not claimed to be ultimatively fast and absolutely memory efficient, 
 but was written to fullfill this aspects to a certain level, real benchmarks still need to be done, the implementation 
 can really well compete with famous implementations such as PCL(FLANN),ANN, and CGAL )
@@ -202,7 +201,7 @@ Look at the examples in ``examples/kdTreeFiltering`` which produced the followin
 **Function Parameters & How It Works**    
 To come
 
----------------------------
+
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
@@ -249,7 +248,7 @@ The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotT
 <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png"/>
 </p>
 
---------------------------
+
 Benchmark
 --------------------------
 Here are some short benchmarks (single core) from the tests folder:   
@@ -265,7 +264,7 @@ It seems to take a long time for 140 million points. The most ineffiecient task 
 * Use an axis aligned bounding box as the initial bounding box for the grid search (not implemented yet)
 * Parllelism for the projection -> (CUDA, threads)
 
---------------------------
+
 Multithreading Support
 --------------------------
 You can build the library with OpenMP (by default enabled)
@@ -273,13 +272,13 @@ You can set the cmake cache variables `ApproxMVBB_OPENMP_USE_OPENMP=On` which wi
 The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. 
 If `Off`, the number of threads is determined at runtime (default). 
 
---------------------------
+
 Licensing
 --------------------------
 
 This source code is released under MPL 2.0. 
 
----------------------------
+
 Author and Acknowledgements
 ---------------------------
 
