@@ -44,10 +44,6 @@ matrix:
         - ubuntu-toolchain-r-test
         - llvm-toolchain-precise-3.7
         
-  - env: GCC_VERSION="4.9"
-    os: osx
-    compiler: gcc
-    
   - env: CLANG_VERSION="3.7"
     os: osx
     osx_image: xcode8.2
