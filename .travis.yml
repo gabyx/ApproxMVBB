@@ -9,44 +9,25 @@ matrix:
     #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
   - env: GCC_VERSION="4.9"
     os: linux
-    dist: trusty
     compiler: gcc
-    addons:
-      apt:
-        packages:
-        - gcc-4.9
-        - g++-4.9
-        sources:
-        - ubuntu-toolchain-r-test
+    addons: *gcc49
         
   - env: GCC_VERSION="5"
     os: linux
-    dist: trusty
     compiler: gcc
-    addons:
-      apt:
-        packages:
-        packages:
-        - g++-5
-        - gcc-5
-        sources:
-        - ubuntu-toolchain-r-test
+    addons *gcc5
         
-  - env: CLANG_VERSION="3.7"
+  - env: GCC_VERSION="6"
     os: linux
-    dist: trusty
+    compiler: gcc
+    addons: *gcc6
+    
+  - env: CLANG_VERSION="5.0"
+    os: linux
     compiler: clang
-    addons:
-      apt:
-        packages:
-        - clang-3.7
-        sources:
-        - ubuntu-toolchain-r-test
-        - llvm-toolchain-precise-3.7
+    addons: *clang5
         
-  - env: CLANG_VERSION="3.7"
-    os: osx
-    osx_image: xcode8.2
+  - os: osx
     compiler: clang
 
 # Install dependencies
