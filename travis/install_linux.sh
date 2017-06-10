@@ -14,8 +14,8 @@ wget --no-check-certificate http://www.cmake.org/files/v3.6/cmake-3.6.2-Linux-x8
 chmod a+x cmake-3.6.2-Linux-x86_64.sh
 sudo ./cmake-3.6.2-Linux-x86_64.sh --skip-license --prefix=$INSTALL_PREFIX
 
-if [ "$CXX" = "g++" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
-if [ "$CXX" = "clang++" ] ; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+if [ -n ${GCC_VERSION} ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+if [ -n ${CLANG_VERSION} ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
 
 echo "Path set to ${PATH}"
 echo "CXX set to ${CXX}"
