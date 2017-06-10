@@ -12,10 +12,14 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 # travis bug: https://github.com/travis-ci/travis-ci/issues/6307
 # rvm get head || true
 
+brew update || echo "suppress failures in order to ignore warnings"		
+brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"	
+
+# eigen3 needs gfortran
+brew install gcc || echo "suppress failures in order to ignore warnings"
+
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
-# eigen3 needs a fortran compiler
-brew install gcc || echo "suppress failures in order to ignore warnings"
 
 echo "Path set to ${PATH}"
 cmake --version
