@@ -15,7 +15,7 @@ matrix:
   - env: GCC_VERSION="5"
     os: linux
     compiler: gcc
-    addons *gcc5
+    addons: *gcc5
         
   - env: GCC_VERSION="6"
     os: linux
@@ -27,8 +27,7 @@ matrix:
     compiler: clang
     addons: *clang5
         
-  - env:
-    os: osx
+  - os: osx
     compiler: clang
 
 # Install dependencies
