@@ -27,7 +27,8 @@ matrix:
     compiler: clang
     addons: *clang5
         
-  - os: osx
+  - env:
+    os: osx
     compiler: clang
 
 # Install dependencies
