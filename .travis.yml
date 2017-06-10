@@ -7,24 +7,20 @@ matrix:
     #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
     # List of whitelisted in travis apt-sources:
     #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
-  - env: GCC_VERSION="4.9"
+  - env: GCC_VERSION=4.9
     os: linux
-    compiler: gcc
     addons: *gcc49
         
-  - env: GCC_VERSION="5"
+  - env: GCC_VERSION=5
     os: linux
-    compiler: gcc
     addons: *gcc5
         
-  - env: GCC_VERSION="6"
+  - env: GCC_VERSION=6
     os: linux
-    compiler: gcc
     addons: *gcc6
     
-  - env: CLANG_VERSION="5.0"
+  - env: CLANG_VERSION=5.0
     os: linux
-    compiler: clang
     addons: *clang5
         
   - os: osx
