@@ -3,25 +3,36 @@ language: cpp
 
 matrix:
   include:
-    # List of whitelisted in travis packages for ubuntu-precise can be found here:
-    #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
-    # List of whitelisted in travis apt-sources:
-    #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
-  - env: GCC_VERSION=4.9
-    os: linux
-    addons: *gcc49
-        
+  
   - env: GCC_VERSION=5
     os: linux
-    addons: *gcc5
+    addons: &gcc5
+        apt:
+          packages:
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
         
   - env: GCC_VERSION=6
     os: linux
-    addons: *gcc6
+    addons: &gcc6
+        apt:
+          packages:
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
     
   - env: CLANG_VERSION=5.0
     os: linux
-    addons: *clang5
+    addons: &clang5
+        apt:
+          packages:
+            - util-linux
+            - clang-5.0
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise
         
   - os: osx
     compiler: clang
