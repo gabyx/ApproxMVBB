@@ -164,10 +164,10 @@ computes an approximation of the minimal volume bounding box in the following st
    to compute a **representative sample** ``RS`` of the point cloud. The value ``pointSamples`` 
    defines how many points are used for the exhaustive grid search procedure in the next step
 6. **An exhaustive grid search** (value ``gridSize`` specifies the x,y,z dimension of the grid defined by the bounding box ``A``) is performed.
-   This search is a trivial loop over all grid directions (see Gill Barequet, and Sariel Har-Peled [1]) to find a even smaller bounding box.
+   This search is a simple loop over all grid directions (see Gill Barequet, and Sariel Har-Peled [1]) to find a even smaller bounding box.
    For each grid direction ``g`` the minimal bounding box of the projected points in direction ``g`` is computed. This consists 
-   of finding the minimal rectangle (axis ``u`` and ``v`` in world frame) of the projected point cloud in the plane perpendicular to direction ``g``. The minimal bounding box ``G`` in direction ``g`` can be computed from the basis ``(u,v,g)`` and is a candidate for the overall minimzation problem.
-   Each found minimal bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points namely ``RS`` ).
+   of finding the minimal rectangle (axis ``u`` and ``v`` in world frame) of the projected point cloud in the plane perpendicular to direction ``g``. The minimal bounding box ``G`` in direction ``g`` can be computed from the basis ``(u,v,g)`` and is a candidate for the overall minimization problem.
+   Each found bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points, namely ``RS`` ).
 7. The final approximation for the minimal volume bounding box (minimal volume over all computed candidates) is returned. :poop:
 
 
