@@ -14,7 +14,7 @@ version="v3.8"
 name="cmake-3.8.2-Linux-x86_64.sh"
 wget --no-check-certificate http://www.cmake.org/files/$version/$name
 chmod a+x $name
-sudo ./$name --skip-license
+sudo ./$name --skip-license --prefix=/usr/local/
 
 if [ -n "${GCC_VERSION}" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
 if [ -n "${CLANG_VERSION}" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
