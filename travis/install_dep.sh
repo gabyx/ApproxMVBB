@@ -11,13 +11,12 @@ if [  ! -f "$APPROXMVBB_CACHE_SIGNATURE_FILE" ] ; then
 
   echo "ApproxMVBB Build: Build only dependencies! and CACHE them"
 
-  export BUILD_APPROXMVBB="OFF"
-
   # Install eigen3 =======================================================
   hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
   cd ${ROOT_PATH}/eigen3 && hg update 3.3
   mkdir ${ROOT_PATH}/eigen3Build
   cd ${ROOT_PATH}/eigen3Build
+  export EIGEN_ROOT_DIR=$INSTALL_PREFIX/include/eigen3 # no idea why this is needed?
   cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH"
   sudo make VERBOSE=1 install
 
@@ -44,5 +43,4 @@ else
   echo "content in $APPROXMVBB_CACHE_DIR :"
   ls -al $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
 
-  export BUILD_APPROXMVBB="ON"
 fi
