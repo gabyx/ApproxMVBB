@@ -38,7 +38,7 @@ matrix:
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty$
+            - llvm-toolchain-trusty-5.0
 
   #- env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
   #  os: osx
