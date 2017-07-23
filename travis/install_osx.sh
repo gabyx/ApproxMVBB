@@ -6,14 +6,14 @@ set -e # exit on errors
 cd $ROOT_PATH
 
 #install prefix and path
-export INSTALL_PREFIX="/usr/local/"
-export PATH=$INSTALL_PREFIX/bin:$PATH
+export INSTALL_PREFIX="$GRSF_CACHE_DIR"
+export PATH="$PATH:$INSTALL_PREFIX/bin"
 
 # travis bug: https://github.com/travis-ci/travis-ci/issues/6307
 # rvm get head || true
 
-brew update || echo "suppress failures in order to ignore warnings"		
-brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"	
+brew update || echo "suppress failures in order to ignore warnings"
+brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
 
 # eigen3 needs gfortran
 brew install gcc || echo "suppress failures in order to ignore warnings"
@@ -31,6 +31,6 @@ chmod +x $CHECKOUT_PATH/travis/install_dep.sh
 . $CHECKOUT_PATH/travis/install_dep.sh
 
 # "DEPENDECIES COMPLETE ================================================================="
- 
+
 # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
 set +e

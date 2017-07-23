@@ -3,27 +3,32 @@ language: cpp
 
 matrix:
   include:
-  
-  - env: GCC_VERSION=5
+
+  - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
+    cache: &cache
+      directories:
+      - $APPROXMVBB_CACHE_DIR
     addons: &gcc5
         apt:
           packages:
             - g++-5
           sources:
             - ubuntu-toolchain-r-test
-        
-  - env: GCC_VERSION=6
+
+  - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
+    cache: &cache
     addons: &gcc6
         apt:
           packages:
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
-    
-  - env: CLANG_VERSION=5.0
+
+  - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
+    cache: &cache
     addons: &clang5
         apt:
           packages:
@@ -33,8 +38,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise
-        
-  - os: osx
+
+  - os: osx APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     compiler: clang
 
 # Install dependencies
@@ -43,10 +48,15 @@ install:
   - export CHECKOUT_PATH=`pwd`;
   - echo "ROOT_PATH= $ROOT_PATH"
   - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-  
+
+  - branchName=$(cd $CHECKOUT_PATH && git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+
+  - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
+  - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
+
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
   - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
- 
+
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh

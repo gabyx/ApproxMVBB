@@ -57,7 +57,6 @@ SET(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
 #=======================================================================
 
 MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
-MESSAGE(STATUS "Compiler ID is: " ${CMAKE_CXX_COMPILER_ID})
 IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 	IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
@@ -116,7 +115,14 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
   ENDIF()
 ENDIF()
 
-
+# Add the ccache to the build system
+IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
+FIND_PROGRAM(CCACHE_FOUND ccache)
+  IF(CCACHE_FOUND)
+      SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+      SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+  ENDIF(CCACHE_FOUND)
+ENDIF()
 
 #Add some multithreaded build support ==================================
 MARK_AS_ADVANCED(MULTITHREADED_BUILD)
@@ -189,15 +195,15 @@ IF(ApproxMVBB_USE_OPENMP)
   IF(OpenMP_FOUND)
     SET(MYPROJECT_CXX_FLAGS "${MYPROJECT_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     SET(ApproxMVBB_OPENMP_SUPPORT ON)
-    
+
     MARK_AS_ADVANCED( ApproxMVBB_OPENMP_USE_NTHREADS)
     SET(ApproxMVBB_OPENMP_USE_NTHREADS OFF CACHE BOOL "If the number of threads should be fixed, otherwise determined at runtime!")
-    
+
     IF(ApproxMVBB_OPENMP_USE_NTHREADS)
         SET(ApproxMVBB_OPENMP_NTHREADS ${NPROCESSES} CACHE STRING "The number of threads to use.")
         MARK_AS_ADVANCED( ApproxMVBB_OPENMP_NTHREADS )
     ENDIF()
-    
+
   ELSE()
     SET(ApproxMVBB_OPENMP_SUPPORT ON)
   ENDIF()
