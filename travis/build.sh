@@ -1,12 +1,6 @@
 #!/bin/bash
 # BUILD ========================================================================
 
-# Check if we build the project
-if [ "$BUILD_APPROXMVBB" == "OFF" ]; then
-  echo "Do not build ApproxMVBB!"
-  exit 0
-fi
-
 cd $ROOT_PATH
 export CXX_FLAGS="-std=c++11"
 export CXX_LINKER_FLAGS=""

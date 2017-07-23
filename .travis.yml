@@ -9,7 +9,7 @@ matrix:
   include:
   - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
+    dist: precise
     addons: &gcc5
         apt:
           packages:
@@ -19,7 +19,7 @@ matrix:
 
   - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
+    dist: precise
     addons: &gcc6
         apt:
           packages:
@@ -29,14 +29,16 @@ matrix:
 
   - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
+    dist: precise
     addons: &clang5
         apt:
           packages:
             - util-linux
-            - llvm-toolchain-snapshot
+            - clang-5.0
+            - g++-6
           sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise
 
   #- env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
   #  os: osx
