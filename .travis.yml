@@ -8,12 +8,8 @@ cache:
   - ${APPROXMVBB_CACHE_DIR}
 
 matrix:
-  env:
-    - global: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
-
   include:
-
-  - env: GCC_VERSION=5
+  - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
     addons: &gcc5
         apt:
@@ -22,7 +18,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
 
-  - env: GCC_VERSION=6
+  - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
     addons: &gcc6
         apt:
@@ -31,7 +27,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
 
-  - env: CLANG_VERSION=5.0
+  - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
     addons: &clang5
         apt:
