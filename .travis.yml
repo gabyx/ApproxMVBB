@@ -1,13 +1,16 @@
 sudo: required
 language: cpp
 
-env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+
 
 cache:
   directories:
-  - $APPROXMVBB_CACHE_DIR
+  - ${APPROXMVBB_CACHE_DIR}
 
 matrix:
+  env:
+    - global: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+
   include:
 
   - env: GCC_VERSION=5
