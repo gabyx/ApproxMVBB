@@ -21,6 +21,7 @@ brew install gcc || echo "suppress failures in order to ignore warnings"
 
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
+brew upgrade cmake
 
 echo "Path set to ${PATH}"
 cmake --version
