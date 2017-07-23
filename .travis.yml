@@ -63,6 +63,9 @@ script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh
   - . $CHECKOUT_PATH/travis/build.sh
 
+before_cache:
+  - echo "Before Caching: " && ls -al $APPROXMVBB_CACHE_DIR:
+    
 after_success:
   - cd $CHECKOUT_PATH
   - git reset --hard HEAD # Discard build artifacts
