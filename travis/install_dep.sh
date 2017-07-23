@@ -18,6 +18,7 @@ if [  ! -f "$APPROXMVBB_CACHE_SIGNATURE_FILE" ] ; then
   cd ${ROOT_PATH}/eigen3 && hg update 3.3
   mkdir ${ROOT_PATH}/eigen3Build
   cd ${ROOT_PATH}/eigen3Build
+  export EIGEN_ROOT_DIR=$INSTALL_PREFIX/include/eigen3 # no idea why this is needed?
   cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH"
   sudo make VERBOSE=1 install
 
