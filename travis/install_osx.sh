@@ -7,7 +7,7 @@ set -e # exit on errors
 cd $ROOT_PATH
 
 #install prefix and path
-export INSTALL_PREFIX="$GRSF_CACHE_DIR"
+export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
 export PATH="$PATH:$INSTALL_PREFIX/bin"
 
 # travis bug: https://github.com/travis-ci/travis-ci/issues/6307
