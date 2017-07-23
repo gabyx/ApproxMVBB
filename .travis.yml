@@ -64,7 +64,7 @@ script:
   - . $CHECKOUT_PATH/travis/build.sh
 
 before_cache:
-  - echo 'Before Caching:' && ls -al $APPROXMVBB_CACHE_DIR:
+  - echo 'Before Caching:' && ls -al $APPROXMVBB_CACHE_DIR
 
 after_success:
   - cd $CHECKOUT_PATH
