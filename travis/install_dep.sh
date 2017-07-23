@@ -15,7 +15,7 @@ if [  ! -f "$APPROXMVBB_CACHE_SIGNATURE_FILE" ] ; then
 
   # Install eigen3 =======================================================
   hg clone https://bitbucket.org/eigen/eigen/ ${ROOT_PATH}/eigen3
-  cd ${ROOT_PATH}/eigen3 && hg update 3.3
+  cd ${ROOT_PATH}/eigen3 && hg update default
   mkdir ${ROOT_PATH}/eigen3Build
   cd ${ROOT_PATH}/eigen3Build
   cmake ../eigen3 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH"

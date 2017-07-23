@@ -10,9 +10,11 @@ export PATH="$PATH:$INSTALL_PREFIX/bin"
 cd $ROOT_PATH
 
 #install a newer cmake since at this time Travis only has version 2.8.7
-wget --no-check-certificate http://www.cmake.org/files/v3.6/cmake-3.6.2-Linux-x86_64.sh
-chmod a+x cmake-3.6.2-Linux-x86_64.sh
-sudo ./cmake-3.6.2-Linux-x86_64.sh --skip-license --prefix=$INSTALL_PREFIX
+version="v3.8"
+name="cmake-3.8.2-Linux-x86_64.sh"
+wget --no-check-certificate http://www.cmake.org/files/$version/$name
+chmod a+x $name
+sudo ./$name --skip-license
 
 if [ -n "${GCC_VERSION}" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
 if [ -n "${CLANG_VERSION}" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
