@@ -4,8 +4,8 @@ set -e # exit on error
 
 # "DEPENDECIES ========================================================================"
 
-export INSTALL_PREFIX="/usr/local/"
-export PATH=$INSTALL_PREFIX/bin:$PATH
+export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
+export PATH="$PATH:$INSTALL_PREFIX/bin"
 
 cd $ROOT_PATH
 
