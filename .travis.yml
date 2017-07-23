@@ -51,22 +51,17 @@ install:
   - echo "ROOT_PATH= $ROOT_PATH"
   - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
 
-  - branchName=$(cd $CHECKOUT_PATH && git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+  - export branchName=$(cd $CHECKOUT_PATH && git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 
   - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
 
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
-  - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
-
-before_cache:
-  - echo 'Before Caching:' && ls -al $APPROXMVBB_CACHE_DIR
+  - $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh
-  - . $CHECKOUT_PATH/travis/build.sh
-
-
+  - $CHECKOUT_PATH/travis/build.sh
 
 after_success:
   - cd $CHECKOUT_PATH
