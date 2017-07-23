@@ -18,7 +18,7 @@ matrix:
 
   - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    cache: &cache
+    cache: *cache
     addons: &gcc6
         apt:
           packages:
@@ -28,7 +28,7 @@ matrix:
 
   - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    cache: &cache
+    cache: *cache
     addons: &clang5
         apt:
           packages:
@@ -38,8 +38,9 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise
-
-  - os: osx APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+    os: osx
+    cache: *cache
     compiler: clang
 
 # Install dependencies
