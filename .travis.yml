@@ -40,9 +40,9 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise
 
-  #- env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
-  #  os: osx
-  #  compiler: clang
+  - env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+    os: osx
+    compiler: clang
 
 # Install dependencies
 install:
