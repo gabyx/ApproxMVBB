@@ -34,11 +34,9 @@ matrix:
         apt:
           packages:
             - util-linux
-            - clang-5.0
-            - g++-6
+            - llvm-toolchain-snapshot
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
 
   #- env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
   #  os: osx
