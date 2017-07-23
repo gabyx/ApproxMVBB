@@ -1,5 +1,12 @@
 #!/bin/bash
 # BUILD ========================================================================
+# this script is SOURCED!!!!
+
+# Check if we build the project
+if [ "$BUILD_APPROXMVBB" == "OFF" ]; then
+  echo "Do not build ApproxMVBB!"
+  return
+fi
 
 cd $ROOT_PATH
 export CXX_FLAGS="-std=c++11"

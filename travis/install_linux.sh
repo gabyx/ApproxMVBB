@@ -1,4 +1,5 @@
 #!/bin/bash
+# this script is SOURCED!!!!
 
 set -e # exit on error
 
