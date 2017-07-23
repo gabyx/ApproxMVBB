@@ -7,7 +7,7 @@ set -e # exit on errors
 cd $ROOT_PATH
 
 #install prefix and path
-export INSTALL_PREFIX="$GRSF_CACHE_DIR"
+export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
 export PATH="$PATH:$INSTALL_PREFIX/bin"
 
 # travis bug: https://github.com/travis-ci/travis-ci/issues/6307
@@ -21,6 +21,7 @@ brew install gcc || echo "suppress failures in order to ignore warnings"
 
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
+brew upgrade cmake
 
 echo "Path set to ${PATH}"
 cmake --version
