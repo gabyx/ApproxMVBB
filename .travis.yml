@@ -37,10 +37,11 @@ matrix:
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise
-  - env:
-    os: osx
-    compiler: clang
+            - llvm-toolchain-precise$
+
+  #- env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  #  os: osx
+  #  compiler: clang
 
 # Install dependencies
 install:
