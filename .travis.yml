@@ -1,14 +1,17 @@
 sudo: required
 language: cpp
 
+env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+
+cache:
+  directories:
+  - $APPROXMVBB_CACHE_DIR
+
 matrix:
   include:
 
-  - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: GCC_VERSION=5
     os: linux
-    cache: &cache
-      directories:
-      - $APPROXMVBB_CACHE_DIR
     addons: &gcc5
         apt:
           packages:
@@ -16,9 +19,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
 
-  - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: GCC_VERSION=6
     os: linux
-    cache: *cache
     addons: &gcc6
         apt:
           packages:
@@ -26,9 +28,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
 
-  - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: CLANG_VERSION=5.0
     os: linux
-    cache: *cache
     addons: &clang5
         apt:
           packages:
@@ -38,9 +39,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise
-  - env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env:
     os: osx
-    cache: *cache
     compiler: clang
 
 # Install dependencies
@@ -58,13 +58,14 @@ install:
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
   - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
 
+before_cache:
+  - echo 'Before Caching:' && ls -al $APPROXMVBB_CACHE_DIR
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh
   - . $CHECKOUT_PATH/travis/build.sh
 
-before_cache:
-  - echo 'Before Caching:' && ls -al $APPROXMVBB_CACHE_DIR
+
 
 after_success:
   - cd $CHECKOUT_PATH
