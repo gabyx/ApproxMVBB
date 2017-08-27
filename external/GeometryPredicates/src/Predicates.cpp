@@ -204,10 +204,10 @@ FPU_DECLARE
     x = (REAL)(a - b);       \
     Two_Diff_Tail(a, b, x, y)
 
-#define Split(a, ahi, alo)       \
+#define Split(a, ahi, alo)                      \
     c    = (REAL)(predicatesInit.splitter * a); \
-    abig = (REAL)(c - a);        \
-    ahi  = c - abig;             \
+    abig = (REAL)(c - a);                       \
+    ahi  = c - abig;                            \
     alo  = a - ahi
 
 #define Two_Product_Tail(a, b, x, y) \
