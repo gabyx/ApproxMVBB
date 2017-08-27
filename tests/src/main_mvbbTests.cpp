@@ -23,11 +23,6 @@ namespace ApproxMVBB
 {
 namespace MVBBTests
 {
-std::string genTestName(std::string name)
-{
-    return "MVBBTest-" + name;
-}
-
 template <typename TMatrix>
 void mvbbTest(std::string name,
               const TMatrix& v,
@@ -41,8 +36,6 @@ void mvbbTest(std::string name,
 {
     using namespace PointFunctions;
     using namespace TestFunctions;
-
-    name = genTestName(name);
 
     if (dumpPoints)
     {
@@ -93,7 +86,7 @@ using namespace ApproxMVBB::MVBBTests;
 
 MY_TEST(MVBBTest, TwoPoints)
 {
-    MY_TEST_RANDOM_STUFF(TwoPoints)
+    MY_TEST_RANDOM_STUFF(MVBBTest, TwoPoints);
     // generate points
     Matrix3Dyn t(3, 2);
     t.col(0) = Vector3(0, 0, 0);
@@ -104,7 +97,7 @@ MY_TEST(MVBBTest, TwoPoints)
 
 MY_TEST(MVBBTest, PointsRandom1)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom1)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom1);
     // generate points
     Matrix3Dyn t(3, 1);
     t = t.unaryExpr(f);
@@ -113,7 +106,7 @@ MY_TEST(MVBBTest, PointsRandom1)
 
 MY_TEST(MVBBTest, PointsRandom2)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom2)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom2);
     // generate points
     Matrix3Dyn t(3, 2);
     t = t.unaryExpr(f);
@@ -122,7 +115,7 @@ MY_TEST(MVBBTest, PointsRandom2)
 
 MY_TEST(MVBBTest, PointsRandom3)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom3)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom3);
     // generate points
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
@@ -131,7 +124,7 @@ MY_TEST(MVBBTest, PointsRandom3)
 
 MY_TEST(MVBBTest, UnitCube)
 {
-    MY_TEST_RANDOM_STUFF(UnitCube)
+    MY_TEST_RANDOM_STUFF(MVBBTest, UnitCube);
     ApproxMVBB::Matrix3Dyn t(3, 8);
     t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
     t.col(1) = ApproxMVBB::Vector3(1, 0, 0);
@@ -146,7 +139,7 @@ MY_TEST(MVBBTest, UnitCube)
 
 MY_TEST(MVBBTest, UnitRectangle)
 {
-    MY_TEST_RANDOM_STUFF(UnitRectangle)
+    MY_TEST_RANDOM_STUFF(MVBBTest, UnitRectangle);
     ApproxMVBB::Matrix3Dyn t(3, 4);
     t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
     t.col(1) = ApproxMVBB::Vector3(1, 0, 0);
@@ -157,7 +150,7 @@ MY_TEST(MVBBTest, UnitRectangle)
 
 MY_TEST(MVBBTest, Rectangles)
 {
-    MY_TEST_RANDOM_STUFF(Rectangles)
+    MY_TEST_RANDOM_STUFF(MVBBTest, Rectangles);
     // Some patches
     for (int i = 0; i < 10; ++i)
     {
@@ -173,7 +166,7 @@ MY_TEST(MVBBTest, Rectangles)
 
 MY_TEST(MVBBTest, UnitPatches2D)
 {
-    MY_TEST_RANDOM_STUFF(UnitPatches2D)
+    MY_TEST_RANDOM_STUFF(MVBBTest, UnitPatches2D);
     for (int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
@@ -185,7 +178,7 @@ MY_TEST(MVBBTest, UnitPatches2D)
 
 MY_TEST(MVBBTest, PointsRandom100)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom100)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom100);
     ApproxMVBB::Matrix3Dyn t(3, 100);
     t = t.unaryExpr(f);
     applyRandomRotTrans(t, f);
@@ -194,7 +187,7 @@ MY_TEST(MVBBTest, PointsRandom100)
 
 MY_TEST(MVBBTest, PointsRandom10000)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10000)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom10000);
     ApproxMVBB::Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
     applyRandomRotTrans(t, f);
@@ -203,7 +196,7 @@ MY_TEST(MVBBTest, PointsRandom10000)
 
 MY_TEST(MVBBTest, Bunny)
 {
-    MY_TEST_RANDOM_STUFF(Bunny)
+    MY_TEST_RANDOM_STUFF(MVBBTest, Bunny);
     auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -218,7 +211,7 @@ MY_TEST(MVBBTest, Bunny)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(MVBBTest, PointsRandom140M)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom140M)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom140M);
     Matrix3Dyn t(3, 140000000);
     t = t.unaryExpr(f);
     mvbbTest(testName, t, false, 0.01, 400, 5, 0, 5);
@@ -226,7 +219,7 @@ MY_TEST(MVBBTest, PointsRandom140M)
 
 MY_TEST(MVBBTest, Lucy)
 {
-    MY_TEST_RANDOM_STUFF(Lucy)
+    MY_TEST_RANDOM_STUFF(MVBBTest, Lucy);
     auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -240,7 +233,7 @@ MY_TEST(MVBBTest, Lucy)
 
 MY_TEST(MVBBTest, PointClouds)
 {
-    MY_TEST_RANDOM_STUFF(PointClouds)
+    MY_TEST_RANDOM_STUFF(MVBBTest, PointClouds);
     for (unsigned int k = 0; k < 1; k++)
     {
         auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));

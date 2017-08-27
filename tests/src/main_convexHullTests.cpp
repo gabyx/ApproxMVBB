@@ -23,18 +23,11 @@ namespace ApproxMVBB
 {
 namespace ConvexHullTest
 {
-std::string genTestName(std::string name)
-{
-    return "ConvexHullTest-" + name;
-}
-
 template <typename TMatrix>
 void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
 {
     using namespace TestFunctions;
     using namespace PointFunctions;
-
-    name = genTestName(name);
 
     if (dumpPoints)
     {
@@ -82,7 +75,7 @@ using namespace ApproxMVBB::ConvexHullTest;
 
 MY_TEST(ConvexHullTest, PointsRandom10)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsRandom10);
     // generate points
     Matrix2Dyn t(2, 10);
     t = t.unaryExpr(f);
@@ -91,7 +84,7 @@ MY_TEST(ConvexHullTest, PointsRandom10)
 
 MY_TEST(ConvexHullTest, Line4)
 {
-    MY_TEST_RANDOM_STUFF(Line4)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Line4);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -110,7 +103,7 @@ MY_TEST(ConvexHullTest, Line4)
 
 MY_TEST(ConvexHullTest, Line3)
 {
-    MY_TEST_RANDOM_STUFF(Line3)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Line3);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -127,7 +120,7 @@ MY_TEST(ConvexHullTest, Line3)
 
 MY_TEST(ConvexHullTest, Line_2)
 {
-    MY_TEST_RANDOM_STUFF(Line_2)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Line_2);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -143,7 +136,7 @@ MY_TEST(ConvexHullTest, Line_2)
 
 MY_TEST(ConvexHullTest, Triangle)
 {
-    MY_TEST_RANDOM_STUFF(Triangle)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Triangle);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -160,7 +153,7 @@ MY_TEST(ConvexHullTest, Triangle)
 
 MY_TEST(ConvexHullTest, Point)
 {
-    MY_TEST_RANDOM_STUFF(Point)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Point);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -175,7 +168,7 @@ MY_TEST(ConvexHullTest, Point)
 
 MY_TEST(ConvexHullTest, PointsOnCricle1000)
 {
-    MY_TEST_RANDOM_STUFF(PointsOnCricle1000)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsOnCricle1000);
 
     unsigned int max = 1000;
     ApproxMVBB::Matrix2Dyn t(2, max);
@@ -188,7 +181,7 @@ MY_TEST(ConvexHullTest, PointsOnCricle1000)
 
 MY_TEST(ConvexHullTest, Points2DRectFail)
 {
-    MY_TEST_RANDOM_STUFF(Points2DRectFail)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, Points2DRectFail);
 
     auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
@@ -201,7 +194,7 @@ MY_TEST(ConvexHullTest, Points2DRectFail)
 
 MY_TEST(ConvexHullTest, PointsBadProjectionFilter)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjectionFilter)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjectionFilter);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
@@ -215,7 +208,7 @@ MY_TEST(ConvexHullTest, PointsBadProjectionFilter)
 
 MY_TEST(ConvexHullTest, PointsBadProjection)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
@@ -223,7 +216,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection)
 }
 MY_TEST(ConvexHullTest, PointsBadProjection2)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection2)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection2);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection2.bin"), t, false);
@@ -231,7 +224,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection2)
 }
 MY_TEST(ConvexHullTest, PointsBadProjection3)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection3)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection3);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection3.bin"), t, false);
@@ -239,7 +232,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection3)
 }
 MY_TEST(ConvexHullTest, PointsBadProjection4)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection4)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection4);
 
     Matrix2Dyn t(2, 16);
     t.setZero();
@@ -248,7 +241,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection4)
 }
 MY_TEST(ConvexHullTest, PointsBadProjection5)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection5)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection5);
 
     Matrix2Dyn t(2, 5);
     t.setZero();
@@ -257,7 +250,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection5)
 }
 MY_TEST(ConvexHullTest, PointsBadProjection6)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection6)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection6);
     Matrix2Dyn t(2, 100);
     t.setZero();
     readPointsMatrixBinary(getFileInPath("PointsBadProjection6.bin"), t, false);
@@ -267,7 +260,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection6)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(ConvexHullTest, PointsRandom14M)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom14M)
+    MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsRandom14M);
     // generate points
     ApproxMVBB::Matrix2Dyn t(2, 14000000);
     t = t.unaryExpr(f);

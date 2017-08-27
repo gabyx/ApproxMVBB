@@ -21,11 +21,11 @@ namespace ApproxMVBB
 {
 namespace TestFunctions
 {
-ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES;
+ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    // TODO not std lib conform!
-    std::size_t
-    hashString(std::string name);
+// TODO not std lib conform!
+std::size_t hashString(std::string name);
 
 template <typename T = PREC>
 std::string getPrecAbrev();

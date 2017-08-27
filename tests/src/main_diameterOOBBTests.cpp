@@ -23,11 +23,6 @@ namespace ApproxMVBB
 {
 namespace DiameterOOBBTest
 {
-std::string genTestName(std::string name)
-{
-    return "DiameterOOBBTest-" + name;
-}
-
 template <typename TMatrix>
 void diameterTest(std::string name,
                   const TMatrix& v,
@@ -39,8 +34,6 @@ void diameterTest(std::string name,
 {
     using namespace PointFunctions;
     using namespace TestFunctions;
-
-    name = genTestName(name);
 
     if (dump)
     {
@@ -128,7 +121,7 @@ using namespace ApproxMVBB::DiameterOOBBTest;
 
 MY_TEST(DiameterOOBBTest, PointsRandom3)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom3)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom3);
     // generate points
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
@@ -137,7 +130,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom3)
 
 MY_TEST(DiameterOOBBTest, PointsRandom500)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom500)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom500);
     // generate points
     Matrix3Dyn t(3, 500);
     t = t.unaryExpr(f);
@@ -146,7 +139,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom500)
 
 MY_TEST(DiameterOOBBTest, PointsRandom10000)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10000)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom10000);
     // generate points
     Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
@@ -155,7 +148,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom10000)
 
 MY_TEST(DiameterOOBBTest, UnitCube)
 {
-    MY_TEST_RANDOM_STUFF(UnitCube)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, UnitCube);
     Matrix3Dyn t(3, 8);
     t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
     t.col(1) = ApproxMVBB::Vector3(1, 0, 0);
@@ -171,7 +164,7 @@ MY_TEST(DiameterOOBBTest, UnitCube)
 
 MY_TEST(DiameterOOBBTest, PointsSimulation)
 {
-    MY_TEST_RANDOM_STUFF(PointsSimulation)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulation);
     auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
 
     Matrix3Dyn t(3, v.size());
@@ -186,7 +179,7 @@ MY_TEST(DiameterOOBBTest, PointsSimulation)
 
 MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 {
-    MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulationFailMVBB);
     auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
     Matrix3Dyn t(3, v.size());
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -200,7 +193,7 @@ MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 
 MY_TEST(DiameterOOBBTest, Bunny)
 {
-    MY_TEST_RANDOM_STUFF(Bunny)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Bunny);
     auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -215,7 +208,7 @@ MY_TEST(DiameterOOBBTest, Bunny)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(DiameterOOBBTest, PointsRandom14M)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom14M)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom14M);
     Matrix3Dyn t(3, 140000000);
     t = t.unaryExpr(f);
     diameterTest(testName, t, false, 0, 0.01);
@@ -223,7 +216,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom14M)
 
 MY_TEST(DiameterOOBBTest, Lucy)
 {
-    MY_TEST_RANDOM_STUFF(Lucy)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Lucy);
     auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -237,7 +230,7 @@ MY_TEST(DiameterOOBBTest, Lucy)
 
 MY_TEST(DiameterOOBBTest, Plane)
 {
-    MY_TEST_RANDOM_STUFF(Plane)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Plane);
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
     diameterTest(testName, t, true, 10, 0.001, 2, false);
@@ -245,7 +238,7 @@ MY_TEST(DiameterOOBBTest, Plane)
 
 MY_TEST(DiameterOOBBTest, PointClouds)
 {
-    MY_TEST_RANDOM_STUFF(PointClouds)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointClouds);
 
     for (unsigned int k = 0; k < 51; k++)
     {
@@ -263,7 +256,7 @@ MY_TEST(DiameterOOBBTest, PointClouds)
 
 MY_TEST(DiameterOOBBTest, UnitPatches2D)
 {
-    MY_TEST_RANDOM_STUFF(UnitPatches2D)
+    MY_TEST_RANDOM_STUFF(DiameterOOBBTest, UnitPatches2D);
     for (int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);

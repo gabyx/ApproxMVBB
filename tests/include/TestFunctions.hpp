@@ -24,9 +24,9 @@
 #include "CommonFunctions.hpp"
 
 #define MY_TEST(name1, name2) TEST(name1, name2)
-#define MY_TEST_RANDOM_STUFF(name)                                                    \
-    std::string testName = #name;                                                     \
-    auto seed            = hashString(#name);                                         \
+#define MY_TEST_RANDOM_STUFF(name1, name2)                                            \
+    std::string testName = #name1 "-" #name2;                                         \
+    auto seed            = hashString(#name2);                                        \
     std::cout << "Seed for this test: " << seed << std::endl;                         \
     ApproxMVBB::RandomGenerators::DefaultRandomGen rng(seed);                         \
     ApproxMVBB::RandomGenerators::DefaultUniformRealDistribution<PREC> uni(0.0, 1.0); \
@@ -36,10 +36,11 @@ namespace ApproxMVBB
 {
 namespace TestFunctions
 {
-ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES;
+ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    template <typename A, typename B>
-    ::testing::AssertionResult assertNearArray(const A& a, const B& b, PREC absError = 1e-6)
+template <typename A, typename B>
+::testing::AssertionResult assertNearArray(const A& a, const B& b, PREC absError = 1e-6)
 {
     if (a.size() != b.size())
     {

@@ -23,18 +23,11 @@ namespace ApproxMVBB
 {
 namespace MinAreaRectangleTest
 {
-std::string genTestName(std::string name)
-{
-    return "MinAreaRectangleTest-" + name;
-}
-
 template <typename TMatrix>
 void minRectTest(std::string name, const TMatrix& v)
 {
     using namespace PointFunctions;
     using namespace TestFunctions;
-
-    name = genTestName(name);
 
     dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
     dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
@@ -82,7 +75,7 @@ using namespace ApproxMVBB::MinAreaRectangleTest;
 
 MY_TEST(MinAreaRectangleTest, PointsRandom10)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsRandom10);
     // generate points
     Matrix2Dyn t(2, 10);
     t = t.unaryExpr(f);
@@ -91,7 +84,7 @@ MY_TEST(MinAreaRectangleTest, PointsRandom10)
 
 MY_TEST(MinAreaRectangleTest, UnitRectangle)
 {
-    MY_TEST_RANDOM_STUFF(UnitRectangle)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, UnitRectangle);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -109,7 +102,7 @@ MY_TEST(MinAreaRectangleTest, UnitRectangle)
 
 MY_TEST(MinAreaRectangleTest, TwoPoints)
 {
-    MY_TEST_RANDOM_STUFF(TwoPoints)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, TwoPoints);
 
     Vector2List v;
     v.push_back(Vector2(1, 0));
@@ -124,7 +117,7 @@ MY_TEST(MinAreaRectangleTest, TwoPoints)
 
 MY_TEST(MinAreaRectangleTest, AlmostLine)
 {
-    MY_TEST_RANDOM_STUFF(AlmostLine)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, AlmostLine);
 
     Vector2List v;
     v.push_back(Vector2(0, 0));
@@ -141,7 +134,7 @@ MY_TEST(MinAreaRectangleTest, AlmostLine)
 
 MY_TEST(MinAreaRectangleTest, Line3)
 {
-    MY_TEST_RANDOM_STUFF(Line3)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Line3);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -158,7 +151,7 @@ MY_TEST(MinAreaRectangleTest, Line3)
 
 MY_TEST(MinAreaRectangleTest, Line2)
 {
-    MY_TEST_RANDOM_STUFF(Line2)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Line2);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -174,7 +167,7 @@ MY_TEST(MinAreaRectangleTest, Line2)
 
 MY_TEST(MinAreaRectangleTest, Triangle)
 {
-    MY_TEST_RANDOM_STUFF(Triangle)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Triangle);
 
     Vector2List t;
     t.push_back(Vector2(0, 0));
@@ -191,7 +184,7 @@ MY_TEST(MinAreaRectangleTest, Triangle)
 
 MY_TEST(MinAreaRectangleTest, RandomTriangle)
 {
-    MY_TEST_RANDOM_STUFF(RandomTriangle)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, RandomTriangle);
 
     Matrix2Dyn v(2, 3);
     v = v.unaryExpr(f);
@@ -200,7 +193,7 @@ MY_TEST(MinAreaRectangleTest, RandomTriangle)
 
 MY_TEST(MinAreaRectangleTest, Point)
 {
-    MY_TEST_RANDOM_STUFF(Point)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Point);
 
     Vector2List t;
     t.push_back(Vector2(1, 0));
@@ -215,7 +208,7 @@ MY_TEST(MinAreaRectangleTest, Point)
 
 MY_TEST(MinAreaRectangleTest, PointsOnCricle1000)
 {
-    MY_TEST_RANDOM_STUFF(PointsOnCricle1000)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsOnCricle1000);
 
     unsigned int max = 1000;
     ApproxMVBB::Matrix2Dyn t(2, max);
@@ -228,14 +221,14 @@ MY_TEST(MinAreaRectangleTest, PointsOnCricle1000)
 
 MY_TEST(MinAreaRectangleTest, NoPoint)
 {
-    MY_TEST_RANDOM_STUFF(NoPoint)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, NoPoint);
     Matrix2Dyn v(2, 0);
     minRectTest(testName, v);
 }
 
 MY_TEST(MinAreaRectangleTest, Points2DRectFail)
 {
-    MY_TEST_RANDOM_STUFF(Points2DRectFail)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Points2DRectFail);
 
     auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
@@ -249,7 +242,7 @@ MY_TEST(MinAreaRectangleTest, Points2DRectFail)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(MinAreaRectangleTest, PointsRandom10M)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10M)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsRandom10M);
     // generate points
     ApproxMVBB::Matrix2Dyn t(2, 10000000);
     t = t.unaryExpr(f);
@@ -259,7 +252,7 @@ MY_TEST(MinAreaRectangleTest, PointsRandom10M)
 
 MY_TEST(MinAreaRectangleTest, PointsBadProjection)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
@@ -267,7 +260,7 @@ MY_TEST(MinAreaRectangleTest, PointsBadProjection)
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection2)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection2)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection2);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection2.bin"), t, false);
@@ -275,7 +268,7 @@ MY_TEST(MinAreaRectangleTest, PointsBadProjection2)
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection3)
 {
-    MY_TEST_RANDOM_STUFF(PointsBadProjection3)
+    MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection3);
 
     Matrix2Dyn t(2, 400);
     readPointsMatrixBinary(getFileInPath("PointsBadProjection3.bin"), t, false);

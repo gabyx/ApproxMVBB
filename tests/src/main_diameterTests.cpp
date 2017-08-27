@@ -23,18 +23,11 @@ namespace ApproxMVBB
 {
 namespace DiameterTest
 {
-std::string genTestName(std::string name)
-{
-    return "DiameterTest-" + name;
-}
-
 template <typename TMatrix>
 void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
 {
     using namespace PointFunctions;
     using namespace TestFunctions;
-
-    name = genTestName(name);
 
     TMatrix in = v;
     std::cout << "\n\nStart estimateDiam test " + name + "" << std::endl;
@@ -83,7 +76,7 @@ using namespace ApproxMVBB::DiameterTest;
 
 MY_TEST(DiameterTest, RandomGenerator)
 {
-    MY_TEST_RANDOM_STUFF(RandomGenerator)
+    MY_TEST_RANDOM_STUFF(DiameterTest, RandomGenerator);
     // generate points
     {
         std::cout << "Test: DefaultUniformUIntDistribution" << std::endl;
@@ -145,7 +138,7 @@ MY_TEST(DiameterTest, RandomGenerator)
 
 MY_TEST(DiameterTest, PointsRandom3)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom3)
+    MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom3);
     // generate points
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
@@ -154,7 +147,7 @@ MY_TEST(DiameterTest, PointsRandom3)
 
 MY_TEST(DiameterTest, PointsRandom500)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom500)
+    MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom500);
     // generate points
     Matrix3Dyn t(3, 500);
     t = t.unaryExpr(f);
@@ -163,7 +156,7 @@ MY_TEST(DiameterTest, PointsRandom500)
 
 MY_TEST(DiameterTest, PointsRandom10000)
 {
-    MY_TEST_RANDOM_STUFF(PointsRandom10000)
+    MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom10000);
     // generate points
     Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
@@ -172,7 +165,7 @@ MY_TEST(DiameterTest, PointsRandom10000)
 
 MY_TEST(DiameterTest, UnitCube)
 {
-    MY_TEST_RANDOM_STUFF(UnitCube)
+    MY_TEST_RANDOM_STUFF(DiameterTest, UnitCube);
     Matrix3Dyn t(3, 8);
     t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
     t.col(1) = ApproxMVBB::Vector3(1, 0, 0);
@@ -246,7 +239,7 @@ MY_TEST(DiameterTest, UnitCube)
 
 MY_TEST(DiameterTest, Plane)
 {
-    MY_TEST_RANDOM_STUFF(Plane)
+    MY_TEST_RANDOM_STUFF(DiameterTest, Plane);
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
     diameterTest(testName, t, true);
@@ -269,7 +262,7 @@ MY_TEST(DiameterTest, Plane)
 
 MY_TEST(DiameterTest, UnitPatches2D)
 {
-    MY_TEST_RANDOM_STUFF(UnitPatches2D)
+    MY_TEST_RANDOM_STUFF(DiameterTest, UnitPatches2D);
     for (int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
