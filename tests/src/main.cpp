@@ -11,8 +11,8 @@
 
 #include "ComputeApproxMVBBTests.hpp"
 
-int  main( int , char  **  ){
-
+int main(int, char**)
+{
     ApproxMVBB::convexHullTest();
     ApproxMVBB::minAreaBoxTest();
     ApproxMVBB::diameterTest();

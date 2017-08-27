@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 #The name of the project ====================================================================
 PROJECT("ApproxMVBBTests")
 
@@ -60,12 +52,14 @@ configure_file (
 
 SET(SOURCE_FILES
     ${ApproxMVBB_SRC}
+    ${PROJECT_SOURCE_DIR}/src/CommonFunctions.cpp
     ${PROJECT_SOURCE_DIR}/src/TestFunctions.cpp
-    
+
 )
 
 SET(INCLUDE_FILES
     ${ApproxMVBB_INC}
+    ${PROJECT_SOURCE_DIR}/include/CommonFunctions.hpp
     ${PROJECT_SOURCE_DIR}/include/TestFunctions.hpp
     ${PROJECT_SOURCE_DIR}/include/ComputeApproxMVBBTests.hpp
 )
@@ -140,7 +134,7 @@ defineCompileDefs(${EXEC_NAME4})
 
 
 add_custom_command(TARGET ${EXEC_NAME1} ${EXEC_NAME2} ${EXEC_NAME3} ${EXEC_NAME4} ${EXEC_NAME5} POST_BUILD
-    COMMAND 
+    COMMAND
           ${CMAKE_COMMAND}
           -E
           copy_directory ${PROJECT_SOURCE_DIR}/python/ ${PROJECT_BINARY_DIR}
