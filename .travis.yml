@@ -1,56 +1,47 @@
 sudo: required
 language: cpp
 
+cache:
+  directories:
+  - ${APPROXMVBB_CACHE_DIR}
+
 matrix:
   include:
-    # List of whitelisted in travis packages for ubuntu-precise can be found here:
-    #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
-    # List of whitelisted in travis apt-sources:
-    #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
-  - env: GCC_VERSION="4.9"
+  - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-        - gcc-4.9
-        - g++-4.9
-        sources:
-        - ubuntu-toolchain-r-test
-        
-  - env: GCC_VERSION="5"
+    dist: precise
+    addons: &gcc5
+        apt:
+          packages:
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+
+  - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-        packages:
-        - g++-5
-        - gcc-5
-        sources:
-        - ubuntu-toolchain-r-test
-        
-  - env: CLANG_VERSION="3.7"
+    dist: precise
+    addons: &gcc6
+        apt:
+          packages:
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+
+  - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: linux
-    dist: trusty
-    compiler: clang
-    addons:
-      apt:
-        packages:
-        - clang-3.7
-        sources:
-        - ubuntu-toolchain-r-test
-        - llvm-toolchain-precise-3.7
-        
-  - env: GCC_VERSION="4.9"
+    dist: precise
+    addons: &clang5
+        apt:
+          packages:
+            - util-linux
+            - clang-5.0
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise
+
+  - env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
     os: osx
-    compiler: gcc
-    
-  - env: CLANG_VERSION="3.7"
-    os: osx
-    osx_image: xcode8.2
     compiler: clang
 
 # Install dependencies
@@ -59,10 +50,14 @@ install:
   - export CHECKOUT_PATH=`pwd`;
   - echo "ROOT_PATH= $ROOT_PATH"
   - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-  
+
+  - export branchName=$(cd $CHECKOUT_PATH && git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+
+  - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
+  - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
+
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
   - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
- 
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh

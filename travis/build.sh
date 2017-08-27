@@ -1,10 +1,14 @@
 #!/bin/bash
-# "BUILD ========================================================================"
+# BUILD ========================================================================
+# this script is SOURCED!!!!
 
-# "Go to $ROOT_PATH"
+# Check if we build the project
+if [ "$BUILD_APPROXMVBB" == "OFF" ]; then
+  echo "Do not build ApproxMVBB!"
+  return
+fi
+
 cd $ROOT_PATH
-
-
 export CXX_FLAGS="-std=c++11"
 export CXX_LINKER_FLAGS=""
 if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
@@ -20,7 +24,12 @@ cd $CHECKOUT_PATH
 
 if [ ! -d $ROOT_PATH/build ]; then mkdir $ROOT_PATH/build; fi
 cd $ROOT_PATH/build
-cmake $CHECKOUT_PATH -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
+cmake $CHECKOUT_PATH  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
+                      -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+                      -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON \
+                      -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
+                      -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" \
+                      -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
 make VERBOSE=1
 make install
 cd $ROOT_PATH
@@ -31,12 +40,19 @@ mkdir $ROOT_PATH/buildLibUsage
 cd $ROOT_PATH/buildLibUsage
 INSTALL=$(find $ROOT_PATH/build/install/lib/cmake/* -type d)
 echo "Install dir= $INSTALL"
-cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DApproxMVBB_DIR=$INSTALL -DApproxMVBB_USE_OPENMP=OFF
+cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
+                                          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+                                          -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
+                                          -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" \
+                                          -DApproxMVBB_DIR=$INSTALL \
+                                          -DApproxMVBB_USE_OPENMP=OFF
 make VERBOSE=1
 cd $ROOT_PATH
 
-#"Run Unit Tests:"
-cd $ROOT_PATH/build
-make build_and_test
+if [ $branchName == "unitTests" ]; then
+  echo "ApproxMVBB: Run unit tests!"
+  cd $ROOT_PATH/build
+  make build_and_test
+fi
 
-# "BUILD COMPLETE ================================================================"
+# BUILD COMPLETE ================================================================

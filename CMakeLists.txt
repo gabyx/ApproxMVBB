@@ -1,7 +1,7 @@
 #The CMake Minimum version that is required.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-
+cmake_policy(SET CMP0054 NEW)
 
 
 #Detect Build Type if Debug appears in CMAKE_BINARY_DIR path
@@ -76,17 +76,17 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_C_FLAGS_RELEASE        "-O3 -DNDEBUG -w" CACHE STRING "Flags for C Compiler for release builds" FORCE)
 		SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for C Compiler for release builds with debug info" FORCE)
 
-		SET(CMAKE_CXX_FLAGS                "-std=c++11 -ferror-limit=50 -Werror=return-type" CACHE STRING "Flags for CXX Compiler" FORCE)
-		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=leak -fsanitize=address -Weverything -Wpedantic -Wno-deprecated-register -Wno-documentation -Wno-old-style-cast -Wno-comment -Wno-float-equal -Wno-deprecated -Wno-c++98-compat -Wno-sign-conversion -Wno-unused-macros" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
+		SET(CMAKE_CXX_FLAGS                "-std=c++11 -Werror=return-type" CACHE STRING "Flags for CXX Compiler" FORCE)
+		SET(CMAKE_CXX_FLAGS_DEBUG          "-g -fsanitize=leak -fsanitize=address -Weverything -Wpedantic -Wno-deprecated-register -Wno-documentation -Wno-comment -Wno-float-equal -Wno-deprecated -Wno-c++98-compat -Wno-unused-macros" CACHE STRING "Flags for CXX Compiler for debug builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -w" CACHE STRING "Flags for CXX Compiler for release minsize builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG -w" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
 
-        SET(CMAKE_AR      "/usr/bin/local/llvm-ar" CACHE STRING "archiver" FORCE )
-        SET(CMAKE_LINKER  "/usr/bin/local/llvm-ld" CACHE STRING "linker tool" FORCE )
-        SET(CMAKE_NM      "/usr/bin/local/llvm-nm" CACHE STRING "nm tool" FORCE )
-        SET(CMAKE_OBJDUMP "/usr/bin/local/llvm-objdump" CACHE STRING "objdump tool" FORCE )
-        SET(CMAKE_RANLIB  "/usr/bin/local/llvm-ranlib" CACHE STRING "ranlib tool" FORCE )
+        # SET(CMAKE_AR      "/usr/bin/local/llvm-ar" CACHE STRING "archiver" FORCE )
+        # SET(CMAKE_LINKER  "/usr/bin/local/llvm-ld" CACHE STRING "linker tool" FORCE )
+        # SET(CMAKE_NM      "/usr/bin/local/llvm-nm" CACHE STRING "nm tool" FORCE )
+        # SET(CMAKE_OBJDUMP "/usr/bin/local/llvm-objdump" CACHE STRING "objdump tool" FORCE )
+        # SET(CMAKE_RANLIB  "/usr/bin/local/llvm-ranlib" CACHE STRING "ranlib tool" FORCE )
 
 	ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" )
 
@@ -115,7 +115,14 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
   ENDIF()
 ENDIF()
 
-
+# Add the ccache to the build system
+IF(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
+FIND_PROGRAM(CCACHE_FOUND ccache)
+  IF(CCACHE_FOUND)
+      SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+      SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+  ENDIF(CCACHE_FOUND)
+ENDIF()
 
 #Add some multithreaded build support ==================================
 MARK_AS_ADVANCED(MULTITHREADED_BUILD)
@@ -166,16 +173,17 @@ LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${EIGEN_INCLUDE_DIR})
 
 # Try to find Meta and PugiXML if possible
 FIND_PACKAGE(Meta)
-LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${Meta_INCLUDE_DIR})
-SET(ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
+
 IF(META_FOUND)
+  LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${Meta_INCLUDE_DIR})
+  LIST(APPEND ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
   SET(ApproxMVBB_SUPPORT_KDTREE ON)
 ENDIF()
 
 FIND_PACKAGE(PugiXML)
-LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${PUGIXML_INCLUDE_DIR} )
-LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
 IF(PUGIXML_FOUND)
+  LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${PUGIXML_INCLUDE_DIR} )
+  LIST(APPEND ApproxMVBB_LIBRARIES_DEP ${PUGIXML_LIBRARIES})
   SET(ApproxMVBB_SUPPORT_XML ON)
 ENDIF()
 
@@ -188,15 +196,15 @@ IF(ApproxMVBB_USE_OPENMP)
   IF(OpenMP_FOUND)
     SET(MYPROJECT_CXX_FLAGS "${MYPROJECT_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     SET(ApproxMVBB_OPENMP_SUPPORT ON)
-    
+
     MARK_AS_ADVANCED( ApproxMVBB_OPENMP_USE_NTHREADS)
     SET(ApproxMVBB_OPENMP_USE_NTHREADS OFF CACHE BOOL "If the number of threads should be fixed, otherwise determined at runtime!")
-    
+
     IF(ApproxMVBB_OPENMP_USE_NTHREADS)
         SET(ApproxMVBB_OPENMP_NTHREADS ${NPROCESSES} CACHE STRING "The number of threads to use.")
         MARK_AS_ADVANCED( ApproxMVBB_OPENMP_NTHREADS )
     ENDIF()
-    
+
   ELSE()
     SET(ApproxMVBB_OPENMP_SUPPORT ON)
   ENDIF()
@@ -226,9 +234,10 @@ INCLUDE_ALL_APPROXMVBB_SOURCE(  ApproxMVBB_SRC
                                 ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
 LIST(APPEND ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS_DEP})
+MESSAGE(STATUS "Include Dirs: ${ApproxMVBB_INC_DIRS}")
 SET(ApproxMVBB_LINK_LIBS ${ApproxMVBB_LIBRARIES_DEP})
-LIST(APPEND ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEPENDING_TARGETS_DEP})
-
+MESSAGE(STATUS "Linking Libs: ${ApproxMVBB_LINK_LIBS}")
+LIST(APPEND ApproxMVBB_DEPENDING_TARGETS ${ApproxMVBB_DEPENDING_TARGETS_DEP})
 
 IF(ApproxMVBB_BUILD_LIBRARY)
     ADD_SUBDIRECTORY(lib)
