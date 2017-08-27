@@ -14,7 +14,7 @@
 namespace GeometryPredicates
 {
 //! Initilaize the variable predicatesInit
-PredicatesInit predicatesInit ;
+PredicatesInit predicatesInit;
 
 //! Constructor which computes the essential values for the predicates.
 PredicatesInit::PredicatesInit()
