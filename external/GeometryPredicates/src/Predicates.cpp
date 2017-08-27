@@ -118,7 +118,7 @@
 #include <stdlib.h>
 
 #include "ApproxMVBB/GeometryPredicates/Predicates.hpp"
-
+#include "ApproxMVBB/GeometryPredicates/PredicatesInit.hpp"
 /** FPU control. We MUST have only double precision (not extended precision) */
 #include "ApproxMVBB/GeometryPredicates/Rounding.hpp"
 
@@ -127,12 +127,22 @@ namespace GeometryPredicates
 /** FPU Control state declaration*/
 FPU_DECLARE
 
-/** Use header file generated automatically by PredicatesInit. */
-#define USE_PREDICATES_INIT
+/* On some machines, the exact arithmetic routines might be defeated by the  */
+/*   use of internal extended precision floating-point registers.  Sometimes */
+/*   this problem can be fixed by defining certain values to be volatile,    */
+/*   thus forcing them to be stored to memory and rounded off.  This isn't   */
+/*   a great solution, though, as it slows the arithmetic down.              */
+/*                                                                           */
+/* To try this out, write "#define INEXACT volatile" below.  Normally,       */
+/*   however, INEXACT should be defined to be nothing.  ("#define INEXACT".) */
 
-#ifdef USE_PREDICATES_INIT
-#include "ApproxMVBB/GeometryPredicates/PredicatesInit.hpp"
-#endif
+#define INEXACT /* Nothing */
+/* #define INEXACT volatile */
+
+#define REALPRINT doubleprint
+#define REALRAND doublerand
+#define NARROWRAND narrowdoublerand
+#define UNIFORMRAND uniformdoublerand
 
 /* Which of the following two methods of finding the absolute values is      */
 /*   fastest is compiler-dependent.  A few compilers can inline and optimize */
@@ -194,10 +204,10 @@ FPU_DECLARE
     x = (REAL)(a - b);       \
     Two_Diff_Tail(a, b, x, y)
 
-#define Split(a, ahi, alo)       \
-    c    = (REAL)(splitter * a); \
-    abig = (REAL)(c - a);        \
-    ahi  = c - abig;             \
+#define Split(a, ahi, alo)                      \
+    c    = (REAL)(predicatesInit.splitter * a); \
+    abig = (REAL)(c - a);                       \
+    ahi  = c - abig;                            \
     alo  = a - ahi
 
 #define Two_Product_Tail(a, b, x, y) \
@@ -348,18 +358,6 @@ FPU_DECLARE
     Two_One_Sum(_k, _1, _j, _l, _2, x1);           \
     Square(a1, _j, _1);                            \
     Two_Two_Sum(_j, _1, _l, _2, x5, x4, x3, x2)
-
-#ifndef USE_PREDICATES_INIT
-
-static REAL splitter; /* = 2^ceiling(p / 2) + 1.  Used to split floats in half. */
-/* A set of coefficients used to calculate maximum roundoff errors.          */
-static REAL resulterrbound;
-static REAL ccwerrboundA, ccwerrboundB, ccwerrboundC;
-static REAL o3derrboundA, o3derrboundB, o3derrboundC;
-static REAL iccerrboundA, iccerrboundB, iccerrboundC;
-static REAL isperrboundA, isperrboundB, isperrboundC;
-
-#endif /* USE_PREDICATES_INIT */
 
 /*****************************************************************************/
 /*                                                                           */
@@ -872,7 +870,7 @@ static REAL orient2dadapt(REAL* pa, REAL* pb, REAL* pc, REAL detsum)
     B[3] = B3;
 
     det      = estimate(4, B);
-    errbound = ccwerrboundB * detsum;
+    errbound = predicatesInit.ccwerrboundB * detsum;
     if ((det >= errbound) || (-det >= errbound))
     {
         return det;
@@ -888,7 +886,7 @@ static REAL orient2dadapt(REAL* pa, REAL* pb, REAL* pc, REAL detsum)
         return det;
     }
 
-    errbound = ccwerrboundC * detsum + resulterrbound * Absolute(det);
+    errbound = predicatesInit.ccwerrboundC * detsum + predicatesInit.resulterrbound * Absolute(det);
     det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail);
     if ((det >= errbound) || (-det >= errbound))
     {
@@ -958,7 +956,7 @@ REAL orient2d(REAL* pa, REAL* pb, REAL* pc)
         return det;
     }
 
-    errbound = ccwerrboundA * detsum;
+    errbound = predicatesInit.ccwerrboundA * detsum;
     if ((det >= errbound) || (-det >= errbound))
     {
         FPU_RESTORE;
@@ -1084,7 +1082,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     finlength = fast_expansion_sum_zeroelim(ablen, abdet, clen, cdet, fin1);
 
     det      = estimate(finlength, fin1);
-    errbound = o3derrboundB * permanent;
+    errbound = predicatesInit.o3derrboundB * permanent;
     if ((det >= errbound) || (-det >= errbound))
     {
         return det;
@@ -1106,7 +1104,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         return det;
     }
 
-    errbound = o3derrboundC * permanent + resulterrbound * Absolute(det);
+    errbound = predicatesInit.o3derrboundC * permanent + predicatesInit.resulterrbound * Absolute(det);
     det +=
         (adz * ((bdx * cdytail + cdy * bdxtail) - (bdy * cdxtail + cdx * bdytail)) +
          adztail * (bdx * cdy - bdy * cdx)) +
@@ -1495,7 +1493,7 @@ REAL orient3d(REAL* pa, REAL* pb, REAL* pc, REAL* pd)
     permanent = (Absolute(bdxcdy) + Absolute(cdxbdy)) * Absolute(adz) +
                 (Absolute(cdxady) + Absolute(adxcdy)) * Absolute(bdz) +
                 (Absolute(adxbdy) + Absolute(bdxady)) * Absolute(cdz);
-    errbound = o3derrboundA * permanent;
+    errbound = predicatesInit.o3derrboundA * permanent;
     if ((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;
@@ -1639,7 +1637,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     finlength = fast_expansion_sum_zeroelim(ablen, abdet, clen, cdet, fin1);
 
     det      = estimate(finlength, fin1);
-    errbound = iccerrboundB * permanent;
+    errbound = predicatesInit.iccerrboundB * permanent;
     if ((det >= errbound) || (-det >= errbound))
     {
         return det;
@@ -1657,7 +1655,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         return det;
     }
 
-    errbound = iccerrboundC * permanent + resulterrbound * Absolute(det);
+    errbound = predicatesInit.iccerrboundC * permanent + predicatesInit.resulterrbound * Absolute(det);
     det += ((adx * adx + ady * ady) * ((bdx * cdytail + cdy * bdxtail) - (bdy * cdxtail + cdx * bdytail)) +
             2.0 * (adx * adxtail + ady * adytail) * (bdx * cdy - bdy * cdx)) +
            ((bdx * bdx + bdy * bdy) * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail)) +
@@ -2120,7 +2118,7 @@ REAL incircle(REAL* pa, REAL* pb, REAL* pc, REAL* pd)
 
     permanent = (Absolute(bdxcdy) + Absolute(cdxbdy)) * alift + (Absolute(cdxady) + Absolute(adxcdy)) * blift +
                 (Absolute(adxbdy) + Absolute(bdxady)) * clift;
-    errbound = iccerrboundA * permanent;
+    errbound = predicatesInit.iccerrboundA * permanent;
     if ((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;
@@ -2533,7 +2531,7 @@ static REAL insphereadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe, REAL
     finlength = fast_expansion_sum_zeroelim(ablen, abdet, cdlen, cddet, fin1);
 
     det      = estimate(finlength, fin1);
-    errbound = isperrboundB * permanent;
+    errbound = predicatesInit.isperrboundB * permanent;
     if ((det >= errbound) || (-det >= errbound))
     {
         return det;
@@ -2558,7 +2556,7 @@ static REAL insphereadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe, REAL
         return det;
     }
 
-    errbound = isperrboundC * permanent + resulterrbound * Absolute(det);
+    errbound = predicatesInit.isperrboundC * permanent + predicatesInit.resulterrbound * Absolute(det);
     abeps    = (aex * beytail + bey * aextail) - (aey * bextail + bex * aeytail);
     bceps    = (bex * ceytail + cey * bextail) - (bey * cextail + cex * beytail);
     cdeps    = (cex * deytail + dey * cextail) - (cey * dextail + dex * ceytail);
@@ -2678,7 +2676,7 @@ REAL insphere(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
                 ((bexceyplus + cexbeyplus) * aezplus + (cexaeyplus + aexceyplus) * bezplus +
                  (aexbeyplus + bexaeyplus) * cezplus) *
                     dlift;
-    errbound = isperrboundA * permanent;
+    errbound = predicatesInit.isperrboundA * permanent;
     if ((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;

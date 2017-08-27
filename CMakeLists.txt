@@ -82,11 +82,11 @@ IF(NOT MYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL)
 		SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG -w" CACHE STRING "Flags for CXX Compiler for release builds" FORCE)
 		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" CACHE STRING "Flags for CXX Compiler for release builds with debug info" FORCE)
 
-        SET(CMAKE_AR      "/usr/bin/local/llvm-ar" CACHE STRING "archiver" FORCE )
-        SET(CMAKE_LINKER  "/usr/bin/local/llvm-ld" CACHE STRING "linker tool" FORCE )
-        SET(CMAKE_NM      "/usr/bin/local/llvm-nm" CACHE STRING "nm tool" FORCE )
-        SET(CMAKE_OBJDUMP "/usr/bin/local/llvm-objdump" CACHE STRING "objdump tool" FORCE )
-        SET(CMAKE_RANLIB  "/usr/bin/local/llvm-ranlib" CACHE STRING "ranlib tool" FORCE )
+        # SET(CMAKE_AR      "/usr/bin/local/llvm-ar" CACHE STRING "archiver" FORCE )
+        # SET(CMAKE_LINKER  "/usr/bin/local/llvm-ld" CACHE STRING "linker tool" FORCE )
+        # SET(CMAKE_NM      "/usr/bin/local/llvm-nm" CACHE STRING "nm tool" FORCE )
+        # SET(CMAKE_OBJDUMP "/usr/bin/local/llvm-objdump" CACHE STRING "objdump tool" FORCE )
+        # SET(CMAKE_RANLIB  "/usr/bin/local/llvm-ranlib" CACHE STRING "ranlib tool" FORCE )
 
 	ELSEIF ( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" )
 
@@ -176,7 +176,7 @@ FIND_PACKAGE(Meta)
 
 IF(META_FOUND)
   LIST(APPEND ApproxMVBB_INC_DIRS_DEP ${Meta_INCLUDE_DIR})
-  SET(ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
+  LIST(APPEND ApproxMVBB_DEPENDING_TARGETS_DEP ${Meta_TARGET})
   SET(ApproxMVBB_SUPPORT_KDTREE ON)
 ENDIF()
 
@@ -234,9 +234,10 @@ INCLUDE_ALL_APPROXMVBB_SOURCE(  ApproxMVBB_SRC
                                 ${PROJECT_SOURCE_DIR} ${ApproxMVBB_BINARY_DIR} )
 
 LIST(APPEND ApproxMVBB_INC_DIRS ${ApproxMVBB_INC_DIRS_DEP})
+MESSAGE(STATUS "Include Dirs: ${ApproxMVBB_INC_DIRS}")
 SET(ApproxMVBB_LINK_LIBS ${ApproxMVBB_LIBRARIES_DEP})
-LIST(APPEND ${ApproxMVBB_DEPENDING_TARGETS} ${ApproxMVBB_DEPENDING_TARGETS_DEP})
-
+MESSAGE(STATUS "Linking Libs: ${ApproxMVBB_LINK_LIBS}")
+LIST(APPEND ApproxMVBB_DEPENDING_TARGETS ${ApproxMVBB_DEPENDING_TARGETS_DEP})
 
 IF(ApproxMVBB_BUILD_LIBRARY)
     ADD_SUBDIRECTORY(lib)
