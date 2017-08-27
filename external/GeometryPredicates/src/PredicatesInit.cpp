@@ -7,13 +7,19 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // ========================================================================================
 
-#include <stdio.h>
-
+#include "ApproxMVBB/GeometryPredicates/PredicatesInit.hpp"
 /* FPU control. We MUST have only double precision (not extended precision) */
 #include "ApproxMVBB/GeometryPredicates/Rounding.hpp"
 
-int main(int, char* [])
+namespace GeometryPredicates
 {
+//! Initilaize the variable predicatesInit
+PredicatesInit predicatesInit;
+
+//! Constructor which computes the essential values for the predicates.
+PredicatesInit::PredicatesInit()
+{
+    // std::cout << "PredicatesInit::CTOR called!!" << std::endl;
     FPU_DECLARE
 
     double half     = 0.5;
@@ -22,13 +28,7 @@ int main(int, char* [])
     /* epsilon = 2^(-p).  Used to estimate roundoff errors. */
     double epsilon = 1.0;
     /* splitter = 2^ceiling(p / 2) + 1.  Used to split floats in half. */
-    double splitter = 1.0;
-    /* A set of coefficients used to calculate maximum roundoff errors. */
-    double resulterrbound;
-    double ccwerrboundA, ccwerrboundB, ccwerrboundC;
-    double o3derrboundA, o3derrboundB, o3derrboundC;
-    double iccerrboundA, iccerrboundB, iccerrboundC;
-    double isperrboundA, isperrboundB, isperrboundC;
+    splitter = 1.0;
 
     FPU_ROUND_DOUBLE;
 
@@ -65,36 +65,21 @@ int main(int, char* [])
     isperrboundB   = (5.0 + 72.0 * epsilon) * epsilon;
     isperrboundC   = (71.0 + 1408.0 * epsilon) * epsilon * epsilon;
 
-    FILE* pFile = fopen("PredicatesInit.hpp", "w");
-
-    fputs(
-        "/* This file was generated automatically by PredicatsInit.c */\n"
-        "// ========================================================================================\n"
-        "//  ApproxMVBB\n"
-        "//  Copyright (C) 2014 by Gabriel Nützi <nuetzig (at) imes (d0t) mavt (d0t) ethz (d0t) ch>\n"
-        "//\n"
-        "//  This Source Code Form is subject to the terms of the Mozilla Public\n"
-        "//  License, v. 2.0. If a copy of the MPL was not distributed with this\n"
-        "//  file, You can obtain one at http://mozilla.org/MPL/2.0/.\n"
-        "// ========================================================================================\n",
-        pFile);
-    fprintf(pFile, "static double splitter = %f;\n", splitter);
-    fprintf(pFile, "static double resulterrbound = %.16g;\n", resulterrbound);
-    fprintf(pFile, "static double ccwerrboundA = %.16g;\n", ccwerrboundA);
-    fprintf(pFile, "static double ccwerrboundB = %.16g;\n", ccwerrboundB);
-    fprintf(pFile, "static double ccwerrboundC = %.16g;\n", ccwerrboundC);
-    fprintf(pFile, "static double o3derrboundA = %.16g;\n", o3derrboundA);
-    fprintf(pFile, "static double o3derrboundB = %.16g;\n", o3derrboundB);
-    fprintf(pFile, "static double o3derrboundC = %.16g;\n", o3derrboundC);
-    fprintf(pFile, "static double iccerrboundA = %.16g;\n", iccerrboundA);
-    fprintf(pFile, "static double iccerrboundB = %.16g;\n", iccerrboundB);
-    fprintf(pFile, "static double iccerrboundC = %.16g;\n", iccerrboundC);
-    fprintf(pFile, "static double isperrboundA = %.16g;\n", isperrboundA);
-    fprintf(pFile, "static double isperrboundB = %.16g;\n", isperrboundB);
-    fprintf(pFile, "static double isperrboundC = %.16g;\n", isperrboundC);
-    fclose(pFile);
+    // printf("splitter = %f;\n", splitter);
+    // printf("resulterrbound = %.16g;\n", resulterrbound);
+    // printf("ccwerrboundA = %.16g;\n", ccwerrboundA);
+    // printf("ccwerrboundB = %.16g;\n", ccwerrboundB);
+    // printf("ccwerrboundC = %.16g;\n", ccwerrboundC);
+    // printf("o3derrboundA = %.16g;\n", o3derrboundA);
+    // printf("o3derrboundB = %.16g;\n", o3derrboundB);
+    // printf("o3derrboundC = %.16g;\n", o3derrboundC);
+    // printf("iccerrboundA = %.16g;\n", iccerrboundA);
+    // printf("iccerrboundB = %.16g;\n", iccerrboundB);
+    // printf("iccerrboundC = %.16g;\n", iccerrboundC);
+    // printf("isperrboundA = %.16g;\n", isperrboundA);
+    // printf("isperrboundB = %.16g;\n", isperrboundB);
+    // printf("isperrboundC = %.16g;\n", isperrboundC);
 
     FPU_RESTORE;
-
-    return 0;
+}
 }
