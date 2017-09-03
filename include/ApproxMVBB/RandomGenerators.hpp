@@ -151,13 +151,13 @@ public:
         AlmostUniformUIntDistribution(T min, T max)
         : m_min(min), m_max(max)
     {
-        m_nRange = m_max - m_min + 1;
+        m_nRange = m_max - m_min;
     }
 
     template <typename G>
     T operator()(G& g)
     {
-        return ((double)g() / ((double)(G::max() - G::min()) + 1.0)) * m_nRange + m_min;
+        return (((double)(g() - G::min())) / ((double)(G::max() - G::min()))) * m_nRange + m_min;
     }
 
 private:
@@ -174,13 +174,13 @@ public:
         AlmostUniformRealDistribution(T min, T max)
         : m_min(min), m_max(max)
     {
-        m_nRange = m_max - m_min + 1;
+        m_nRange = m_max - m_min;
     }
 
     template <typename G>
     T operator()(G& g)
     {
-        return ((T)g() / (T)(G::max() - G::min())) * m_nRange + m_min;
+        return (((T)(g() - G::min())) / ((T)(G::max() - G::min()))) * m_nRange + m_min;
     }
 
 private:

@@ -32,7 +32,7 @@ void minRectTest(std::string name, const TMatrix& v)
     dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
     dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
 
-    std::cout << "\n\nStart MinAreaRectangle Test " + name + "" << std::endl;
+    std::cout << "\n\nStart minAreaRectangleTest " + name + "" << std::endl;
     START_TIMER(start)
 
     MinAreaRectangle c(v);

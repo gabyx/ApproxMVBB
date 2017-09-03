@@ -43,7 +43,7 @@ void mvbbTest(std::string name,
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
     }
 
-    std::cout << "\n\nStart MVBBTest Test " + name + "" << std::endl;
+    std::cout << "\n\nStart mVBBTest " + name + "" << std::endl;
     START_TIMER(start)
     auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
     STOP_TIMER_SEC(count, start)
@@ -160,7 +160,7 @@ MY_TEST(MVBBTest, Rectangles)
         t.col(2) = ApproxMVBB::Vector3(1, 1, 0);
         t.col(3) = ApproxMVBB::Vector3(0, 1, 0);
         applyRandomRotTrans(t, f);
-        mvbbTest("Rectangles-Nr-" + std::to_string(i), t, true, 0.001, 400, 4, 4, 4, false);
+        mvbbTest(testName + "-Nr-" + std::to_string(i), t, true, 0.001, 400, 4, 4, 4, false);
     }
 }
 
@@ -172,7 +172,7 @@ MY_TEST(MVBBTest, UnitPatches2D)
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);
         t.row(2).setZero();
-        mvbbTest("UnitPatches2D-Nr-" + std::to_string(i), t, true, 0.001, 200, 4, 4, 4, false);
+        mvbbTest(testName + "-Nr-" + std::to_string(i), t, true, 0.001, 200, 4, 4, 4, false);
     }
 }
 
@@ -244,7 +244,7 @@ MY_TEST(MVBBTest, PointClouds)
         }
 
         applyRandomRotTrans(t, f);
-        mvbbTest("PointClouds-Nr" + std::to_string(k), t, true, 0.1, 400, 5, 3, 6);
+        mvbbTest(testName + "-Nr-" + std::to_string(k), t, true, 0.1, 400, 5, 3, 6);
     }
 }
 

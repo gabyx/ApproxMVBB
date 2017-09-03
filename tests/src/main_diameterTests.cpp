@@ -30,7 +30,7 @@ void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
     using namespace TestFunctions;
 
     TMatrix in = v;
-    std::cout << "\n\nStart estimateDiam test " + name + "" << std::endl;
+    std::cout << "\n\nStart diameterTest: " + name + "" << std::endl;
     START_TIMER(start)
     auto pp = estimateDiameter<3>(v, epsilon);
     STOP_TIMER_SEC(count, start)
@@ -268,7 +268,7 @@ MY_TEST(DiameterTest, UnitPatches2D)
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);
         t.row(2).setZero();
-        diameterTest("UnitPatches2D-Nr-" + std::to_string(i), t);
+        diameterTest(testName +"-Nr-" + std::to_string(i), t);
     }
 }
 

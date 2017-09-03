@@ -41,7 +41,7 @@ void diameterTest(std::string name,
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
     }
 
-    std::cout << "\n\nStart approximateMVBBDiam test " + name + "" << std::endl;
+    std::cout << "\n\nStart diameterOOBB test " + name + "" << std::endl;
     START_TIMER(start)
     auto oobb = ApproxMVBB::approximateMVBBDiam(v, epsilon, optLoops);
     STOP_TIMER_SEC(count, start)
@@ -250,7 +250,7 @@ MY_TEST(DiameterOOBBTest, PointClouds)
         }
 
         applyRandomRotTrans(t, f);
-        diameterTest("PointClouds-Nr" + std::to_string(k), t, true, 4, 0.1);
+        diameterTest(testName + "-Nr" + std::to_string(k), t, true, 4, 0.1);
     }
 }
 
@@ -262,7 +262,7 @@ MY_TEST(DiameterOOBBTest, UnitPatches2D)
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);
         t.row(2).setZero();
-        diameterTest("UnitPatches2D-Nr-" + std::to_string(i), t, true, 10, 0.0, 400, false);
+        diameterTest(testName +"-Nr-" + std::to_string(i), t, true, 10, 0.0, 400, false);
     }
 }
 

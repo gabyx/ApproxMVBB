@@ -279,6 +279,8 @@ You can set the cmake cache variables `ApproxMVBB_OPENMP_USE_OPENMP=On` which wi
 The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. 
 If `Off`, the number of threads is determined at runtime (default). 
 
+If you use clang, make sure you have the [OpenMP enabled clang](https://clang-omp.github.io/)! GCC already supports OpenMP.
+
 --------------------------
 Licensing
 --------------------------

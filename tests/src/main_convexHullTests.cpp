@@ -260,6 +260,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection6)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(ConvexHullTest, PointsRandom14M)
 {
+
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsRandom14M);
     // generate points
     ApproxMVBB::Matrix2Dyn t(2, 14000000);
