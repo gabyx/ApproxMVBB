@@ -154,6 +154,9 @@ SET(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_TESTS)
 SET(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
 
+MARK_AS_ADVANCED( ApproxMVBB_BUILD_BENCHMARKS)
+SET(ApproxMVBB_BUILD_BENCHMARKS OFF CACHE BOOL "Build the benchmarks (only meaningful in Release!)")
+
 MARK_AS_ADVANCED( ApproxMVBB_BUILD_EXAMPLE )
 SET(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
 
@@ -247,6 +250,10 @@ IF(ApproxMVBB_BUILD_TESTS)
     enable_testing()
     add_custom_target(build_and_test ${CMAKE_CTEST_COMMAND} -V)
     ADD_SUBDIRECTORY(tests)
+ENDIF()
+
+IF(ApproxMVBB_BUILD_BENCHMARKS)
+  ADD_SUBDIRECTORY(benchmarks)
 ENDIF()
 
 IF(ApproxMVBB_BUILD_EXAMPLE)
