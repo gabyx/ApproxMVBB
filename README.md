@@ -16,7 +16,7 @@ Fast algorithms to compute an approximation of the minimal volume oriented bound
 ----------------------------------------
 
 Computing the minimal volume oriented bounding box for a given point cloud in 3D is a hard problem in computer science.
-Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developed for research in [Granular Rigidbody Dynamics](http://www.zfm.ethz.ch/~nuetzig/?page=research).
+Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developed for research in [Granular Rigidbody Dynamics](http://gabyx.github.io/GRSFramework/).
 This small standard compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
 It includes code for :
@@ -278,6 +278,8 @@ You can build the library with OpenMP (by default enabled)
 You can set the cmake cache variables `ApproxMVBB_OPENMP_USE_OPENMP=On` which will further enable `ApproxMVBB_OPENMP_USE_NTHREADS=On/Off`.
 The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to use. 
 If `Off`, the number of threads is determined at runtime (default). 
+
+If you use clang, make sure you have the [OpenMP enabled clang](https://clang-omp.github.io/)! GCC already supports OpenMP.
 
 --------------------------
 Licensing
