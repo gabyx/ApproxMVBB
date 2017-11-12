@@ -40,7 +40,7 @@ void minRectTest(std::string name, const TMatrix& v)
 
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End MinAreaRectangle Test " + name + "" << std::endl;
+    std::cout << "End minAreaRectangleTest " + name + "" << std::endl;
     auto rect = c.getMinRectangle();
 
     Matrix2Dyn p(2, 6);

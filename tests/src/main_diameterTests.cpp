@@ -35,7 +35,7 @@ void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
     auto pp = estimateDiameter<3>(v, epsilon);
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End estimateDiam test " + name << std::endl;
+    std::cout << "End diameterTest " + name << std::endl;
 
     Matrix3Dyn diam(3, 2);
     diam.col(0) = pp.first;

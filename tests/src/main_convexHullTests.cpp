@@ -34,13 +34,13 @@ void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
         dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
     }
-    std::cout << "\n\nStart ConvexHull test " << name << "" << std::endl;
+    std::cout << "\n\nStart convexHull test " << name << "" << std::endl;
     START_TIMER(start)
     ConvexHull2D c(v);
     c.compute();
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End ConvexHull test " << name << "" << std::endl;
+    std::cout << "End convexHull test " << name << "" << std::endl;
     if (!c.verifyHull())
     {
         std::cerr << "ConvexHull test " << name << " not ok!" << std::endl;

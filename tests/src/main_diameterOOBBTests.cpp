@@ -46,7 +46,7 @@ void diameterTest(std::string name,
     auto oobb = ApproxMVBB::approximateMVBBDiam(v, epsilon, optLoops);
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End approximateMVBBDiam test " + name << std::endl;
+    std::cout << "End diameterOOBB test " + name << std::endl;
 
     oobb.expand(1e-10);
     if (!checkPointsInOOBB(v, oobb))

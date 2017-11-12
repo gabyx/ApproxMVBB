@@ -43,12 +43,12 @@ void mvbbTest(std::string name,
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
     }
 
-    std::cout << "\n\nStart mVBBTest " + name + "" << std::endl;
+    std::cout << "\n\nStart mvbbTest " + name + "" << std::endl;
     START_TIMER(start)
     auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End MVBBTest " + name << std::endl;
+    std::cout << "End mvbbTest " + name << std::endl;
 
     // oobb.expandToMinExtentRelative(0.1);
 
@@ -234,7 +234,7 @@ MY_TEST(MVBBTest, Lucy)
 MY_TEST(MVBBTest, PointClouds)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointClouds);
-    for (unsigned int k = 0; k < 1; k++)
+    for (unsigned int k = 0; k < 10; k++)
     {
         auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
         Matrix3Dyn t(3, v.size());
