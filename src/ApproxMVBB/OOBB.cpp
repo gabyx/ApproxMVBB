@@ -12,14 +12,17 @@
 #include ApproxMVBB_OOBB_INCLUDE_FILE
 namespace ApproxMVBB
 {
-OOBB::OOBB(const Vector3& l, const Vector3& u, const Matrix33& A_IK) : m_q_KI(A_IK)
+/** Construct this OOBB from a `minPoint` and `maxPoint` represented in coordinate
+        system K. Matrix `A_IK` is the coordinate transformation which transforms tuples in
+        system K to tuples in system I. */
+OOBB::OOBB(const Vector3& minPoint, const Vector3& maxPoint, const Matrix33& A_IK) : m_q_KI(A_IK)
 {
     m_q_KI.normalize();
-    m_minPoint = Vector3(std::min(l(0), u(0)), std::min(l(1), u(1)), std::min(l(2), u(2)));
-    m_maxPoint = Vector3(std::max(l(0), u(0)), std::max(l(1), u(1)), std::max(l(2), u(2)));
+    m_minPoint = Vector3(std::min(minPoint(0), maxPoint(0)), std::min(minPoint(1), maxPoint(1)), std::min(minPoint(2), maxPoint(2)));
+    m_maxPoint = Vector3(std::max(minPoint(0), maxPoint(0)), std::max(minPoint(1), maxPoint(1)), std::max(minPoint(2), maxPoint(2)));
 }
 
-/** Switch the z-Axis to the axis with index i (default x-Axis)*/
+/** Switch the z-Axis to the axis with index `i`. */
 void OOBB::switchZAxis(unsigned int i)
 {
     if (i > 1)
@@ -54,7 +57,9 @@ void OOBB::switchZAxis(unsigned int i)
         std::swap(m_maxPoint(1), m_maxPoint(2));
     }
 }
-
+    
+/** Adjusts the box that all axes have at least a minimal extent of `maxExtent*p`, if
+    `maxExtent*p < eps` then all axes are set to the default extent `defaultExtent`. */
 void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps)
 {
     Array3 e  = extent();
@@ -85,6 +90,7 @@ void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps)
     }
 }
 
+/** Adjusts the extent of the box such that all axes have at least a minimal extent minExtent */
 void OOBB::expandToMinExtentAbsolute(PREC minExtent)
 {
     Array3 e  = extent();
@@ -101,6 +107,7 @@ void OOBB::expandToMinExtentAbsolute(PREC minExtent)
     }
 }
 
+/** Reset the OOBB such that isEmpty() returns true. */
 void OOBB::reset()
 {
     // Violating the constraint min<max for making a completey empty box!
