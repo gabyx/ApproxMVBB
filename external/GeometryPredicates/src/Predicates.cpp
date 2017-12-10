@@ -653,7 +653,7 @@ static int fast_expansion_sum_zeroelim(int elen, REAL* e, int flen, REAL* f, REA
     enow   = e[0];
     fnow   = f[0];
     eindex = findex = 0;
-    if ((fnow > enow) == (fnow > -enow))
+    if((fnow > enow) == (fnow > -enow))
     {
         Q    = enow;
         enow = e[++eindex];
@@ -664,9 +664,9 @@ static int fast_expansion_sum_zeroelim(int elen, REAL* e, int flen, REAL* f, REA
         fnow = f[++findex];
     }
     hindex = 0;
-    if ((eindex < elen - 1) && (findex < flen - 1))
+    if((eindex < elen - 1) && (findex < flen - 1))
     {
-        if ((fnow > enow) == (fnow > -enow))
+        if((fnow > enow) == (fnow > -enow))
         {
             Fast_Two_Sum(enow, Q, Qnew, hh);
             enow = e[++eindex];
@@ -677,13 +677,13 @@ static int fast_expansion_sum_zeroelim(int elen, REAL* e, int flen, REAL* f, REA
             fnow = f[++findex];
         }
         Q = Qnew;
-        if (hh != 0.0)
+        if(hh != 0.0)
         {
             h[hindex++] = hh;
         }
-        while ((eindex < elen - 1) && (findex < flen - 1))
+        while((eindex < elen - 1) && (findex < flen - 1))
         {
-            if ((fnow > enow) == (fnow > -enow))
+            if((fnow > enow) == (fnow > -enow))
             {
                 Two_Sum(Q, enow, Qnew, hh);
                 enow = e[++eindex];
@@ -694,33 +694,33 @@ static int fast_expansion_sum_zeroelim(int elen, REAL* e, int flen, REAL* f, REA
                 fnow = f[++findex];
             }
             Q = Qnew;
-            if (hh != 0.0)
+            if(hh != 0.0)
             {
                 h[hindex++] = hh;
             }
         }
     }
-    while (eindex < elen - 1)
+    while(eindex < elen - 1)
     {
         Two_Sum(Q, enow, Qnew, hh);
         enow = e[++eindex];
         Q    = Qnew;
-        if (hh != 0.0)
+        if(hh != 0.0)
         {
             h[hindex++] = hh;
         }
     }
-    while (findex < flen - 1)
+    while(findex < flen - 1)
     {
         Two_Sum(Q, fnow, Qnew, hh);
         fnow = f[++findex];
         Q    = Qnew;
-        if (hh != 0.0)
+        if(hh != 0.0)
         {
             h[hindex++] = hh;
         }
     }
-    if ((Q != 0.0) || (hindex == 0))
+    if((Q != 0.0) || (hindex == 0))
     {
         h[hindex++] = Q;
     }
@@ -761,26 +761,26 @@ static int scale_expansion_zeroelim(int elen, REAL* e, REAL b, REAL* h)
     Split(b, bhi, blo);
     Two_Product_Presplit(e[0], b, bhi, blo, Q, hh);
     hindex = 0;
-    if (hh != 0)
+    if(hh != 0)
     {
         h[hindex++] = hh;
     }
-    for (eindex = 1; eindex < elen; eindex++)
+    for(eindex = 1; eindex < elen; eindex++)
     {
         enow = e[eindex];
         Two_Product_Presplit(enow, b, bhi, blo, product1, product0);
         Two_Sum(Q, product0, sum, hh);
-        if (hh != 0)
+        if(hh != 0)
         {
             h[hindex++] = hh;
         }
         Fast_Two_Sum(product1, sum, Q, hh);
-        if (hh != 0)
+        if(hh != 0)
         {
             h[hindex++] = hh;
         }
     }
-    if ((Q != 0.0) || (hindex == 0))
+    if((Q != 0.0) || (hindex == 0))
     {
         h[hindex++] = Q;
     }
@@ -801,7 +801,7 @@ static REAL estimate(int elen, REAL* e)
     int eindex;
 
     Q = e[0];
-    for (eindex = 1; eindex < elen; eindex++)
+    for(eindex = 1; eindex < elen; eindex++)
     {
         Q += e[eindex];
     }
@@ -871,7 +871,7 @@ static REAL orient2dadapt(REAL* pa, REAL* pb, REAL* pc, REAL detsum)
 
     det      = estimate(4, B);
     errbound = predicatesInit.ccwerrboundB * detsum;
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -881,14 +881,14 @@ static REAL orient2dadapt(REAL* pa, REAL* pb, REAL* pc, REAL detsum)
     Two_Diff_Tail(pa[1], pc[1], acy, acytail);
     Two_Diff_Tail(pb[1], pc[1], bcy, bcytail);
 
-    if ((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0) && (bcytail == 0.0))
+    if((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0) && (bcytail == 0.0))
     {
         return det;
     }
 
     errbound = predicatesInit.ccwerrboundC * detsum + predicatesInit.resulterrbound * Absolute(det);
     det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail);
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -926,9 +926,9 @@ REAL orient2d(REAL* pa, REAL* pb, REAL* pc)
     detright = (pa[1] - pc[1]) * (pb[0] - pc[0]);
     det      = detleft - detright;
 
-    if (detleft > 0.0)
+    if(detleft > 0.0)
     {
-        if (detright <= 0.0)
+        if(detright <= 0.0)
         {
             FPU_RESTORE;
             return det;
@@ -938,9 +938,9 @@ REAL orient2d(REAL* pa, REAL* pb, REAL* pc)
             detsum = detleft + detright;
         }
     }
-    else if (detleft < 0.0)
+    else if(detleft < 0.0)
     {
-        if (detright >= 0.0)
+        if(detright >= 0.0)
         {
             FPU_RESTORE;
             return det;
@@ -957,7 +957,7 @@ REAL orient2d(REAL* pa, REAL* pb, REAL* pc)
     }
 
     errbound = predicatesInit.ccwerrboundA * detsum;
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         FPU_RESTORE;
         return det;
@@ -1083,7 +1083,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
 
     det      = estimate(finlength, fin1);
     errbound = predicatesInit.o3derrboundB * permanent;
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -1098,8 +1098,8 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     Two_Diff_Tail(pb[2], pd[2], bdz, bdztail);
     Two_Diff_Tail(pc[2], pd[2], cdz, cdztail);
 
-    if ((adxtail == 0.0) && (bdxtail == 0.0) && (cdxtail == 0.0) && (adytail == 0.0) && (bdytail == 0.0) &&
-        (cdytail == 0.0) && (adztail == 0.0) && (bdztail == 0.0) && (cdztail == 0.0))
+    if((adxtail == 0.0) && (bdxtail == 0.0) && (cdxtail == 0.0) && (adytail == 0.0) && (bdytail == 0.0) &&
+       (cdytail == 0.0) && (adztail == 0.0) && (bdztail == 0.0) && (cdztail == 0.0))
     {
         return det;
     }
@@ -1111,7 +1111,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         (bdz * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail)) +
          bdztail * (cdx * ady - cdy * adx)) +
         (cdz * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail)) + cdztail * (adx * bdy - ady * bdx));
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -1119,9 +1119,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     finnow   = fin1;
     finother = fin2;
 
-    if (adxtail == 0.0)
+    if(adxtail == 0.0)
     {
-        if (adytail == 0.0)
+        if(adytail == 0.0)
         {
             at_b[0] = 0.0;
             at_blen = 1;
@@ -1141,7 +1141,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     }
     else
     {
-        if (adytail == 0.0)
+        if(adytail == 0.0)
         {
             Two_Product(adxtail, bdy, at_blarge, at_b[0]);
             at_b[1] = at_blarge;
@@ -1165,9 +1165,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             at_clen = 4;
         }
     }
-    if (bdxtail == 0.0)
+    if(bdxtail == 0.0)
     {
-        if (bdytail == 0.0)
+        if(bdytail == 0.0)
         {
             bt_c[0] = 0.0;
             bt_clen = 1;
@@ -1187,7 +1187,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     }
     else
     {
-        if (bdytail == 0.0)
+        if(bdytail == 0.0)
         {
             Two_Product(bdxtail, cdy, bt_clarge, bt_c[0]);
             bt_c[1] = bt_clarge;
@@ -1211,9 +1211,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             bt_alen = 4;
         }
     }
-    if (cdxtail == 0.0)
+    if(cdxtail == 0.0)
     {
-        if (cdytail == 0.0)
+        if(cdytail == 0.0)
         {
             ct_a[0] = 0.0;
             ct_alen = 1;
@@ -1233,7 +1233,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     }
     else
     {
-        if (cdytail == 0.0)
+        if(cdytail == 0.0)
         {
             Two_Product(cdxtail, ady, ct_alarge, ct_a[0]);
             ct_a[1] = ct_alarge;
@@ -1279,7 +1279,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     finnow    = finother;
     finother  = finswap;
 
-    if (adztail != 0.0)
+    if(adztail != 0.0)
     {
         vlength   = scale_expansion_zeroelim(4, bc, adztail, v);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, vlength, v, finother);
@@ -1287,7 +1287,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow    = finother;
         finother  = finswap;
     }
-    if (bdztail != 0.0)
+    if(bdztail != 0.0)
     {
         vlength   = scale_expansion_zeroelim(4, ca, bdztail, v);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, vlength, v, finother);
@@ -1295,7 +1295,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow    = finother;
         finother  = finswap;
     }
-    if (cdztail != 0.0)
+    if(cdztail != 0.0)
     {
         vlength   = scale_expansion_zeroelim(4, ab, cdztail, v);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, vlength, v, finother);
@@ -1304,9 +1304,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finother  = finswap;
     }
 
-    if (adxtail != 0.0)
+    if(adxtail != 0.0)
     {
-        if (bdytail != 0.0)
+        if(bdytail != 0.0)
         {
             Two_Product(adxtail, bdytail, adxt_bdyt1, adxt_bdyt0);
             Two_One_Product(adxt_bdyt1, adxt_bdyt0, cdz, u3, u[2], u[1], u[0]);
@@ -1315,7 +1315,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (cdztail != 0.0)
+            if(cdztail != 0.0)
             {
                 Two_One_Product(adxt_bdyt1, adxt_bdyt0, cdztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1325,7 +1325,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finother  = finswap;
             }
         }
-        if (cdytail != 0.0)
+        if(cdytail != 0.0)
         {
             negate = -adxtail;
             Two_Product(negate, cdytail, adxt_cdyt1, adxt_cdyt0);
@@ -1335,7 +1335,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (bdztail != 0.0)
+            if(bdztail != 0.0)
             {
                 Two_One_Product(adxt_cdyt1, adxt_cdyt0, bdztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1346,9 +1346,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             }
         }
     }
-    if (bdxtail != 0.0)
+    if(bdxtail != 0.0)
     {
-        if (cdytail != 0.0)
+        if(cdytail != 0.0)
         {
             Two_Product(bdxtail, cdytail, bdxt_cdyt1, bdxt_cdyt0);
             Two_One_Product(bdxt_cdyt1, bdxt_cdyt0, adz, u3, u[2], u[1], u[0]);
@@ -1357,7 +1357,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (adztail != 0.0)
+            if(adztail != 0.0)
             {
                 Two_One_Product(bdxt_cdyt1, bdxt_cdyt0, adztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1367,7 +1367,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finother  = finswap;
             }
         }
-        if (adytail != 0.0)
+        if(adytail != 0.0)
         {
             negate = -bdxtail;
             Two_Product(negate, adytail, bdxt_adyt1, bdxt_adyt0);
@@ -1377,7 +1377,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (cdztail != 0.0)
+            if(cdztail != 0.0)
             {
                 Two_One_Product(bdxt_adyt1, bdxt_adyt0, cdztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1388,9 +1388,9 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             }
         }
     }
-    if (cdxtail != 0.0)
+    if(cdxtail != 0.0)
     {
-        if (adytail != 0.0)
+        if(adytail != 0.0)
         {
             Two_Product(cdxtail, adytail, cdxt_adyt1, cdxt_adyt0);
             Two_One_Product(cdxt_adyt1, cdxt_adyt0, bdz, u3, u[2], u[1], u[0]);
@@ -1399,7 +1399,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (bdztail != 0.0)
+            if(bdztail != 0.0)
             {
                 Two_One_Product(cdxt_adyt1, cdxt_adyt0, bdztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1409,7 +1409,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finother  = finswap;
             }
         }
-        if (bdytail != 0.0)
+        if(bdytail != 0.0)
         {
             negate = -cdxtail;
             Two_Product(negate, bdytail, cdxt_bdyt1, cdxt_bdyt0);
@@ -1419,7 +1419,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap   = finnow;
             finnow    = finother;
             finother  = finswap;
-            if (adztail != 0.0)
+            if(adztail != 0.0)
             {
                 Two_One_Product(cdxt_bdyt1, cdxt_bdyt0, adztail, u3, u[2], u[1], u[0]);
                 u[3]      = u3;
@@ -1431,7 +1431,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         }
     }
 
-    if (adztail != 0.0)
+    if(adztail != 0.0)
     {
         wlength   = scale_expansion_zeroelim(bctlen, bct, adztail, w);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, wlength, w, finother);
@@ -1439,7 +1439,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow    = finother;
         finother  = finswap;
     }
-    if (bdztail != 0.0)
+    if(bdztail != 0.0)
     {
         wlength   = scale_expansion_zeroelim(catlen, cat, bdztail, w);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, wlength, w, finother);
@@ -1447,7 +1447,7 @@ static REAL orient3dadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow    = finother;
         finother  = finswap;
     }
-    if (cdztail != 0.0)
+    if(cdztail != 0.0)
     {
         wlength   = scale_expansion_zeroelim(abtlen, abt, cdztail, w);
         finlength = fast_expansion_sum_zeroelim(finlength, finnow, wlength, w, finother);
@@ -1494,7 +1494,7 @@ REAL orient3d(REAL* pa, REAL* pb, REAL* pc, REAL* pd)
                 (Absolute(cdxady) + Absolute(adxcdy)) * Absolute(bdz) +
                 (Absolute(adxbdy) + Absolute(bdxady)) * Absolute(cdz);
     errbound = predicatesInit.o3derrboundA * permanent;
-    if ((det > errbound) || (-det > errbound))
+    if((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;
         return det;
@@ -1638,7 +1638,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
 
     det      = estimate(finlength, fin1);
     errbound = predicatesInit.iccerrboundB * permanent;
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -1649,8 +1649,8 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     Two_Diff_Tail(pb[1], pd[1], bdy, bdytail);
     Two_Diff_Tail(pc[0], pd[0], cdx, cdxtail);
     Two_Diff_Tail(pc[1], pd[1], cdy, cdytail);
-    if ((adxtail == 0.0) && (bdxtail == 0.0) && (cdxtail == 0.0) && (adytail == 0.0) && (bdytail == 0.0) &&
-        (cdytail == 0.0))
+    if((adxtail == 0.0) && (bdxtail == 0.0) && (cdxtail == 0.0) && (adytail == 0.0) && (bdytail == 0.0) &&
+       (cdytail == 0.0))
     {
         return det;
     }
@@ -1662,7 +1662,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             2.0 * (bdx * bdxtail + bdy * bdytail) * (cdx * ady - cdy * adx)) +
            ((cdx * cdx + cdy * cdy) * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail)) +
             2.0 * (cdx * cdxtail + cdy * cdytail) * (adx * bdy - ady * bdx));
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -1670,21 +1670,21 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
     finnow   = fin1;
     finother = fin2;
 
-    if ((bdxtail != 0.0) || (bdytail != 0.0) || (cdxtail != 0.0) || (cdytail != 0.0))
+    if((bdxtail != 0.0) || (bdytail != 0.0) || (cdxtail != 0.0) || (cdytail != 0.0))
     {
         Square(adx, adxadx1, adxadx0);
         Square(ady, adyady1, adyady0);
         Two_Two_Sum(adxadx1, adxadx0, adyady1, adyady0, aa3, aa[2], aa[1], aa[0]);
         aa[3] = aa3;
     }
-    if ((cdxtail != 0.0) || (cdytail != 0.0) || (adxtail != 0.0) || (adytail != 0.0))
+    if((cdxtail != 0.0) || (cdytail != 0.0) || (adxtail != 0.0) || (adytail != 0.0))
     {
         Square(bdx, bdxbdx1, bdxbdx0);
         Square(bdy, bdybdy1, bdybdy0);
         Two_Two_Sum(bdxbdx1, bdxbdx0, bdybdy1, bdybdy0, bb3, bb[2], bb[1], bb[0]);
         bb[3] = bb3;
     }
-    if ((adxtail != 0.0) || (adytail != 0.0) || (bdxtail != 0.0) || (bdytail != 0.0))
+    if((adxtail != 0.0) || (adytail != 0.0) || (bdxtail != 0.0) || (bdytail != 0.0))
     {
         Square(cdx, cdxcdx1, cdxcdx0);
         Square(cdy, cdycdy1, cdycdy0);
@@ -1692,7 +1692,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         cc[3] = cc3;
     }
 
-    if (adxtail != 0.0)
+    if(adxtail != 0.0)
     {
         axtbclen   = scale_expansion_zeroelim(4, bc, adxtail, axtbc);
         temp16alen = scale_expansion_zeroelim(axtbclen, axtbc, 2.0 * adx, temp16a);
@@ -1710,7 +1710,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow     = finother;
         finother   = finswap;
     }
-    if (adytail != 0.0)
+    if(adytail != 0.0)
     {
         aytbclen   = scale_expansion_zeroelim(4, bc, adytail, aytbc);
         temp16alen = scale_expansion_zeroelim(aytbclen, aytbc, 2.0 * ady, temp16a);
@@ -1728,7 +1728,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow     = finother;
         finother   = finswap;
     }
-    if (bdxtail != 0.0)
+    if(bdxtail != 0.0)
     {
         bxtcalen   = scale_expansion_zeroelim(4, ca, bdxtail, bxtca);
         temp16alen = scale_expansion_zeroelim(bxtcalen, bxtca, 2.0 * bdx, temp16a);
@@ -1746,7 +1746,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow     = finother;
         finother   = finswap;
     }
-    if (bdytail != 0.0)
+    if(bdytail != 0.0)
     {
         bytcalen   = scale_expansion_zeroelim(4, ca, bdytail, bytca);
         temp16alen = scale_expansion_zeroelim(bytcalen, bytca, 2.0 * bdy, temp16a);
@@ -1764,7 +1764,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow     = finother;
         finother   = finswap;
     }
-    if (cdxtail != 0.0)
+    if(cdxtail != 0.0)
     {
         cxtablen   = scale_expansion_zeroelim(4, ab, cdxtail, cxtab);
         temp16alen = scale_expansion_zeroelim(cxtablen, cxtab, 2.0 * cdx, temp16a);
@@ -1782,7 +1782,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finnow     = finother;
         finother   = finswap;
     }
-    if (cdytail != 0.0)
+    if(cdytail != 0.0)
     {
         cytablen   = scale_expansion_zeroelim(4, ab, cdytail, cytab);
         temp16alen = scale_expansion_zeroelim(cytablen, cytab, 2.0 * cdy, temp16a);
@@ -1801,9 +1801,9 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
         finother   = finswap;
     }
 
-    if ((adxtail != 0.0) || (adytail != 0.0))
+    if((adxtail != 0.0) || (adytail != 0.0))
     {
-        if ((bdxtail != 0.0) || (bdytail != 0.0) || (cdxtail != 0.0) || (cdytail != 0.0))
+        if((bdxtail != 0.0) || (bdytail != 0.0) || (cdxtail != 0.0) || (cdytail != 0.0))
         {
             Two_Product(bdxtail, cdy, ti1, ti0);
             Two_Product(bdx, cdytail, tj1, tj0);
@@ -1831,7 +1831,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             bcttlen = 1;
         }
 
-        if (adxtail != 0.0)
+        if(adxtail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(axtbclen, axtbc, adxtail, temp16a);
             axtbctlen  = scale_expansion_zeroelim(bctlen, bct, adxtail, axtbct);
@@ -1841,7 +1841,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap    = finnow;
             finnow     = finother;
             finother   = finswap;
-            if (bdytail != 0.0)
+            if(bdytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, cc, adxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, bdytail, temp16a);
@@ -1850,7 +1850,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finnow     = finother;
                 finother   = finswap;
             }
-            if (cdytail != 0.0)
+            if(cdytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, bb, -adxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, cdytail, temp16a);
@@ -1871,7 +1871,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finnow     = finother;
             finother   = finswap;
         }
-        if (adytail != 0.0)
+        if(adytail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(aytbclen, aytbc, adytail, temp16a);
             aytbctlen  = scale_expansion_zeroelim(bctlen, bct, adytail, aytbct);
@@ -1894,9 +1894,9 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finother   = finswap;
         }
     }
-    if ((bdxtail != 0.0) || (bdytail != 0.0))
+    if((bdxtail != 0.0) || (bdytail != 0.0))
     {
-        if ((cdxtail != 0.0) || (cdytail != 0.0) || (adxtail != 0.0) || (adytail != 0.0))
+        if((cdxtail != 0.0) || (cdytail != 0.0) || (adxtail != 0.0) || (adytail != 0.0))
         {
             Two_Product(cdxtail, ady, ti1, ti0);
             Two_Product(cdx, adytail, tj1, tj0);
@@ -1924,7 +1924,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             cattlen = 1;
         }
 
-        if (bdxtail != 0.0)
+        if(bdxtail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(bxtcalen, bxtca, bdxtail, temp16a);
             bxtcatlen  = scale_expansion_zeroelim(catlen, cat, bdxtail, bxtcat);
@@ -1934,7 +1934,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap    = finnow;
             finnow     = finother;
             finother   = finswap;
-            if (cdytail != 0.0)
+            if(cdytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, aa, bdxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, cdytail, temp16a);
@@ -1943,7 +1943,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finnow     = finother;
                 finother   = finswap;
             }
-            if (adytail != 0.0)
+            if(adytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, cc, -bdxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, adytail, temp16a);
@@ -1964,7 +1964,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finnow     = finother;
             finother   = finswap;
         }
-        if (bdytail != 0.0)
+        if(bdytail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(bytcalen, bytca, bdytail, temp16a);
             bytcatlen  = scale_expansion_zeroelim(catlen, cat, bdytail, bytcat);
@@ -1987,9 +1987,9 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finother   = finswap;
         }
     }
-    if ((cdxtail != 0.0) || (cdytail != 0.0))
+    if((cdxtail != 0.0) || (cdytail != 0.0))
     {
-        if ((adxtail != 0.0) || (adytail != 0.0) || (bdxtail != 0.0) || (bdytail != 0.0))
+        if((adxtail != 0.0) || (adytail != 0.0) || (bdxtail != 0.0) || (bdytail != 0.0))
         {
             Two_Product(adxtail, bdy, ti1, ti0);
             Two_Product(adx, bdytail, tj1, tj0);
@@ -2017,7 +2017,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             abttlen = 1;
         }
 
-        if (cdxtail != 0.0)
+        if(cdxtail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(cxtablen, cxtab, cdxtail, temp16a);
             cxtabtlen  = scale_expansion_zeroelim(abtlen, abt, cdxtail, cxtabt);
@@ -2027,7 +2027,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finswap    = finnow;
             finnow     = finother;
             finother   = finswap;
-            if (adytail != 0.0)
+            if(adytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, bb, cdxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, adytail, temp16a);
@@ -2036,7 +2036,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
                 finnow     = finother;
                 finother   = finswap;
             }
-            if (bdytail != 0.0)
+            if(bdytail != 0.0)
             {
                 temp8len   = scale_expansion_zeroelim(4, aa, -cdxtail, temp8);
                 temp16alen = scale_expansion_zeroelim(temp8len, temp8, bdytail, temp16a);
@@ -2057,7 +2057,7 @@ static REAL incircleadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL permanent
             finnow     = finother;
             finother   = finswap;
         }
-        if (cdytail != 0.0)
+        if(cdytail != 0.0)
         {
             temp16alen = scale_expansion_zeroelim(cytablen, cytab, cdytail, temp16a);
             cytabtlen  = scale_expansion_zeroelim(abtlen, abt, cdytail, cytabt);
@@ -2119,7 +2119,7 @@ REAL incircle(REAL* pa, REAL* pb, REAL* pc, REAL* pd)
     permanent = (Absolute(bdxcdy) + Absolute(cdxbdy)) * alift + (Absolute(cdxady) + Absolute(adxcdy)) * blift +
                 (Absolute(adxbdy) + Absolute(bdxady)) * clift;
     errbound = predicatesInit.iccerrboundA * permanent;
-    if ((det > errbound) || (-det > errbound))
+    if((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;
         return det;
@@ -2303,7 +2303,7 @@ static REAL insphereexact(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
 
     temp48alen = fast_expansion_sum_zeroelim(cdelen, cde, bcelen, bce, temp48a);
     temp48blen = fast_expansion_sum_zeroelim(deblen, deb, bcdlen, bcd, temp48b);
-    for (i = 0; i < temp48blen; i++)
+    for(i = 0; i < temp48blen; i++)
     {
         temp48b[i] = -temp48b[i];
     }
@@ -2319,7 +2319,7 @@ static REAL insphereexact(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
 
     temp48alen = fast_expansion_sum_zeroelim(dealen, dea, cdalen, cda, temp48a);
     temp48blen = fast_expansion_sum_zeroelim(eaclen, eac, cdelen, cde, temp48b);
-    for (i = 0; i < temp48blen; i++)
+    for(i = 0; i < temp48blen; i++)
     {
         temp48b[i] = -temp48b[i];
     }
@@ -2335,7 +2335,7 @@ static REAL insphereexact(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
 
     temp48alen = fast_expansion_sum_zeroelim(eablen, eab, deblen, deb, temp48a);
     temp48blen = fast_expansion_sum_zeroelim(abdlen, abd, dealen, dea, temp48b);
-    for (i = 0; i < temp48blen; i++)
+    for(i = 0; i < temp48blen; i++)
     {
         temp48b[i] = -temp48b[i];
     }
@@ -2351,7 +2351,7 @@ static REAL insphereexact(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
 
     temp48alen = fast_expansion_sum_zeroelim(abclen, abc, eaclen, eac, temp48a);
     temp48blen = fast_expansion_sum_zeroelim(bcelen, bce, eablen, eab, temp48b);
-    for (i = 0; i < temp48blen; i++)
+    for(i = 0; i < temp48blen; i++)
     {
         temp48b[i] = -temp48b[i];
     }
@@ -2367,7 +2367,7 @@ static REAL insphereexact(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
 
     temp48alen = fast_expansion_sum_zeroelim(bcdlen, bcd, abdlen, abd, temp48a);
     temp48blen = fast_expansion_sum_zeroelim(cdalen, cda, abclen, abc, temp48b);
-    for (i = 0; i < temp48blen; i++)
+    for(i = 0; i < temp48blen; i++)
     {
         temp48b[i] = -temp48b[i];
     }
@@ -2532,7 +2532,7 @@ static REAL insphereadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe, REAL
 
     det      = estimate(finlength, fin1);
     errbound = predicatesInit.isperrboundB * permanent;
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -2549,9 +2549,9 @@ static REAL insphereadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe, REAL
     Two_Diff_Tail(pd[0], pe[0], dex, dextail);
     Two_Diff_Tail(pd[1], pe[1], dey, deytail);
     Two_Diff_Tail(pd[2], pe[2], dez, deztail);
-    if ((aextail == 0.0) && (aeytail == 0.0) && (aeztail == 0.0) && (bextail == 0.0) && (beytail == 0.0) &&
-        (beztail == 0.0) && (cextail == 0.0) && (ceytail == 0.0) && (ceztail == 0.0) && (dextail == 0.0) &&
-        (deytail == 0.0) && (deztail == 0.0))
+    if((aextail == 0.0) && (aeytail == 0.0) && (aeztail == 0.0) && (bextail == 0.0) && (beytail == 0.0) &&
+       (beztail == 0.0) && (cextail == 0.0) && (ceytail == 0.0) && (ceztail == 0.0) && (dextail == 0.0) &&
+       (deytail == 0.0) && (deztail == 0.0))
     {
         return det;
     }
@@ -2575,7 +2575,7 @@ static REAL insphereadapt(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe, REAL
                    (dex * dextail + dey * deytail + dez * deztail) * (aez * bc3 - bez * ac3 + cez * ab3)) -
                   ((aex * aextail + aey * aeytail + aez * aeztail) * (bez * cd3 - cez * bd3 + dez * bc3) +
                    (cex * cextail + cey * ceytail + cez * ceztail) * (dez * ab3 + aez * bd3 + bez * da3)));
-    if ((det >= errbound) || (-det >= errbound))
+    if((det >= errbound) || (-det >= errbound))
     {
         return det;
     }
@@ -2677,7 +2677,7 @@ REAL insphere(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe)
                  (aexbeyplus + bexaeyplus) * cezplus) *
                     dlift;
     errbound = predicatesInit.isperrboundA * permanent;
-    if ((det > errbound) || (-det > errbound))
+    if((det > errbound) || (-det > errbound))
     {
         FPU_RESTORE;
         return det;

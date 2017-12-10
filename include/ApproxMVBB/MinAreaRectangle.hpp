@@ -115,7 +115,7 @@ private:
         bool uF = uN.allFinite();
         bool vF = vN.allFinite();
 
-        if (uF && vF)
+        if(uF && vF)
         {
             // make orthogonal (x axis is u)
             Vector2 uNT;
@@ -125,7 +125,7 @@ private:
             PREC h = uNT.dot(m_minBox.m_v);
             PREC l = uN.dot(m_minBox.m_v);
 
-            if (l >= 0.0)
+            if(l >= 0.0)
             {
                 m_minBox.m_uL = uNorm + l;
             }
@@ -136,7 +136,7 @@ private:
             }
 
             // if v vector pointed downwards (negative h)
-            if (h < 0)
+            if(h < 0)
             {
                 // invert uNT (and switch u,v)
                 uNT *= -1.0;
@@ -152,7 +152,7 @@ private:
                 m_minBox.m_v  = uNT;
             }
         }
-        else if (uF && !vF)
+        else if(uF && !vF)
         {
             // set u to normalized
             m_minBox.m_u = uN;
@@ -163,7 +163,7 @@ private:
             m_minBox.m_uL = uNorm;
             m_minBox.m_vL = 0.0;
         }
-        else if (!uF && vF)
+        else if(!uF && vF)
         {
             // set v to normalized
             m_minBox.m_v = vN;
@@ -190,7 +190,7 @@ private:
     inline void updateCalipers(PREC edgeAngle, Caliper (&c)[4])
     {
         updateAngles(edgeAngle, c);
-        for (unsigned char i = 0; i < 4; i++)
+        for(unsigned char i = 0; i < 4; i++)
         {
             findVertex(c[i]);
         }

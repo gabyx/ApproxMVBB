@@ -86,14 +86,14 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
     theDiam->extremity2     = (double*)NULL;
     theDiam->squareDiameter = std::numeric_limits<double>::lowest();
 
-    if (first < 0 || last < 0)
+    if(first < 0 || last < 0)
         return (-1.0);
-    if (first > last)
+    if(first > last)
     {
         l = first;
         f = last;
     }
-    if (f == l)
+    if(f == l)
     {
         theDiam->extremity1 = theList[f];
         theDiam->extremity2 = theList[l];
@@ -113,7 +113,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
 
         /* if we get a better estimation
          */
-        if (newEstimate > theDiam->squareDiameter)
+        if(newEstimate > theDiam->squareDiameter)
         {
             /* update variables
              */
@@ -121,9 +121,9 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
 
             /* keep the maximal segment in list
              */
-            if (_AddSegmentToList(&theSeg, &theDoubleNormals) != 1)
+            if(_AddSegmentToList(&theSeg, &theDoubleNormals) != 1)
             {
-                if (theDoubleNormals.nalloc > 0)
+                if(theDoubleNormals.nalloc > 0)
                     free(theDoubleNormals.seg);
                 return (-1.0);
             }
@@ -132,11 +132,11 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
              */
             newlast = l;
             index   = _FarthestPointFromSphere(&theSeg, theList, f, &newlast, dim, _reduction_mode_in_iterative_);
-            if (_reduction_mode_in_iterative_ == 1)
+            if(_reduction_mode_in_iterative_ == 1)
             {
-                if (verboseWhenReducing)
+                if(verboseWhenReducing)
                     // fprintf( stdout, "...processing frth: remove %d points\n", l-newlast );
-                    if (newlast == l)
+                    if(newlast == l)
                     {
                         suspicion_of_convex_hull     = 1;
                         _reduction_mode_of_diameter_ = 0;
@@ -148,9 +148,9 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             /* stopping condition
             no point outside the sphere
             */
-            if (index < f)
+            if(index < f)
             {
-                if (theDoubleNormals.nalloc > 0)
+                if(theDoubleNormals.nalloc > 0)
                     free(theDoubleNormals.seg);
                 return (theDiam->squareDiameter);
             }
@@ -181,13 +181,12 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             1 + 4 * MA.MB / (d_estimate)^2 < (1+epsilon)^2
 
             */
-            if (1.0 +
-                    4.0 *
-                        _ScalarProduct(theList[index], theDiam->extremity1, theList[index], theDiam->extremity2, dim) /
-                        theDiam->squareDiameter <
-                (1.0 + epsilon) * (1.0 + epsilon))
+            if(1.0 + 4.0 *
+                         _ScalarProduct(theList[index], theDiam->extremity1, theList[index], theDiam->extremity2, dim) /
+                         theDiam->squareDiameter <
+               (1.0 + epsilon) * (1.0 + epsilon))
             {
-                if (theDoubleNormals.nalloc > 0)
+                if(theDoubleNormals.nalloc > 0)
                     free(theDoubleNormals.seg);
                 return (bound);
             }
@@ -211,23 +210,23 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
 
             */
 
-            if (_AddSegmentToList(theDiam, &theDoubleNormals) != 1)
+            if(_AddSegmentToList(theDiam, &theDoubleNormals) != 1)
             {
-                if (theDoubleNormals.nalloc > 0)
+                if(theDoubleNormals.nalloc > 0)
                     free(theDoubleNormals.seg);
                 return (-1.0);
             }
 
-            for (n = theDoubleNormals.n - 2; n >= 0; n--)
+            for(n = theDoubleNormals.n - 2; n >= 0; n--)
             {
-                if (n == 0)
+                if(n == 0)
                 {
                     theDoubleNormals.seg[n] = theSeg;
                 }
                 else
                 {
-                    if (theSeg.squareDiameter <= theDoubleNormals.seg[n].squareDiameter &&
-                        theSeg.squareDiameter > theDoubleNormals.seg[n - 1].squareDiameter)
+                    if(theSeg.squareDiameter <= theDoubleNormals.seg[n].squareDiameter &&
+                       theSeg.squareDiameter > theDoubleNormals.seg[n - 1].squareDiameter)
                     {
                         theDoubleNormals.seg[n] = theSeg;
                         n                       = -1;
@@ -240,23 +239,23 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             }
         }
 
-    } while (newEstimateIsSmallerThanCurrentEstimate == 0);
+    } while(newEstimateIsSmallerThanCurrentEstimate == 0);
 
     /* last processing with the found diameter
        - points inside the smallest sphere of the
          diameter may have been already removed
      */
-    if (_reduction_mode_in_iterative_ > 0 && _reduction_mode_of_diameter_ == 1)
+    if(_reduction_mode_in_iterative_ > 0 && _reduction_mode_of_diameter_ == 1)
         _reduction_mode_of_diameter_ = 0;
 
     newlast = l;
     index   = _LastPointOutsideSphereWithDiameter(
         theDiam, theDiam->squareDiameter, theList, f, &newlast, dim, _reduction_mode_of_diameter_);
-    if (_reduction_mode_of_diameter_ == 1 || _reduction_mode_of_diameter_ == 2)
+    if(_reduction_mode_of_diameter_ == 1 || _reduction_mode_of_diameter_ == 2)
     {
-        if (verboseWhenReducing)
+        if(verboseWhenReducing)
             // fprintf( stdout, "...processing diam: remove %d points\n", l-newlast );
-            if (newlast == l)
+            if(newlast == l)
             {
                 suspicion_of_convex_hull     = 1;
                 _reduction_mode_of_dbleNorm_ = 0;
@@ -271,9 +270,9 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
        #f       -> #index : points outside the sphere
        #index+1 -> #l     : points inside the sphere
     */
-    if (index < f)
+    if(index < f)
     {
-        if (theDoubleNormals.nalloc > 0)
+        if(theDoubleNormals.nalloc > 0)
             free(theDoubleNormals.seg);
         return (theDiam->squareDiameter);
     }
@@ -287,19 +286,19 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
     /* there is no points outside the sphere of diameter d * (1 + epsilon)
        find the farthest one to get a better upper bound of the diameter
     */
-    if (index1 < f)
+    if(index1 < f)
     {
-        if (theDoubleNormals.nalloc > 0)
+        if(theDoubleNormals.nalloc > 0)
             free(theDoubleNormals.seg);
 
         upperBound = 4.0 * _ScalarProduct(theList[f], theDiam->extremity1, theList[f], theDiam->extremity2, dim) +
                      theDiam->squareDiameter;
 
-        for (k = f + 1; k <= index2; k++)
+        for(k = f + 1; k <= index2; k++)
         {
             bound = 4.0 * _ScalarProduct(theList[k], theDiam->extremity1, theList[k], theDiam->extremity2, dim) +
                     theDiam->squareDiameter;
-            if (upperBound < bound)
+            if(upperBound < bound)
                 upperBound = bound;
         }
         return (upperBound);
@@ -314,16 +313,16 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
        #index1+1 -> #index2 : points outside the sphere but inside the previous one
        #index2+1 -> #l      : points inside the sphere
     */
-    if (_tight_bounds_)
+    if(_tight_bounds_)
     {
         upperBound = theDiam->squareDiameter;
-        if (index1 < index2)
+        if(index1 < index2)
         {
-            for (k = index1 + 1; k <= index2; k++)
+            for(k = index1 + 1; k <= index2; k++)
             {
                 bound = 4.0 * _ScalarProduct(theList[k], theDiam->extremity1, theList[k], theDiam->extremity2, dim) +
                         theDiam->squareDiameter;
-                if (upperBound < bound)
+                if(upperBound < bound)
                     upperBound = bound;
             }
         }
@@ -336,9 +335,9 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
     /* to get some information on
        the points
     */
-    if (0)
+    if(0)
     {
-        for (n = theDoubleNormals.n - 1; n >= 0; n--)
+        for(n = theDoubleNormals.n - 1; n >= 0; n--)
         {
             /*_CountPointsInSpheres( &theDoubleNormals.seg[ n ], theDiam->squareDiameter,
                     theList, f, l, dim );*/
@@ -367,12 +366,12 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
        #index+1 -> #l     : points inside the sphere of diameter d*(1+epsilon)
     */
 
-    if (tryToReduceQ && theDoubleNormals.n > 1)
+    if(tryToReduceQ && theDoubleNormals.n > 1)
     {
-        for (k = 0; k < theDoubleNormals.n; k++)
+        for(k = 0; k < theDoubleNormals.n; k++)
             theDoubleNormals.seg[k].reduction_mode = _reduction_mode_of_dbleNorm_;
 
-        switch (_Q_scan_)
+        switch(_Q_scan_)
         {
             default:
             case 0:
@@ -391,7 +390,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
                 break;
         }
 
-        for (n = fdn; n != (ldn + idn) && index >= f; n += idn)
+        for(n = fdn; n != (ldn + idn) && index >= f; n += idn)
         {
             /* in [ #f #index ] find the points outside the sphere
             theDoubleNormals.seg[ n ]
@@ -404,7 +403,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             */
             i = _LastPointOutsideSphereWithDiameter(
                 &theDoubleNormals.seg[n], upperSquareDiameter, theList, f, &index, dim, 0);
-            if (i >= index)
+            if(i >= index)
                 continue;
 
             /* remise a jour de l'upper bound,
@@ -418,9 +417,9 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             s'il faut toujours mettre a jour la borne sup ...
 
             */
-            if (_tight_bounds_)
+            if(_tight_bounds_)
             {
-                for (k = i + 1; k <= index; k++)
+                for(k = i + 1; k <= index; k++)
                 {
                     bound = 4.0 * _ScalarProduct(theList[k],
                                                  theDoubleNormals.seg[n].extremity1,
@@ -428,7 +427,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
                                                  theDoubleNormals.seg[n].extremity2,
                                                  dim) +
                             theDoubleNormals.seg[n].squareDiameter;
-                    if (upperBound < bound)
+                    if(upperBound < bound)
                         upperBound = bound;
                 }
             }
@@ -442,7 +441,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
 
             newlast = l;
 
-            if (_tight_bounds_)
+            if(_tight_bounds_)
             {
                 j = _LastPointOutsideSphereAndBoundWithDiameter(&theDoubleNormals.seg[n],
                                                                 upperSquareDiameter,
@@ -452,7 +451,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
                                                                 dim,
                                                                 theDoubleNormals.seg[n].reduction_mode,
                                                                 &bound);
-                if (upperBound < bound)
+                if(upperBound < bound)
                     upperBound = bound;
             }
             else
@@ -466,20 +465,20 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
                                                         theDoubleNormals.seg[n].reduction_mode);
             }
 
-            if (theDoubleNormals.seg[n].reduction_mode == 1 || theDoubleNormals.seg[n].reduction_mode == 2)
+            if(theDoubleNormals.seg[n].reduction_mode == 1 || theDoubleNormals.seg[n].reduction_mode == 2)
             {
-                if (verboseWhenReducing)
+                if(verboseWhenReducing)
                     // fprintf( stdout, "...processing dbNR: remove %d points\n", l-newlast );
-                    if (newlast == l)
+                    if(newlast == l)
                     {
                         suspicion_of_convex_hull = 1;
-                        for (k = 0; k < theDoubleNormals.n; k++)
+                        for(k = 0; k < theDoubleNormals.n; k++)
                             theDoubleNormals.seg[k].reduction_mode = 0;
                     }
                 l = newlast;
             }
 
-            if (j <= index)
+            if(j <= index)
             {
                 index = i;
                 continue;
@@ -500,14 +499,14 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
             newEstimate =
                 _QuadraticDiameterInTwoLists(&theSeg, NULL, NULL, theList, i + 1, index, theList, index + 1, j, dim);
 
-            if (newEstimate > theDiam->squareDiameter)
+            if(newEstimate > theDiam->squareDiameter)
             {
                 /* update variables
                  */
                 *theDiam = theSeg;
-                if (upperBound < newEstimate)
+                if(upperBound < newEstimate)
                     upperBound = newEstimate;
-                if (upperSquareDiameter < newEstimate)
+                if(upperSquareDiameter < newEstimate)
                     upperSquareDiameter = newEstimate;
                 /* we find a better estimate
                    it is perhaps not the diameter, according that one
@@ -531,7 +530,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
         }
     }
 
-    if (theDoubleNormals.nalloc > 0)
+    if(theDoubleNormals.nalloc > 0)
         free(theDoubleNormals.seg);
 
     /* exhautive search
@@ -540,52 +539,52 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
        against all others points
     */
 
-    if (dim == 2)
+    if(dim == 2)
     {
-        for (i = f; i <= index; i++)
-            for (j = i + 1; j <= l; j++)
+        for(i = f; i <= index; i++)
+            for(j = i + 1; j <= l; j++)
             {
                 newEstimate = _SquareDistance2D(theList[i], theList[j]);
-                if (newEstimate > theDiam->squareDiameter)
+                if(newEstimate > theDiam->squareDiameter)
                 {
                     theDiam->extremity1     = theList[i];
                     theDiam->extremity2     = theList[j];
                     theDiam->squareDiameter = newEstimate;
-                    if (newEstimate > upperBound)
+                    if(newEstimate > upperBound)
                         upperBound = newEstimate;
                 }
             }
         return (upperBound);
     }
 
-    if (dim == 3)
+    if(dim == 3)
     {
-        for (i = f; i <= index; i++)
-            for (j = i + 1; j <= l; j++)
+        for(i = f; i <= index; i++)
+            for(j = i + 1; j <= l; j++)
             {
                 newEstimate = _SquareDistance3D(theList[i], theList[j]);
-                if (newEstimate > theDiam->squareDiameter)
+                if(newEstimate > theDiam->squareDiameter)
                 {
                     theDiam->extremity1     = theList[i];
                     theDiam->extremity2     = theList[j];
                     theDiam->squareDiameter = newEstimate;
-                    if (newEstimate > upperBound)
+                    if(newEstimate > upperBound)
                         upperBound = newEstimate;
                 }
             }
         return (upperBound);
     }
 
-    for (i = f; i <= index; i++)
-        for (j = i + 1; j <= l; j++)
+    for(i = f; i <= index; i++)
+        for(j = i + 1; j <= l; j++)
         {
             newEstimate = _SquareDistance(theList[i], theList[j], dim);
-            if (newEstimate > theDiam->squareDiameter)
+            if(newEstimate > theDiam->squareDiameter)
             {
                 theDiam->extremity1     = theList[i];
                 theDiam->extremity2     = theList[j];
                 theDiam->squareDiameter = newEstimate;
-                if (newEstimate > upperBound)
+                if(newEstimate > upperBound)
                     upperBound = newEstimate;
             }
         }

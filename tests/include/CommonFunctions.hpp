@@ -51,7 +51,7 @@ T swapEndian(T u)
 
     source.u = u;
 
-    for (size_t k = 0; k < sizeof(T); k++)
+    for(size_t k = 0; k < sizeof(T); k++)
         dest.u8[k] = source.u8[sizeof(T) - k - 1];
 
     return dest.u;
@@ -69,15 +69,15 @@ void dumpPoints(std::string filePath, Container& c)
 {
     std::ofstream l;
     l.open(filePath.c_str());
-    if (!l.good())
+    if(!l.good())
     {
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
     }
-    if (c.size() != 0)
+    if(c.size() != 0)
     {
         auto e  = c.begin() + (c.size() - 1);
         auto it = c.begin();
-        for (; it != e; ++it)
+        for(; it != e; ++it)
         {
             l << it->transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         }
@@ -90,15 +90,15 @@ void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived>& v)
 {
     std::ofstream l;
     l.open(filePath.c_str());
-    if (!l.good())
+    if(!l.good())
     {
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
     }
 
-    if (v.cols() != 0)
+    if(v.cols() != 0)
     {
         unsigned int i = 0;
-        for (; i < v.cols() - 1; i++)
+        for(; i < v.cols() - 1; i++)
         {
             l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         }
@@ -131,7 +131,7 @@ void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeade
 {
     std::ifstream in(filename, std::ios::in | std::ios::binary);
 
-    if (!in.is_open())
+    if(!in.is_open())
     {
         ApproxMVBB_ERRORMSG("cannot open file: " << filename);
     }
@@ -141,7 +141,7 @@ void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeade
     ApproxMVBB_STATIC_ASSERT(sizeof(typename Matrix::Index) == 8) bool bigEndian =
         false;  // assume all input files with no headers are little endian!
 
-    if (withHeader)
+    if(withHeader)
     {
         in.read((char*)(&bigEndian), sizeof(bool));
         in.read((char*)(&rows), sizeof(typename Matrix::Index));
@@ -150,13 +150,13 @@ void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeade
         in.read((char*)(&bytes), sizeof(typename Matrix::Index));
 
         // swap endianness if file has other type
-        if (isBigEndian() != bigEndian)
+        if(isBigEndian() != bigEndian)
         {
             rows  = swapEndian(rows);
             cols  = swapEndian(cols);
             bytes = swapEndian(bytes);
         }
-        if (bytes != sizeof(typename Matrix::Scalar))
+        if(bytes != sizeof(typename Matrix::Scalar))
         {
             ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << "bigEndian: " << bigEndian
                                                                      << ", rows: " << rows << ", cols: " << cols
@@ -168,7 +168,7 @@ void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeade
     in.read((char*)matrix.data(), rows * cols * sizeof(typename Matrix::Scalar));
 
     // swap endianness of whole matrix if file has other type
-    if (isBigEndian() != bigEndian)
+    if(isBigEndian() != bigEndian)
     {
         auto f = [](const typename Matrix::Scalar& v) { return swapEndian(v); };
         matrix = matrix.unaryExpr(f);

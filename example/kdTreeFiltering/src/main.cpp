@@ -31,14 +31,14 @@ Vector3List getPointsFromFile3D(std::string filePath)
     std::ifstream file;           // creates stream myFile
     file.open(filePath.c_str());  // opens .txt file
 
-    if (!file.is_open())
+    if(!file.is_open())
     {  // check file is open, quit if not
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
     }
 
     PREC a, b, c;
     Vector3List v;
-    while (file.good())
+    while(file.good())
     {
         file >> a >> b >> c;
         v.emplace_back(a, b, c);
@@ -93,7 +93,7 @@ void doKdTree(std::string file)
 
         PointListType t;
 
-        for (unsigned int i = 0; i < points.size(); ++i)
+        for(unsigned int i = 0; i < points.size(); ++i)
         {
             t.push_back(MyPoint{&points[i], i});
             aabb += points[i];

@@ -50,13 +50,13 @@ MY_BENCHMARK(bunny)
     MY_BENCHMARK_RANDOM_STUFF(bunny);
     auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
     applyRandomRotTrans(t, f);
     std::cout << "Start..." << std::endl;
-    while (state.KeepRunning())
+    while(state.KeepRunning())
     {
         mvbbTest(t, 0.1);
     }
@@ -68,7 +68,7 @@ MY_BENCHMARK(random140M)
     Matrix3Dyn t(3, 140000000);
     t = t.unaryExpr(f);
     std::cout << "Start..." << std::endl;
-    while (state.KeepRunning())
+    while(state.KeepRunning())
     {
         mvbbTest(t, 0.01, 400, 5, 0, 5);
     }
@@ -79,13 +79,13 @@ MY_BENCHMARK(lucy)
     MY_BENCHMARK_RANDOM_STUFF(lucy);
     auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
     applyRandomRotTrans(t, f);
     std::cout << "Start..." << std::endl;
-    while (state.KeepRunning())
+    while(state.KeepRunning())
     {
         mvbbTest(t, 100, 400, 5, 0, 5);
     }

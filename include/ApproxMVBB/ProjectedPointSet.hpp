@@ -47,7 +47,7 @@ public:
         std::pair<Vector2, Vector2> pp = estimateDiameter<2>(m_p, epsilon);
 
         Vector2 dirX = pp.first - pp.second;
-        if ((pp.second.array() >= pp.first.array()).all())
+        if((pp.second.array() >= pp.first.array()).all())
         {
             dirX *= -1;
         }
@@ -58,7 +58,7 @@ public:
         dirX.normalize();
 
         // If normalized direction INf/NaN, use (1,0)
-        if (!dirX.allFinite())
+        if(!dirX.allFinite())
         {
             dirX.setZero();
             dirX(0) = 1;
@@ -72,7 +72,7 @@ public:
         AABB2d aabb;
         Vector2 p;
         auto size = m_p.cols();
-        for (unsigned int i = 0; i < size; ++i)
+        for(unsigned int i = 0; i < size; ++i)
         {
             p.noalias() = A2_MK * m_p.col(i);  // Transform all points
             aabb.unite(p);
@@ -173,7 +173,7 @@ private:
     {
         using namespace CoordinateSystem;
 
-        if (points.cols() == 0)
+        if(points.cols() == 0)
         {
             ApproxMVBB_ERRORMSG("Point set empty!");
         }
@@ -199,7 +199,7 @@ private:
         Vector3 p;
         m_maxZValue = std::numeric_limits<PREC>::lowest();
         m_minZValue = std::numeric_limits<PREC>::max();
-        for (decltype(size) i = 0; i < size; ++i)
+        for(decltype(size) i = 0; i < size; ++i)
         {
             p           = m_A_KI * points.col(i);
             m_p.col(i)  = p.head<2>();

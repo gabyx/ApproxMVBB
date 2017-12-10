@@ -36,7 +36,7 @@ public:
         static const auto nodePCData = pugi::node_pcdata;
         XMLNodeType node             = root.append_child("Points");
         std::stringstream ss;
-        for (auto& p : obj)
+        for(auto& p : obj)
         {
             ss << PointGetter::get(p).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
         }
@@ -61,7 +61,7 @@ public:
         // Save leafs
         XMLNodeType leafs = kdNode.append_child("Leafs");
 
-        for (auto* l : obj.m_leafs)
+        for(auto* l : obj.m_leafs)
         {
             XMLNodeType node = leafs.append_child("Leaf");
             node.append_attribute("level").set_value(l->getLevel());
@@ -80,12 +80,12 @@ public:
         q.push_back(obj.m_root);
         unsigned int currLevel = obj.m_root->getLevel();
         ss.str("");
-        while (q.size() > 0)
+        while(q.size() > 0)
         {
             // Write stuff of f if not leaf
             auto* f = q.front();
 
-            if (f->getLevel() > currLevel)
+            if(f->getLevel() > currLevel)
             {
                 // write new string
                 aabb = aabbTree.append_child("AABBSubTree");
@@ -96,7 +96,7 @@ public:
                 ss.str("");
             }
 
-            if (!f->isLeaf())
+            if(!f->isLeaf())
             {
                 ss << f->aabb().m_minPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << " "
                    << f->aabb().m_maxPoint.transpose().format(MyMatrixIOFormat::SpaceSep) << "\n";
@@ -104,12 +104,12 @@ public:
 
             // push the left/right
             auto* n = f->leftNode();
-            if (n)
+            if(n)
             {
                 q.push_back(n);
             }
             n = f->rightNode();
-            if (n)
+            if(n)
             {
                 q.push_back(n);
             }
@@ -119,7 +119,7 @@ public:
 
         // write last string
         auto s = ss.str();
-        if (!s.empty())
+        if(!s.empty())
         {
             aabb = aabbTree.append_child("AABBSubTree");
             aabb.append_attribute("level").set_value(currLevel);

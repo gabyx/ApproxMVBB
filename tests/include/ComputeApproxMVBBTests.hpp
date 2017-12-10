@@ -31,7 +31,7 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        if (dumpPoints)
+        if(dumpPoints)
         {
             dumpPointsMatrixBinary("./ConvexHullTest" + std::to_string(N) + ".bin", v);
             // dumpPointsMatrix("./ConvexHullTest"+ std::to_string(N) +".txt",v);
@@ -43,7 +43,7 @@ public:
         STOP_TIMER_SEC(count, start)
         std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
         std::cout << "End ConvexHull Test " + std::to_string(N) + "" << std::endl;
-        if (!c.verifyHull())
+        if(!c.verifyHull())
         {
             std::cerr << "ConvexHull Test " + std::to_string(N) + " not ok!" << std::endl;
         }
@@ -52,7 +52,7 @@ public:
         std::cout << "ConvexHull Points: " << ind.size() << std::endl;
         unsigned int j = 0;
         ApproxMVBB::Matrix2Dyn qHull(2, ind.size());
-        for (auto& i : ind)
+        for(auto& i : ind)
         {
             qHull.col(j++) = v.col(i);
         }
@@ -82,7 +82,7 @@ public:
             t.push_back(Vector2(-1, 1));
 
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -96,7 +96,7 @@ public:
             t.push_back(Vector2(1, 1));
             t.push_back(Vector2(2, 2));
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -109,7 +109,7 @@ public:
             t.push_back(Vector2(0, 0));
             t.push_back(Vector2(1, 1));
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -123,7 +123,7 @@ public:
             t.push_back(Vector2(1, 1));
             t.push_back(Vector2(1, -1));
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -136,7 +136,7 @@ public:
             Vector2List t;
             t.push_back(Vector2(0, 0));
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -148,7 +148,7 @@ public:
             // generate points  on circle
             unsigned int max = 1000;
             ApproxMVBB::Matrix2Dyn t(2, max);
-            for (unsigned int i = 0; i < max; i++)
+            for(unsigned int i = 0; i < max; i++)
             {
                 t.col(i) = Vector2(std::cos(0.0001 / max * i), std::sin(0.0001 / max * i));
             }
@@ -160,7 +160,7 @@ public:
             // generate points
             auto t = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
             ApproxMVBB::Matrix2Dyn v(2, t.size());
-            for (unsigned int i = 0; i < t.size(); ++i)
+            for(unsigned int i = 0; i < t.size(); ++i)
             {
                 v.col(i) = t[i];
             }
@@ -302,7 +302,7 @@ public:
             v.push_back(Vector2(3, 3));
             v.push_back(Vector2(-1, 1));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -316,7 +316,7 @@ public:
             v.push_back(Vector2(1, 1));
             v.push_back(Vector2(2, 2));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -329,7 +329,7 @@ public:
             v.push_back(Vector2(0, 0));
             v.push_back(Vector2(1, 1));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -343,7 +343,7 @@ public:
             v.push_back(Vector2(1, 1));
             v.push_back(Vector2(1, -1));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -358,7 +358,7 @@ public:
             v.push_back(Vector2(1, 1 + 1e-13));
             v.push_back(Vector2(2, 2));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -385,7 +385,7 @@ public:
             v.push_back(Vector2(1, 0));
 
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -397,7 +397,7 @@ public:
             Vector2List v;
 
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -412,7 +412,7 @@ public:
             v.push_back(Vector2(1, 1));
             v.push_back(Vector2(0, 1));
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -423,7 +423,7 @@ public:
             // generate points
             auto v = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
             ApproxMVBB::Matrix2Dyn t(2, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -483,7 +483,7 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        if (dump)
+        if(dump)
         {
             dumpPointsMatrixBinary("./DiameterTest" + std::to_string(N) + ".bin", v);
             dumpPointsMatrix("./DiameterTest" + std::to_string(N) + ".txt", v);
@@ -497,7 +497,7 @@ public:
         std::cout << "End approximateMVBBDiam Test " + std::to_string(N) << std::endl;
 
         oobb.expand(1e-10);
-        if (!checkPointsInOOBB(v, oobb))
+        if(!checkPointsInOOBB(v, oobb))
         {
             std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
         }
@@ -561,7 +561,7 @@ public:
             auto v = getPointsFromFile3D("./PointsSimulation.txt");
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -573,7 +573,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./PointsSimulationFailMVBB.txt");
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -586,7 +586,7 @@ public:
             auto v = getPointsFromFile3D("./Bunny.txt");
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -608,7 +608,7 @@ public:
             auto v = getPointsFromFile3D("./Lucy.txt");
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -627,13 +627,13 @@ public:
 
         //  Tests 8 - 59
         // for(unsigned int k=0;k<5;k++){
-        for (unsigned int k = 0; k < 51; k++)
+        for(unsigned int k = 0; k < 51; k++)
         {
             // generate points
             auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(k) + ".txt");
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -675,7 +675,7 @@ public:
         using namespace PointFunctions;
         using namespace TestFunctions;
 
-        if (dumpPoints)
+        if(dumpPoints)
         {
             dumpPointsMatrix("./MVBBTest" + std::to_string(N) + ".txt", v);
             dumpPointsMatrixBinary("./MVBBTest" + std::to_string(N) + ".bin", v);
@@ -695,7 +695,7 @@ public:
         // Make all points inside OOBB!
         Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();  // faster to store the transformation matrix first
         auto size     = v.cols();
-        for (unsigned int i = 0; i < size; ++i)
+        for(unsigned int i = 0; i < size; ++i)
         {
             oobb.unite(A_KI * v.col(i));
         }
@@ -756,7 +756,7 @@ public:
         {
             // Some patches
             int testC = testCounter * 1000;
-            for (int i = 0; i < 10; ++i)
+            for(int i = 0; i < 10; ++i)
             {
                 ApproxMVBB::Matrix3Dyn t(3, 4);
                 t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
@@ -771,11 +771,11 @@ public:
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_real_distribution<ApproxMVBB::PREC> dis(0, 1);
-            for (int i = 0; i < 10; ++i)
+            for(int i = 0; i < 10; ++i)
             {
                 // Some planes
                 ApproxMVBB::Matrix3Dyn t(3, 500);
-                for (int i = 0; i < t.cols(); ++i)
+                for(int i = 0; i < t.cols(); ++i)
                 {
                     t.col(i) = ApproxMVBB::Vector3(dis(gen), dis(gen), 0);
                 }
@@ -791,7 +791,7 @@ public:
             auto v = generatePoints3D(100);
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -805,7 +805,7 @@ public:
             auto v = generatePoints3D(10000);
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -848,7 +848,7 @@ public:
             auto v = getPointsFromFile3D("./Bunny.txt");
 
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -862,7 +862,7 @@ public:
             // generate points
             auto v = getPointsFromFile3D("./Lucy.txt");
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }
@@ -881,12 +881,12 @@ public:
 
         // Tests 9 - 59
         // for(unsigned int k=0;k<5;k++){
-        for (unsigned int k = 0; k < 51; k++)
+        for(unsigned int k = 0; k < 51; k++)
         {
             // generate points
             auto v = getPointsFromFile3D("./PointCloud_" + std::to_string(k) + ".txt");
             ApproxMVBB::Matrix3Dyn t(3, v.size());
-            for (unsigned int i = 0; i < v.size(); ++i)
+            for(unsigned int i = 0; i < v.size(); ++i)
             {
                 t.col(i) = v[i];
             }

@@ -21,14 +21,14 @@
     }
 #define ApproxMVBB_LOGLEVEL(level, setlevel, message) \
     {                                                 \
-        if (level <= setlevel)                        \
+        if(level <= setlevel)                         \
         {                                             \
             ApproxMVBB_LOG(message);                  \
         }                                             \
     }
 #define ApproxMVBB_LOGLEVEL_SCOPE(level) \
     {                                    \
-        if (level <= setlevel)           \
+        if(level <= setlevel)            \
         {                                \
         }
 #define ApproxMVBB_LOGLEVEL_SCOPE_END \

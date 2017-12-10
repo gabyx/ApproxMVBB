@@ -45,7 +45,7 @@ ApproxMVBB_DEFINE_MATRIX_TYPES
 
     v1.normalize();
 
-    if (abs(v1(0)) > abs(v1(2)))
+    if(abs(v1(0)) > abs(v1(2)))
     {
         PREC invLen = 1.0 / sqrt(v1(0) * v1(0) + v1(2) * v1(2));
         v2          = MyMatrix::Vector3<PREC>(-v1(2) * invLen, 0, v1(0) * invLen);
@@ -65,13 +65,13 @@ inline void makeZAxisUp(Matrix33& A_IK)
 {
     // Make the z-Axis the axis which has the greatest z-component
 
-    if (A_IK(0, 2) > A_IK(1, 2) && A_IK(0, 2) > A_IK(2, 2))
+    if(A_IK(0, 2) > A_IK(1, 2) && A_IK(0, 2) > A_IK(2, 2))
     {
         // x Axis becomes new z-Axis [x,y,z] -> [y,z,x]
         A_IK.col(0).swap(A_IK.col(2));
         A_IK.col(0).swap(A_IK.col(1));
     }
-    else if (A_IK(1, 2) > A_IK(0, 2) && A_IK(1, 2) > A_IK(2, 2))
+    else if(A_IK(1, 2) > A_IK(0, 2) && A_IK(1, 2) > A_IK(2, 2))
     {
         // y Axis becomes new z-Axis [x,y,z] -> [y,z,y]
         A_IK.col(0).swap(A_IK.col(2));
@@ -81,7 +81,7 @@ inline void makeZAxisUp(Matrix33& A_IK)
 
 inline bool checkOrthogonality(Vector3& v1, Vector3& v2, Vector3& v3, PREC eps = 1e-6)
 {
-    if (v1.dot(v2) <= eps && v2.dot(v3) <= eps && v3.dot(v1) <= eps)
+    if(v1.dot(v2) <= eps && v2.dot(v3) <= eps && v3.dot(v1) <= eps)
     {
         return true;
     }

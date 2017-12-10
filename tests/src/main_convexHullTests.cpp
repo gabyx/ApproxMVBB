@@ -29,7 +29,7 @@ void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
     using namespace TestFunctions;
     using namespace PointFunctions;
 
-    if (dumpPoints)
+    if(dumpPoints)
     {
         dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
@@ -41,7 +41,7 @@ void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
     STOP_TIMER_SEC(count, start)
     std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
     std::cout << "End convexHull test " << name << "" << std::endl;
-    if (!c.verifyHull())
+    if(!c.verifyHull())
     {
         std::cerr << "ConvexHull test " << name << " not ok!" << std::endl;
     }
@@ -50,7 +50,7 @@ void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
     std::cout << "ConvexHull Points: " << ind.size() << std::endl;
     unsigned int j = 0;
     ApproxMVBB::Matrix2Dyn qHull(2, ind.size());
-    for (auto& i : ind)
+    for(auto& i : ind)
     {
         qHull.col(j++) = v.col(i);
     }
@@ -94,7 +94,7 @@ MY_TEST(ConvexHullTest, Line4)
     t.push_back(Vector2(-1, 1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -111,7 +111,7 @@ MY_TEST(ConvexHullTest, Line3)
     t.push_back(Vector2(2, 2));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -127,7 +127,7 @@ MY_TEST(ConvexHullTest, Line_2)
     t.push_back(Vector2(1, 1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -144,7 +144,7 @@ MY_TEST(ConvexHullTest, Triangle)
     t.push_back(Vector2(1, -1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -159,7 +159,7 @@ MY_TEST(ConvexHullTest, Point)
     t.push_back(Vector2(0, 0));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -172,7 +172,7 @@ MY_TEST(ConvexHullTest, PointsOnCricle1000)
 
     unsigned int max = 1000;
     ApproxMVBB::Matrix2Dyn t(2, max);
-    for (unsigned int i = 0; i < max; i++)
+    for(unsigned int i = 0; i < max; i++)
     {
         t.col(i) = Vector2(std::cos(0.1 / max * i), std::sin(0.1 / max * i));
     }
@@ -185,7 +185,7 @@ MY_TEST(ConvexHullTest, Points2DRectFail)
 
     auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }

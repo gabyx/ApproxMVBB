@@ -93,7 +93,7 @@ MY_TEST(MinAreaRectangleTest, UnitRectangle)
     t.push_back(Vector2(0, 1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -108,7 +108,7 @@ MY_TEST(MinAreaRectangleTest, TwoPoints)
     v.push_back(Vector2(1, 0));
     v.push_back(Vector2(3, 3));
     ApproxMVBB::Matrix2Dyn t(2, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -125,7 +125,7 @@ MY_TEST(MinAreaRectangleTest, AlmostLine)
     v.push_back(Vector2(1, 1 + 1e-13));
     v.push_back(Vector2(2, 2));
     ApproxMVBB::Matrix2Dyn t(2, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -142,7 +142,7 @@ MY_TEST(MinAreaRectangleTest, Line3)
     t.push_back(Vector2(2, 2));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -158,7 +158,7 @@ MY_TEST(MinAreaRectangleTest, Line2)
     t.push_back(Vector2(1, 1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -175,7 +175,7 @@ MY_TEST(MinAreaRectangleTest, Triangle)
     t.push_back(Vector2(1, -1));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -199,7 +199,7 @@ MY_TEST(MinAreaRectangleTest, Point)
     t.push_back(Vector2(1, 0));
 
     Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }
@@ -212,7 +212,7 @@ MY_TEST(MinAreaRectangleTest, PointsOnCricle1000)
 
     unsigned int max = 1000;
     ApproxMVBB::Matrix2Dyn t(2, max);
-    for (unsigned int i = 0; i < max; i++)
+    for(unsigned int i = 0; i < max; i++)
     {
         t.col(i) = Vector2(std::cos(0.0001 / max * i), std::sin(0.0001 / max * i));
     }
@@ -232,7 +232,7 @@ MY_TEST(MinAreaRectangleTest, Points2DRectFail)
 
     auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
-    for (unsigned int i = 0; i < t.size(); ++i)
+    for(unsigned int i = 0; i < t.size(); ++i)
     {
         v.col(i) = t[i];
     }

@@ -218,7 +218,7 @@ public:
     {
         // The IEEE standard says that any comparison operation involving
         // a NAN must return false.
-        if (is_nan() || rhs.is_nan())
+        if(is_nan() || rhs.is_nan())
             return false;
 
         return DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_) <= kMaxUlps;
@@ -249,7 +249,7 @@ private:
     // for more details on signed number representations.
     static Bits SignAndMagnitudeToBiased(const Bits& sam)
     {
-        if (kSignBitMask & sam)
+        if(kSignBitMask & sam)
         {
             // sam represents a negative number.
             return ~sam + 1;

@@ -66,7 +66,7 @@ public:
     {
         Vector3::Index i;
         maxExtent(i);
-        if (i < 2)
+        if(i < 2)
         {
             switchZAxis(static_cast<unsigned int>(i));
         }
@@ -127,7 +127,7 @@ public:
     template <typename Derived, bool coordinateSystemIsI = true>
     inline bool overlaps(const MatrixBase<Derived>& p) const
     {
-        if (coordinateSystemIsI)
+        if(coordinateSystemIsI)
         {
             // p is in I frame
             Vector3 t = m_q_KI.inverse() * p;  // A_IK^T * I_p
@@ -192,9 +192,9 @@ public:
         points[6] = m_minPoint + (Array3(0.0, 1.0, 1.0) * ex).matrix();
         points[7] = m_maxPoint /*+ Array3(1,1,1) * extent */;
 
-        if (coordinateSystemIsI)
+        if(coordinateSystemIsI)
         {
-            for (auto& p : points)
+            for(auto& p : points)
             {
                 p = (m_q_KI * p).eval();  //    I_p = A_IK * K_p
             }

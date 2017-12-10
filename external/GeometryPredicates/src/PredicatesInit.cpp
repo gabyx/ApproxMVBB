@@ -42,13 +42,13 @@ PredicatesInit::PredicatesInit()
     {
         lastcheck = check;
         epsilon *= half;
-        if (every_other)
+        if(every_other)
         {
             splitter *= 2.0;
         }
         every_other = !every_other;
         check       = 1.0 + epsilon;
-    } while ((check != 1.0) && (check != lastcheck));
+    } while((check != 1.0) && (check != lastcheck));
     splitter += 1.0;
     /* Error bounds for orientation and incircle tests. */
     resulterrbound = (3.0 + 8.0 * epsilon) * epsilon;

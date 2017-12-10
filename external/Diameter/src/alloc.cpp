@@ -20,18 +20,18 @@ void* _AllocateListOfPoints(const int n, const int dim)
     double* d;
     int i;
 
-    if (n <= 0 || dim <= 0)
+    if(n <= 0 || dim <= 0)
         return (NULL);
 
     b = (void*)malloc(n * sizeof(double*) + n * dim * sizeof(double));
-    if (b == (void*)NULL)
+    if(b == (void*)NULL)
         return ((void*)NULL);
 
     dd = list = (double**)b;
     dd += n;
 
     d = (double*)dd;
-    for (i = 0; i < n; i++, d += dim)
+    for(i = 0; i < n; i++, d += dim)
         list[i] = d;
 
     return (b);
@@ -43,16 +43,16 @@ void* _AllocateListOfSegments(const int n)
     TypeSegment* d;
     int i;
 
-    if (n <= 0)
+    if(n <= 0)
         return (NULL);
 
     b = (void*)malloc(n * sizeof(TypeSegment));
 
-    if (b == (void*)NULL)
+    if(b == (void*)NULL)
         return ((void*)NULL);
 
     d = (TypeSegment*)b;
-    for (i = 0; i < n; i++)
+    for(i = 0; i < n; i++)
     {
         d[i].extremity1     = (double*)NULL;
         d[i].extremity2     = (double*)NULL;
@@ -69,18 +69,18 @@ int _AddSegmentToList(TypeSegment* s, TypeListOfSegments* list)
 {
     TypeSegment* d;
 
-    if (list->nalloc <= 0)
+    if(list->nalloc <= 0)
         list->n = list->nalloc = 0;
 
-    if (list->n >= list->nalloc)
+    if(list->n >= list->nalloc)
     {
         d = (TypeSegment*)_AllocateListOfSegments(list->nalloc + _NALLOC_);
-        if (d == NULL)
+        if(d == NULL)
         {
             return (0);
         }
 
-        if (list->nalloc > 0)
+        if(list->nalloc > 0)
         {
             memcpy(d, list->seg, list->nalloc * sizeof(TypeSegment));
             free(list->seg);

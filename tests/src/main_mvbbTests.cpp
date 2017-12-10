@@ -37,7 +37,7 @@ void mvbbTest(std::string name,
     using namespace PointFunctions;
     using namespace TestFunctions;
 
-    if (dumpPoints)
+    if(dumpPoints)
     {
         dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
@@ -55,7 +55,7 @@ void mvbbTest(std::string name,
     // Make all points inside OOBB!
     Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();  // faster to store the transformation matrix first
     auto size     = v.cols();
-    for (unsigned int i = 0; i < size; ++i)
+    for(unsigned int i = 0; i < size; ++i)
     {
         oobb.unite(A_KI * v.col(i));
     }
@@ -66,12 +66,12 @@ void mvbbTest(std::string name,
     try
     {
         readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
-        if (checkVolume)
+        if(checkVolume)
         {
             ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
         }
     }
-    catch (ApproxMVBB::Exception& e)
+    catch(ApproxMVBB::Exception& e)
     {
         ASSERT_TRUE(false) << "Exception in checking inside test!" << e.what() << std::endl;
     }
@@ -152,7 +152,7 @@ MY_TEST(MVBBTest, Rectangles)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Rectangles);
     // Some patches
-    for (int i = 0; i < 10; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 4);
         t.col(0) = ApproxMVBB::Vector3(0, 0, 0);
@@ -167,7 +167,7 @@ MY_TEST(MVBBTest, Rectangles)
 MY_TEST(MVBBTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, UnitPatches2D);
-    for (int i = 0; i < 10; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);
@@ -199,7 +199,7 @@ MY_TEST(MVBBTest, Bunny)
     MY_TEST_RANDOM_STUFF(MVBBTest, Bunny);
     auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -222,7 +222,7 @@ MY_TEST(MVBBTest, Lucy)
     MY_TEST_RANDOM_STUFF(MVBBTest, Lucy);
     auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -234,11 +234,11 @@ MY_TEST(MVBBTest, Lucy)
 MY_TEST(MVBBTest, PointClouds)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointClouds);
-    for (unsigned int k = 0; k < 10; k++)
+    for(unsigned int k = 0; k < 10; k++)
     {
         auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
         Matrix3Dyn t(3, v.size());
-        for (unsigned int i = 0; i < v.size(); ++i)
+        for(unsigned int i = 0; i < v.size(); ++i)
         {
             t.col(i) = v[i];
         }

@@ -26,11 +26,11 @@ OOBB readOOBBAndCheck(OOBB& oobb, std::string filePath)
     Matrix3Dyn pV(3, pointsV.size());
     Matrix3Dyn p(3, points.size());
 
-    for (unsigned int i = 0; i < pointsV.size(); ++i)
+    for(unsigned int i = 0; i < pointsV.size(); ++i)
     {
         pV.col(i) = pointsV[i];
     }
-    for (unsigned int i = 0; i < points.size(); ++i)
+    for(unsigned int i = 0; i < points.size(); ++i)
     {
         p.col(i) = points[i];
     }

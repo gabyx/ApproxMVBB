@@ -42,7 +42,7 @@ int main(int argc, char** argv)
     // To make all points inside the OOBB :
     ApproxMVBB::Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();  // faster to store the transformation matrix first
     auto size                 = points.cols();
-    for (unsigned int i = 0; i < size; ++i)
+    for(unsigned int i = 0; i < size; ++i)
     {
         oobb.unite(A_KI * points.col(i));
     }

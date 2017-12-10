@@ -42,15 +42,15 @@ ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 template <typename A, typename B>
 ::testing::AssertionResult assertNearArray(const A& a, const B& b, PREC absError = 1e-6)
 {
-    if (a.size() != b.size())
+    if(a.size() != b.size())
     {
         return ::testing::AssertionFailure() << "not same size";
     }
-    if (a.rows() != b.rows())
+    if(a.rows() != b.rows())
     {
         return ::testing::AssertionFailure() << "not same rows";
     }
-    if (((a - b).array().abs() >= absError).any())
+    if(((a - b).array().abs() >= absError).any())
     {
         return ::testing::AssertionFailure() << "not near: absTol:" << absError;
     }
@@ -71,18 +71,18 @@ template <bool matchCols, typename A, typename B, ApproxMVBB_SFINAE_ENABLE_IF(ma
 template <bool matchCols = true, typename A, typename B>
 ::testing::AssertionResult assertNearArrayColsRows(const A& a, const B& b)
 {
-    if (a.size() != b.size())
+    if(a.size() != b.size())
     {
         return ::testing::AssertionFailure() << "not same size";
     }
-    if (a.rows() != b.rows())
+    if(a.rows() != b.rows())
     {
         return ::testing::AssertionFailure() << "not same rows";
     }
 
     // Check all points
     std::vector<bool> indexMatched;
-    if (matchCols)
+    if(matchCols)
     {
         indexMatched.resize(a.cols(), false);
     }
@@ -94,12 +94,12 @@ template <bool matchCols = true, typename A, typename B>
     std::size_t nMatched = 0;
     std::size_t i        = 0;
     std::size_t pointIdx = 0;
-    while (pointIdx < s)
+    while(pointIdx < s)
     {
-        if (i < s)
+        if(i < s)
         {
             // check points[pointIdx] against i-th valid one
-            if (!indexMatched[i] && assertNearArrayColsRows_cr<matchCols>(a, pointIdx, b, i))
+            if(!indexMatched[i] && assertNearArrayColsRows_cr<matchCols>(a, pointIdx, b, i))
             {
                 indexMatched[i] = true;
                 ++nMatched;
@@ -115,7 +115,7 @@ template <bool matchCols = true, typename A, typename B>
         ++pointIdx;
     }
 
-    if (nMatched != s)
+    if(nMatched != s)
     {
         return ::testing::AssertionFailure() << "Matched only " << nMatched << "/" << s;
     }
@@ -130,9 +130,9 @@ Derived filterPoints(MatrixBase<Derived>& v, IndexSet& s)
 
     auto size        = v.cols();
     decltype(size) k = 0;
-    for (auto i : s)
+    for(auto i : s)
     {
-        if (i < size && i >= 0)
+        if(i < size && i >= 0)
         {
             ret.col(k++) = v.col(i);
         }
@@ -150,7 +150,7 @@ bool checkPointsInOOBB(const MatrixBase<Derived>& points, OOBB oobb)
     bool allInside   = true;
     auto size        = points.cols();
     decltype(size) i = 0;
-    while (i < size && allInside)
+    while(i < size && allInside)
     {
         p = A_KI * points.col(i);
         allInside &= (p(0) >= oobb.m_minPoint(0) && p(0) <= oobb.m_maxPoint(0) && p(1) >= oobb.m_minPoint(1) &&

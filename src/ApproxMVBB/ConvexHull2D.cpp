@@ -21,7 +21,7 @@ void ConvexHull2D::compute()
     m_indicesCH.clear();
 
     // Need at least 1 point! m_p.col(0)
-    if (m_p.cols() == 0)
+    if(m_p.cols() == 0)
     {
         return;
     }
@@ -40,18 +40,18 @@ void ConvexHull2D::compute()
     // Save p0 as first point in indices list (temporary)
     indices.emplace_back(position, false);
     // Add all indices of points not almostEqual to position
-    for (unsigned int i = 0; i < m_p.cols(); ++i)
+    for(unsigned int i = 0; i < m_p.cols(); ++i)
     {
-        if ((i != position) && !almostEqualUlp(base, m_p.col(i)))
+        if((i != position) && !almostEqualUlp(base, m_p.col(i)))
         {
             indices.emplace_back(i, false);
         }
     }
 
     // Convex hull consists of only 1 or 2 points!
-    if (indices.size() <= 2)
+    if(indices.size() <= 2)
     {
-        for (auto& pa : indices)
+        for(auto& pa : indices)
         {
             m_indicesCH.emplace_back(pa.first);
         }
@@ -65,9 +65,9 @@ void ConvexHull2D::compute()
 
     std::vector<unsigned int> indicesT(indices.size() - deletedPoints);
     unsigned int k = 0;
-    for (auto& p : indices)
+    for(auto& p : indices)
     {
-        if (!p.second)
+        if(!p.second)
         {
             indicesT[k++] = p.first;
         }
@@ -84,9 +84,9 @@ void ConvexHull2D::compute()
     indicesT.resize(std::distance(indicesT.begin(), d2));
 
     // Convex hull consists of only 1 or 2 points!
-    if (indicesT.size() <= 2)
+    if(indicesT.size() <= 2)
     {
-        for (auto& pa : indicesT)
+        for(auto& pa : indicesT)
         {
             m_indicesCH.emplace_back(pa);
         }
@@ -115,10 +115,10 @@ void ConvexHull2D::compute()
     //    std::cout << "firstIdx point: " <<firstIdx << ","<<
     //    m_p.col(firstIdx).transpose() << std::endl;
 
-    while (i < nPoints)
+    while(i < nPoints)
     {
         currIdx = indicesT[i];
-        if (leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx)))
+        if(leftTurn(m_p.col(lastIdx), m_p.col(firstIdx), m_p.col(currIdx)))
         {
             break;
         }
@@ -136,27 +136,27 @@ void ConvexHull2D::compute()
     //    std::cout << "5,8,0: :" << orient2d(m_p.col(5), m_p.col(8), m_p.col(0))
     //    << std::endl;
 
-    if (i < nPoints)
+    if(i < nPoints)
     {
         m_indicesCH.push_back(currIdx);
         decltype(m_indicesCH.rbegin()) revIter;
         lPtIdx = mPtIdx;
         mPtIdx = currIdx;
 
-        for (++i; i < nPoints; ++i)
+        for(++i; i < nPoints; ++i)
         {
             currIdx = indicesT[i];
 
-            if (leftTurn(m_p.col(mPtIdx), m_p.col(currIdx), m_p.col(lastIdx)))
+            if(leftTurn(m_p.col(mPtIdx), m_p.col(currIdx), m_p.col(lastIdx)))
             {
-                while (!leftTurn(m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)))
+                while(!leftTurn(m_p.col(lPtIdx), m_p.col(mPtIdx), m_p.col(currIdx)))
                 {
                     // std::cout << "right turn: " <<lPtIdx << ","<< mPtIdx << "," <<
                     // currIdx << std::endl;
                     ApproxMVBB_ASSERTMSG(m_indicesCH.size() > 2, "");
                     m_indicesCH.pop_back();
 
-                    if (m_indicesCH.size() <= 1)
+                    if(m_indicesCH.size() <= 1)
                     {                     // Degenerate Case if we come back to the beginning
                         mPtIdx = lPtIdx;  // such that lPtIdx stays the same , mPtIdx becomes
                                           // currIdx and we go to next point!
@@ -184,12 +184,12 @@ void ConvexHull2D::compute()
 bool ConvexHull2D::verifyHull()
 {
     using namespace PointFunctions;
-    if (m_indicesCH.size() > 2)
+    if(m_indicesCH.size() > 2)
     {
         unsigned int i = 2;
-        while (i < m_indicesCH.size())
+        while(i < m_indicesCH.size())
         {
-            if (!(orient2d(m_p.col(m_indicesCH[i - 2]), m_p.col(m_indicesCH[i - 1]), m_p.col(m_indicesCH[i])) >= 0))
+            if(!(orient2d(m_p.col(m_indicesCH[i - 2]), m_p.col(m_indicesCH[i - 1]), m_p.col(m_indicesCH[i])) >= 0))
             {  // if this is not a left turn
                 return false;
             }

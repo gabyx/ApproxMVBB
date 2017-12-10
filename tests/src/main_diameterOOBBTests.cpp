@@ -35,7 +35,7 @@ void diameterTest(std::string name,
     using namespace PointFunctions;
     using namespace TestFunctions;
 
-    if (dump)
+    if(dump)
     {
         dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
         dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
@@ -49,7 +49,7 @@ void diameterTest(std::string name,
     std::cout << "End diameterOOBB test " + name << std::endl;
 
     oobb.expand(1e-10);
-    if (!checkPointsInOOBB(v, oobb))
+    if(!checkPointsInOOBB(v, oobb))
     {
         std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
     }
@@ -65,12 +65,12 @@ void diameterTest(std::string name,
     try
     {
         validOOBB = readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
-        if (checkVolume)
+        if(checkVolume)
         {
             ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
         }
     }
-    catch (ApproxMVBB::Exception& e)
+    catch(ApproxMVBB::Exception& e)
     {
         ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
     }
@@ -94,7 +94,7 @@ void diameterTest(std::string name,
         valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
         readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), valid);
 
-        if (sampled.cols() > 100)
+        if(sampled.cols() > 100)
         {
             EXPECT_TRUE(assertNearArray(sampled, valid));
         }
@@ -106,7 +106,7 @@ void diameterTest(std::string name,
                                                          << sampled.transpose();
         }
     }
-    catch (ApproxMVBB::Exception& e)
+    catch(ApproxMVBB::Exception& e)
     {
         ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
     }
@@ -168,7 +168,7 @@ MY_TEST(DiameterOOBBTest, PointsSimulation)
     auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
 
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -182,7 +182,7 @@ MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulationFailMVBB);
     auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -196,7 +196,7 @@ MY_TEST(DiameterOOBBTest, Bunny)
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Bunny);
     auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -219,7 +219,7 @@ MY_TEST(DiameterOOBBTest, Lucy)
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Lucy);
     auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
-    for (unsigned int i = 0; i < v.size(); ++i)
+    for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
@@ -240,11 +240,11 @@ MY_TEST(DiameterOOBBTest, PointClouds)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointClouds);
 
-    for (unsigned int k = 0; k < 51; k++)
+    for(unsigned int k = 0; k < 51; k++)
     {
         auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
         Matrix3Dyn t(3, v.size());
-        for (unsigned int i = 0; i < v.size(); ++i)
+        for(unsigned int i = 0; i < v.size(); ++i)
         {
             t.col(i) = v[i];
         }
@@ -257,7 +257,7 @@ MY_TEST(DiameterOOBBTest, PointClouds)
 MY_TEST(DiameterOOBBTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, UnitPatches2D);
-    for (int i = 0; i < 10; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);

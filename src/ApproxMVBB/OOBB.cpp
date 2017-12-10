@@ -27,11 +27,11 @@ OOBB::OOBB(const Vector3& minPoint, const Vector3& maxPoint, const Matrix33& A_I
 /** Switch the z-Axis to the axis with index `i`. */
 void OOBB::switchZAxis(unsigned int i)
 {
-    if (i > 1)
+    if(i > 1)
     {
         return;
     }
-    if (i == 0)
+    if(i == 0)
     {
         // Make new x-Axis the z-Axis
         // R_NK = Rotate around 90∞ around Y, and 90∞ around X (always in K frame) )
@@ -69,11 +69,11 @@ void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps)
     Array3::Index idx;
     PREC ext = std::abs(e.maxCoeff(&idx)) * p;
 
-    if (ext < eps)
+    if(ext < eps)
     {  // extent of max axis almost zero, set all axis to
         // defaultExtent --> cube
         ext = defaultExtent;
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
             m_minPoint(i) = c(i) - 0.5 * ext;
             m_maxPoint(i) = c(i) + 0.5 * ext;
@@ -81,9 +81,9 @@ void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps)
     }
     else
     {
-        for (int i = 0; i < 3; ++i)
+        for(int i = 0; i < 3; ++i)
         {
-            if (i != idx && std::abs(e(i)) < ext)
+            if(i != idx && std::abs(e(i)) < ext)
             {
                 m_minPoint(i) = c(i) - 0.5 * ext;
                 m_maxPoint(i) = c(i) + 0.5 * ext;
@@ -99,9 +99,9 @@ void OOBB::expandToMinExtentAbsolute(PREC minExtent)
     Vector3 c = center();
 
     PREC l = 0.5 * minExtent;
-    for (int i = 0; i < 3; ++i)
+    for(int i = 0; i < 3; ++i)
     {
-        if (std::abs(e(i)) < minExtent)
+        if(std::abs(e(i)) < minExtent)
         {
             m_minPoint(i) = c(i) - l;
             m_maxPoint(i) = c(i) + l;

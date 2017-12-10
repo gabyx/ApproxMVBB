@@ -220,7 +220,7 @@ public:
         typename ArrayStat<Dim>::Index idx;
         PREC ext = std::abs(e.maxCoeff(&idx)) * p;
 
-        if (ext < eps)
+        if(ext < eps)
         {  // extent of max axis almost zero, set all axis to
             // defaultExtent --> cube
             ext        = defaultExtent;
@@ -229,9 +229,9 @@ public:
         }
         else
         {
-            for (int i = 0; i < Dim; ++i)
+            for(int i = 0; i < Dim; ++i)
             {
-                if (i != idx && std::abs(e(i)) < ext)
+                if(i != idx && std::abs(e(i)) < ext)
                 {
                     m_minPoint(i) = c(i) - 0.5 * ext;
                     m_maxPoint(i) = c(i) + 0.5 * ext;
@@ -247,9 +247,9 @@ public:
         Vector3 c = center();
 
         PREC l = 0.5 * minExtent;
-        for (int i = 0; i < Dim; ++i)
+        for(int i = 0; i < Dim; ++i)
         {
-            if (std::abs(e(i)) < minExtent)
+            if(std::abs(e(i)) < minExtent)
             {
                 m_minPoint(i) = c(i) - l;
                 m_maxPoint(i) = c(i) + l;
@@ -264,10 +264,10 @@ public:
         Array3 e  = extent();
         Vector3 c = center();
 
-        for (unsigned int i = 0; i < Dim; ++i)
+        for(unsigned int i = 0; i < Dim; ++i)
         {
             PREC l = minExtent(i);
-            if (std::abs(e(i)) < l)
+            if(std::abs(e(i)) < l)
             {
                 m_minPoint(i) = c(i) - 0.5 * l;
                 m_maxPoint(i) = c(i) + 0.5 * l;
@@ -284,7 +284,7 @@ public:
     void expandToMaxExtent(const unsigned int& axis)
     {
         ApproxMVBB_ASSERTMSG(axis < Dim, "axis >= Dim !");
-        if (!MoveMax)
+        if(!MoveMax)
         {
             m_minPoint(axis) = std::numeric_limits<PREC>::lowest();
         }

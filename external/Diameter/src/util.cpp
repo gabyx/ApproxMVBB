@@ -66,10 +66,10 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
     double R  = sqrt(squareDiameter);
     double R2 = squareDiameter;
 
-    if (first > *last)
+    if(first > *last)
         return (first - 1);
 
-    if (squareDiameter <= theSeg->squareDiameter)
+    if(squareDiameter <= theSeg->squareDiameter)
     {
         maxThreshold = medThreshold = 0.0;
         minThreshold                = -0.23205080756887729352 * theSeg->squareDiameter;
@@ -87,18 +87,18 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
        1 : just inside the smallest sphere
        2 : complete reduction
     */
-    switch (_reduction_mode_)
+    switch(_reduction_mode_)
     {
         case 0:
 
             /* NO REDUCTION CASE
              */
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
@@ -107,12 +107,12 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
@@ -121,10 +121,10 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (mamb > maxThreshold)
+                if(mamb > maxThreshold)
                 {
                     index++;
                     _SwapPoints(theList, index, i);
@@ -143,17 +143,17 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
             /* REDUCTION INSIDE THE SMALLEST SPHERE
              */
 
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                     }
-                    else if (mamb <= minThreshold)
+                    else if(mamb <= minThreshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
@@ -164,17 +164,17 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                     }
-                    else if (mamb <= minThreshold)
+                    else if(mamb <= minThreshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
@@ -185,15 +185,15 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (mamb > maxThreshold)
+                if(mamb > maxThreshold)
                 {
                     index++;
                     _SwapPoints(theList, index, i);
                 }
-                else if (mamb <= minThreshold)
+                else if(mamb <= minThreshold)
                 {
                     _SwapPoints(theList, i, l);
                     i--;
@@ -220,22 +220,22 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                l'intervalle [min,med]) pour l'elimination ne le
                verifient pas.
              */
-            if (dim == 2)
+            if(dim == 2)
             {
-                if (squareDiameter <= theSeg->squareDiameter)
+                if(squareDiameter <= theSeg->squareDiameter)
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                         }
-                        else if (mamb > minThreshold)
+                        else if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance2D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
@@ -253,24 +253,23 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 }
                 else
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                         }
-                        else if (mamb > medThreshold)
+                        else if(mamb > medThreshold)
                         {
                             continue;
                         }
-                        else if (mamb > minThreshold)
+                        else if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance2D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) -
-                                    (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
-                                0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
+                               0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
@@ -290,22 +289,22 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                if (squareDiameter <= theSeg->squareDiameter)
+                if(squareDiameter <= theSeg->squareDiameter)
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                         }
-                        else if (mamb > minThreshold)
+                        else if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance3D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
@@ -323,24 +322,23 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 }
                 else
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                         }
-                        else if (mamb > medThreshold)
+                        else if(mamb > medThreshold)
                         {
                             continue;
                         }
-                        else if (mamb > minThreshold)
+                        else if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance3D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) -
-                                    (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
-                                0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
+                               0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
@@ -360,20 +358,20 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (squareDiameter <= theSeg->squareDiameter)
+            if(squareDiameter <= theSeg->squareDiameter)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                     }
-                    else if (mamb > minThreshold)
+                    else if(mamb > minThreshold)
                     {
                         am2 = _SquareDistance(theList[i], theSeg->extremity1, dim);
-                        if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                        if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                         {
                             _SwapPoints(theList, i, l);
                             i--;
@@ -391,22 +389,22 @@ int _LastPointOutsideSphereWithDiameter(TypeSegment* theSeg,
             }
             else
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                     }
-                    else if (mamb > medThreshold)
+                    else if(mamb > medThreshold)
                     {
                         continue;
                     }
-                    else if (mamb > minThreshold)
+                    else if(mamb > minThreshold)
                     {
                         am2 = _SquareDistance(theList[i], theSeg->extremity1, dim);
-                        if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) < 0)
+                        if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) < 0)
                         {
                             _SwapPoints(theList, i, l);
                             i--;
@@ -465,7 +463,7 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
     */
     double b = *bound = (-theSeg->squareDiameter * 0.25);
 
-    if (squareDiameter <= theSeg->squareDiameter)
+    if(squareDiameter <= theSeg->squareDiameter)
     {
         maxThreshold = medThreshold = 0.0;
         minThreshold                = -0.23205080756887729352 * theSeg->squareDiameter;
@@ -486,58 +484,58 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
        1 : just inside the smallest sphere
        2 : complete reduction
     */
-    switch (_reduction_mode_)
+    switch(_reduction_mode_)
     {
         case 0:
 
             /* NO REDUCTION CASE
              */
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (b < mamb)
+                    if(b < mamb)
                         b = mamb;
                 }
                 *bound = b;
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (b < mamb)
+                    if(b < mamb)
                         b = mamb;
                 }
                 *bound = b;
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (mamb > maxThreshold)
+                if(mamb > maxThreshold)
                 {
                     index++;
                     _SwapPoints(theList, index, i);
                     continue;
                 }
-                if (b < mamb)
+                if(b < mamb)
                     b = mamb;
             }
             *bound = b;
@@ -554,25 +552,25 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
             /* REDUCTION INSIDE THE SMALLEST SPHERE
              */
 
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (mamb <= minThreshold)
+                    if(mamb <= minThreshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
                         l--;
                         continue;
                     }
-                    if (b < mamb)
+                    if(b < mamb)
                         b = mamb;
                 }
                 *last  = l;
@@ -580,25 +578,25 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (mamb <= minThreshold)
+                    if(mamb <= minThreshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
                         l--;
                         continue;
                     }
-                    if (b < mamb)
+                    if(b < mamb)
                         b = mamb;
                 }
                 *last  = l;
@@ -606,23 +604,23 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (mamb > maxThreshold)
+                if(mamb > maxThreshold)
                 {
                     index++;
                     _SwapPoints(theList, index, i);
                     continue;
                 }
-                if (mamb <= minThreshold)
+                if(mamb <= minThreshold)
                 {
                     _SwapPoints(theList, i, l);
                     i--;
                     l--;
                     continue;
                 }
-                if (b < mamb)
+                if(b < mamb)
                     b = mamb;
             }
             *last  = l;
@@ -646,30 +644,30 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                l'intervalle [min,med]) pour l'elimination ne le
                verifient pas.
              */
-            if (dim == 2)
+            if(dim == 2)
             {
-                if (squareDiameter <= theSeg->squareDiameter)
+                if(squareDiameter <= theSeg->squareDiameter)
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                             continue;
                         }
-                        if (mamb > minThreshold)
+                        if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance2D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
                                 l--;
                                 continue;
                             }
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
@@ -681,34 +679,33 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 }
                 else
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                             continue;
                         }
-                        if (mamb > medThreshold)
+                        if(mamb > medThreshold)
                         {
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
-                        if (mamb > minThreshold)
+                        if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance2D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) -
-                                    (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
-                                0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
+                               0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
                                 l--;
                                 continue;
                             }
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
@@ -723,30 +720,30 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                if (squareDiameter <= theSeg->squareDiameter)
+                if(squareDiameter <= theSeg->squareDiameter)
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                             continue;
                         }
-                        if (mamb > minThreshold)
+                        if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance3D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
                                 l--;
                                 continue;
                             }
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
@@ -758,34 +755,33 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 }
                 else
                 {
-                    for (i = first; i <= l; i++)
+                    for(i = first; i <= l; i++)
                     {
                         mamb = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                        if (mamb > maxThreshold)
+                        if(mamb > maxThreshold)
                         {
                             index++;
                             _SwapPoints(theList, index, i);
                             continue;
                         }
-                        if (mamb > medThreshold)
+                        if(mamb > medThreshold)
                         {
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
-                        if (mamb > minThreshold)
+                        if(mamb > minThreshold)
                         {
                             am2 = _SquareDistance3D(theList[i], theSeg->extremity1);
-                            if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) -
-                                    (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
-                                0)
+                            if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) <
+                               0)
                             {
                                 _SwapPoints(theList, i, l);
                                 i--;
                                 l--;
                                 continue;
                             }
-                            if (b < mamb)
+                            if(b < mamb)
                                 b = mamb;
                             continue;
                         }
@@ -800,28 +796,28 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
                 return (index);
             }
 
-            if (squareDiameter <= theSeg->squareDiameter)
+            if(squareDiameter <= theSeg->squareDiameter)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (mamb > minThreshold)
+                    if(mamb > minThreshold)
                     {
                         am2 = _SquareDistance(theList[i], theSeg->extremity1, dim);
-                        if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
+                        if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - mamb * mamb < 0)
                         {
                             _SwapPoints(theList, i, l);
                             i--;
                             l--;
                             continue;
                         }
-                        if (b < mamb)
+                        if(b < mamb)
                             b = mamb;
                         continue;
                     }
@@ -833,32 +829,32 @@ int _LastPointOutsideSphereAndBoundWithDiameter(TypeSegment* theSeg,
             }
             else
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     mamb = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                    if (mamb > maxThreshold)
+                    if(mamb > maxThreshold)
                     {
                         index++;
                         _SwapPoints(theList, index, i);
                         continue;
                     }
-                    if (mamb > medThreshold)
+                    if(mamb > medThreshold)
                     {
-                        if (b < mamb)
+                        if(b < mamb)
                             b = mamb;
                         continue;
                     }
-                    if (mamb > minThreshold)
+                    if(mamb > minThreshold)
                     {
                         am2 = _SquareDistance(theList[i], theSeg->extremity1, dim);
-                        if (3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) < 0)
+                        if(3.0 * (am2 * ab2 - (am2 - mamb) * (am2 - mamb)) - (R2 - ab2 - mamb) * (R2 - ab2 - mamb) < 0)
                         {
                             _SwapPoints(theList, i, l);
                             i--;
                             l--;
                             continue;
                         }
-                        if (b < mamb)
+                        if(b < mamb)
                             b = mamb;
                         continue;
                     }
@@ -976,22 +972,22 @@ int _FarthestPointFromSphere(
      */
     double threshold = -0.23205080756887729352 * theSeg->squareDiameter;
 
-    if (l < first)
+    if(l < first)
         return (index);
 
-    switch (_reduction_mode_)
+    switch(_reduction_mode_)
     {
         case 0:
 
             /* NO REDUCTION CASE
              */
 
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     diff = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (maxdiff < diff)
+                    if(maxdiff < diff)
                     {
                         index   = i;
                         maxdiff = diff;
@@ -1000,12 +996,12 @@ int _FarthestPointFromSphere(
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     diff = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (maxdiff < diff)
+                    if(maxdiff < diff)
                     {
                         index   = i;
                         maxdiff = diff;
@@ -1014,10 +1010,10 @@ int _FarthestPointFromSphere(
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 diff = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (maxdiff < diff)
+                if(maxdiff < diff)
                 {
                     index   = i;
                     maxdiff = diff;
@@ -1040,17 +1036,17 @@ int _FarthestPointFromSphere(
                MA.MB = (MC+CA).(MC+CB) = MC^2 + CA.CB + MC ( CB+CA )
                = MC^2 - R^2   + 0
             */
-            if (dim == 2)
+            if(dim == 2)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     diff = _ScalarProduct2D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (diff > maxdiff)
+                    if(diff > maxdiff)
                     {
                         index   = i;
                         maxdiff = diff;
                     }
-                    else if (diff <= threshold)
+                    else if(diff <= threshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
@@ -1062,17 +1058,17 @@ int _FarthestPointFromSphere(
                 return (index);
             }
 
-            if (dim == 3)
+            if(dim == 3)
             {
-                for (i = first; i <= l; i++)
+                for(i = first; i <= l; i++)
                 {
                     diff = _ScalarProduct3D(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2);
-                    if (maxdiff < diff)
+                    if(maxdiff < diff)
                     {
                         index   = i;
                         maxdiff = diff;
                     }
-                    else if (diff <= threshold)
+                    else if(diff <= threshold)
                     {
                         _SwapPoints(theList, i, l);
                         i--;
@@ -1084,15 +1080,15 @@ int _FarthestPointFromSphere(
                 return (index);
             }
 
-            for (i = first; i <= l; i++)
+            for(i = first; i <= l; i++)
             {
                 diff = _ScalarProduct(theList[i], theSeg->extremity1, theList[i], theSeg->extremity2, dim);
-                if (maxdiff < diff)
+                if(maxdiff < diff)
                 {
                     index   = i;
                     maxdiff = diff;
                 }
-                else if (diff <= threshold)
+                else if(diff <= threshold)
                 {
                     _SwapPoints(theList, i, l);
                     i--;
@@ -1138,20 +1134,20 @@ double _MaximalSegmentInTwoLists(TypeSegment* theSeg,
     theSeg->extremity2     = (double*)NULL;
     theSeg->squareDiameter = std::numeric_limits<double>::lowest();
 
-    if (*first1 < 0 || *last1 < 0)
+    if(*first1 < 0 || *last1 < 0)
         return (-1.0);
-    if (*first1 > *last1)
+    if(*first1 > *last1)
         return (0.0);
-    if (*first2 < 0 || *last2 < 0)
+    if(*first2 < 0 || *last2 < 0)
         return (-1.0);
-    if (*first2 > *last2)
+    if(*first2 > *last2)
         return (0.0);
-    if (*first2 > *last2)
+    if(*first2 > *last2)
     {
         l2 = *first2;
         f2 = *last2;
     }
-    if (index1 < f1 || index1 > l1)
+    if(index1 < f1 || index1 > l1)
         return (-1.0);
 
     do
@@ -1175,13 +1171,13 @@ double _MaximalSegmentInTwoLists(TypeSegment* theSeg,
 
         /* better estimate
          */
-        if (d > theSeg->squareDiameter)
+        if(d > theSeg->squareDiameter)
         {
             theSeg->extremity1     = ref;
             theSeg->extremity2     = theList2[i2];
             theSeg->squareDiameter = d;
 
-            if (f1 <= l1)
+            if(f1 <= l1)
             {
                 dprevious = theSeg->squareDiameter;
 
@@ -1202,7 +1198,7 @@ double _MaximalSegmentInTwoLists(TypeSegment* theSeg,
 
                 /* better estimate
                  */
-                if (d > theSeg->squareDiameter)
+                if(d > theSeg->squareDiameter)
                 {
                     theSeg->extremity1     = theList1[i1];
                     theSeg->extremity2     = ref;
@@ -1211,7 +1207,7 @@ double _MaximalSegmentInTwoLists(TypeSegment* theSeg,
             }
         }
 
-    } while (theSeg->squareDiameter > dprevious && f1 <= l1 && f2 <= l2);
+    } while(theSeg->squareDiameter > dprevious && f1 <= l1 && f2 <= l2);
 
     *first1 = f1;
     *last1  = l1;
@@ -1235,13 +1231,13 @@ double _MaximalSegmentInOneList(
     theSeg->extremity2     = (double*)NULL;
     theSeg->squareDiameter = std::numeric_limits<double>::lowest();
 
-    if (*first < 0 || *last < 0)
+    if(*first < 0 || *last < 0)
         return (-1.0);
-    if (*first > *last)
+    if(*first > *last)
         return (0.0);
-    if (index < f || index > l)
+    if(index < f || index > l)
         return (-1.0);
-    if (f == l)
+    if(f == l)
     {
         theSeg->extremity1 = theList[i];
         theSeg->extremity2 = theList[i];
@@ -1263,14 +1259,14 @@ double _MaximalSegmentInOneList(
         /* find the furthest point from 'ref'
          */
         d = _MaximalDistanceFromPoint(&i, ref, theList, f, l, dim);
-        if (d > theSeg->squareDiameter)
+        if(d > theSeg->squareDiameter)
         {
             theSeg->extremity1     = ref;
             theSeg->extremity2     = theList[i];
             theSeg->squareDiameter = d;
         }
 
-    } while (theSeg->squareDiameter > dprevious && f <= l);
+    } while(theSeg->squareDiameter > dprevious && f <= l);
 
     *first = f;
     *last  = l;
@@ -1286,20 +1282,20 @@ double _MaximalDistanceFromPoint(
     double dmax, d;
 
     *index = -1;
-    if (first < 0 || last < 0)
+    if(first < 0 || last < 0)
         return (-1.0);
-    if (first > last)
+    if(first > last)
         return (0.0);
 
-    if (dim == 2)
+    if(dim == 2)
     {
         dmax   = _SquareDistance2D(theList[f], ref);
         *index = f;
 
-        for (i = f + 1; i <= l; i++)
+        for(i = f + 1; i <= l; i++)
         {
             d = _SquareDistance2D(theList[i], ref);
-            if (d > dmax)
+            if(d > dmax)
             {
                 dmax   = d;
                 *index = i;
@@ -1308,15 +1304,15 @@ double _MaximalDistanceFromPoint(
         return (dmax);
     }
 
-    if (dim == 3)
+    if(dim == 3)
     {
         dmax   = _SquareDistance3D(theList[f], ref);
         *index = f;
 
-        for (i = f + 1; i <= l; i++)
+        for(i = f + 1; i <= l; i++)
         {
             d = _SquareDistance3D(theList[i], ref);
-            if (d > dmax)
+            if(d > dmax)
             {
                 dmax   = d;
                 *index = i;
@@ -1328,10 +1324,10 @@ double _MaximalDistanceFromPoint(
     dmax   = _SquareDistance(theList[f], ref, dim);
     *index = f;
 
-    for (i = f + 1; i <= l; i++)
+    for(i = f + 1; i <= l; i++)
     {
         d = _SquareDistance(theList[i], ref, dim);
-        if (d > dmax)
+        if(d > dmax)
         {
             dmax   = d;
             *index = i;
@@ -1360,12 +1356,12 @@ void _InitCounter(TypeCounter* c)
 void _AddToCounter(TypeCounter* c, const int i)
 {
     c->c2 += i;
-    while (c->c2 >= _base_)
+    while(c->c2 >= _base_)
     {
         c->c2 -= _base_;
         c->c1++;
     }
-    while (c->c2 < 0)
+    while(c->c2 < 0)
     {
         c->c2 += _base_;
         c->c1--;
@@ -1400,7 +1396,7 @@ double _SquareDistance(const double* a, const double* b, const int dim)
     int i;
     double d = 0.0;
     double ba;
-    for (i = 0; i < dim; i++)
+    for(i = 0; i < dim; i++)
     {
         ba = b[i] - a[i];
         d += ba * ba;
@@ -1438,7 +1434,7 @@ double _ScalarProduct(const double* a, const double* b, const double* c, const d
     int i;
     double scalar = 0.0;
     double ab, cd;
-    for (i = 0; i < dim; i++)
+    for(i = 0; i < dim; i++)
     {
         ab = b[i] - a[i];
         cd = d[i] - c[i];
@@ -1474,11 +1470,11 @@ int _FindPointInList(const double** theList, const int first, const int last, do
 {
     int i, j = -1;
     double e = 1e-5;
-    for (i = first; i <= last; i++)
+    for(i = first; i <= last; i++)
     {
-        if (theList[i][0] - e < x0 && theList[i][0] + e > x0 && theList[i][1] - e < x1 && theList[i][1] + e > x1)
+        if(theList[i][0] - e < x0 && theList[i][0] + e > x0 && theList[i][1] - e < x1 && theList[i][1] + e > x1)
         {
-            if (j == -1)
+            if(j == -1)
             {
                 j = i;
             }
@@ -1503,13 +1499,13 @@ double _QuadraticDiameterInOneList(
 
     d = 0.0;
 
-    if (dim == 2)
+    if(dim == 2)
     {
-        for (i = first; i <= last - 1; i++)
-            for (j = i + 1; j <= last; j++)
+        for(i = first; i <= last - 1; i++)
+            for(j = i + 1; j <= last; j++)
             {
                 d = _SquareDistance2D(theList[i], theList[j]);
-                if (d > theDiam->squareDiameter)
+                if(d > theDiam->squareDiameter)
                 {
                     theDiam->squareDiameter = d;
                     theDiam->extremity1     = theList[i];
@@ -1519,13 +1515,13 @@ double _QuadraticDiameterInOneList(
         return (theDiam->squareDiameter);
     }
 
-    if (dim == 3)
+    if(dim == 3)
     {
-        for (i = first; i <= last - 1; i++)
-            for (j = i + 1; j <= last; j++)
+        for(i = first; i <= last - 1; i++)
+            for(j = i + 1; j <= last; j++)
             {
                 d = _SquareDistance3D(theList[i], theList[j]);
-                if (d > theDiam->squareDiameter)
+                if(d > theDiam->squareDiameter)
                 {
                     theDiam->squareDiameter = d;
                     theDiam->extremity1     = theList[i];
@@ -1535,11 +1531,11 @@ double _QuadraticDiameterInOneList(
         return (theDiam->squareDiameter);
     }
 
-    for (i = first; i <= last - 1; i++)
-        for (j = i + 1; j <= last; j++)
+    for(i = first; i <= last - 1; i++)
+        for(j = i + 1; j <= last; j++)
         {
             d = _SquareDistance(theList[i], theList[j], dim);
-            if (d > theDiam->squareDiameter)
+            if(d > theDiam->squareDiameter)
             {
                 theDiam->squareDiameter = d;
                 theDiam->extremity1     = theList[i];
@@ -1570,7 +1566,7 @@ double _QuadraticDiameterInTwoLists(TypeSegment* theDiam,
     theDiam->squareDiameter = std::numeric_limits<double>::lowest();
     */
 
-    if (index1 != NULL && index2 != NULL)
+    if(index1 != NULL && index2 != NULL)
     {
         *index1 = first1 - 1;
         *index2 = first2 - 1;
@@ -1578,18 +1574,18 @@ double _QuadraticDiameterInTwoLists(TypeSegment* theDiam,
 
     d = 0.0;
 
-    if (dim == 2)
+    if(dim == 2)
     {
-        for (i = first1; i <= last1; i++)
-            for (j = first2; j <= last2; j++)
+        for(i = first1; i <= last1; i++)
+            for(j = first2; j <= last2; j++)
             {
                 d = _SquareDistance2D(theList1[i], theList2[j]);
-                if (d > theDiam->squareDiameter)
+                if(d > theDiam->squareDiameter)
                 {
                     theDiam->squareDiameter = d;
                     theDiam->extremity1     = theList1[i];
                     theDiam->extremity2     = theList2[j];
-                    if (index1 != NULL && index2 != NULL)
+                    if(index1 != NULL && index2 != NULL)
                     {
                         *index1 = i;
                         *index2 = j;
@@ -1599,18 +1595,18 @@ double _QuadraticDiameterInTwoLists(TypeSegment* theDiam,
         return (theDiam->squareDiameter);
     }
 
-    if (dim == 3)
+    if(dim == 3)
     {
-        for (i = first1; i <= last1; i++)
-            for (j = first2; j <= last2; j++)
+        for(i = first1; i <= last1; i++)
+            for(j = first2; j <= last2; j++)
             {
                 d = _SquareDistance3D(theList1[i], theList2[j]);
-                if (d > theDiam->squareDiameter)
+                if(d > theDiam->squareDiameter)
                 {
                     theDiam->squareDiameter = d;
                     theDiam->extremity1     = theList1[i];
                     theDiam->extremity2     = theList2[j];
-                    if (index1 != NULL && index2 != NULL)
+                    if(index1 != NULL && index2 != NULL)
                     {
                         *index1 = i;
                         *index2 = j;
@@ -1620,16 +1616,16 @@ double _QuadraticDiameterInTwoLists(TypeSegment* theDiam,
         return (theDiam->squareDiameter);
     }
 
-    for (i = first1; i <= last1; i++)
-        for (j = first2; j <= last2; j++)
+    for(i = first1; i <= last1; i++)
+        for(j = first2; j <= last2; j++)
         {
             d = _SquareDistance(theList1[i], theList2[j], dim);
-            if (d > theDiam->squareDiameter)
+            if(d > theDiam->squareDiameter)
             {
                 theDiam->squareDiameter = d;
                 theDiam->extremity1     = theList1[i];
                 theDiam->extremity2     = theList2[j];
-                if (index1 != NULL && index2 != NULL)
+                if(index1 != NULL && index2 != NULL)
                 {
                     *index1 = i;
                     *index2 = j;

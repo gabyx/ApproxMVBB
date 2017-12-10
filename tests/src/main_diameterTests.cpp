@@ -61,7 +61,7 @@ void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
 
         EXPECT_TRUE(assertNearArray(v, inputPointsV)) << "input points not the same as valid ones";
     }
-    catch (ApproxMVBB::Exception& e)
+    catch(ApproxMVBB::Exception& e)
     {
         ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
     }
@@ -263,7 +263,7 @@ MY_TEST(DiameterTest, Plane)
 MY_TEST(DiameterTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, UnitPatches2D);
-    for (int i = 0; i < 10; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);

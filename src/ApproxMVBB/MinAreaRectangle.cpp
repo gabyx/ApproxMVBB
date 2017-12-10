@@ -20,7 +20,7 @@ void MinAreaRectangle::compute()
     m_minBox.reset();
 
     // If no points return early!
-    if (m_p.cols() == 0)
+    if(m_p.cols() == 0)
     {
         return;
     }
@@ -47,18 +47,18 @@ void MinAreaRectangle::computeRectangle()
 
     // The below code works for points >= 2
     // Anyway catch the cases n=1 and 2 and return early!
-    if (nPoints == 0)
+    if(nPoints == 0)
     {
         return;
     }
-    else if (nPoints == 1)
+    else if(nPoints == 1)
     {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
         m_minBox.m_u.setZero();
         m_minBox.m_v.setZero();
         return;
     }
-    else if (nPoints == 2)
+    else if(nPoints == 2)
     {
         m_minBox.m_p = m_p.col(m_hullIdx[0]);
         m_minBox.m_u = m_p.col(m_hullIdx[1]) - m_p.col(m_hullIdx[0]);
@@ -93,7 +93,7 @@ void MinAreaRectangle::computeRectangle()
     // Calcualte all edge angles
 
     m_angles.resize(nPoints);
-    for (unsigned int i = 0; i < nPoints; ++i)
+    for(unsigned int i = 0; i < nPoints; ++i)
     {
         m_angles[i] = PointFunctions::getAngle(m_p.col(m_hullIdx[i]), m_p.col(m_hullIdx[(i + 1) % nPoints]));
         // std::cout << "angle: " << m_angles[i] << std::endl;
@@ -112,13 +112,13 @@ void MinAreaRectangle::computeRectangle()
     getBox(calipers, m_minBox);
 
     // Rotate calipers over all edges and take minimum box
-    for (unsigned int i = 1; i < nPoints; ++i)
+    for(unsigned int i = 1; i < nPoints; ++i)
     {
         updateCalipers(m_angles[i], calipers);
         // Get Box from Calipers
         getBox(calipers, box);
 
-        if (box.m_area < m_minBox.m_area)
+        if(box.m_area < m_minBox.m_area)
         {
             m_minBox = box;
         }
@@ -140,7 +140,7 @@ void MinAreaRectangle::findVertex(Caliper& c)
     unsigned int nPoints = m_hullIdx.size();
     bool found           = false;
     unsigned int i       = 0;
-    while (!found && i < nPoints)
+    while(!found && i < nPoints)
     {
         currIdx = (currIdx + 1) % nPoints;
         // std::cout << "c: " << currIdx << std::endl;
@@ -149,7 +149,7 @@ void MinAreaRectangle::findVertex(Caliper& c)
         //                                         curr       next
         // if we are not at the boundary [ ..., 45 degree, 50 degree , ....]
         // and in
-        if (nextAngle > currAngle)
+        if(nextAngle > currAngle)
         {
             // std::cout << " greater" <<std::endl;
             found = (currAngle < matchAngle && matchAngle <= nextAngle);
@@ -168,7 +168,7 @@ void MinAreaRectangle::findVertex(Caliper& c)
         ++i;
     }
 
-    if (found)
+    if(found)
     {
         c.m_idx   = currIdx;
         c.m_ptIdx = m_hullIdx[currIdx];
@@ -177,7 +177,7 @@ void MinAreaRectangle::findVertex(Caliper& c)
     else
     {
         std::stringstream ss;
-        for (auto& a : m_angles)
+        for(auto& a : m_angles)
         {
             ss << a << ",";
         }

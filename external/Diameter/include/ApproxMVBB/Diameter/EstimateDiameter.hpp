@@ -72,7 +72,7 @@ private:
     int _reduction_mode_in_iterative_ = 1;
     inline void _SetReductionModeInIterative(int m)
     {
-        switch (m)
+        switch(m)
         {
             case 0:
             case 1:
@@ -92,7 +92,7 @@ private:
     int _reduction_mode_of_diameter_ = 1;
     inline void _SetReductionModeOfDiameter(int m)
     {
-        switch (m)
+        switch(m)
         {
             case 0:
             case 1:
@@ -113,7 +113,7 @@ private:
     int _reduction_mode_of_dbleNorm_ = 1;
     inline void _SetReductionModeOfDbleNorm(int m)
     {
-        switch (m)
+        switch(m)
         {
             case 0:
             case 1:
@@ -180,7 +180,7 @@ private:
     /** TODO: ugly cast, I dont want to change the estimater code */
     int getRandomInt(unsigned int min, unsigned int max)
     {
-        if (min <= max)
+        if(min <= max)
         {
             return static_cast<int>(RandomGenerators::DefaultUniformUIntDistribution<unsigned int>{min, max}(m_gen));
         }

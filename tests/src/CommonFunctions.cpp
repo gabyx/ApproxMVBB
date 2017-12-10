@@ -18,7 +18,7 @@ namespace TestFunctions
 std::size_t hashString(std::string s)
 {
     std::size_t h = 3141459;
-    for (char& c : s)
+    for(char& c : s)
     {
         h = h * 101 + c;
     }
@@ -77,7 +77,7 @@ void dumpOOBB(std::string filePath, const OOBB& oobb)
     std::ofstream l;
     l << std::setprecision(12);
     l.open(filePath.c_str());
-    if (!l.good())
+    if(!l.good())
     {
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
     }
@@ -88,7 +88,7 @@ void dumpOOBB(std::string filePath, const OOBB& oobb)
 
     // Export all corner points in I system
     auto points = oobb.getCornerPoints();
-    for (auto& p : points)
+    for(auto& p : points)
     {
         l << std::endl << p.transpose().format(MyMatrixIOFormat::SpaceSep);
     }
@@ -98,7 +98,7 @@ void dumpOOBB(std::string filePath, const OOBB& oobb)
 void readOOBB(std::string filePath, Vector3& minP, Vector3& maxP, Matrix33& R_KI, Vector3List& pointList)
 {
     auto v = getPointsFromFile3D(filePath);
-    if (v.size() != 5 + 8)
+    if(v.size() != 5 + 8)
     {
         ApproxMVBB_ERRORMSG("Wrong number of points in OOBB file: " << filePath << " points: " << v.size())
     }
@@ -109,7 +109,7 @@ void readOOBB(std::string filePath, Vector3& minP, Vector3& maxP, Matrix33& R_KI
     R_KI.row(2) = v[4];
 
     pointList.resize(8);
-    for (unsigned int i = 0; i < 8; ++i)
+    for(unsigned int i = 0; i < 8; ++i)
     {
         pointList[i] = v[5 + i];
     }
@@ -120,14 +120,14 @@ PointFunctions::Vector3List getPointsFromFile3D(std::string filePath)
     std::ifstream file;           // creates stream myFile
     file.open(filePath.c_str());  // opens .txt file
 
-    if (!file.is_open())
+    if(!file.is_open())
     {  // check file is open, quit if not
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
     }
 
     PREC a, b, c;
     Vector3List v;
-    while (file.good())
+    while(file.good())
     {
         file >> a >> b >> c;
         v.emplace_back(a, b, c);
@@ -141,13 +141,13 @@ Vector2List getPointsFromFile2D(std::string filePath)
     std::ifstream file;           // creates stream myFile
     file.open(filePath.c_str());  // opens .txt file
 
-    if (!file.is_open())
+    if(!file.is_open())
     {  // check file is open, quit if not
         ApproxMVBB_ERRORMSG("Could not open file: " << filePath)
     }
     PREC a, b;
     Vector2List v;
-    while (file.good())
+    while(file.good())
     {
         file >> a >> b;
         v.emplace_back(a, b);
