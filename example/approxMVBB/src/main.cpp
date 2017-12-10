@@ -46,6 +46,11 @@ int main(int argc, char** argv)
     {
         oobb.unite(A_KI * points.col(i));
     }
+    
+    // To make the box have a minimum extent of greater 0.1:
+    // see also oobb.expandToMinExtentRelative(...)
+    oobb.expandToMinExtentAbsolute(0.1);
+    
     std::cout << "OOBB with all point included: " << std::endl
               << "---> lower point in OOBB frame: " << oobb.m_minPoint.transpose() << std::endl
               << "---> upper point in OOBB frame: " << oobb.m_maxPoint.transpose() << std::endl;
