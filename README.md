@@ -116,14 +116,13 @@ we compute an approximation of the minimum volume bounding volume by the followi
     #include <iostream>
     #include "ApproxMVBB/ComputeApproxMVBB.hpp"
 
-    int  main( int  argc, char  ** argv ){
-    
+    int  main(int argc, char** argv)
+    {
           ApproxMVBB::Matrix3Dyn points(3,10000);
           points.setRandom();
           ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,500,5,0,5);
-          oobb.expandZeroExtent(0.1);
+          oobb.expandToMinExtentRelative(0.1);
           return 0;
-          
     }
 ```
 The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_minPoint`` and upper point ``oobb.m_maxPoint`` expressed in the coordinate frame K of the bounding box. The bounding box also stores the rotation matrix from the world frame to the object frame K as a quaternion  ``oobb.m_q_KI`` . The rotation matrix ``R_KI`` from frame I to frame K  can be obtained by ``oobb.m_q_KI.matrix()`` (see ``Eigen::Quaternion``). This rotation matrix ``R_KI`` corresponds to a coordinate transformation A_IK which transforms coordinates from frame K to coordinates in frame I. Thereforce, to get the lower point expressed in the coordinate frame I this yields:
@@ -132,7 +131,7 @@ The returned object oriented bounding box ``oobb`` contains the lower ``oobb.m_m
     ApproxMVBB::Vector3 p = oobb.m_q_KI * oobb.m_minPoint  // A_IK * oobb.m_minPoint 
 ```
 **Degenerate OOBB:**    
-The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``expandZeroExtent`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if existing, otherwise a default value is used).
+The returned bounding box might have a degenerated extent in some axis directions depending on the input points (e.g. 3 points defines a plane which is the minimal oriented bounding box with zero volume). The function ``oobb.expandToMinExtentRelative(0.1);`` is a post processing function to enlarge the bounding box by a certain percentage of the largest extent (if existing, otherwise a default value is used).
 
 **Points Outside of the final OOBB:**    
 Because the algorithm  works internally with a sample of the point cloud, the resulting OOBB might not contain all points of the original point cloud! To compensate for this an additional loop is required:
