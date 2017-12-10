@@ -25,24 +25,24 @@ public:
 
     ApproxMVBB_DEFINE_MATRIX_TYPES;
     ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
-    
+
     /** Default constructor */
     OOBB()
-    { 
+    {
         reset();
     }
-    
+
     /** Copy and copy-move constructors */
     OOBB(const OOBB&) = default;
-    OOBB(OOBB&&) = default;
-    
+    OOBB(OOBB&&)      = default;
+
     /** Assign and assign-move operators */
-    OOBB operator=(const OOBB&) = default;
-    OOBB operator=(OOBB&&) = default;
-    
+    OOBB& operator=(const OOBB&) = default;
+    OOBB& operator=(OOBB&&) = default;
+
     OOBB(const Vector3& minPoint, const Vector3& maxPoint, const Matrix33& A_IK);
 
-    /** Construct this OOBB from an axis aligned bounding box `aabb`. 
+    /** Construct this OOBB from an axis aligned bounding box `aabb`.
         The rotation is set to identity! */
     OOBB(AABB3d& aabb)
     {
@@ -51,7 +51,7 @@ public:
         m_q_KI.setIdentity();
     }
 
-    /** Construct this OOBB from an axis aligned bounding box `aabb`. 
+    /** Construct this OOBB from an axis aligned bounding box `aabb`.
         The rotation is set to identity! */
     OOBB& operator=(AABB3d& aabb)
     {
@@ -60,7 +60,7 @@ public:
         m_q_KI.setIdentity();
         return *this;
     }
-    
+
     /** Set the z-Axis such that it has the longest extent. */
     inline void setZAxisLongest()
     {
@@ -75,7 +75,7 @@ public:
     void switchZAxis(unsigned int i);
     void reset();
 
-    /** Add points to this OOBB. The points `p` are assumed to be 
+    /** Add points to this OOBB. The points `p` are assumed to be
         represented in this OOBB's coordinate system K. */
     template <typename Derived>
     OOBB& unite(const MatrixBase<Derived>& p)
@@ -100,19 +100,19 @@ public:
     {
         return (m_maxPoint - m_minPoint).array();
     }
-    
+
     /** Get the maximal extent of the OOBB */
     inline PREC maxExtent() const
     {
         return (m_maxPoint - m_minPoint).maxCoeff();
     }
-    
+
     /** Get the `i`-th maximal extent of the OOBB */
     inline PREC maxExtent(Vector3::Index& i) const
     {
         return (m_maxPoint - m_minPoint).maxCoeff(&i);
     }
-    
+
     /** Check if the OOBB is empty. */
     inline bool isEmpty() const
     {
@@ -121,8 +121,8 @@ public:
 
     /** Checks if a point overlaps the OOBB
         @param p                     Input point.
-        @param coordinateSystemIsI   Determines if the the input point is represented in 
-                                     the coordinate system I or if false they are represented in 
+        @param coordinateSystemIsI   Determines if the the input point is represented in
+                                     the coordinate system I or if false they are represented in
                                      the coordinate system of the OOBB (coordinate system K). */
     template <typename Derived, bool coordinateSystemIsI = true>
     inline bool overlaps(const MatrixBase<Derived>& p) const
@@ -139,24 +139,24 @@ public:
             return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
         }
     }
-    
+
     void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
     void expandToMinExtentAbsolute(PREC minExtent);
-    
+
     /** Expand the box symmetrically by an absolute value \p d. */
     inline void expand(PREC d)
     {
         ApproxMVBB_ASSERTMSG(d >= 0, "d>=0") m_minPoint -= Vector3(d, d, d);
         m_maxPoint += Vector3(d, d, d);
     }
-    
+
     /** Expand the box symmetrically in each dimension by the absolute values of the vector \p d. */
     inline void expand(Vector3 d)
     {
         ApproxMVBB_ASSERTMSG(d(0) >= 0 && d(1) >= 0 && d(2) >= 0, "d>=0") m_minPoint -= d;
         m_maxPoint += d;
     }
-    
+
     /** Get the volume of the box. This might be negative if isEmpty() is true. */
     inline PREC volume() const
     {
@@ -168,14 +168,14 @@ public:
     inline Vector3 getDirection(unsigned int i) const
     {
         ApproxMVBB_ASSERTMSG(i < 3, "Index wrong: " << i) Vector3 d = Vector3::Zero();
-        d(i) = 1.0;
+        d(i)                                                        = 1.0;
         return m_q_KI * d;  // A_IK* d;
     }
 
     /** Get all corner points of the OOBB.
-        @param coordinateSystemIsI   Determines if the the output points are represented in 
-                                     the coordinate system I or if false they are represented in 
-                                     the coordinate system of the OOBB (coordinate system K). 
+        @param coordinateSystemIsI   Determines if the the output points are represented in
+                                     the coordinate system I or if false they are represented in
+                                     the coordinate system of the OOBB (coordinate system K).
         @return A list of all corner points sorted according to (x,y,z) index in coordinate system K. */
     template <bool coordinateSystemIsI = true>
     inline Vector3List getCornerPoints() const

@@ -22,8 +22,8 @@ namespace ApproxMVBB
 {
 // ================================================================================================
 /** @brief This
-*	These are some small matrix definitions.
-*/
+ *	These are some small matrix definitions.
+ */
 
 namespace MyMatrix
 {
@@ -152,9 +152,9 @@ struct APPROXMVBB_EXPORT MyMatrixIOFormat
     using MatrixMap = ApproxMVBB::MyMatrix::MatrixMap<EigenType>;
 
 /**
-* @brief This macro is used to typedef all custom matrix types which have
-* nothing to do with the system.
-*/
+ * @brief This macro is used to typedef all custom matrix types which have
+ * nothing to do with the system.
+ */
 #define ApproxMVBB_DEFINE_MATRIX_TYPES_OF(_PREC_)                              \
     using Matrix44        = ApproxMVBB::MyMatrix::Matrix44<_PREC_>;            \
     using Matrix33        = ApproxMVBB::MyMatrix::Matrix33<_PREC_>;            \
@@ -197,6 +197,6 @@ struct APPROXMVBB_EXPORT MyMatrixIOFormat
     using Array3    = ApproxMVBB::MyMatrix::Array3<_PREC_>;                    \
     using Array2    = ApproxMVBB::MyMatrix::Array2<_PREC_>;                    \
                                                                                \
-    ApproxMVBB_DEFINE_MATRIX_SPECIALTYPES
+    ApproxMVBB_DEFINE_MATRIX_SPECIALTYPES;
 
 #endif

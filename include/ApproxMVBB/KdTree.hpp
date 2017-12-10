@@ -43,14 +43,15 @@ namespace ApproxMVBB
 {
 namespace KdTree
 {
-ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES;
+ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    namespace details
+namespace details
 {
-    struct TakeDefault;
+struct TakeDefault;
 
-    template <typename T>
-    using isDefault = meta::or_<meta::_t<std::is_same<T, TakeDefault>>, meta::_t<std::is_same<T, void>>>;
+template <typename T>
+using isDefault = meta::or_<meta::_t<std::is_same<T, TakeDefault>>, meta::_t<std::is_same<T, void>>>;
 }
 
 #define DEFINE_KDTREE_BASETYPES(__Traits__)                                    \
@@ -264,20 +265,20 @@ private:
 };
 
 /** Quality evaluator for the split heuristic
-*   s = split ratio is between (0,0.5]
-*   p = point ratio is between [0,0.5]
-*   e = extent ratio is between (0,1]
-*   ws,wp,we are weightings between [0,1] for the following linear criteria:
-*   J(s,p,e) = ws*2*s + wp*2*p + we*e which is the return value of compute()
-*   and maximized by the kd-Tree building procedure!
-*/
+ *   s = split ratio is between (0,0.5]
+ *   p = point ratio is between [0,0.5]
+ *   e = extent ratio is between (0,1]
+ *   ws,wp,we are weightings between [0,1] for the following linear criteria:
+ *   J(s,p,e) = ws*2*s + wp*2*p + we*e which is the return value of compute()
+ *   and maximized by the kd-Tree building procedure!
+ */
 class LinearQualityEvaluator
 {
 public:
     /**
-    *   By default ws=0, wp=0, we=1.0 which maximizes the extent ratio which
-    *   is sensfull for midpoint splitting!
-    */
+     *   By default ws=0, wp=0, we=1.0 which maximizes the extent ratio which
+     *   is sensfull for midpoint splitting!
+     */
     LinearQualityEvaluator(PREC ws = 0.0, PREC wp = 0.0, PREC we = 1.0)
         : m_weightSplitRatio(ws), m_weightPointRatio(wp), m_weightMinMaxExtentRatio(we)
     {
@@ -406,8 +407,8 @@ public:
     }
 
     /** Compute the split with the set heuristic and return the two new
-    *   node data types if a split happened otherwise (nullptr)
-    */
+     *   node data types if a split happened otherwise (nullptr)
+     */
     std::pair<NodeDataType*, NodeDataType*> doSplit(NodeType* node, SplitAxisType& splitAxis, PREC& splitPosition)
     {
         ++m_splitCalls;
@@ -632,8 +633,8 @@ private:
     {
         ApproxMVBB_ASSERTMSG(
             m_splitPosition >= aabb.m_minPoint(m_splitAxis) && m_splitPosition <= aabb.m_maxPoint(m_splitAxis),
-            "split position wrong: " << m_splitPosition << " min: " << aabb.m_minPoint.transpose() << " max: "
-                                     << aabb.m_maxPoint.transpose())
+            "split position wrong: " << m_splitPosition << " min: " << aabb.m_minPoint.transpose()
+                                     << " max: " << aabb.m_maxPoint.transpose())
 
             if ((m_splitPosition - aabb.m_minPoint(m_splitAxis)) <= m_minExtent ||
                 (aabb.m_maxPoint(m_splitAxis) - m_splitPosition) <= m_minExtent)
@@ -859,10 +860,10 @@ public:
     }
 
     /** Copy from node
-    *   Childs are not deep copied (since the node does not own the childs)
-    *   Values of the child pointers \p n are left uninitialized.
-    *   The tree class is responsible for copying the childs accordingly.
-    */
+     *   Childs are not deep copied (since the node does not own the childs)
+     *   Values of the child pointers \p n are left uninitialized.
+     *   The tree class is responsible for copying the childs accordingly.
+     */
     template <typename Derived>
     NodeBase(const NodeBase<Derived, Dimension>& n)
         : m_idx(n.m_idx)
@@ -1001,9 +1002,9 @@ protected:
     PREC m_splitPosition      = 0.0;
 
     /** Child Nodes
-    * The child nodes, these objects are not owned by this node
-    * and if it is not a leaf, both pointers are valid!
-    */
+     * The child nodes, these objects are not owned by this node
+     * and if it is not a leaf, both pointers are valid!
+     */
     std::array<DerivedNode*, 2> m_child{{nullptr, nullptr}};
     DerivedNode* m_parent = nullptr;
 };
@@ -1038,18 +1039,18 @@ public:
     using DerivedType = typename details::select<PD, NodeSimple<TTraits, PD>>::type;
 
 protected:
-    using Base::m_idx;
     using Base::m_aabb;
+    using Base::m_child;
+    using Base::m_idx;
     using Base::m_splitAxis;
     using Base::m_splitPosition;
-    using Base::m_child;
 
     template <typename T>
     friend class TreeBase;
 
     /** Boundary information which is empty for non-leaf nodes
-    *   Pointer which point to the subtrees min/max for each dimension
-    */
+     *   Pointer which point to the subtrees min/max for each dimension
+     */
     typename Base::BoundaryInfoType m_bound;
 
 public:
@@ -1076,9 +1077,9 @@ public:
     }
 
     /**
-    *   Setup node from some other node  \p t, with a node pointer list \p nodes
-    * (continous index ordered)!
-    */
+     *   Setup node from some other node  \p t, with a node pointer list \p nodes
+     * (continous index ordered)!
+     */
     template <typename T, typename NodeVector>
     void setup(const Node<T>* t, const NodeVector& nodes)
     {
@@ -1151,11 +1152,11 @@ public:
     using Base   = NodeBase<Node<TTraits>, TTraits::Dimension>;
 
 private:
-    using Base::m_idx;
     using Base::m_aabb;
+    using Base::m_child;
+    using Base::m_idx;
     using Base::m_splitAxis;
     using Base::m_splitPosition;
-    using Base::m_child;
 
     /** Tree Access */
     template <typename T>
@@ -1184,10 +1185,10 @@ public:
     }
 
     /** Copy from node
-    *   childs are not deep copied (since the node does not own the childs)
-    *   the child pointers have the same values as the node \p n.
-    *   The tree class is responsible for copying the childs accordingly.
-    */
+     *   childs are not deep copied (since the node does not own the childs)
+     *   the child pointers have the same values as the node \p n.
+     *   The tree class is responsible for copying the childs accordingly.
+     */
     template <typename Traits>
     Node(const Node<Traits>& n) : Base(n)
     {
@@ -1227,12 +1228,12 @@ public:
     }
 
     /** Splits the node into two new nodes by the splitting position
-    * The ownership of the left and right nodes is the caller of this function!
-    * If \p startIdx, which specifies the start numbering for the left child ,
-    * right child is startIdx+1,
-    * is zero then we number according to a complete binary tree, left = 2*m_idx
-    * +1 and  right 2*m_idx + 2
-    */
+     * The ownership of the left and right nodes is the caller of this function!
+     * If \p startIdx, which specifies the start numbering for the left child ,
+     * right child is startIdx+1,
+     * is zero then we number according to a complete binary tree, left = 2*m_idx
+     * +1 and  right 2*m_idx + 2
+     */
     template <typename TSplitHeuristic>
     bool split(TSplitHeuristic& s, std::size_t startIdx = 0)
     {
@@ -1263,8 +1264,8 @@ public:
         m_child[1]->m_parent      = this;
 
         // Set Boundary Information
-        BoundaryInfoType b = m_bound;  // copy
-        Node* tn           = b.at(m_splitAxis, 1);
+        BoundaryInfoType b   = m_bound;  // copy
+        Node* tn             = b.at(m_splitAxis, 1);
         b.at(m_splitAxis, 1) = m_child[1];  // left changes pointer at max value
         m_child[0]->setBoundaryInfo(b);
 
@@ -1414,8 +1415,8 @@ private:
     NodeDataType* m_data = nullptr;
 
     /** Boundary information which is empty for non-leaf nodes
-    *   Pointer which point to the subtrees min/max for each dimension
-    */
+     *   Pointer which point to the subtrees min/max for each dimension
+     */
     BoundaryInfoType m_bound;
 };
 /**
@@ -1458,13 +1459,13 @@ public:
 
 protected:
     /** Deep copy, copies all nodes, and leafs , and links childs together
-    *   Special links added to the Node classes are not preserved!
-    *   For example: BoundaryInformation
-    *   Therefore a newNode->setup() routine is called for each new copied node at
-    * the end of this function
-    *   such that every newNode can setup these special links by accesing a
-    * (index,newNode) map and the oldNode.
-    */
+     *   Special links added to the Node classes are not preserved!
+     *   For example: BoundaryInformation
+     *   Therefore a newNode->setup() routine is called for each new copied node at
+     * the end of this function
+     *   such that every newNode can setup these special links by accesing a
+     * (index,newNode) map and the oldNode.
+     */
     template <typename T>
     void copyFrom(const TreeBase<T>& tree)
     {
@@ -1498,8 +1499,7 @@ protected:
             // std::cerr << "Approx:: n->getIdx() " << n->getIdx() << std::endl;
             ApproxMVBB_ASSERTMSG((n->getIdx() < this->m_nodes.size()),
                                  "Leaf node from source is out of range: "
-                                     << n->getIdx()
-                                     << ","
+                                     << n->getIdx() << ","
                                      << this->m_nodes.size()) this->m_leafs.emplace_back(this->m_nodes[n->getIdx()]);
         }
 
@@ -1516,15 +1516,15 @@ protected:
 
 public:
     /** Built a tree from a node map and links
-    * \p c   is a associative container of nodes with type \tp NodeType where the
-    * key type is std::size_t and
-    * value type is a pointe to type NodeType. The tree owns the pointers
-    * afterwards!
-    * \p links is an associative container with type \tp NodeToChildMap
-    * where the key is std::size_t and specifies the parent and the value type is
-    * a std::pair<std::size_t,std::size_t>
-    * for left and right child node indices in the map \p c.
-    */
+     * \p c   is a associative container of nodes with type \tp NodeType where the
+     * key type is std::size_t and
+     * value type is a pointe to type NodeType. The tree owns the pointers
+     * afterwards!
+     * \p links is an associative container with type \tp NodeToChildMap
+     * where the key is std::size_t and specifies the parent and the value type is
+     * a std::pair<std::size_t,std::size_t>
+     * for left and right child node indices in the map \p c.
+     */
     template <typename NodeMap, typename NodeToChildMap>
     void build(NodeType* root, NodeMap& c, NodeToChildMap& links)
     {
@@ -1602,11 +1602,11 @@ public:
     }
 
     /** Get cell index of the leaf which owns point \p point
-    * \p point is the d-dimensional point in the frame of reference the kd-Tree
-    * was built!
-    * Points outside the roots AABB box, are naturally project to the most outer
-    * leaf automatically.
-    */
+     * \p point is the d-dimensional point in the frame of reference the kd-Tree
+     * was built!
+     * Points outside the roots AABB box, are naturally project to the most outer
+     * leaf automatically.
+     */
     template <typename Derived>
     const NodeType* getLeaf(const MatrixBase<Derived>& point) const
     {
@@ -1632,7 +1632,7 @@ public:
 
     /** Get common ancestor of two nodes
      *  Complexity: O(h) algorithm
-    */
+     */
     const NodeType* getLowestCommonAncestor(const NodeType* a, const NodeType* b)
     {
         // build list of parents to root
@@ -1724,8 +1724,8 @@ public:
     }
 
     /** Clean up the nodes.
-    * Parameter are perfectly forwarded to NodeType::cleanUp(...)
-    */
+     * Parameter are perfectly forwarded to NodeType::cleanUp(...)
+     */
     template <typename... T>
     void cleanUp(T&&... t)
     {
@@ -1743,7 +1743,7 @@ public:
     /** Enumerate nodes (continously, leafs first, then non-leafs
      *  This is reflected in the list m_nodes too, which needs to correspond to
      * getIdx()!
-    */
+     */
     void enumerateNodes()
     {
         std::size_t leafIdx = 0;
@@ -1902,8 +1902,8 @@ public:
     }
 
     /** Copy from a Tree<Traits> with any kind of traits if possible
-    * The underlying Traits::NodeType has a copy constructor for T::NodeType!
-    */
+     * The underlying Traits::NodeType has a copy constructor for T::NodeType!
+     */
     template <typename Traits>
     explicit TreeSimple(const Tree<Traits>& tree) : Base(tree), m_statistics(tree.m_statistics)
     {
@@ -1914,9 +1914,9 @@ public:
     }
 
     /** Returns tuple with values
-    * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data
-    * size)
-    */
+     * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data
+     * size)
+     */
     std::tuple<std::size_t,
                std::size_t,
                std::size_t,
@@ -1961,8 +1961,8 @@ public:
     friend class XML;
 
 protected:
-    using Base::m_nodes;
     using Base::m_leafs;
+    using Base::m_nodes;
     using Base::m_root;
 
     TreeStatistics m_statistics;
@@ -1993,7 +1993,7 @@ struct TreeTraits
 };
 
 /** Standart Class to build a kd-tree
-*/
+ */
 template <typename TTraits = TreeTraits<>>
 class Tree : public TreeBase<typename TTraits::BaseTraits>
 {
@@ -2047,10 +2047,10 @@ public:
     }
 
     /** Copies the tree if the underlying NodeType has a function NodeType(const
-    * TTree::NodeType & n)
-    *  This tree needs to be a friend of TTree::NodeType to successfully copy the
-    * nodes!
-    */
+     * TTree::NodeType & n)
+     *  This tree needs to be a friend of TTree::NodeType to successfully copy the
+     * nodes!
+     */
     template <typename TTree>
     Tree(const TTree& tree) : Base(tree)
     {
@@ -2065,10 +2065,10 @@ public:
     }
 
     /** Builds a new Tree with the SplitHeurstic
-    *   First node in m_nodes is always root!
-    *   All following nodes are in breath first order, and continuously numbered
-    *   and m_nodes[node->getIdx()] == node (index in sync with the list)
-    */
+     *   First node in m_nodes is always root!
+     *   All following nodes are in breath first order, and continuously numbered
+     *   and m_nodes[node->getIdx()] == node (index in sync with the list)
+     */
     template <bool computeStatistics = true>
     void build(const AABB<Dimension>& aabb,
                std::unique_ptr<NodeDataType> data,
@@ -2293,9 +2293,9 @@ public:
 
 private:
     /** Priority queue adapter, to let the comperator be changed on the fly!
-    *   This is usefull if we call getKNearestNeighbours lots of times.
-    *   and want to update the comperator in between.
-    */
+     *   This is usefull if we call getKNearestNeighbours lots of times.
+     *   and want to update the comperator in between.
+     */
     template <typename Container, typename Compare>
     class KNearestPrioQueue
         : public std::priority_queue<typename NodeDataType::PointListType::value_type, Container, Compare>
@@ -2581,9 +2581,9 @@ public:
      * =============================================================================*/
 
     /** Returns tuple with values
-    * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data
-    * size)
-    */
+     * (number of leafs, avg. leaf data size, min. leaf data size, max. leaf data
+     * size)
+     */
     std::tuple<std::size_t,
                std::size_t,
                std::size_t,
@@ -2689,9 +2689,8 @@ private:
                 }
                 if (nIt->second.find(l->getIdx()) == nIt->second.end())
                 {
-                    ApproxMVBB_ERRORMSG("Safety check: Neighbour idx" << idx << " does not have leaf idx: "
-                                                                      << l->getIdx()
-                                                                      << " as neighbour")
+                    ApproxMVBB_ERRORMSG("Safety check: Neighbour idx"
+                                        << idx << " does not have leaf idx: " << l->getIdx() << " as neighbour")
                 }
             }
 
@@ -2709,9 +2708,8 @@ private:
             {
                 if (it->second.find(i) == it->second.end())
                 {
-                    ApproxMVBB_ERRORMSG(
-                        "Safety check: Bruteforce list has neighbour idx: " << i << " for leaf idx: " << l->getIdx()
-                                                                            << " but not computed list!")
+                    ApproxMVBB_ERRORMSG("Safety check: Bruteforce list has neighbour idx: "
+                                        << i << " for leaf idx: " << l->getIdx() << " but not computed list!")
                 }
             }
             if (ns.size() != it->second.size())
@@ -2719,9 +2717,7 @@ private:
                 ApproxMVBB_ERRORMSG(
                     "Safety check: Bruteforce list and computed list "
                     "are not the same size!"
-                    << ns.size()
-                    << ","
-                    << it->second.size())
+                    << ns.size() << "," << it->second.size())
             }
         }
     }
@@ -2769,17 +2765,17 @@ public:
     }
 
     /**
-    *   This filter function computes the nearest distance distribution (mean,
-    * standart deviation) of the points \p points
-    *   and classifies all points which have mean nearest distance <  mean +
-    * stdDevMult * standart deviation
-    *   as outliers.
-    *   The AABB \p aabb is for building the kd-Tree.
-    *   The function modifies the container \p points (shuffling, sorting etc.)
-    * and saves the
-    *   remaining points in \p output. If \p invert is on the outliers are saved
-    * in \p output.
-    */
+     *   This filter function computes the nearest distance distribution (mean,
+     * standart deviation) of the points \p points
+     *   and classifies all points which have mean nearest distance <  mean +
+     * stdDevMult * standart deviation
+     *   as outliers.
+     *   The AABB \p aabb is for building the kd-Tree.
+     *   The function modifies the container \p points (shuffling, sorting etc.)
+     * and saves the
+     *   remaining points in \p output. If \p invert is on the outliers are saved
+     * in \p output.
+     */
     template <typename Container,
               typename DistSq = EuclideanDistSq,
               typename = typename std::enable_if<ContainerTags::has_randomAccessIterator<Container>::value>::type>
@@ -2906,11 +2902,11 @@ public:
     }
 
     /** Get the nearestDists for all points from the filter.
-    *   Take care, these values at index i do really correspond to index in \p
-    * points in filter().
-    *   because filter() function may have changed the order which is also
-    *   reflected in the return value of this function.
-    */
+     *   Take care, these values at index i do really correspond to index in \p
+     * points in filter().
+     *   because filter() function may have changed the order which is also
+     *   reflected in the return value of this function.
+     */
 
     using NearestDistancesType = std::vector<PREC>;
     std::vector<PREC>& getNearestDists()
@@ -2919,8 +2915,8 @@ public:
     }
 
     /** Get the computed mean/standart deviation of the nearest distance
-    *   (the mean of the returned array of getNearestDists())
-    */
+     *   (the mean of the returned array of getNearestDists())
+     */
     std::pair<PREC, PREC> getMoments()
     {
         return std::make_pair(m_mean, m_stdDev);
@@ -2935,10 +2931,10 @@ private:
      * the mean neighbour distance */
     std::size_t m_kNeighboursMean;
     /** The multiplier for the standart deviation,
-    * if the distance of the point to classify is > \p stdDevMult * stdDevDist +
-    * meanDist,
-    * then the point is classfied as an outlier.
-    */
+     * if the distance of the point to classify is > \p stdDevMult * stdDevDist +
+     * meanDist,
+     * then the point is classfied as an outlier.
+     */
     PREC m_stdDevMult;
 
     std::size_t m_allowSplitAboveNPoints;

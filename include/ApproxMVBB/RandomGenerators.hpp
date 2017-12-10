@@ -301,7 +301,7 @@ inline void XorShift1024Star::seed(uint64_t sd)
 inline uint64_t XorShift1024Star::operator()()
 {
     const uint64_t s0 = s[p];
-    uint64_t s1 = s[p = (p + 1) & 15];
+    uint64_t s1       = s[p = (p + 1) & 15];
     s1 ^= s1 << 31;                            // a
     s[p] = s1 ^ s0 ^ (s1 >> 11) ^ (s0 >> 30);  // b,c
     return s[p] * UINT64_C(1181783497276652981);
@@ -339,7 +339,7 @@ inline void XorShift1024Star::jump()
             this->operator()();
         }
 
-    for (int j          = 0; j < 16; j++)
+    for (int j = 0; j < 16; j++)
         s[(j + p) & 15] = t[j];
 }
 }

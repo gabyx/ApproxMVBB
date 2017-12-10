@@ -18,8 +18,10 @@ namespace ApproxMVBB
 OOBB::OOBB(const Vector3& minPoint, const Vector3& maxPoint, const Matrix33& A_IK) : m_q_KI(A_IK)
 {
     m_q_KI.normalize();
-    m_minPoint = Vector3(std::min(minPoint(0), maxPoint(0)), std::min(minPoint(1), maxPoint(1)), std::min(minPoint(2), maxPoint(2)));
-    m_maxPoint = Vector3(std::max(minPoint(0), maxPoint(0)), std::max(minPoint(1), maxPoint(1)), std::max(minPoint(2), maxPoint(2)));
+    m_minPoint = Vector3(
+        std::min(minPoint(0), maxPoint(0)), std::min(minPoint(1), maxPoint(1)), std::min(minPoint(2), maxPoint(2)));
+    m_maxPoint = Vector3(
+        std::max(minPoint(0), maxPoint(0)), std::max(minPoint(1), maxPoint(1)), std::max(minPoint(2), maxPoint(2)));
 }
 
 /** Switch the z-Axis to the axis with index `i`. */
@@ -57,7 +59,7 @@ void OOBB::switchZAxis(unsigned int i)
         std::swap(m_maxPoint(1), m_maxPoint(2));
     }
 }
-    
+
 /** Adjusts the box that all axes have at least a minimal extent of `maxExtent*p`, if
     `maxExtent*p < eps` then all axes are set to the default extent `defaultExtent`. */
 void OOBB::expandToMinExtentRelative(PREC p, PREC defaultExtent, PREC eps)

@@ -12,8 +12,8 @@
 #include <Eigen/Dense>
 
 /** @brief
-*	These are some container definitions
-*/
+ *	These are some container definitions
+ */
 namespace ApproxMVBB
 {
 namespace MyContainers
@@ -33,8 +33,8 @@ using StdVecAligned = std::vector<Type, Eigen::aligned_allocator<Type>>;
 }
 
 /**
-* @brief This macro is used to typedef all custom container types.
-*/
+ * @brief This macro is used to typedef all custom container types.
+ */
 #define ApproxMVBB_DEFINE_CONTAINER_TYPES                                                                      \
                                                                                                                \
     template <typename Key, typename Type, typename Comp = std::less<Key>>                                     \

@@ -202,7 +202,7 @@ MY_TEST(ConvexHullTest, PointsBadProjectionFilter)
     // Filter points
     std::set<unsigned int> i = {0,  29, 180, 212, 213, 192, 193, 175, 176, 162, 163, 146, 147, 129, 130, 112, 113,
                                 96, 97, 79,  80,  58,  59,  36,  37,  7,   8,   1,   226, 196, 154, 137, 30,  4};
-    t = filterPoints(t, i);
+    t                        = filterPoints(t, i);
     convexHullTest(testName, t);
 }
 
@@ -260,7 +260,6 @@ MY_TEST(ConvexHullTest, PointsBadProjection6)
 #ifdef ApproxMVBB_TESTS_HIGH_PERFORMANCE
 MY_TEST(ConvexHullTest, PointsRandom14M)
 {
-
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsRandom14M);
     // generate points
     ApproxMVBB::Matrix2Dyn t(2, 14000000);

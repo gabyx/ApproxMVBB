@@ -181,8 +181,8 @@ void MinAreaRectangle::findVertex(Caliper& c)
         {
             ss << a << ",";
         }
-        ApproxMVBB_ERRORMSG(
-            "Could not find vertex with angle greater than: " << matchAngle << "in angles: " << ss.str());
+        ApproxMVBB_ERRORMSG("Could not find vertex with angle greater than: " << matchAngle
+                                                                              << "in angles: " << ss.str());
     }
 }
 

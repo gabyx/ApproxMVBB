@@ -24,7 +24,8 @@ template <unsigned int Dim>
 class AABB
 {
 public:
-    ApproxMVBB_DEFINE_MATRIX_TYPES EIGEN_MAKE_ALIGNED_OPERATOR_NEW private :
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW private :
 
         template <unsigned int D = Dim, bool = true>
         struct unite_impl
@@ -103,9 +104,9 @@ public:
 
     AABB(const VectorStat<Dim>& l, const VectorStat<Dim>& u) : m_minPoint(l), m_maxPoint(u)
     {
-        ApproxMVBB_ASSERTMSG((m_maxPoint.array() >= m_minPoint.array()).all(),
-                             "AABB initialized wrongly! min/max: " << m_minPoint.transpose() << "/"
-                                                                   << m_maxPoint.transpose());
+        ApproxMVBB_ASSERTMSG(
+            (m_maxPoint.array() >= m_minPoint.array()).all(),
+            "AABB initialized wrongly! min/max: " << m_minPoint.transpose() << "/" << m_maxPoint.transpose());
     }
 
     template <typename Derived>
@@ -275,10 +276,10 @@ public:
     }
 
     /** Expands the selected axes \p axis to maximal value,
-    *  which simulates a box with infinite extent in this direction
-    *  \tparam MoveMax If true, the maximum value is moved to max value, otherwise
-    * the minimum value is moved to lowest.
-    */
+     *  which simulates a box with infinite extent in this direction
+     *  \tparam MoveMax If true, the maximum value is moved to max value, otherwise
+     * the minimum value is moved to lowest.
+     */
     template <bool MoveMax>
     void expandToMaxExtent(const unsigned int& axis)
     {

@@ -17,9 +17,9 @@
 namespace ApproxMVBB
 {
 /** Diameter Estimator class
-*   If you need a longer period (currently 2^128-1) of the RandomGenerator
-*   use the  RandomGenerators::XorShift1024Star
-*/
+ *   If you need a longer period (currently 2^128-1) of the RandomGenerator
+ *   use the  RandomGenerators::XorShift1024Star
+ */
 class APPROXMVBB_EXPORT DiameterEstimator
 {
 public:

@@ -369,7 +369,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
 
     if (tryToReduceQ && theDoubleNormals.n > 1)
     {
-        for (k                                     = 0; k < theDoubleNormals.n; k++)
+        for (k = 0; k < theDoubleNormals.n; k++)
             theDoubleNormals.seg[k].reduction_mode = _reduction_mode_of_dbleNorm_;
 
         switch (_Q_scan_)
@@ -473,7 +473,7 @@ double DiameterEstimator::estimateDiameterInOneList(Diameter::TypeSegment* theDi
                     if (newlast == l)
                     {
                         suspicion_of_convex_hull = 1;
-                        for (k                                     = 0; k < theDoubleNormals.n; k++)
+                        for (k = 0; k < theDoubleNormals.n; k++)
                             theDoubleNormals.seg[k].reduction_mode = 0;
                     }
                 l = newlast;

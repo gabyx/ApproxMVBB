@@ -25,26 +25,27 @@
 namespace ApproxMVBB
 {
 /** Generate convex hull of 2D points
-* Side Effects: Removes equal points from input point list reference, input
-* points are angle sorted afterwards
-* Function getIndices() returns the ascending indices of the sorted point list
-* which span the convex hull.
-*/
+ * Side Effects: Removes equal points from input point list reference, input
+ * points are angle sorted afterwards
+ * Function getIndices() returns the ascending indices of the sorted point list
+ * which span the convex hull.
+ */
 class APPROXMVBB_EXPORT ConvexHull2D
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-        /** Cosntructor, points is not a temporary, it accepts all sorts of matrix
-        * expressions,
-        * however the construction of MatrixRef<> might create a temporary but
-        * this is stored in m_p!
-        */
-        template <typename Derived>
-        ConvexHull2D(const MatrixBase<Derived>& points) : m_p(points)
+    /** Cosntructor, points is not a temporary, it accepts all sorts of matrix
+     * expressions,
+     * however the construction of MatrixRef<> might create a temporary but
+     * this is stored in m_p!
+     */
+    template <typename Derived>
+    ConvexHull2D(const MatrixBase<Derived>& points) : m_p(points)
     {
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 2, Eigen::Dynamic)
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 2, Eigen::Dynamic);
         ApproxMVBB_ASSERTMSG(m_p.data() == points.derived().data(),
                              " You store a temporary in a Ref<> which works here, "
                              "but do you really want this?")

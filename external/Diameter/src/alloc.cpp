@@ -31,7 +31,7 @@ void* _AllocateListOfPoints(const int n, const int dim)
     dd += n;
 
     d = (double*)dd;
-    for (i      = 0; i < n; i++, d += dim)
+    for (i = 0; i < n; i++, d += dim)
         list[i] = d;
 
     return (b);

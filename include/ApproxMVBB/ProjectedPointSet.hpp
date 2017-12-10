@@ -30,12 +30,13 @@ class APPROXMVBB_EXPORT ProjectedPointSet
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-        template <typename Derived>
-        OOBB computeMVBBApprox(const Vector3& zDir, const MatrixBase<Derived>& points, const PREC epsilon)
+    template <typename Derived>
+    OOBB computeMVBBApprox(const Vector3& zDir, const MatrixBase<Derived>& points, const PREC epsilon)
     {
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
         using namespace PointFunctions;
         m_zDir = zDir;
@@ -103,14 +104,14 @@ public:
     }
 
     /** Computes the true MVBB by constructing the convex hull in 2d
-    * and then building the minimum area rectangle around it and afterwards
-    * pulling the rectangle out in direction m_dirZ again which build the MVBB in
-    * direction m_dirZ
-    */
+     * and then building the minimum area rectangle around it and afterwards
+     * pulling the rectangle out in direction m_dirZ again which build the MVBB in
+     * direction m_dirZ
+     */
     template <typename Derived>
     OOBB computeMVBB(const Vector3& zDir, const MatrixBase<Derived>& points)
     {
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
         using namespace CoordinateSystem;
         m_zDir = zDir;

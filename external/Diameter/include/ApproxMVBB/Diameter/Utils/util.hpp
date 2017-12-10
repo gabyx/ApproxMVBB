@@ -97,7 +97,7 @@ APPROXMVBB_EXPORT double _GetScalarProductAverage(int n);
 #endif
 
 /* square distances
-*/
+ */
 APPROXMVBB_EXPORT double _SquareDistance(double const* a, double const* b, const int dim);
 APPROXMVBB_EXPORT double _SquareDistance3D(double const* a, double const* b);
 APPROXMVBB_EXPORT double _SquareDistance2D(double const* a, double const* b);

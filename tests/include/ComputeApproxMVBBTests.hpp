@@ -176,7 +176,7 @@ public:
             std::set<unsigned int> i = {0,   29,  180, 212, 213, 192, 193, 175, 176, 162, 163, 146,
                                         147, 129, 130, 112, 113, 96,  97,  79,  80,  58,  59,  36,
                                         37,  7,   8,   1,   226, 196, 154, 137, 30,  4};
-            t = filterPoints(t, i);
+            t                        = filterPoints(t, i);
             convexHullTest(9, t);
         }
 

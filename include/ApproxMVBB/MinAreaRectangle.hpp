@@ -27,26 +27,26 @@
 namespace ApproxMVBB
 {
 /** Computes the Minimum Area Rectangle of the input points
-*   SideEffects: points is aftwards sorted and
-*/
+ *   SideEffects: points is aftwards sorted and
+ */
 class APPROXMVBB_EXPORT MinAreaRectangle
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    ApproxMVBB_DEFINE_MATRIX_TYPES
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
 
-        ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+    ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-        /** Cosntructor, points is not a temporary, it accepts all sorts of matrix
-        * expressions,
-        * however the construction of MatrixRef<> might create a temporary but
-        * this is stored in m_p!
-        * MatrixRef<>  m_p is handed further to m_conv
-        */
-        template <typename Derived>
-        MinAreaRectangle(const MatrixBase<Derived>& points) : m_p(points), m_convh(m_p)
+    /** Cosntructor, points is not a temporary, it accepts all sorts of matrix
+     * expressions,
+     * however the construction of MatrixRef<> might create a temporary but
+     * this is stored in m_p!
+     * MatrixRef<>  m_p is handed further to m_conv
+     */
+    template <typename Derived>
+    MinAreaRectangle(const MatrixBase<Derived>& points) : m_p(points), m_convh(m_p)
     {
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 2, Eigen::Dynamic)
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 2, Eigen::Dynamic);
         ApproxMVBB_ASSERTMSG(m_p.data() == points.derived().data(),
                              " You store a temporary in a Ref<> which works here, "
                              "but do you really want this?")

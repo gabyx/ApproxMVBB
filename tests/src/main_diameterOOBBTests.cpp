@@ -262,7 +262,7 @@ MY_TEST(DiameterOOBBTest, UnitPatches2D)
         ApproxMVBB::Matrix3Dyn t(3, 500);
         t = t.unaryExpr(f);
         t.row(2).setZero();
-        diameterTest(testName +"-Nr-" + std::to_string(i), t, true, 10, 0.0, 400, false);
+        diameterTest(testName + "-Nr-" + std::to_string(i), t, true, 10, 0.0, 400, false);
     }
 }
 

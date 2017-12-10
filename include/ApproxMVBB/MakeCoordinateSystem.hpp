@@ -22,20 +22,20 @@ namespace CoordinateSystem
 ApproxMVBB_DEFINE_MATRIX_TYPES
 
     /**
-    * @ingroup Common
-    * @defgroup MakeCoordinateSystem Make Coordinate System
-    * @brief This is a helper function to make a orthogonal normed right-hand
-    * coordinate system from an input vector.
-    */
+     * @ingroup Common
+     * @defgroup MakeCoordinateSystem Make Coordinate System
+     * @brief This is a helper function to make a orthogonal normed right-hand
+     * coordinate system from an input vector.
+     */
     /* @{ */
     /**
-    * @brief This function makes an orthogonal normed right-hand coordinate
-    * system. If the z-axis is the input, then v1 is the x-axis and v2 the
-    * y-axis.
-    * @param v1 The input 3x1 vector.
-    * @param v2 The first orthogonal output 3x1 vector.
-    * @param v2 The second orthogonal output 3x1 vector.
-    */
+     * @brief This function makes an orthogonal normed right-hand coordinate
+     * system. If the z-axis is the input, then v1 is the x-axis and v2 the
+     * y-axis.
+     * @param v1 The input 3x1 vector.
+     * @param v2 The first orthogonal output 3x1 vector.
+     * @param v2 The second orthogonal output 3x1 vector.
+     */
 
     inline void
     makeCoordinateSystem(Vector3& v1, Vector3& v2, Vector3& v3)

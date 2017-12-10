@@ -51,7 +51,7 @@ T swapEndian(T u)
 
     source.u = u;
 
-    for (size_t k  = 0; k < sizeof(T); k++)
+    for (size_t k = 0; k < sizeof(T); k++)
         dest.u8[k] = source.u8[sizeof(T) - k - 1];
 
     return dest.u;
@@ -158,12 +158,9 @@ void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeade
         }
         if (bytes != sizeof(typename Matrix::Scalar))
         {
-            ApproxMVBB_ERRORMSG(
-                "read binary with wrong data type: " << filename << "bigEndian: " << bigEndian << ", rows: " << rows
-                                                     << ", cols: "
-                                                     << cols
-                                                     << ", scalar bytes: "
-                                                     << bytes);
+            ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << "bigEndian: " << bigEndian
+                                                                     << ", rows: " << rows << ", cols: " << cols
+                                                                     << ", scalar bytes: " << bytes);
         }
 
         matrix.resize(rows, cols);

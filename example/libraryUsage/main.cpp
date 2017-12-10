@@ -16,11 +16,11 @@
 #include "ApproxMVBB/KdTree.hpp"
 #include "ApproxMVBB/KdTreeXml.hpp"
 
-ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES;
+ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    // Read in file
-    Vector3List
-    getPointsFromFile3D(std::string filePath)
+// Read in file
+Vector3List getPointsFromFile3D(std::string filePath)
 {
     std::ifstream file;           // creates stream myFile
     file.open(filePath.c_str());  // opens .txt file
@@ -44,13 +44,15 @@ ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 /** Special point type with id*/
 struct MyPoint
 {
-    ApproxMVBB_DEFINE_MATRIX_TYPES Vector3* m_p;
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
+    Vector3* m_p;
     unsigned int m_id;
 };
 /** Special point getter */
 struct MyPointGetter
 {
-    ApproxMVBB_DEFINE_MATRIX_TYPES static const Vector3& get(const MyPoint& p)
+    ApproxMVBB_DEFINE_MATRIX_TYPES;
+    static const Vector3& get(const MyPoint& p)
     {
         return *(p.m_p);
     }

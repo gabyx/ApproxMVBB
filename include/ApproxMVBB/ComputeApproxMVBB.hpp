@@ -25,35 +25,32 @@
 
 namespace ApproxMVBB
 {
-ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
+ApproxMVBB_DEFINE_MATRIX_TYPES;
+ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    /** We are given a point set, and (hopefully) a tight fitting
-    *   bounding box. We compute a sample of the given size nPoints that
-    * represents
-    *   the point-set. The only guarenteed is that if we use sample of size m,
-    *   we get an approximation of quality about 1/\sqrt{m}. Note that we pad
-    *   the sample if necessary to get the desired size.
-    *   This function changes the oobb and sets the z Axis to the greates
-    * extent!
-    *   @param nPoints needs to be greater or equal than 2
-    */
-    template <typename Derived>
-    APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn& newPoints,
-                                            const MatrixBase<Derived>& points,
-                                            const unsigned int nPoints,
-                                            OOBB& oobb,
-                                            std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed)
+/** We are given a point set, and (hopefully) a tight fitting
+ *   bounding box. We compute a sample of the given size nPoints that
+ * represents
+ *   the point-set. The only guarenteed is that if we use sample of size m,
+ *   we get an approximation of quality about 1/\sqrt{m}. Note that we pad
+ *   the sample if necessary to get the desired size.
+ *   This function changes the oobb and sets the z Axis to the greates
+ * extent!
+ *   @param nPoints needs to be greater or equal than 2
+ */
+template <typename Derived>
+APPROXMVBB_EXPORT void samplePointsGrid(Matrix3Dyn& newPoints,
+                                        const MatrixBase<Derived>& points,
+                                        const unsigned int nPoints,
+                                        OOBB& oobb,
+                                        std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed)
 {
     using IndexType = typename Derived::Index;
 
     if (nPoints > points.cols() || nPoints < 2)
     {
         ApproxMVBB_ERRORMSG("Wrong arguments!"
-                            << "sample nPoints: (>2) "
-                            << nPoints
-                            << " of points: "
-                            << points.cols()
-                            << std::endl)
+                            << "sample nPoints: (>2) " << nPoints << " of points: " << points.cols() << std::endl)
     }
 
     newPoints.resize(3, nPoints);
@@ -173,16 +170,16 @@ ApproxMVBB_DEFINE_MATRIX_TYPES ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES
 }
 
 /**
-* Function to optimize oriented bounding box volume.
-* Projecting nLoops times into the direction of the axis of the current oobb,
-* constructing the mvbb and overwriting the current oobb if volume is smaller
-* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume *
-* volumeAcceptFactor, which determines the tolerance when a new volume is
-* accepted
-* @param minBoxExtent is the minmum extent direction a box must have, to make
-* the volume not zero and comparable to other volumes
-*        which is useful for degenerate cases, such as all points in a surface
-*/
+ * Function to optimize oriented bounding box volume.
+ * Projecting nLoops times into the direction of the axis of the current oobb,
+ * constructing the mvbb and overwriting the current oobb if volume is smaller
+ * @param volumeAcceptFactor is volumeAcceptTol = oobb.volume *
+ * volumeAcceptFactor, which determines the tolerance when a new volume is
+ * accepted
+ * @param minBoxExtent is the minmum extent direction a box must have, to make
+ * the volume not zero and comparable to other volumes
+ *        which is useful for degenerate cases, such as all points in a surface
+ */
 template <typename Derived>
 APPROXMVBB_EXPORT OOBB optimizeMVBB(const MatrixBase<Derived>& points,
                                     OOBB oobb,
@@ -190,7 +187,7 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB(const MatrixBase<Derived>& points,
                                     PREC volumeAcceptFactor = 1e-6,
                                     PREC minBoxExtent       = 1e-12)
 {
-    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
     if (oobb.volume() == 0.0 || nLoops == 0)
     {
@@ -268,22 +265,22 @@ APPROXMVBB_EXPORT OOBB optimizeMVBB(const MatrixBase<Derived>& points,
 }
 
 /**
-* Function to optimize oriented bounding box volume.
-* This performs an exhaustive grid search over a given tighly fitted bounding
-* box (use approximateMVBBDiam)
-* to find a tighter volume.
-* @param gridSize is half the grid size of the 3d test grid in each direction,
-* for example gridDimX , gridDimY, gridDimZ = [-gridSize,gridSize]
-* @param optLoops how many optimization loops are preformed
-*        for the oobb computed in the given discrete sampled direction in the
-* grid  (see optimizeMVBB)
-* @param volumeAcceptFactor is volumeAcceptTol = oobb.volume *
-* volumeAcceptFactor, which determines the tolerance when a new volume is
-* accepted
-* @param minBoxExtent is the minmum extent direction a box must have, to make
-* the volume not zero and comparable to other volumes
-*        which is useful for degenerate cases, such as all points in a surface
-*/
+ * Function to optimize oriented bounding box volume.
+ * This performs an exhaustive grid search over a given tighly fitted bounding
+ * box (use approximateMVBBDiam)
+ * to find a tighter volume.
+ * @param gridSize is half the grid size of the 3d test grid in each direction,
+ * for example gridDimX , gridDimY, gridDimZ = [-gridSize,gridSize]
+ * @param optLoops how many optimization loops are preformed
+ *        for the oobb computed in the given discrete sampled direction in the
+ * grid  (see optimizeMVBB)
+ * @param volumeAcceptFactor is volumeAcceptTol = oobb.volume *
+ * volumeAcceptFactor, which determines the tolerance when a new volume is
+ * accepted
+ * @param minBoxExtent is the minmum extent direction a box must have, to make
+ * the volume not zero and comparable to other volumes
+ *        which is useful for degenerate cases, such as all points in a surface
+ */
 template <typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived>& points,
                                                  OOBB oobb,
@@ -293,7 +290,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived>& poin
                                                  PREC volumeAcceptFactor     = 1e-6,
                                                  PREC minBoxExtent           = 1e-12)
 {
-    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
     // Extent input oobb
     oobb.expandToMinExtentAbsolute(minBoxExtent);
@@ -310,12 +307,14 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived>& poin
     Vector3 dir;
 
 #ifdef ApproxMVBB_OPENMP_SUPPORT
-#pragma omp declare reduction(volumeIsSmaller : OOBB : omp_in.volume() < omp_out.volume()              \
-                                                                         ? omp_out = omp_in : omp_out) \
-                                                                               initializer(omp_priv(omp_orig))
+#pragma omp declare reduction(volumeIsSmaller                                                    \
+                              : OOBB                                                             \
+                              : omp_in.volume() < omp_out.volume() ? omp_out = omp_in : omp_out) \
+    initializer(omp_priv(omp_orig))
 
-#pragma omp parallel for schedule(dynamic, 4) collapse(3) shared(points) private(proj, dir) reduction( \
-    volumeIsSmaller : oobb) ApproxMVBB_OPENMP_NUMTHREADS
+#pragma omp parallel for schedule(dynamic, 4) collapse(3) shared(points) private(proj, dir) reduction(volumeIsSmaller \
+                                                                                                      : oobb)         \
+    ApproxMVBB_OPENMP_NUMTHREADS
 #endif
     for (int x = -int(gridSize); x <= (int)gridSize; ++x)
     {
@@ -348,9 +347,8 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived>& poin
                                                             oobb.volume() /*&& res.volume()>volumeAcceptTol */)
                 {
                     ApproxMVBB_MSGLOG_L2("gridSearch: new volume: " << res.volume() << std::endl
-                                                                    << "for dir: "
-                                                                    << dir.transpose()
-                                                                    << std::endl;) oobb = res;
+                                                                    << "for dir: " << dir.transpose() << std::endl;)
+                        oobb = res;
                 }
             }
         }
@@ -359,20 +357,20 @@ APPROXMVBB_EXPORT OOBB approximateMVBBGridSearch(const MatrixBase<Derived>& poin
 }
 
 /**
-* Function to optimize oriented bounding box volume.
-* This constructs an approximation of a tightly fitted bounding box by computing
-* the diameter d in 3d and afterwards the projection of the points in the plane
-* perpendicular to direction d
-* and then the diameter f in 2d and extruding the OOBB in 2d to the final OOBB
-* approximation in 3d.
-*/
+ * Function to optimize oriented bounding box volume.
+ * This constructs an approximation of a tightly fitted bounding box by computing
+ * the diameter d in 3d and afterwards the projection of the points in the plane
+ * perpendicular to direction d
+ * and then the diameter f in 2d and extruding the OOBB in 2d to the final OOBB
+ * approximation in 3d.
+ */
 template <typename Derived>
 APPROXMVBB_EXPORT OOBB approximateMVBBDiam(const MatrixBase<Derived>& points,
                                            const PREC epsilon,
                                            const unsigned int optLoops = 10,
                                            std::size_t seed            = ApproxMVBB::RandomGenerators::defaultSeed)
 {
-    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
     using namespace PointFunctions;
     auto pp = estimateDiameter<3>(points, epsilon, seed);
@@ -415,7 +413,7 @@ APPROXMVBB_EXPORT OOBB approximateMVBB(const MatrixBase<Derived>& points,
                                        const unsigned int mvbbGridSearchOptLoops = 6,
                                        std::size_t seed = ApproxMVBB::RandomGenerators::defaultSeed)
 {
-    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic)
+    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, 3, Eigen::Dynamic);
 
     // Get get MVBB from estimated diameter direction
     // take care forwarding means not using gen anymore !

@@ -16,15 +16,15 @@ namespace ApproxMVBB
 namespace ContainerFunctions
 {
 /** Move elements in the range [b,e) to front of the container if Func returns
-* true
-* This function is especially efficient if we have little items which need to
-* move to the front
-* This function respects the order of the elements
-* @param b iterator to the first item
-* @param e iterator to the last item
-* @return Iterator r  where the range [r,e] is the back part of the vector where
-* Func returned true
-*/
+ * true
+ * This function is especially efficient if we have little items which need to
+ * move to the front
+ * This function respects the order of the elements
+ * @param b iterator to the first item
+ * @param e iterator to the last item
+ * @return Iterator r  where the range [r,e] is the back part of the vector where
+ * Func returned true
+ */
 template <typename Iterator, typename Func>
 Iterator moveElementsToFrontIf(Iterator b, Iterator e, Func f)
 {
@@ -48,16 +48,16 @@ Iterator moveElementsToFrontIf(Iterator b, Iterator e, Func f)
 }
 
 /** Move elements in the range [b,e] to the back of the container if Func
-* returns true
-* This function is especially efficient if we have little items which need to
-* move to the front
-* Caution: This function does not respect the order of the items (so do not use
-* if container should stay sorted)!
-* @param b begin iterator
-* @param e end iterator (no past the end iterator of a container!)
-* @return Iterator r  where the range [r,e] is the back part of the vector where
-* Func returned true
-*/
+ * returns true
+ * This function is especially efficient if we have little items which need to
+ * move to the front
+ * Caution: This function does not respect the order of the items (so do not use
+ * if container should stay sorted)!
+ * @param b begin iterator
+ * @param e end iterator (no past the end iterator of a container!)
+ * @return Iterator r  where the range [r,e] is the back part of the vector where
+ * Func returned true
+ */
 template <typename Iterator, typename Func>
 Iterator moveElementsToBackIf(Iterator b, Iterator e, Func f)
 {
@@ -91,14 +91,14 @@ Iterator moveElementsToBackIf(Iterator b, Iterator e, Func f)
 }
 
 /** Move all sequences S in [b,e) to the front where each element i
-* of the subsequence S =[start,end] fullfils c(start,i).
-* Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Comp c=AlmostEqual)
-* This function is especially efficient if we have little items which need to
-* move to the front
-* This function respects the order of the elements
-* @return Iterator r  where the range [r,e] is the back part of the vector where
-* Comp c returned true
-*/
+ * of the subsequence S =[start,end] fullfils c(start,i).
+ * Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Comp c=AlmostEqual)
+ * This function is especially efficient if we have little items which need to
+ * move to the front
+ * This function respects the order of the elements
+ * @return Iterator r  where the range [r,e] is the back part of the vector where
+ * Comp c returned true
+ */
 template <typename Iterator, typename Comp>
 Iterator moveConsecutiveToFrontIf(Iterator b, Iterator e, Comp c)
 {
@@ -129,15 +129,15 @@ Iterator moveConsecutiveToFrontIf(Iterator b, Iterator e, Comp c)
     return write;
 }
 /** Move all sequences S in [b,e) to the front where each element i
-* of the subsequence S =[start,end] fullfils Func(start,i).
-* This function skips elements for which s(i) is true
-* Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Func=AlmostEqual)
-* This function is especially efficient if we have little items which need to
-* move to the front
-* This function respects the order of the elements
-* @return Iterator r  where the range [r,e] is the back part of the vector where
-* Func returned true
-*/
+ * of the subsequence S =[start,end] fullfils Func(start,i).
+ * This function skips elements for which s(i) is true
+ * Example: 1 2 2 2 3 3 3 4 5 5 6  -> 1 2 3 4 5 6 (with Func=AlmostEqual)
+ * This function is especially efficient if we have little items which need to
+ * move to the front
+ * This function respects the order of the elements
+ * @return Iterator r  where the range [r,e] is the back part of the vector where
+ * Func returned true
+ */
 template <typename Iterator, typename Func, typename Skip>
 Iterator moveConsecutiveToFrontIf(Iterator b, Iterator e, Func f, Skip s)
 {
