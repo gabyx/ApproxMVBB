@@ -40,9 +40,6 @@ public:
     OOBB operator=(const OOBB&) = default;
     OOBB operator=(OOBB&&) = default;
     
-    /** Construct this OOBB from a `minPoint` and `maxPoint` represented in coordinate
-        system K. Matrix `A_IK` is the coordinate transformation which transforms tuples in
-        system K to tuples in system I. */
     OOBB(const Vector3& minPoint, const Vector3& maxPoint, const Matrix33& A_IK);
 
     /** Construct this OOBB from an axis aligned bounding box `aabb`. 
@@ -75,10 +72,7 @@ public:
         }
     }
 
-    /** Switch the z-Axis to the axis with index `i`. */
     void switchZAxis(unsigned int i);
-
-    /** Reset the OOBB such that isEmpty() returns true. */
     void reset();
 
     /** Add points to this OOBB. The points `p` are assumed to be 
@@ -145,12 +139,8 @@ public:
             return ((p.array() >= m_minPoint.array()) && (p.array() <= m_maxPoint.array())).all();
         }
     }
-
-    /** Adjusts the box that all axes have at least a minimal extent of `maxExtent*p`, if
-        `maxExtent*p < eps` then all axes are set to the default extent `defaultExtent`. */
+    
     void expandToMinExtentRelative(PREC p = 0.1, PREC defaultExtent = 0.1, PREC eps = 1e-10);
-
-    /** Adjusts the extent of the box such that all axes have at least a minimal extent minExtent */
     void expandToMinExtentAbsolute(PREC minExtent);
     
     /** Expand the box symmetrically by an absolute value \p d. */
