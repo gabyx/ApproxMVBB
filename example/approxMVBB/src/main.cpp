@@ -23,8 +23,7 @@ int main(int argc, char** argv)
     ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,
                                                         0.001,
                                                         500,
-                                                        5 /*increasing the grid size decreases speed */
-                                                        ,
+                                                        5, /*increasing the grid size decreases speed */
                                                         0,
                                                         5);
 
