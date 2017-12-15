@@ -35,4 +35,4 @@ chmod +x $CHECKOUT_PATH/travis/install_dep.sh
 # "DEPENDECIES COMPLETE ================================================================="
 
 # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
-set +e
+set +e # exit on errors off

@@ -31,3 +31,5 @@ chmod +x $CHECKOUT_PATH/travis/install_dep.sh
 # run the command in this process -> env varibales!
 . $CHECKOUT_PATH/travis/install_dep.sh
 # "DEPENDECIES COMPLETE ================================================================="
+
+set +e # exit on errors off
