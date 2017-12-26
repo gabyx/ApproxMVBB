@@ -47,3 +47,5 @@ else
 
   export BUILD_APPROXMVBB="ON"
 fi
+
+set +e # exit on errors off

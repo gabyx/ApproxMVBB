@@ -11,7 +11,7 @@ export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
 export PATH="$PATH:$INSTALL_PREFIX/bin"
 
 # travis bug: https://github.com/travis-ci/travis-ci/issues/6307
-# rvm get head || true
+rvm get head || true
 
 brew update || echo "suppress failures in order to ignore warnings"
 brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
