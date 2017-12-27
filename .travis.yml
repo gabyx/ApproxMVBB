@@ -45,8 +45,15 @@ matrix:
     compiler: clang
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rvm get stable; fi
-  
+   # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
+   # See https://github.com/searchivarius/nmslib/pull/259
+   - |
+      if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
+         command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
+         rvm get head || true
+      fi
+ 
+
 # Install dependencies
 install:
   - export ROOT_PATH=`pwd`/../;
