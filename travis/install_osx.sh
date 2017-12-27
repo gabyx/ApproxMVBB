@@ -18,7 +18,8 @@ brew tap homebrew/versions || echo "suppress failures in order to ignore warning
 
 # eigen3 needs gfortran
 brew install gcc || echo "suppress failures in order to ignore warnings"
-brew install gfortran || echo "suppress failures in order to ignore warnings"
+brew link --overwrite --dry-run gcc
+brew link --dry-run gcc
 
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
