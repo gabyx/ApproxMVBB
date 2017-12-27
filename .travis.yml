@@ -44,6 +44,9 @@ matrix:
     os: osx
     compiler: clang
 
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rvm get stable; fi
+  
 # Install dependencies
 install:
   - export ROOT_PATH=`pwd`/../;
