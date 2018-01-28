@@ -55,7 +55,7 @@ install:
   - echo "ROOT_PATH= $ROOT_PATH"
   - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
 
-  - export branchName=$(cd $CHECKOUT_PATH && git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+  - export branchName=$TRAVIS_BRANCH
 
   - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
