@@ -4,6 +4,8 @@
 
 set -e
 
+echo "On branch: $branchName"
+
 # Check if we build the project
 if [ "$BUILD_APPROXMVBB" == "OFF" ]; then
   echo "Do not build ApproxMVBB!"
@@ -34,23 +36,27 @@ make VERBOSE=1
 make install
 cd $ROOT_PATH
 
-# make install and library usage!
-echo "Install and test if ApproxMVBB links:"
-mkdir $ROOT_PATH/buildLibUsage
-cd $ROOT_PATH/buildLibUsage
-INSTALL="$ROOT_PATH/build/../install/share/ApproxMVBB/cmake"
-echo "Install dir= $INSTALL"
-cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
-                                          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                                          -DCMAKE_VERBOSE_MAKEFILE=ON \
-                                          -DApproxMVBB_DIR=$INSTALL
-make VERBOSE=1
-cd $ROOT_PATH
+if [[ $branchName == "unitTests" ]]; then
 
-if [ $branchName == "unitTests" ]; then
   echo "ApproxMVBB: Run unit tests!"
   cd $ROOT_PATH/build
   make build_and_test
+
+else
+
+  # make install and library usage!
+  echo "Install and test if ApproxMVBB links:"
+  mkdir $ROOT_PATH/buildLibUsage
+  cd $ROOT_PATH/buildLibUsage
+  INSTALL="$ROOT_PATH/build/../install/share/ApproxMVBB/cmake"
+  echo "Install dir= $INSTALL"
+  cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
+                                            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+                                            -DCMAKE_VERBOSE_MAKEFILE=ON \
+                                            -DApproxMVBB_DIR=$INSTALL
+  make VERBOSE=1
+  cd $ROOT_PATH
+
 fi
 
 # BUILD COMPLETE ================================================================
