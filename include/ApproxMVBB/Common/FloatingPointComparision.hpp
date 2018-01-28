@@ -64,7 +64,7 @@
 #ifndef ApproxMVBB_Common_FloatingPointComparision_hpp
 #define ApproxMVBB_Common_FloatingPointComparision_hpp
 
-template <size_t size>
+template<size_t size>
 class TypeWithSize
 {
 public:
@@ -74,7 +74,7 @@ public:
 };
 
 // The specialization for size 4.
-template <>
+template<>
 class TypeWithSize<4>
 {
 public:
@@ -87,7 +87,7 @@ public:
 };
 
 // The specialization for size 8.
-template <>
+template<>
 class TypeWithSize<8>
 {
 public:
@@ -100,7 +100,7 @@ public:
 #endif  // GTEST_OS_WINDOWS
 };
 
-template <typename RawType>
+template<typename RawType>
 class FloatingPoint
 {
 public:

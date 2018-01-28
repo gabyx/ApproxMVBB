@@ -14,22 +14,22 @@
 
 namespace GeometryPredicates
 {
-/** Initializer which intializes essential values for the predicates */
-struct PredicatesInit
-{
-    REAL splitter; /* = 2^ceiling(p / 2) + 1.  Used to split floats in half. */
-    /* A set of coefficients used to calculate maximum roundoff errors. */
-    REAL resulterrbound;
-    REAL ccwerrboundA, ccwerrboundB, ccwerrboundC;
-    REAL o3derrboundA, o3derrboundB, o3derrboundC;
-    REAL iccerrboundA, iccerrboundB, iccerrboundC;
-    REAL isperrboundA, isperrboundB, isperrboundC;
+    /** Initializer which intializes essential values for the predicates */
+    struct PredicatesInit
+    {
+        REAL splitter; /* = 2^ceiling(p / 2) + 1.  Used to split floats in half. */
+        /* A set of coefficients used to calculate maximum roundoff errors. */
+        REAL resulterrbound;
+        REAL ccwerrboundA, ccwerrboundB, ccwerrboundC;
+        REAL o3derrboundA, o3derrboundB, o3derrboundC;
+        REAL iccerrboundA, iccerrboundB, iccerrboundC;
+        REAL isperrboundA, isperrboundB, isperrboundC;
 
-    PredicatesInit();
-};
+        PredicatesInit();
+    };
 
-//! Global variable which contains the init values.
-extern PredicatesInit predicatesInit;
-}
+    //! Global variable which contains the init values.
+    extern PredicatesInit predicatesInit;
+}  // namespace GeometryPredicates
 
 #endif

@@ -21,53 +21,53 @@
 
 namespace ApproxMVBB
 {
-namespace DiameterTest
-{
-template <typename TMatrix>
-void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
-{
-    using namespace PointFunctions;
-    using namespace TestFunctions;
-
-    TMatrix in = v;
-    std::cout << "\n\nStart diameterTest: " + name + "" << std::endl;
-    START_TIMER(start)
-    auto pp = estimateDiameter<3>(v, epsilon);
-    STOP_TIMER_SEC(count, start)
-    std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End diameterTest " + name << std::endl;
-
-    Matrix3Dyn diam(3, 2);
-    diam.col(0) = pp.first;
-    diam.col(1) = pp.second;
-    dumpPointsMatrixBinary(getFileOutPath(name, ".bin"), diam);  // dumps diameter
-    dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), v);    // dump generated points
-
-    // CHECK
-    try
+    namespace DiameterTest
     {
-        Matrix3Dyn diamV(3, 2);
-        readPointsMatrixBinary(getFileValidationPath(name, ".bin"), diamV);
-        Matrix3Dyn inputPointsV;
-        readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), inputPointsV);
+        template<typename TMatrix>
+        void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
+        {
+            using namespace PointFunctions;
+            using namespace TestFunctions;
 
-        EXPECT_TRUE((in.array() == v.array()).all())
-            << " estimate diameter changed the point cloud! should not happed!";
+            TMatrix in = v;
+            std::cout << "\n\nStart diameterTest: " + name + "" << std::endl;
+            START_TIMER(start)
+            auto pp = estimateDiameter<3>(v, epsilon);
+            STOP_TIMER_SEC(count, start)
+            std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
+            std::cout << "End diameterTest " + name << std::endl;
 
-        EXPECT_TRUE(assertNearArrayColsRows(diam, diamV)) << "Diameter valid: " << std::endl
-                                                          << diamV << std::endl
-                                                          << "Diameter computed: " << std::endl
-                                                          << diam << std::endl;
+            Matrix3Dyn diam(3, 2);
+            diam.col(0) = pp.first;
+            diam.col(1) = pp.second;
+            dumpPointsMatrixBinary(getFileOutPath(name, ".bin"), diam);  // dumps diameter
+            dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), v);    // dump generated points
 
-        EXPECT_TRUE(assertNearArray(v, inputPointsV)) << "input points not the same as valid ones";
-    }
-    catch(ApproxMVBB::Exception& e)
-    {
-        ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
-    }
-}
-};
-};
+            // CHECK
+            try
+            {
+                Matrix3Dyn diamV(3, 2);
+                readPointsMatrixBinary(getFileValidationPath(name, ".bin"), diamV);
+                Matrix3Dyn inputPointsV;
+                readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), inputPointsV);
+
+                EXPECT_TRUE((in.array() == v.array()).all())
+                    << " estimate diameter changed the point cloud! should not happed!";
+
+                EXPECT_TRUE(assertNearArrayColsRows(diam, diamV)) << "Diameter valid: " << std::endl
+                                                                  << diamV << std::endl
+                                                                  << "Diameter computed: " << std::endl
+                                                                  << diam << std::endl;
+
+                EXPECT_TRUE(assertNearArray(v, inputPointsV)) << "input points not the same as valid ones";
+            }
+            catch(ApproxMVBB::Exception& e)
+            {
+                ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
+            }
+        }
+    };  // namespace DiameterTest
+};      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

@@ -14,52 +14,38 @@
 #include "ApproxMVBB/Config/Config.hpp"
 
 #ifdef __CYGWIN__
-#include "ApproxMVBB/Common/CygwinPatch.hpp"
+#    include "ApproxMVBB/Common/CygwinPatch.hpp"
 #endif
 
 namespace ApproxMVBB
 {
-#if(defined _WIN32) || (defined __CYGWIN__) || (defined WIN32)
-
-// This macro is given to the compiler when building the library!
-#ifdef ApproxMVBB_BUILD_LIBRARY
-
-#pragma message(" Platform.hpp: Building library ...")
-
-#ifdef __GNUC__
-#define APPROXMVBB_EXPORT __attribute__((dllexport))
+#if(defined _WIN32) || (defined __CYGWIN__) || (defined WIN32)  // This macro is given to the compiler when building the library!
+#    ifdef ApproxMVBB_BUILD_LIBRARY
+#        pragma message(" Platform.hpp: Building library ...")
+#        ifdef __GNUC__
+#            define APPROXMVBB_EXPORT __attribute__((dllexport))
+#        else
+#            define APPROXMVBB_EXPORT __declspec(dllexport)  // Note: actually gcc seems to also supports this syntax.
+#        endif
+#    else
+#        ifdef __GNUC__
+#            define APPROXMVBB_EXPORT __attribute__((dllimport))
+#        else
+#            define APPROXMVBB_EXPORT __declspec(dllimport)  // Note: actually gcc seems to also supports this syntax.
+#        endif
+#    endif
 #else
-#define APPROXMVBB_EXPORT __declspec(dllexport)  // Note: actually gcc seems to also supports this syntax.
+#    ifdef ApproxMVBB_BUILD_LIBRARY
+#        if __GNUC__ >= 4 || __clang__
+#            define APPROXMVBB_EXPORT __attribute__((visibility("default")))
+#        else
+#            define APPROXMVBB_EXPORT
+#            warning "Unknown compiler: Exporting everything into library!"
+#        endif
+#    else
+#        define APPROXMVBB_EXPORT
+#    endif
 #endif
-
-#else
-
-#ifdef __GNUC__
-#define APPROXMVBB_EXPORT __attribute__((dllimport))
-#else
-#define APPROXMVBB_EXPORT __declspec(dllimport)  // Note: actually gcc seems to also supports this syntax.
-#endif
-
-#endif
-
-#else
-
-#ifdef ApproxMVBB_BUILD_LIBRARY
-
-#pragma message(" Platform.hpp: Building library ...")
-
-#if __GNUC__ >= 4 || __clang__
-#define APPROXMVBB_EXPORT __attribute__((visibility("default")))
-#else
-#define APPROXMVBB_EXPORT
-#warning "Unknown compiler: Exporting everything into library!"
-#endif
-
-#else
-#define APPROXMVBB_EXPORT
-#endif
-
-#endif
-}
+}  // namespace ApproxMVBB
 
 #endif

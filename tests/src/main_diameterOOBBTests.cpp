@@ -21,98 +21,98 @@
 
 namespace ApproxMVBB
 {
-namespace DiameterOOBBTest
-{
-template <typename TMatrix>
-void diameterTest(std::string name,
-                  const TMatrix& v,
-                  bool dump                 = true,
-                  unsigned int optLoops     = 10,
-                  PREC epsilon              = 0.001,
-                  unsigned int samplePoints = 400,
-                  bool checkVolume          = true)
-{
-    using namespace PointFunctions;
-    using namespace TestFunctions;
-
-    if(dump)
+    namespace DiameterOOBBTest
     {
-        dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-        dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
-    }
-
-    std::cout << "\n\nStart diameterOOBB test " + name + "" << std::endl;
-    START_TIMER(start)
-    auto oobb = ApproxMVBB::approximateMVBBDiam(v, epsilon, optLoops);
-    STOP_TIMER_SEC(count, start)
-    std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End diameterOOBB test " + name << std::endl;
-
-    oobb.expand(1e-10);
-    if(!checkPointsInOOBB(v, oobb))
-    {
-        std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
-    }
-    else
-    {
-        std::cout << "All points in OOBB!" << std::endl;
-    }
-
-    dumpOOBB(getFileOutPath(name, ".txt"), oobb);
-
-    // Check OOBB
-    OOBB validOOBB;
-    try
-    {
-        validOOBB = readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
-        if(checkVolume)
+        template<typename TMatrix>
+        void diameterTest(std::string name,
+                          const TMatrix& v,
+                          bool dump                 = true,
+                          unsigned int optLoops     = 10,
+                          PREC epsilon              = 0.001,
+                          unsigned int samplePoints = 400,
+                          bool checkVolume          = true)
         {
-            ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
+            using namespace PointFunctions;
+            using namespace TestFunctions;
+
+            if(dump)
+            {
+                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
+                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+            }
+
+            std::cout << "\n\nStart diameterOOBB test " + name + "" << std::endl;
+            START_TIMER(start)
+            auto oobb = ApproxMVBB::approximateMVBBDiam(v, epsilon, optLoops);
+            STOP_TIMER_SEC(count, start)
+            std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
+            std::cout << "End diameterOOBB test " + name << std::endl;
+
+            oobb.expand(1e-10);
+            if(!checkPointsInOOBB(v, oobb))
+            {
+                std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
+            }
+            else
+            {
+                std::cout << "All points in OOBB!" << std::endl;
+            }
+
+            dumpOOBB(getFileOutPath(name, ".txt"), oobb);
+
+            // Check OOBB
+            OOBB validOOBB;
+            try
+            {
+                validOOBB = readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
+                if(checkVolume)
+                {
+                    ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
+                }
+            }
+            catch(ApproxMVBB::Exception& e)
+            {
+                ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
+            }
+
+            // Sample with valid OOBB (computed OOBB might different R_IK but same corners points)
+            std::cout << "Start Sampling test " + name + "" << std::endl;
+            Matrix3Dyn sampled;
+            START_TIMER(start2)
+            ApproxMVBB::samplePointsGrid(sampled, v, samplePoints, validOOBB);
+            STOP_TIMER_SEC(count2, start2)
+            std::cout << "Timings: " << count2 << " sec for " << sampled.cols() << " points" << std::endl;
+            std::cout << "End Sampling test " + name << std::endl;
+
+            dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), sampled);
+
+            Matrix3Dyn valid;
+            try
+            {
+                // Check Sampled points
+                Matrix3Dyn valid = sampled;
+                valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
+                readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), valid);
+
+                if(sampled.cols() > 100)
+                {
+                    EXPECT_TRUE(assertNearArray(sampled, valid));
+                }
+                else
+                {
+                    EXPECT_TRUE(assertNearArray(sampled, valid)) << std::endl
+                                                                 << "valid points:" << valid.transpose() << std::endl
+                                                                 << "and:" << std::endl
+                                                                 << sampled.transpose();
+                }
+            }
+            catch(ApproxMVBB::Exception& e)
+            {
+                ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
+            }
         }
-    }
-    catch(ApproxMVBB::Exception& e)
-    {
-        ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
-    }
-
-    // Sample with valid OOBB (computed OOBB might different R_IK but same corners points)
-    std::cout << "Start Sampling test " + name + "" << std::endl;
-    Matrix3Dyn sampled;
-    START_TIMER(start2)
-    ApproxMVBB::samplePointsGrid(sampled, v, samplePoints, validOOBB);
-    STOP_TIMER_SEC(count2, start2)
-    std::cout << "Timings: " << count2 << " sec for " << sampled.cols() << " points" << std::endl;
-    std::cout << "End Sampling test " + name << std::endl;
-
-    dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), sampled);
-
-    Matrix3Dyn valid;
-    try
-    {
-        // Check Sampled points
-        Matrix3Dyn valid = sampled;
-        valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-        readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), valid);
-
-        if(sampled.cols() > 100)
-        {
-            EXPECT_TRUE(assertNearArray(sampled, valid));
-        }
-        else
-        {
-            EXPECT_TRUE(assertNearArray(sampled, valid)) << std::endl
-                                                         << "valid points:" << valid.transpose() << std::endl
-                                                         << "and:" << std::endl
-                                                         << sampled.transpose();
-        }
-    }
-    catch(ApproxMVBB::Exception& e)
-    {
-        ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
-    }
-}
-};
-};
+    };  // namespace DiameterOOBBTest
+};      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

@@ -32,11 +32,11 @@ macro(check_float_precision)
     fpu_control_t fpu_oldcw, fpu_cw;
     volatile double result;
  
-    _FPU_GETCW(fpu_oldcw);
+    _fpu_getcw(fpu_oldcw);
     fpu_cw = (fpu_oldcw & ~_FPU_EXTENDED & ~_FPU_SINGLE) | _FPU_DOUBLE;
-    _FPU_SETCW(fpu_cw);
+    _fpu_setcw(fpu_cw);
     result = a / b;
-    _FPU_SETCW(fpu_oldcw);
+    _fpu_setcw(fpu_oldcw);
     return result;
   }
  

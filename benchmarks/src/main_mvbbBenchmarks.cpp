@@ -25,20 +25,20 @@
 
 namespace ApproxMVBB
 {
-namespace MVBBBenchmarks
-{
-template <typename TMatrix>
-void mvbbTest(const TMatrix& v,
-              PREC eps                        = 0.001,
-              unsigned int nPoints            = 400,
-              unsigned int gridSize           = 5,
-              unsigned int mvbbDiamOptLoops   = 2,
-              unsigned int gridSearchOptLoops = 10)
-{
-    auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
-}
-}
-}
+    namespace MVBBBenchmarks
+    {
+        template<typename TMatrix>
+        void mvbbTest(const TMatrix& v,
+                      PREC eps                        = 0.001,
+                      unsigned int nPoints            = 400,
+                      unsigned int gridSize           = 5,
+                      unsigned int mvbbDiamOptLoops   = 2,
+                      unsigned int gridSearchOptLoops = 10)
+        {
+            auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
+        }
+    }  // namespace MVBBBenchmarks
+}  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

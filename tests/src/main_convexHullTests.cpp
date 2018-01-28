@@ -21,52 +21,52 @@
 
 namespace ApproxMVBB
 {
-namespace ConvexHullTest
-{
-template <typename TMatrix>
-void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
-{
-    using namespace TestFunctions;
-    using namespace PointFunctions;
-
-    if(dumpPoints)
+    namespace ConvexHullTest
     {
-        dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-        dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
-    }
-    std::cout << "\n\nStart convexHull test " << name << "" << std::endl;
-    START_TIMER(start)
-    ConvexHull2D c(v);
-    c.compute();
-    STOP_TIMER_SEC(count, start)
-    std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End convexHull test " << name << "" << std::endl;
-    if(!c.verifyHull())
-    {
-        std::cerr << "ConvexHull test " << name << " not ok!" << std::endl;
-    }
+        template<typename TMatrix>
+        void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
+        {
+            using namespace TestFunctions;
+            using namespace PointFunctions;
 
-    auto ind = c.getIndices();
-    std::cout << "ConvexHull Points: " << ind.size() << std::endl;
-    unsigned int j = 0;
-    ApproxMVBB::Matrix2Dyn qHull(2, ind.size());
-    for(auto& i : ind)
-    {
-        qHull.col(j++) = v.col(i);
-    }
+            if(dumpPoints)
+            {
+                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
+                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+            }
+            std::cout << "\n\nStart convexHull test " << name << "" << std::endl;
+            START_TIMER(start)
+            ConvexHull2D c(v);
+            c.compute();
+            STOP_TIMER_SEC(count, start)
+            std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
+            std::cout << "End convexHull test " << name << "" << std::endl;
+            if(!c.verifyHull())
+            {
+                std::cerr << "ConvexHull test " << name << " not ok!" << std::endl;
+            }
 
-    dumpPointsMatrixBinary(getFileOutPath(name), qHull);
+            auto ind = c.getIndices();
+            std::cout << "ConvexHull Points: " << ind.size() << std::endl;
+            unsigned int j = 0;
+            ApproxMVBB::Matrix2Dyn qHull(2, ind.size());
+            for(auto& i : ind)
+            {
+                qHull.col(j++) = v.col(i);
+            }
 
-    // Compare with validation file
-    TMatrix valid = qHull;
-    valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-    readPointsMatrixBinary(getFileValidationPath(name), valid);
-    EXPECT_TRUE(assertNearArray(qHull, valid));
-}
+            dumpPointsMatrixBinary(getFileOutPath(name), qHull);
 
-//    void MY_TEST() {
-};
-};
+            // Compare with validation file
+            TMatrix valid = qHull;
+            valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
+            readPointsMatrixBinary(getFileValidationPath(name), valid);
+            EXPECT_TRUE(assertNearArray(qHull, valid));
+        }
+
+        //    void MY_TEST() {
+    };  // namespace ConvexHullTest
+};      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;
@@ -200,8 +200,7 @@ MY_TEST(ConvexHullTest, PointsBadProjectionFilter)
     readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
 
     // Filter points
-    std::set<unsigned int> i = {0,  29, 180, 212, 213, 192, 193, 175, 176, 162, 163, 146, 147, 129, 130, 112, 113,
-                                96, 97, 79,  80,  58,  59,  36,  37,  7,   8,   1,   226, 196, 154, 137, 30,  4};
+    std::set<unsigned int> i = {0, 29, 180, 212, 213, 192, 193, 175, 176, 162, 163, 146, 147, 129, 130, 112, 113, 96, 97, 79, 80, 58, 59, 36, 37, 7, 8, 1, 226, 196, 154, 137, 30, 4};
     t                        = filterPoints(t, i);
     convexHullTest(testName, t);
 }

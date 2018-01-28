@@ -19,163 +19,164 @@
 
 namespace ApproxMVBB
 {
-namespace TestFunctions
-{
-ApproxMVBB_DEFINE_MATRIX_TYPES;
-ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
-
-// TODO not std lib conform!
-std::size_t hashString(std::string name);
-
-template <typename T = PREC>
-std::string getPrecAbrev();
-
-std::string getFileInPath(std::string name);
-std::string getFileInAddPath(std::string name);
-std::string getPointsDumpPath(std::string name, std::string suffix = ".bin");
-std::string getFileOutPath(std::string name, std::string suffix = ".bin");
-std::string getFileValidationPath(std::string name, std::string suffix = ".bin");
-
-int isBigEndian(void);
-
-template <typename T>
-T swapEndian(T u)
-{
-    ApproxMVBB_STATIC_ASSERTM(sizeof(char) == 1, "char != 8 bit");
-
-    union
+    namespace TestFunctions
     {
-        T u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
+        ApproxMVBB_DEFINE_MATRIX_TYPES;
+        ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
-    source.u = u;
+        // TODO not std lib conform!
+        std::size_t hashString(std::string name);
 
-    for(size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+        template<typename T = PREC>
+        std::string getPrecAbrev();
 
-    return dest.u;
-}
+        std::string getFileInPath(std::string name);
+        std::string getFileInAddPath(std::string name);
+        std::string getPointsDumpPath(std::string name, std::string suffix = ".bin");
+        std::string getFileOutPath(std::string name, std::string suffix = ".bin");
+        std::string getFileValidationPath(std::string name, std::string suffix = ".bin");
 
-void readOOBB(std::string filePath, Vector3& minP, Vector3& maxP, Matrix33& R_KI, Vector3List& pointList);
-OOBB readOOBBAndCheck(OOBB& oobb, std::string filePath);
-void dumpOOBB(std::string filePath, const OOBB& oobb);
+        int isBigEndian(void);
 
-Vector3List getPointsFromFile3D(std::string filePath);
-Vector2List getPointsFromFile2D(std::string filePath);
-
-template <typename Container>
-void dumpPoints(std::string filePath, Container& c)
-{
-    std::ofstream l;
-    l.open(filePath.c_str());
-    if(!l.good())
-    {
-        ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-    }
-    if(c.size() != 0)
-    {
-        auto e  = c.begin() + (c.size() - 1);
-        auto it = c.begin();
-        for(; it != e; ++it)
+        template<typename T>
+        T swapEndian(T u)
         {
-            l << it->transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        }
-        l << (it)->transpose().format(MyMatrixIOFormat::SpaceSep);
-    }
-    l.close();
-}
-template <typename Derived>
-void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived>& v)
-{
-    std::ofstream l;
-    l.open(filePath.c_str());
-    if(!l.good())
-    {
-        ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
-    }
+            ApproxMVBB_STATIC_ASSERTM(sizeof(char) == 1, "char != 8 bit");
 
-    if(v.cols() != 0)
-    {
-        unsigned int i = 0;
-        for(; i < v.cols() - 1; i++)
-        {
-            l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
-        }
-        l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep);
-    }
+            union
+            {
+                T u;
+                unsigned char u8[sizeof(T)];
+            } source, dest;
 
-    l.close();
-}
+            source.u = u;
 
-template <class Matrix>
-void dumpPointsMatrixBinary(std::string filename, const Matrix& matrix)
-{
-    std::ofstream out(filename, std::ios::out | std::ios::binary | std::ios::trunc);
-    typename Matrix::Index rows                                                  = matrix.rows();
-    typename Matrix::Index cols                                                  = matrix.cols();
-    ApproxMVBB_STATIC_ASSERT(sizeof(typename Matrix::Index) == 8) bool bigEndian = isBigEndian();
+            for(size_t k = 0; k < sizeof(T); k++)
+                dest.u8[k] = source.u8[sizeof(T) - k - 1];
 
-    out.write((char*)(&bigEndian), sizeof(bool));
-    out.write((char*)(&rows), sizeof(typename Matrix::Index));
-    out.write((char*)(&cols), sizeof(typename Matrix::Index));
-
-    typename Matrix::Index bytes = sizeof(typename Matrix::Scalar);
-    out.write((char*)(&bytes), sizeof(typename Matrix::Index));
-
-    out.write((char*)matrix.data(), rows * cols * sizeof(typename Matrix::Scalar));
-    out.close();
-}
-template <class Matrix>
-void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeader = true)
-{
-    std::ifstream in(filename, std::ios::in | std::ios::binary);
-
-    if(!in.is_open())
-    {
-        ApproxMVBB_ERRORMSG("cannot open file: " << filename);
-    }
-
-    typename Matrix::Index rows = matrix.rows();
-    typename Matrix::Index cols = matrix.cols();
-    ApproxMVBB_STATIC_ASSERT(sizeof(typename Matrix::Index) == 8) bool bigEndian =
-        false;  // assume all input files with no headers are little endian!
-
-    if(withHeader)
-    {
-        in.read((char*)(&bigEndian), sizeof(bool));
-        in.read((char*)(&rows), sizeof(typename Matrix::Index));
-        in.read((char*)(&cols), sizeof(typename Matrix::Index));
-        typename Matrix::Index bytes;
-        in.read((char*)(&bytes), sizeof(typename Matrix::Index));
-
-        // swap endianness if file has other type
-        if(isBigEndian() != bigEndian)
-        {
-            rows  = swapEndian(rows);
-            cols  = swapEndian(cols);
-            bytes = swapEndian(bytes);
-        }
-        if(bytes != sizeof(typename Matrix::Scalar))
-        {
-            ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << "bigEndian: " << bigEndian
-                                                                     << ", rows: " << rows << ", cols: " << cols
-                                                                     << ", scalar bytes: " << bytes);
+            return dest.u;
         }
 
-        matrix.resize(rows, cols);
-    }
-    in.read((char*)matrix.data(), rows * cols * sizeof(typename Matrix::Scalar));
+        void readOOBB(std::string filePath, Vector3& minP, Vector3& maxP, Matrix33& R_KI, Vector3List& pointList);
+        OOBB readOOBBAndCheck(OOBB& oobb, std::string filePath);
+        void dumpOOBB(std::string filePath, const OOBB& oobb);
 
-    // swap endianness of whole matrix if file has other type
-    if(isBigEndian() != bigEndian)
-    {
-        auto f = [](const typename Matrix::Scalar& v) { return swapEndian(v); };
-        matrix = matrix.unaryExpr(f);
-    }
-    in.close();
-}
-}
-}
+        Vector3List getPointsFromFile3D(std::string filePath);
+        Vector2List getPointsFromFile2D(std::string filePath);
+
+        template<typename Container>
+        void dumpPoints(std::string filePath, Container& c)
+        {
+            std::ofstream l;
+            l.open(filePath.c_str());
+            if(!l.good())
+            {
+                ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
+            }
+            if(c.size() != 0)
+            {
+                auto e  = c.begin() + (c.size() - 1);
+                auto it = c.begin();
+                for(; it != e; ++it)
+                {
+                    l << it->transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+                }
+                l << (it)->transpose().format(MyMatrixIOFormat::SpaceSep);
+            }
+            l.close();
+        }
+        template<typename Derived>
+        void dumpPointsMatrix(std::string filePath, const MatrixBase<Derived>& v)
+        {
+            std::ofstream l;
+            l.open(filePath.c_str());
+            if(!l.good())
+            {
+                ApproxMVBB_ERRORMSG("Could not open file: " << filePath << std::endl)
+            }
+
+            if(v.cols() != 0)
+            {
+                unsigned int i = 0;
+                for(; i < v.cols() - 1; i++)
+                {
+                    l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep) << std::endl;
+                }
+                l << v.col(i).transpose().format(MyMatrixIOFormat::SpaceSep);
+            }
+
+            l.close();
+        }
+
+        template<class Matrix>
+        void dumpPointsMatrixBinary(std::string filename, const Matrix& matrix)
+        {
+            std::ofstream out(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+            typename Matrix::Index rows = matrix.rows();
+            typename Matrix::Index cols = matrix.cols();
+            ApproxMVBB_STATIC_ASSERT(sizeof(typename Matrix::Index) == 8);
+            bool bigEndian = isBigEndian();
+
+            out.write((char*)(&bigEndian), sizeof(bool));
+            out.write((char*)(&rows), sizeof(typename Matrix::Index));
+            out.write((char*)(&cols), sizeof(typename Matrix::Index));
+
+            typename Matrix::Index bytes = sizeof(typename Matrix::Scalar);
+            out.write((char*)(&bytes), sizeof(typename Matrix::Index));
+
+            out.write((char*)matrix.data(), rows * cols * sizeof(typename Matrix::Scalar));
+            out.close();
+        }
+        template<class Matrix>
+        void readPointsMatrixBinary(std::string filename, Matrix& matrix, bool withHeader = true)
+        {
+            std::ifstream in(filename, std::ios::in | std::ios::binary);
+
+            if(!in.is_open())
+            {
+                ApproxMVBB_ERRORMSG("cannot open file: " << filename);
+            }
+
+            typename Matrix::Index rows = matrix.rows();
+            typename Matrix::Index cols = matrix.cols();
+            ApproxMVBB_STATIC_ASSERT(sizeof(typename Matrix::Index) == 8);
+            bool bigEndian = false;  // assume all input files with no headers are little endian!
+
+            if(withHeader)
+            {
+                in.read((char*)(&bigEndian), sizeof(bool));
+                in.read((char*)(&rows), sizeof(typename Matrix::Index));
+                in.read((char*)(&cols), sizeof(typename Matrix::Index));
+                typename Matrix::Index bytes;
+                in.read((char*)(&bytes), sizeof(typename Matrix::Index));
+
+                // swap endianness if file has other type
+                if(isBigEndian() != bigEndian)
+                {
+                    rows  = swapEndian(rows);
+                    cols  = swapEndian(cols);
+                    bytes = swapEndian(bytes);
+                }
+                if(bytes != sizeof(typename Matrix::Scalar))
+                {
+                    ApproxMVBB_ERRORMSG("read binary with wrong data type: " << filename << "bigEndian: " << bigEndian
+                                                                             << ", rows: " << rows << ", cols: " << cols
+                                                                             << ", scalar bytes: " << bytes);
+                }
+
+                matrix.resize(rows, cols);
+            }
+            in.read((char*)matrix.data(), rows * cols * sizeof(typename Matrix::Scalar));
+
+            // swap endianness of whole matrix if file has other type
+            if(isBigEndian() != bigEndian)
+            {
+                auto f = [](const typename Matrix::Scalar& v) { return swapEndian(v); };
+                matrix = matrix.unaryExpr(f);
+            }
+            in.close();
+        }
+    }  // namespace TestFunctions
+}  // namespace ApproxMVBB
 
 #endif

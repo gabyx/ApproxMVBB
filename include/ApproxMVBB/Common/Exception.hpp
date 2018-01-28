@@ -16,24 +16,36 @@
 #include <stdexcept>
 #include <string>
 
+#ifdef __clang__
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wweak-vtables"
+#endif
+
 namespace ApproxMVBB
 {
-class Exception : public std::runtime_error
-{
-public:
-    Exception(const std::stringstream& ss) : std::runtime_error(ss.str())
+    class Exception : public std::runtime_error
     {
-    }
+    public:
+        Exception(const std::stringstream& ss)
+            : std::runtime_error(ss.str())
+        {
+        }
+        virtual ~Exception() = default;
 
-private:
-};
-}
+    private:
+    };
+}  // namespace ApproxMVBB
 
-#define ApproxMVBB_THROWEXCEPTION(message)                                                            \
-    {                                                                                                 \
-        std::stringstream ___s___;                                                                    \
-        ___s___ << message << std::endl << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; \
-        throw ApproxMVBB::Exception(___s___);                                                         \
-    }
+#    define ApproxMVBB_THROWEXCEPTION(message)                                    \
+        {                                                                         \
+            std::stringstream ___s___;                                            \
+            ___s___ << message << std::endl                                       \
+                    << " @ " << __FILE__ << " (" << __LINE__ << ")" << std::endl; \
+            throw ApproxMVBB::Exception(___s___);                                 \
+        }
+
+#    ifdef __clang__
+#        pragma clang diagnostic pop
+#    endif
 
 #endif  // Exception_hpp

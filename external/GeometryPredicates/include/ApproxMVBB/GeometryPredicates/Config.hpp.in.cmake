@@ -9,13 +9,13 @@
 
 /** Floating point config file for Predicates.hpp */
 
-    #cmakedefine HAVE__FPU_SETCW
-    #cmakedefine HAVE_FPSETPREC
-    #cmakedefine HAVE__CONTROLFP
-    #cmakedefine HAVE__CONTROLFP_S
-    #cmakedefine HAVE_FPU_INLINE_ASM_X86
+#cmakedefine HAVE__FPU_SETCW
+#cmakedefine HAVE_FPSETPREC
+#cmakedefine HAVE__CONTROLFP
+#cmakedefine HAVE__CONTROLFP_S
+#cmakedefine HAVE_FPU_INLINE_ASM_X86
 
 namespace GeometryPredicates
 {
     using REAL = double; /* float or double */
-};
+}

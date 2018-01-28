@@ -21,63 +21,63 @@
 
 namespace ApproxMVBB
 {
-namespace MVBBTests
-{
-template <typename TMatrix>
-void mvbbTest(std::string name,
-              const TMatrix& v,
-              bool dumpPoints                 = true,
-              PREC eps                        = 0.001,
-              unsigned int nPoints            = 400,
-              unsigned int gridSize           = 5,
-              unsigned int mvbbDiamOptLoops   = 2,
-              unsigned int gridSearchOptLoops = 10,
-              bool checkVolume                = true)
-{
-    using namespace PointFunctions;
-    using namespace TestFunctions;
-
-    if(dumpPoints)
+    namespace MVBBTests
     {
-        dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-        dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
-    }
-
-    std::cout << "\n\nStart mvbbTest " + name + "" << std::endl;
-    START_TIMER(start)
-    auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
-    STOP_TIMER_SEC(count, start)
-    std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End mvbbTest " + name << std::endl;
-
-    // oobb.expandToMinExtentRelative(0.1);
-
-    // Make all points inside OOBB!
-    Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();  // faster to store the transformation matrix first
-    auto size     = v.cols();
-    for(unsigned int i = 0; i < size; ++i)
-    {
-        oobb.unite(A_KI * v.col(i));
-    }
-
-    dumpOOBB(getFileOutPath(name, ".txt"), oobb);
-
-    // Check
-    try
-    {
-        readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
-        if(checkVolume)
+        template<typename TMatrix>
+        void mvbbTest(std::string name,
+                      const TMatrix& v,
+                      bool dumpPoints                 = true,
+                      PREC eps                        = 0.001,
+                      unsigned int nPoints            = 400,
+                      unsigned int gridSize           = 5,
+                      unsigned int mvbbDiamOptLoops   = 2,
+                      unsigned int gridSearchOptLoops = 10,
+                      bool checkVolume                = true)
         {
-            ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
+            using namespace PointFunctions;
+            using namespace TestFunctions;
+
+            if(dumpPoints)
+            {
+                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
+                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+            }
+
+            std::cout << "\n\nStart mvbbTest " + name + "" << std::endl;
+            START_TIMER(start)
+            auto oobb = ApproxMVBB::approximateMVBB(v, eps, nPoints, gridSize, mvbbDiamOptLoops, gridSearchOptLoops);
+            STOP_TIMER_SEC(count, start)
+            std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
+            std::cout << "End mvbbTest " + name << std::endl;
+
+            // oobb.expandToMinExtentRelative(0.1);
+
+            // Make all points inside OOBB!
+            Matrix33 A_KI = oobb.m_q_KI.matrix().transpose();  // faster to store the transformation matrix first
+            auto size     = v.cols();
+            for(unsigned int i = 0; i < size; ++i)
+            {
+                oobb.unite(A_KI * v.col(i));
+            }
+
+            dumpOOBB(getFileOutPath(name, ".txt"), oobb);
+
+            // Check
+            try
+            {
+                readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
+                if(checkVolume)
+                {
+                    ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
+                }
+            }
+            catch(ApproxMVBB::Exception& e)
+            {
+                ASSERT_TRUE(false) << "Exception in checking inside test!" << e.what() << std::endl;
+            }
         }
-    }
-    catch(ApproxMVBB::Exception& e)
-    {
-        ASSERT_TRUE(false) << "Exception in checking inside test!" << e.what() << std::endl;
-    }
-}
-};
-};
+    };  // namespace MVBBTests
+};      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

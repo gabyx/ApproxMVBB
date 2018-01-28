@@ -6,10 +6,10 @@
 # first run.  On further runs the user is free to change these defaults without
 # being overriden.
 #
-IF(NOT NOT_FIRST_CMAKE_RUN)
-	SET(FIRST_CMAKE_RUN ON)
-	SET(NOT_FIRST_CMAKE_RUN ON CACHE INTERNAL "Indicate that this is not the first CMake run" FORCE)
-ELSE()
-	SET(FIRST_CMAKE_RUN OFF)
-ENDIF()
+if(NOT NOT_FIRST_CMAKE_RUN)
+	set(FIRST_CMAKE_RUN ON)
+	set(NOT_FIRST_CMAKE_RUN ON CACHE INTERNAL "Indicate that this is not the first CMake run" FORCE)
+else()
+	set(FIRST_CMAKE_RUN OFF)
+endif()
 

@@ -16,22 +16,22 @@
 
 namespace ApproxMVBB
 {
-namespace TypeDefsPoints
-{
-ApproxMVBB_DEFINE_MATRIX_TYPES
+    namespace TypeDefsPoints
+    {
+        ApproxMVBB_DEFINE_MATRIX_TYPES;
 
-    using Vector3List = StdVecAligned<Vector3>;
-using Vector2List     = StdVecAligned<Vector2>;
+        using Vector3List = StdVecAligned<Vector3>;
+        using Vector2List = StdVecAligned<Vector2>;
 
-using Matrix3Dyn = MatrixStatDyn<3>;
-using Matrix2Dyn = MatrixStatDyn<2>;
-}
-}
+        using Matrix3Dyn = MatrixStatDyn<3>;
+        using Matrix2Dyn = MatrixStatDyn<2>;
+    }  // namespace TypeDefsPoints
+}  // namespace ApproxMVBB
 
-#define ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES                    \
-    using Vector3List = ApproxMVBB::TypeDefsPoints::Vector3List; \
-    using Vector2List = ApproxMVBB::TypeDefsPoints::Vector2List; \
-    using Matrix3Dyn  = ApproxMVBB::TypeDefsPoints::Matrix3Dyn;  \
-    using Matrix2Dyn  = ApproxMVBB::TypeDefsPoints::Matrix2Dyn;
+#    define ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES                    \
+        using Vector3List = ApproxMVBB::TypeDefsPoints::Vector3List; \
+        using Vector2List = ApproxMVBB::TypeDefsPoints::Vector2List; \
+        using Matrix3Dyn  = ApproxMVBB::TypeDefsPoints::Matrix3Dyn;  \
+        using Matrix2Dyn  = ApproxMVBB::TypeDefsPoints::Matrix2Dyn
 
 #endif

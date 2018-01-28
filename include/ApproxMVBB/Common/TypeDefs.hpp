@@ -20,17 +20,18 @@
 
 namespace ApproxMVBB
 {
-struct GlobalConfigs
-{
-    using PREC = double;
-};
+    struct GlobalConfigs
+    {
+        using PREC = double;
+    };
 
 #define ApproxMVBB_DEFINE_MATRIX_TYPES            \
     using PREC = ApproxMVBB::GlobalConfigs::PREC; \
-    ApproxMVBB_DEFINE_MATRIX_TYPES_OF(PREC);
-ApproxMVBB_DEFINE_CONTAINER_TYPES;
-}
+    ApproxMVBB_DEFINE_MATRIX_TYPES_OF(PREC);      \
+    ApproxMVBB_DEFINE_CONTAINER_TYPES
 
-#include "ApproxMVBB/TypeDefsPoints.hpp"
+}  // namespace ApproxMVBB
+
+#    include "ApproxMVBB/Common/TypeDefsPoints.hpp"
 
 #endif

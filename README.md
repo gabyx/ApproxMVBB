@@ -84,13 +84,11 @@ The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxm
 ```cmake
     find_package(ApproxMVBB [version] [COMPONENTS [SUPPORT_KDTREE] [SUPPORT_XML] ] [Required] )
 ```
-which defines the following variables if ApproxMVBB has been found successfully:
+which defines the following targets if ApproxMVBB has been found successfully:
 ```cmake
-    ApproxMVBB_CXX_FLAGS    #- extra flags for compilation
-    ApproxMVBB_INCLUDE_DIRS #- include directories
-    ApproxMVBB_LIBRARY_REL  #- Release library
-    ApproxMVBB_LIBRARY_DGB  #- Debug library
-    ApproxMVBB_LIBRARIES    #- libraries to link with
+    ApproxMVBB::Core            # Main target to link with!
+    ApproxMVBB::KdTreeSupport   # Optional target for KdTree support to link with (only available if installed with this supported!) 
+    ApproxMVBB::XMLSupport      # Optional target for XML support to link with (only available if installed with this supported!) 
 ```    
 The components `SUPPORT_KDTREE` additionally loads the dependency [meta](https://github.com/ericniebler/meta) for the `KdTree.hpp` header and `SUPPORT_XML` loads [pugixml](https://github.com/zeux/pugixml) for the `KdTreeXml.hpp` header.
 
@@ -99,6 +97,8 @@ If you installed the library into non-system generic location you can set the cm
     set(ApproxMVBB_DIR "path/to/installation/lib/cmake")
     find_package(ApproxMVBB [version] [Required] )
 ```
+See the example `example/libraryUsage` which should be configured as a separate build, and the example `example/kdTreeFiltering` for more information on how to 
+set up the dependencies!
 
 --------------------------
 Supported Platforms

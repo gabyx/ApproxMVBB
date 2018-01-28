@@ -6,8 +6,6 @@
 #                       this target is used for add_dependency for any project using meta
 # If Meta is not found, Meta_FOUND is set to false.
 
-find_package(PkgConfig)
-
 include(FindPackageHandleStandardArgs)
 
 if(NOT EXISTS "${Meta_INCLUDE_DIR}")

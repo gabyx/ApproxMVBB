@@ -30,5 +30,5 @@ set(ApproxMVBB_CMAKE_DIR  "${ApproxMVBB_ROOT_DIR}/cmake" CACHE STRING "ApproxMVB
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args("ApproxMVBBSource" DEFAULT_MSG ApproxMVBB_INC_DIR ApproxMVBB_SRC_DIR ApproxMVBB_CMAKE_DIR)
 
-MARK_AS_ADVANCED( ApproxMVBB_FORCE_MSGLOG_LEVEL)
-SET(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")
+mark_as_advanced( ApproxMVBB_FORCE_MSGLOG_LEVEL)
+set(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")

@@ -14,13 +14,11 @@
 #include "ApproxMVBB/Config/Config.hpp"
 #include ApproxMVBB_TypeDefs_INCLUDE_FILE
 #include "ApproxMVBB/KdTree.hpp"
+#include "ApproxMVBB/Common/CPUTimer.hpp"
 
-#ifdef ApproxMVBB_SUPPORT_XML
-#include "ApproxMVBB/KdTreeXml.hpp"
+#ifdef ApproxMVBB_XMLSUPPORT
+#    include "ApproxMVBB/KdTreeXml.hpp"
 #endif
-
-// Not part of library:
-#include "CPUTimer.hpp"
 
 ApproxMVBB_DEFINE_MATRIX_TYPES;
 ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
@@ -130,7 +128,7 @@ void doKdTree(std::string file)
         // auto list = tree.buildLeafNeighboursAutomatic();
         std::cout << tree.getStatisticsString() << std::endl;
 
-#ifdef ApproxMVBB_SUPPORT_XML
+#ifdef ApproxMVBB_XMLSUPPORT
         std::string file = "KdTreeResults.xml";
         std::cout << "Saving KdTree XML to: " << file << std::endl;
 

@@ -34,223 +34,223 @@
       implied. */
 
 #ifndef XPFPA_H
-#define XPFPA_H
+#    define XPFPA_H
 
 /*
- Implementation notes:
+     Implementation notes:
 
- x86_64:
-  - Since all x86_64 compilers use SSE by default, it is probably unecessary
-    to use these macros there. We define them anyway since we are too lazy
-    to differentiate the architecture. Also, the compiler option -mfpmath=i387
-    justifies this decision.
+     x86_64:
+      - Since all x86_64 compilers use SSE by default, it is probably unecessary
+        to use these macros there. We define them anyway since we are too lazy
+        to differentiate the architecture. Also, the compiler option -mfpmath=i387
+        justifies this decision.
 
- General:
-  - It would be nice if one could detect whether SSE if used for math via some
-    funky compiler defines and if so, make the macros go to NOPs. Any ideas
-    on how to do that?
+     General:
+      - It would be nice if one could detect whether SSE if used for math via some
+        funky compiler defines and if so, make the macros go to NOPs. Any ideas
+        on how to do that?
 
- MS Visual C:
-  - Since MSVC users tipically don't use autoconf or CMake, we will detect
-    MSVC via compile time define.
-*/
+     MS Visual C:
+      - Since MSVC users tipically don't use autoconf or CMake, we will detect
+        MSVC via compile time define.
+    */
 
 // MSVC detection (MSVC people usually don't use autoconf)
-#ifdef _MSC_VER
-#if _MSC_VER >= 1500
+#    ifdef _MSC_VER
+#        if _MSC_VER >= 1500
 // Visual C++ 2008 or higher, supports _controlfp_s
-#define HAVE__CONTROLFP_S
-#else
+#            define HAVE__CONTROLFP_S
+#        else
 // Visual C++ (up to 2005), supports _controlfp
-#define HAVE__CONTROLFP
-#endif  // MSC_VER >= 1500
-        // Tell MSVC optimizer that we access FP environment
-#pragma fenv_access(on)
-#endif  // _MSC_VER
+#            define HAVE__CONTROLFP
+#        endif  // MSC_VER >= 1500 \
+                // Tell MSVC optimizer that we access FP environment
+#        pragma fenv_access(on)
+#    endif  // _MSC_VER
 
 // MSVC does NOT support precision control (_control_fp) stuff on x64 platforms!
 // Define everything as NOP.
-#if defined(_MSC_VER) && defined(_WIN64)
+#    if defined(_MSC_VER) && defined(_WIN64)
 
-#define XPFPA_DECLARE()                /* NOP */
-#define XPFPA_SWITCH_DOUBLE()          /* NOP */
-#define XPFPA_SWITCH_SINGLE()          /* NOP */
-#define XPFPA_SWITCH_DOUBLE_EXTENDED() /* NOP */
-#define XPFPA_RESTORE()                /* NOP */
-#define XPFPA_RETURN_DOUBLE(val) return (val);
-#define XPFPA_RETURN_SINGLE(val) return (val);
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val) return (val);
+#        define XPFPA_DECLARE()                /* NOP */
+#        define XPFPA_SWITCH_DOUBLE()          /* NOP */
+#        define XPFPA_SWITCH_SINGLE()          /* NOP */
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED() /* NOP */
+#        define XPFPA_RESTORE()                /* NOP */
+#        define XPFPA_RETURN_DOUBLE(val) return (val);
+#        define XPFPA_RETURN_SINGLE(val) return (val);
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val) return (val);
 
-#elif HAVE__CONTROLFP_S
+#    elif HAVE__CONTROLFP_S
 
 // float.h defines _controlfp_s
-#include <float.h>
+#        include <float.h>
 
-#define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+#        define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
-#define XPFPA_SWITCH_DOUBLE()           \
-    _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
-    _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
-    _controlfp_s(&_xpfpa_fpu_cw, _PC_53, _MCW_PC);
-#define XPFPA_SWITCH_SINGLE()           \
-    _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
-    _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
-    _controlfp_s(&_xpfpa_fpu_cw, _PC_24, _MCW_PC);
+#        define XPFPA_SWITCH_DOUBLE()           \
+            _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
+            _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
+            _controlfp_s(&_xpfpa_fpu_cw, _PC_53, _MCW_PC);
+#        define XPFPA_SWITCH_SINGLE()           \
+            _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
+            _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
+            _controlfp_s(&_xpfpa_fpu_cw, _PC_24, _MCW_PC);
 // NOTE: This only sets internal precision. MSVC does NOT support double-
 // extended precision!
-#define XPFPA_SWITCH_DOUBLE_EXTENDED()  \
-    _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
-    _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
-    _controlfp_s(&_xpfpa_fpu_cw, _PC_64, _MCW_PC);
-#define XPFPA_RESTORE() _controlfp_s(&_xpfpa_fpu_cw, _xpfpa_fpu_oldcw, _MCW_PC);
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED()  \
+            _controlfp_s(&_xpfpa_fpu_cw, 0, 0); \
+            _xpfpa_fpu_oldcw = _xpfpa_fpu_cw;   \
+            _controlfp_s(&_xpfpa_fpu_cw, _PC_64, _MCW_PC);
+#        define XPFPA_RESTORE() _controlfp_s(&_xpfpa_fpu_cw, _xpfpa_fpu_oldcw, _MCW_PC);
 // We do NOT use the volatile return trick since _controlfp_s is a function
 // call and thus FP registers are saved in memory anyway. However, we do use
 // a variable to ensure that the expression passed into val will be evaluated
 // *before* switching back contexts.
-#define XPFPA_RETURN_DOUBLE(val)      \
-    {                                 \
-        double _xpfpa_result = (val); \
-        XPFPA_RESTORE()               \
-        return _xpfpa_result;         \
-    }
-#define XPFPA_RETURN_SINGLE(val)     \
-    {                                \
-        float _xpfpa_result = (val); \
-        XPFPA_RESTORE()              \
-        return _xpfpa_result;        \
-    }
+#        define XPFPA_RETURN_DOUBLE(val)      \
+            {                                 \
+                double _xpfpa_result = (val); \
+                XPFPA_RESTORE()               \
+                return _xpfpa_result;         \
+            }
+#        define XPFPA_RETURN_SINGLE(val)     \
+            {                                \
+                float _xpfpa_result = (val); \
+                XPFPA_RESTORE()              \
+                return _xpfpa_result;        \
+            }
 // This won't work, but we add a macro for it anyway.
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val)  \
-    {                                      \
-        long double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                    \
-        return _xpfpa_result;              \
-    }
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val)  \
+            {                                      \
+                long double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                    \
+                return _xpfpa_result;              \
+            }
 
-#elif defined(HAVE__CONTROLFP)
+#    elif defined(HAVE__CONTROLFP)
 
 // float.h defines _controlfp
-#include <float.h>
+#        include <float.h>
 
-#define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw;
+#        define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw;
 
-#define XPFPA_SWITCH_DOUBLE()            \
-    _xpfpa_fpu_oldcw = _controlfp(0, 0); \
-    _controlfp(_PC_53, _MCW_PC);
-#define XPFPA_SWITCH_SINGLE()            \
-    _xpfpa_fpu_oldcw = _controlfp(0, 0); \
-    _controlfp(_PC_24, _MCW_PC);
+#        define XPFPA_SWITCH_DOUBLE()            \
+            _xpfpa_fpu_oldcw = _controlfp(0, 0); \
+            _controlfp(_PC_53, _MCW_PC);
+#        define XPFPA_SWITCH_SINGLE()            \
+            _xpfpa_fpu_oldcw = _controlfp(0, 0); \
+            _controlfp(_PC_24, _MCW_PC);
 // NOTE: This will only work as expected on MinGW.
-#define XPFPA_SWITCH_DOUBLE_EXTENDED()   \
-    _xpfpa_fpu_oldcw = _controlfp(0, 0); \
-    _controlfp(_PC_64, _MCW_PC);
-#define XPFPA_RESTORE() _controlfp(_xpfpa_fpu_oldcw, _MCW_PC);
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED()   \
+            _xpfpa_fpu_oldcw = _controlfp(0, 0); \
+            _controlfp(_PC_64, _MCW_PC);
+#        define XPFPA_RESTORE() _controlfp(_xpfpa_fpu_oldcw, _MCW_PC);
 // We do NOT use the volatile return trick since _controlfp is a function
 // call and thus FP registers are saved in memory anyway. However, we do use
 // a variable to ensure that the expression passed into val will be evaluated
 // *before* switching back contexts.
-#define XPFPA_RETURN_DOUBLE(val)      \
-    {                                 \
-        double _xpfpa_result = (val); \
-        XPFPA_RESTORE()               \
-        return _xpfpa_result;         \
-    }
-#define XPFPA_RETURN_SINGLE(val)     \
-    {                                \
-        float _xpfpa_result = (val); \
-        XPFPA_RESTORE()              \
-        return _xpfpa_result;        \
-    }
+#        define XPFPA_RETURN_DOUBLE(val)      \
+            {                                 \
+                double _xpfpa_result = (val); \
+                XPFPA_RESTORE()               \
+                return _xpfpa_result;         \
+            }
+#        define XPFPA_RETURN_SINGLE(val)     \
+            {                                \
+                float _xpfpa_result = (val); \
+                XPFPA_RESTORE()              \
+                return _xpfpa_result;        \
+            }
 // This will only work on MinGW
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val)  \
-    {                                      \
-        long double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                    \
-        return _xpfpa_result;              \
-    }
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val)  \
+            {                                      \
+                long double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                    \
+                return _xpfpa_result;              \
+            }
 
-#elif defined(HAVE__FPU_SETCW)  // glibc systems
+#    elif defined(HAVE__FPU_SETCW)  // glibc systems
 
 // fpu_control.h defines _FPU_[GS]ETCW
-#include <fpu_control.h>
+#        include <fpu_control.h>
 
-#define XPFPA_DECLARE() static fpu_control_t _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+#        define XPFPA_DECLARE() static fpu_control_t _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
-#define XPFPA_SWITCH_DOUBLE()                                                         \
-    _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
-    _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_EXTENDED & ~_FPU_SINGLE) | _FPU_DOUBLE; \
-    _FPU_SETCW(_xpfpa_fpu_cw);
-#define XPFPA_SWITCH_SINGLE()                                                         \
-    _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
-    _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_EXTENDED & ~_FPU_DOUBLE) | _FPU_SINGLE; \
-    _FPU_SETCW(_xpfpa_fpu_cw);
-#define XPFPA_SWITCH_DOUBLE_EXTENDED()                                                \
-    _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
-    _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_SINGLE & ~_FPU_DOUBLE) | _FPU_EXTENDED; \
-    _FPU_SETCW(_xpfpa_fpu_cw);
-#define XPFPA_RESTORE() _FPU_SETCW(_xpfpa_fpu_oldcw);
+#        define XPFPA_SWITCH_DOUBLE()                                                         \
+            _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
+            _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_EXTENDED & ~_FPU_SINGLE) | _FPU_DOUBLE; \
+            _FPU_SETCW(_xpfpa_fpu_cw);
+#        define XPFPA_SWITCH_SINGLE()                                                         \
+            _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
+            _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_EXTENDED & ~_FPU_DOUBLE) | _FPU_SINGLE; \
+            _FPU_SETCW(_xpfpa_fpu_cw);
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED()                                                \
+            _FPU_GETCW(_xpfpa_fpu_oldcw);                                                     \
+            _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~_FPU_SINGLE & ~_FPU_DOUBLE) | _FPU_EXTENDED; \
+            _FPU_SETCW(_xpfpa_fpu_cw);
+#        define XPFPA_RESTORE() _FPU_SETCW(_xpfpa_fpu_oldcw);
 // We use a temporary volatile variable (in a new block) in order to ensure
 // that the optimizer does not mis-optimize the instructions. Also, a volatile
 // variable ensures truncation to correct precision.
-#define XPFPA_RETURN_DOUBLE(val)               \
-    {                                          \
-        volatile double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                        \
-        return _xpfpa_result;                  \
-    }
-#define XPFPA_RETURN_SINGLE(val)              \
-    {                                         \
-        volatile float _xpfpa_result = (val); \
-        XPFPA_RESTORE()                       \
-        return _xpfpa_result;                 \
-    }
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
-    {                                               \
-        volatile long double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                             \
-        return _xpfpa_result;                       \
-    }
+#        define XPFPA_RETURN_DOUBLE(val)               \
+            {                                          \
+                volatile double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                        \
+                return _xpfpa_result;                  \
+            }
+#        define XPFPA_RETURN_SINGLE(val)              \
+            {                                         \
+                volatile float _xpfpa_result = (val); \
+                XPFPA_RESTORE()                       \
+                return _xpfpa_result;                 \
+            }
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
+            {                                               \
+                volatile long double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                             \
+                return _xpfpa_result;                       \
+            }
 
-#elif defined(HAVE_FPSETPREC)  // FreeBSD
+#    elif defined(HAVE_FPSETPREC)  // FreeBSD
 
 // fpu_control.h defines _FPU_[GS]ETCW
-#include <machine/ieeefp.h>
+#        include <machine/ieeefp.h>
 
-#define XPFPA_DECLARE() static fp_prec_t _xpfpa_fpu_oldprec;
+#        define XPFPA_DECLARE() static fp_prec_t _xpfpa_fpu_oldprec;
 
-#define XPFPA_SWITCH_DOUBLE()         \
-    _xpfpa_fpu_oldprec = fpgetprec(); \
-    fpsetprec(FP_PD);
-#define XPFPA_SWITCH_SINGLE()         \
-    _xpfpa_fpu_oldprec = fpgetprec(); \
-    fpsetprec(FP_PS);
-#define XPFPA_SWITCH_DOUBLE_EXTENDED() \
-    _xpfpa_fpu_oldprec = fpgetprec();  \
-    fpsetprec(FP_PE);
-#define XPFPA_RESTORE() fpsetprec(_xpfpa_fpu_oldprec);
+#        define XPFPA_SWITCH_DOUBLE()         \
+            _xpfpa_fpu_oldprec = fpgetprec(); \
+            fpsetprec(FP_PD);
+#        define XPFPA_SWITCH_SINGLE()         \
+            _xpfpa_fpu_oldprec = fpgetprec(); \
+            fpsetprec(FP_PS);
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED() \
+            _xpfpa_fpu_oldprec = fpgetprec();  \
+            fpsetprec(FP_PE);
+#        define XPFPA_RESTORE() fpsetprec(_xpfpa_fpu_oldprec);
 // We use a temporary volatile variable (in a new block) in order to ensure
 // that the optimizer does not mis-optimize the instructions. Also, a volatile
 // variable ensures truncation to correct precision.
-#define XPFPA_RETURN_DOUBLE(val)               \
-    {                                          \
-        volatile double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                        \
-        return _xpfpa_result;                  \
-    }
-#define XPFPA_RETURN_SINGLE(val)              \
-    {                                         \
-        volatile float _xpfpa_result = (val); \
-        XPFPA_RESTORE()                       \
-        return _xpfpa_result;                 \
-    }
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
-    {                                               \
-        volatile long double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                             \
-        return _xpfpa_result;                       \
-    }
+#        define XPFPA_RETURN_DOUBLE(val)               \
+            {                                          \
+                volatile double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                        \
+                return _xpfpa_result;                  \
+            }
+#        define XPFPA_RETURN_SINGLE(val)              \
+            {                                         \
+                volatile float _xpfpa_result = (val); \
+                XPFPA_RESTORE()                       \
+                return _xpfpa_result;                 \
+            }
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
+            {                                               \
+                volatile long double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                             \
+                return _xpfpa_result;                       \
+            }
 
-#elif defined(HAVE_FPU_INLINE_ASM_X86)
+#    elif defined(HAVE_FPU_INLINE_ASM_X86)
 
 /*
   Custom x86 inline assembler implementation.
@@ -274,60 +274,71 @@
   The assembly syntax works with GNU CC, Intel CC and Sun CC.
 */
 
-#define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
+#        define XPFPA_DECLARE() static unsigned int _xpfpa_fpu_oldcw, _xpfpa_fpu_cw;
 
-#define XPFPA_SWITCH_DOUBLE()                                     \
-    __asm__ __volatile__("fnstcw %0" : "=m"(*&_xpfpa_fpu_oldcw)); \
-    _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~0x100) | 0x200;          \
-    __asm__ __volatile__("fldcw %0" : : "m"(*&_xpfpa_fpu_cw));
-#define XPFPA_SWITCH_SINGLE()                                     \
-    __asm__ __volatile__("fnstcw %0" : "=m"(*&_xpfpa_fpu_oldcw)); \
-    _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~0x300);                  \
-    __asm__ __volatile__("fldcw %0" : : "m"(*&_xpfpa_fpu_cw));
-#define XPFPA_SWITCH_DOUBLE_EXTENDED()                            \
-    __asm__ __volatile__("fnstcw %0" : "=m"(*&_xpfpa_fpu_oldcw)); \
-    _xpfpa_fpu_cw = _xpfpa_fpu_oldcw | 0x300;                     \
-    __asm__ __volatile__("fldcw %0" : : "m"(*&_xpfpa_fpu_cw));
-#define XPFPA_RESTORE() __asm__ __volatile__("fldcw %0" : : "m"(*&_xpfpa_fpu_oldcw));
+#        define XPFPA_SWITCH_DOUBLE()                            \
+            __asm__ __volatile__("fnstcw %0"                     \
+                                 : "=m"(*&_xpfpa_fpu_oldcw));    \
+            _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~0x100) | 0x200; \
+            __asm__ __volatile__("fldcw %0"                      \
+                                 :                               \
+                                 : "m"(*&_xpfpa_fpu_cw));
+#        define XPFPA_SWITCH_SINGLE()                         \
+            __asm__ __volatile__("fnstcw %0"                  \
+                                 : "=m"(*&_xpfpa_fpu_oldcw)); \
+            _xpfpa_fpu_cw = (_xpfpa_fpu_oldcw & ~0x300);      \
+            __asm__ __volatile__("fldcw %0"                   \
+                                 :                            \
+                                 : "m"(*&_xpfpa_fpu_cw));
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED()                \
+            __asm__ __volatile__("fnstcw %0"                  \
+                                 : "=m"(*&_xpfpa_fpu_oldcw)); \
+            _xpfpa_fpu_cw = _xpfpa_fpu_oldcw | 0x300;         \
+            __asm__ __volatile__("fldcw %0"                   \
+                                 :                            \
+                                 : "m"(*&_xpfpa_fpu_cw));
+#        define XPFPA_RESTORE() __asm__ __volatile__("fldcw %0" \
+                                                     :          \
+                                                     : "m"(*&_xpfpa_fpu_oldcw));
 // We use a temporary volatile variable (in a new block) in order to ensure
 // that the optimizer does not mis-optimize the instructions. Also, a volatile
 // variable ensures truncation to correct precision.
-#define XPFPA_RETURN_DOUBLE(val)               \
-    {                                          \
-        volatile double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                        \
-        return _xpfpa_result;                  \
-    }
-#define XPFPA_RETURN_SINGLE(val)              \
-    {                                         \
-        volatile float _xpfpa_result = (val); \
-        XPFPA_RESTORE()                       \
-        return _xpfpa_result;                 \
-    }
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
-    {                                               \
-        volatile long double _xpfpa_result = (val); \
-        XPFPA_RESTORE()                             \
-        return _xpfpa_result;                       \
-    }
+#        define XPFPA_RETURN_DOUBLE(val)               \
+            {                                          \
+                volatile double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                        \
+                return _xpfpa_result;                  \
+            }
+#        define XPFPA_RETURN_SINGLE(val)              \
+            {                                         \
+                volatile float _xpfpa_result = (val); \
+                XPFPA_RESTORE()                       \
+                return _xpfpa_result;                 \
+            }
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val)           \
+            {                                               \
+                volatile long double _xpfpa_result = (val); \
+                XPFPA_RESTORE()                             \
+                return _xpfpa_result;                       \
+            }
 
-#else                                  // FPU CONTROL
+#    else                                      // FPU CONTROL
 
 /*
-  This is either not an x87 FPU or the inline assembly syntax was not
-  recognized. In any case, default to NOPs for the macros and hope the
-  generated code will behave as planned.
-*/
-#define XPFPA_DECLARE()                /* NOP */
-#define XPFPA_SWITCH_DOUBLE()          /* NOP */
-#define XPFPA_SWITCH_SINGLE()          /* NOP */
-#define XPFPA_SWITCH_DOUBLE_EXTENDED() /* NOP */
-#define XPFPA_RESTORE()                /* NOP */
-#define XPFPA_RETURN_DOUBLE(val) return (val);
-#define XPFPA_RETURN_SINGLE(val) return (val);
-#define XPFPA_RETURN_DOUBLE_EXTENDED(val) return (val);
+          This is either not an x87 FPU or the inline assembly syntax was not
+          recognized. In any case, default to NOPs for the macros and hope the
+          generated code will behave as planned.
+        */
+#        define XPFPA_DECLARE()                /* NOP */
+#        define XPFPA_SWITCH_DOUBLE()          /* NOP */
+#        define XPFPA_SWITCH_SINGLE()          /* NOP */
+#        define XPFPA_SWITCH_DOUBLE_EXTENDED() /* NOP */
+#        define XPFPA_RESTORE()                /* NOP */
+#        define XPFPA_RETURN_DOUBLE(val) return (val);
+#        define XPFPA_RETURN_SINGLE(val) return (val);
+#        define XPFPA_RETURN_DOUBLE_EXTENDED(val) return (val);
 
-#endif  // FPU CONTROL
+#    endif  // FPU CONTROL
 
 #endif  // XPFPA_H
 

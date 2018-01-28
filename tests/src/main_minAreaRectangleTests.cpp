@@ -21,52 +21,52 @@
 
 namespace ApproxMVBB
 {
-namespace MinAreaRectangleTest
-{
-template <typename TMatrix>
-void minRectTest(std::string name, const TMatrix& v)
-{
-    using namespace PointFunctions;
-    using namespace TestFunctions;
+    namespace MinAreaRectangleTest
+    {
+        template<typename TMatrix>
+        void minRectTest(std::string name, const TMatrix& v)
+        {
+            using namespace PointFunctions;
+            using namespace TestFunctions;
 
-    dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-    dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+            dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
+            dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
 
-    std::cout << "\n\nStart minAreaRectangleTest " + name + "" << std::endl;
-    START_TIMER(start)
+            std::cout << "\n\nStart minAreaRectangleTest " + name + "" << std::endl;
+            START_TIMER(start)
 
-    MinAreaRectangle c(v);
-    c.compute();
+            MinAreaRectangle c(v);
+            c.compute();
 
-    STOP_TIMER_SEC(count, start)
-    std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
-    std::cout << "End minAreaRectangleTest " + name + "" << std::endl;
-    auto rect = c.getMinRectangle();
+            STOP_TIMER_SEC(count, start)
+            std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
+            std::cout << "End minAreaRectangleTest " + name + "" << std::endl;
+            auto rect = c.getMinRectangle();
 
-    Matrix2Dyn p(2, 6);
-    p.col(0) = rect.m_p;
-    p.col(1) = rect.m_p + rect.m_u * rect.m_uL;
-    p.col(2) = rect.m_p + rect.m_u * rect.m_uL + rect.m_v * rect.m_vL;
-    p.col(3) = rect.m_p + rect.m_v * rect.m_vL;
-    p.col(4) = rect.m_u;
-    p.col(5) = rect.m_v;
+            Matrix2Dyn p(2, 6);
+            p.col(0) = rect.m_p;
+            p.col(1) = rect.m_p + rect.m_u * rect.m_uL;
+            p.col(2) = rect.m_p + rect.m_u * rect.m_uL + rect.m_v * rect.m_vL;
+            p.col(3) = rect.m_p + rect.m_v * rect.m_vL;
+            p.col(4) = rect.m_u;
+            p.col(5) = rect.m_v;
 
-    dumpPointsMatrixBinary(getFileOutPath(name), p);
-    // dumpPointsMatrix(getFileOutPath(name,".txt"),p);
+            dumpPointsMatrixBinary(getFileOutPath(name), p);
+            // dumpPointsMatrix(getFileOutPath(name,".txt"),p);
 
-    // Compare with validation file
-    TMatrix valid = p;
-    valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-    readPointsMatrixBinary(getFileValidationPath(name), valid);
+            // Compare with validation file
+            TMatrix valid = p;
+            valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
+            readPointsMatrixBinary(getFileValidationPath(name), valid);
 
-    // Assert all cols of p are in valid
-    EXPECT_TRUE(assertNearArrayColsRows<true>(p.leftCols(4), valid.leftCols(4))) << "Valid Points:" << std::endl
-                                                                                 << valid.transpose() << std::endl
-                                                                                 << " computed:" << std::endl
-                                                                                 << p.transpose() << std::endl;
-}
-}
-}
+            // Assert all cols of p are in valid
+            EXPECT_TRUE(assertNearArrayColsRows<true>(p.leftCols(4), valid.leftCols(4))) << "Valid Points:" << std::endl
+                                                                                         << valid.transpose() << std::endl
+                                                                                         << " computed:" << std::endl
+                                                                                         << p.transpose() << std::endl;
+        }
+    }  // namespace MinAreaRectangleTest
+}  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace TestFunctions;

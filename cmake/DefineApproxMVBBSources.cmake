@@ -1,4 +1,4 @@
-MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
+macro(INCLUDE_ALL_ApproxMVBB_SOURCE
       SRC
       INC
       INCLUDE_DIRS
@@ -8,17 +8,15 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
 
 
     # Add all external sources/headers
-
-
-    INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
-    INCLUDE_DIAMETER_SOURCE(ApproxMVBB_DIAM_SRC
+    include(${ApproxMVBB_ROOT_DIR}/cmake/DefineApproxMVBBExternalSources.cmake)
+    include_diameter_source(ApproxMVBB_DIAM_SRC
                             ApproxMVBB_DIAM_INC
                             ApproxMVBB_DIAM_INC_DIRS
                             ${ApproxMVBB_ROOT_DIR}/external/Diameter
                             ${ApproxMVBB_ROOT_DIR}
                             ${ApproxMVBB_BINARY_DIR})
 
-    INCLUDE_GEOMETRYPREDICATES_SOURCE( ApproxMVBB_GEOMPRED_SRC
+    include_geometrypredicates_source( ApproxMVBB_GEOMPRED_SRC
                                        ApproxMVBB_GEOMPRED_INC
                                        ApproxMVBB_GEOMPRED_INC_DIRS
                                        ${ApproxMVBB_ROOT_DIR}/external/GeometryPredicates
@@ -27,8 +25,14 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
 
 
 
+    # WRITE CONFIGURATION FILE
+    include(WriteConfigFile)
+    set(ApproxMVBB_CONFIG_FILE ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp)
+    message(STATUS "ApproxMVBB: Write config file ${ApproxMVBB_CONFIG_FILE}, ${ApproxMVBB_OPENMP_NTHREADS}")
+    ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${ApproxMVBB_ROOT_DIR})
+    #=========================
 
-    SET(${SRC}
+    set(${SRC}
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/Common/MyMatrixTypeDefs.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/RandomGenerators.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp
@@ -38,18 +42,22 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
 
         ${ApproxMVBB_DIAM_SRC}
         ${ApproxMVBB_GEOMPRED_SRC}
-        ${ApproxMVBB_META_SRC}
-        ${ApproxMVBB_PUGIXML_SRC}
     )
 
-    SET(${INC}
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixTypeDefs.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
+    set(${INC}
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/AssertionDebug.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/ContainerTag.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/CPUTimer.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/Exception.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/FloatingPointComparision.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/LogDefines.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/MyContainerTypeDefs.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/MyMatrixTypeDefs.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/Platform.hpp
-
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/SfinaeMacros.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/StaticAssert.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/TypeDefs.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/Common/TypeDefsPoints.hpp
 
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/AABB.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/AngleFunctions.hpp
@@ -57,41 +65,37 @@ MACRO(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ContainerFunctions.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ConvexHull2D.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/GreatestCommonDivisor.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTree.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTreeXml.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/MakeCoordinateSystem.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/MinAreaRectangle.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/OOBB.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/PointFunctions.hpp
         ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/ProjectedPointSet.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTree.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/KdTreeXml.hpp
-        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/TypeDefsPoints.hpp
+        ${ApproxMVBB_ROOT_DIR}/include/ApproxMVBB/RandomGenerators.hpp
 
         ${ApproxMVBB_DIAM_INC}
         ${ApproxMVBB_GEOMPRED_INC}
-        ${ApproxMVBB_META_INC}
-        ${ApproxMVBB_PUGIXML_INC}
+        ${ApproxMVBB_CONFIG_FILE}
     )
 
-    SET(${INCLUDE_DIRS}
-        ${ApproxMVBB_GEOMPRED_INC_DIRS}
-        ${ApproxMVBB_DIAM_INC_DIRS}
-        ${ApproxMVBB_META_INC_DIRS}
-        ${ApproxMVBB_PUGIXML_INC_DIRS}
-        ${ApproxMVBB_ROOT_DIR}/include
-        ${ApproxMVBB_BINARY_DIR}/include
+    set(${INCLUDE_DIRS}
+        $<BUILD_INTERFACE:${ApproxMVBB_GEOMPRED_INC_DIRS}>
+        $<BUILD_INTERFACE:${ApproxMVBB_DIAM_INC_DIRS}>
+        $<BUILD_INTERFACE:${ApproxMVBB_ROOT_DIR}/include>
+        $<BUILD_INTERFACE:${ApproxMVBB_BINARY_DIR}/include>
     )
 
     # No depending targets
-    SET(${DEPENDING_TARGETS} "")
+    set(${DEPENDING_TARGETS} "")
 
-    # WRITE CONFIGURATION FILE
+    foreach(file ${${INC}})
+        getIncludeInstallFolderPostfix(${file} postfix )
+        if("${postfix}" STREQUAL "")
+            message(FATAL_ERROR "wrong path ${PATH}")
+        endif()
+        install( FILES ${file} DESTINATION "include/${postfix}" )
+    endforeach()    
 
-    INCLUDE(${ApproxMVBB_ROOT_DIR}/cmake/WriteConfigFile.cmake)
-    SET(ApproxMVBB_CONFIG_FILE ${ApproxMVBB_BINARY_DIR}/include/ApproxMVBB/Config/Config.hpp)
-    MESSAGE(STATUS "ApproxMVBB: Write config file ${ApproxMVBB_CONFIG_FILE}, ${ApproxMVBB_OPENMP_NTHREADS}")
-    ApproxMVBB_WRITE_CONFIG_FILE( ${ApproxMVBB_CONFIG_FILE} ${ApproxMVBB_ROOT_DIR})
-    #=========================
 
-
-
-ENDMACRO()
+endmacro()

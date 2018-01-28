@@ -2,6 +2,8 @@
 # BUILD ========================================================================
 # this script is SOURCED!!!!
 
+set -e
+
 # Check if we build the project
 if [ "$BUILD_APPROXMVBB" == "OFF" ]; then
   echo "Do not build ApproxMVBB!"
@@ -26,9 +28,7 @@ if [ ! -d $ROOT_PATH/build ]; then mkdir $ROOT_PATH/build; fi
 cd $ROOT_PATH/build
 cmake $CHECKOUT_PATH  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
                       -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                      -DMYPROJECT_DONTSET_COMPILER_FLAGS_INTERNAL=ON \
-                      -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
-                      -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" \
+                      -DCMAKE_VERBOSE_MAKEFILE=ON \
                       -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
 make VERBOSE=1
 make install
@@ -38,14 +38,12 @@ cd $ROOT_PATH
 echo "Install and test if ApproxMVBB links:"
 mkdir $ROOT_PATH/buildLibUsage
 cd $ROOT_PATH/buildLibUsage
-INSTALL=$(find $ROOT_PATH/build/install/lib/cmake/* -type d)
+INSTALL="$ROOT_PATH/build/../install/share/ApproxMVBB/cmake"
 echo "Install dir= $INSTALL"
 cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
                                           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                                          -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
-                                          -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" \
-                                          -DApproxMVBB_DIR=$INSTALL \
-                                          -DApproxMVBB_USE_OPENMP=OFF
+                                          -DCMAKE_VERBOSE_MAKEFILE=ON \
+                                          -DApproxMVBB_DIR=$INSTALL
 make VERBOSE=1
 cd $ROOT_PATH
 
@@ -56,3 +54,4 @@ if [ $branchName == "unitTests" ]; then
 fi
 
 # BUILD COMPLETE ================================================================
+set +e

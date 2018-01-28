@@ -14,10 +14,10 @@
 
 namespace GeometryPredicates
 {
-REAL orient2d(REAL* pa, REAL* pb, REAL* pc);
-REAL orient3d(REAL* pa, REAL* pb, REAL* pc, REAL* pd);
-REAL incircle(REAL* pa, REAL* pb, REAL* pc, REAL* pd);
-REAL insphere(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe);
-}
+    REAL orient2d(REAL* pa, REAL* pb, REAL* pc);
+    REAL orient3d(REAL* pa, REAL* pb, REAL* pc, REAL* pd);
+    REAL incircle(REAL* pa, REAL* pb, REAL* pc, REAL* pd);
+    REAL insphere(REAL* pa, REAL* pb, REAL* pc, REAL* pd, REAL* pe);
+}  // namespace GeometryPredicates
 
 #endif

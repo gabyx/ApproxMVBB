@@ -1,7 +1,8 @@
 CMakeFiles
 __pycache__
 .ipynb_checkpoints
-build/
+build*
+install*
 .DS_Store
 .vscode/.*
 .vscode/c_cpp_properties*

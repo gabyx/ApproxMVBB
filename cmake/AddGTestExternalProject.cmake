@@ -4,10 +4,10 @@
 find_package(Threads REQUIRED)
 
 # Enable ExternalProject CMake module
-INCLUDE(ExternalProject)
+include(ExternalProject)
 
 # Set default ExternalProject root directory
-SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/thirdparty)
+set_directory_properties(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/thirdparty)
 
 # Add gtest
 # http://stackoverflow.com/questions/9689183/cmake-googletest
