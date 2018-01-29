@@ -4,8 +4,6 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/;${CMAKE_MODULE_PATH}")
 message(STATUS "Module path is now set to: " ${CMAKE_MODULE_PATH} )
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 #The name of the project ===============================================
 set(ApproxMVBBProjectName "ApproxMVBB")
 if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
@@ -16,6 +14,11 @@ project(${ApproxMVBBProjectName} LANGUAGES CXX C)
 
 set(ApproxMVBB_BINARY_DIR ${PROJECT_BINARY_DIR})
 set(ApproxMVBB_ROOT_DIR   ${PROJECT_SOURCE_DIR})
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # PRECISION ISSUES =====================================================
 # From http://christian-seiler.de/projekte/fpmath/
