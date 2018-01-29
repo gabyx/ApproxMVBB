@@ -24,8 +24,7 @@ if [ -n "${GCC_VERSION}" ]; then
     export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
 fi
 if [ -n "${CLANG_VERSION}" ]; then 
-
-export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
+    export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
 fi
 
 echo "Path set to ${PATH}"
@@ -35,7 +34,6 @@ echo "CC set to ${CC}"
 ${CXX} --version
 cmake --version
 echo "cmake at $(which cmake)"
-
 
 
 chmod +x $CHECKOUT_PATH/travis/install_dep.sh

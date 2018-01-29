@@ -14,7 +14,8 @@ macro(setTargetCompileOptions TARGETNAME)
         set(CXX_FLAGS_DEBUG  "-fsanitize=address" 
                              "-fno-omit-frame-pointer")
 
-    elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
+    elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR 
+            ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang" )
 
         set(CXX_FLAGS_PUBLIC "-std=c++14")
 
@@ -26,9 +27,13 @@ macro(setTargetCompileOptions TARGETNAME)
                             "-Wno-c++98-compat-pedantic" 
                             "-Wno-unused-macros")
 
-        set(CXX_FLAGS_DEBUG "-fsanitize=leak"
-                            "-fsanitize=address"
-                            "-fno-omit-frame-pointer")
+        set(CXX_FLAGS_DEBUG "-fno-omit-frame-pointer")
+        
+        if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+            list(APPEND CXX_FLAGS_DEBUG "-fsanitize=leak"
+                                        "-fsanitize=address"
+                                        "-fno-omit-frame-pointer")
+        endif()
 
     elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
         message(WARNING "MSVC is partially supported (Visual Studio 2013 Update 5), trying to set compiler flags anyway!")
@@ -49,10 +54,10 @@ macro(setTargetCompileOptions TARGETNAME)
     target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:MinSizeRel>:${CXX_FLAGS_MINSIZEREL}> )
     target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:RelWithDebInfo>:${CXX_FLAGS_RELWITHDEBINFO}> )
 
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR 
+       ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
         # with clang 5.0.1: -fsanitize=address produces weird output in lldb for std::string ...
-        set(LINKER_FLAGS "-fsanitize=leak -fsanitize=address")
-        set_property(TARGET ${TARGETNAME} PROPERTY LINK_FLAGS ${LINKER_FLAGS})
+        set_property(TARGET ${TARGETNAME} PROPERTY LINK_FLAGS "-fsanitize=leak -fsanitize=address")
     endif()
 
 endmacro()

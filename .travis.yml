@@ -1,27 +1,29 @@
 sudo: required
 language: cpp
 
+- env: OMP_NUM_THREADS=2 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+
 cache:
   directories:
   - ${APPROXMVBB_CACHE_DIR}
 
 matrix:
   include:
-  - env: GCC_VERSION=5 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: GCC_VERSION=5 
     os: linux
     addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
 
-  - env: GCC_VERSION=6 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: GCC_VERSION=6
     os: linux
     addons: &gcc6
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
 
-  - env: CLANG_VERSION=5.0 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: CLANG_VERSION=5.0
     os: linux
     addons: &clang5
         apt:
@@ -33,7 +35,12 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise
 
-  - env: APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  - env: APPLE_CLANG="YES"
+    os: osx
+    osx_image: xcode9.2
+    compiler: clang
+
+  - env: APPLE_CLANG="NO"
     os: osx
     osx_image: xcode9.2
     compiler: clang
@@ -71,9 +78,6 @@ after_success:
   - cd $CHECKOUT_PATH
   - git reset --hard HEAD # Discard build artifacts
   - git clean -df # Discard build artifacts
-  #- bii init -l
-  #- bii user $BIICODE_USER -p $BIICODE_PASSWORD
-  #- if [ -n "$BIICODE_PASSWORD" ]; then bii publish -r; fi
 
 notifications:
   email: false
