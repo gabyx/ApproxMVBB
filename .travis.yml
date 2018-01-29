@@ -1,7 +1,8 @@
 sudo: required
 language: cpp
 
-- env: OMP_NUM_THREADS=2 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+env:
+  global: OMP_NUM_THREADS=2 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
 
 cache:
   directories:
