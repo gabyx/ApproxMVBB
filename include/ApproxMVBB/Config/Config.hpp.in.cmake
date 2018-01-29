@@ -54,13 +54,16 @@ namespace ApproxMVBB{
     #define ApproxMVBB_FORCE_MSGLOG_LEVEL @ApproxMVBB_FORCE_MSGLOG_LEVEL@
     
     #cmakedefine ApproxMVBB_OPENMP_SUPPORT 
-    #cmakedefine ApproxMVBB_OPENMP_USE_NTHREADS
-    #define ApproxMVBB_OPENMP_NTHREADS @ApproxMVBB_OPENMP_NTHREADS@
+    #ifdef ApproxMVBB_OPENMP_SUPPORT
     
-    #ifdef ApproxMVBB_OPENMP_USE_NTHREADS
-        #define ApproxMVBB_OPENMP_NUMTHREADS num_threads(ApproxMVBB_OPENMP_NTHREADS)
-    #else
-        #define ApproxMVBB_OPENMP_NUMTHREADS
+        #define ApproxMVBB_OPENMP_NTHREADS @ApproxMVBB_OPENMP_NTHREADS@
+        
+        #cmakedefine ApproxMVBB_OPENMP_USE_NTHREADS
+        #ifdef ApproxMVBB_OPENMP_USE_NTHREADS
+            #define ApproxMVBB_OPENMP_NUMTHREADS num_threads(ApproxMVBB_OPENMP_NTHREADS)
+        #else
+            #define ApproxMVBB_OPENMP_NUMTHREADS
+        #endif
     #endif
 
 }

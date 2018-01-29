@@ -82,12 +82,6 @@ if(${ApproxMVBB_XML_SUPPORT})
     install(TARGETS ApproxMVBB_XML_SUPPORT EXPORT ApproxMVBBTargets)
 endif()
 
-# Make cmake config files
-install(EXPORT  ApproxMVBBTargets
-                DESTINATION ${ApproxMVBB_CMAKE_CONFIG_INSTALL_DIR}
-                NAMESPACE ApproxMVBB::
-                FILE approxmvbb-config.cmake)
-
 # ======================================================================
 
 # Make target library for tests ================================================
@@ -108,6 +102,12 @@ if(ApproxMVBB_BUILD_TESTS)
     endif()
 endif()
 # ======================================================================
+
+# Make cmake config files
+install(EXPORT  ApproxMVBBTargets
+                DESTINATION ${ApproxMVBB_CMAKE_CONFIG_INSTALL_DIR}
+                NAMESPACE ApproxMVBB::
+                FILE approxmvbb-config.cmake)
 
 # Write dependency cmake config file
 configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/approxmvbb-config-dependencies.cmake"
