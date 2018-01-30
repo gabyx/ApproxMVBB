@@ -12,8 +12,8 @@ macro(setTargetCompileOptions TARGETNAME)
             ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang" )
 
         list(APPEND CXX_WARNINGS    "-Wall" 
-                            "-Wpedantic" 
-                            "-Wno-comment")
+                                    "-Wpedantic" 
+                                    "-Wno-comment")
 
         list(APPEND CXX_FLAGS_DEBUG "-fno-omit-frame-pointer")
         
@@ -25,8 +25,8 @@ macro(setTargetCompileOptions TARGETNAME)
 
     elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
         message(WARNING "MSVC is partially supported (Visual Studio 2013 Update 5), trying to set compiler flags anyway!")
-        set(CXX_FLAGS "/arch:SSE2")
-        set(CXX_WARNINGS "/Wall")
+        list(APPEND CXX_FLAGS "/arch:SSE2")
+        list(APPEND CXX_WARNINGS "/Wall")
         # We cannot control the FPU unit in 64bit mode, this flag makes MSVC to not use x87 stuff in 64bit (or 32bit) mode
         # so no extended precision should be used, if that does not work, there is the flag /fp:strict
         # NOTE: SSE is already enabled for x64 compiler
@@ -36,11 +36,10 @@ macro(setTargetCompileOptions TARGETNAME)
     endif()
 
     set_target_properties(${TARGETNAME} PROPERTIES CXX_STANDARD 14)
+    target_compile_features(${TARGETNAME} cxx_std_14)
+    
     target_compile_options(${TARGETNAME} PRIVATE ${CXX_FLAGS} ${CXX_WARNINGS} )
     target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:Debug>:${CXX_FLAGS_DEBUG}> )
-    target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:Release>:${CXX_FLAGS_RELEASE}> )
-    target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:MinSizeRel>:${CXX_FLAGS_MINSIZEREL}> )
-    target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:RelWithDebInfo>:${CXX_FLAGS_RELWITHDEBINFO}> )
 
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR 
        ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
