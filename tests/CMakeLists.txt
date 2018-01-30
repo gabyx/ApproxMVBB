@@ -64,11 +64,10 @@ macro(defineTarget TARGETNAME)
 
     setTargetCompileOptions(${TARGETNAME})
 
-    if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR 
+        CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(${TARGETNAME} PRIVATE -DApproxMVBB_BUILD_TESTS )
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         target_compile_options(${TARGETNAME} PRIVATE /DApproxMVBB_BUILD_TESTS )
     else()
         message(FATAL_ERROR "Could not set compiler flags for compiler id: ${CMAKE_CXX_COMPILER_ID}")

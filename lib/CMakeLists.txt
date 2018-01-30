@@ -16,11 +16,10 @@ macro(add_approxmvbb_lib STATICorSHARED TARGETNAME EXPORTNAME DOINSTALL)
     # set build flag, for import/export specifiers in platform.hpp
     # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
     # We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
-    if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR 
+        CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(${TARGETNAME} PRIVATE -DApproxMVBB_BUILD_LIBRARY -fvisibility=hidden)
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         target_compile_options(${TARGETNAME} PRIVATE /DApproxMVBB_BUILD_LIBRARY)
     else()
         message(FATAL_ERROR "Could not set compile options for compiler id: '${CMAKE_CXX_COMPILER_ID}'")
@@ -46,11 +45,10 @@ endif()
 if(${ApproxMVBB_KDTREE_SUPPORT})
     add_library(ApproxMVBB_KdTreeSupport INTERFACE)
     add_library("ApproxMVBB::KdTreeSupport" ALIAS ApproxMVBB_KdTreeSupport)
-    if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR 
+        CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set_target_properties(ApproxMVBB_KdTreeSupport PROPERTIES INTERFACE_COMPILE_OPTIONS "-DApproxMVBB_KDTREE_SUPPORT")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set_target_properties(ApproxMVBB_KdTreeSupport PROPERTIES INTERFACE_COMPILE_OPTIONS "/DApproxMVBB_KDTREE_SUPPORT")
     else()
         message(FATAL_ERROR "Could not set compile options for compiler id: '${CMAKE_CXX_COMPILER_ID}'")
@@ -66,11 +64,10 @@ endif()
 if(${ApproxMVBB_XML_SUPPORT})
     add_library(ApproxMVBB_XML_SUPPORT INTERFACE)
     add_library("ApproxMVBB::XMLSupport" ALIAS ApproxMVBB_XML_SUPPORT)
-    if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR 
+         CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set_target_properties(ApproxMVBB_XML_SUPPORT PROPERTIES INTERFACE_COMPILE_OPTIONS "-DApproxMVBB_XML_SUPPORT")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set_target_properties(ApproxMVBB_XML_SUPPORT PROPERTIES INTERFACE_COMPILE_OPTIONS "-DApproxMVBB_XML_SUPPORT")
     else()
         message(FATAL_ERROR "Could not set compile options for compiler id: '${CMAKE_CXX_COMPILER_ID}'")
@@ -91,11 +88,10 @@ if(ApproxMVBB_BUILD_TESTS)
     # set build flag, for import/export specifiers in platform.hpp
     # Building a library means we only export the symbols which have APPROXMVBB_EXPORT set in the Platform.hpp file
     # We define all other symbols to be hidden by default as suggested by https://gcc.gnu.org/wiki/Visibility
-    if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
-        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR 
+        CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(ApproxMVBBForTestsOnly PRIVATE -DApproxMVBB_BUILD_TESTS)
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         target_compile_options(ApproxMVBBForTestsOnly PRIVATE /DApproxMVBB_BUILD_TESTS)
     else()
         message(FATAL_ERROR "Could not set compile options for compiler id: '${CMAKE_CXX_COMPILER_ID}'")
