@@ -1,6 +1,6 @@
 macro(setTargetCompileOptions TARGETNAME)
 
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")        
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")        
         list(APPEND CXX_WARNINGS "-Wall" 
                                 "-Wpedantic" 
                                 "-Wno-comment" )
@@ -8,8 +8,8 @@ macro(setTargetCompileOptions TARGETNAME)
         list(APPEND CXX_FLAGS_DEBUG  "-fsanitize=address" 
                                      "-fno-omit-frame-pointer")
 
-    elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR 
-            ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang" )
+    elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
+            "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" )
 
         list(APPEND CXX_WARNINGS    "-Wall" 
                                     "-Wpedantic" 
@@ -17,13 +17,13 @@ macro(setTargetCompileOptions TARGETNAME)
 
         list(APPEND CXX_FLAGS_DEBUG "-fno-omit-frame-pointer")
         
-        if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+        if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
             list(APPEND CXX_FLAGS_DEBUG "-fsanitize=leak"
                                         "-fsanitize=address"
                                         "-fno-omit-frame-pointer")
         endif()
 
-    elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
+    elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" )
         message(WARNING "MSVC is partially supported (Visual Studio 2013 Update 5), trying to set compiler flags anyway!")
         list(APPEND CXX_FLAGS "/arch:SSE2")
         list(APPEND CXX_WARNINGS "/Wall")
@@ -41,8 +41,8 @@ macro(setTargetCompileOptions TARGETNAME)
     target_compile_options(${TARGETNAME} PRIVATE ${CXX_FLAGS} ${CXX_WARNINGS} )
     target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:Debug>:${CXX_FLAGS_DEBUG}> )
 
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR 
-       ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
+       "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         # with clang 5.0.1: -fsanitize=address produces weird output in lldb for std::string ...
         set_property(TARGET ${TARGETNAME} PROPERTY LINK_FLAGS "-fsanitize=leak -fsanitize=address")
     endif()
