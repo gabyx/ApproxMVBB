@@ -35,7 +35,7 @@ macro(setTargetCompileOptions TARGETNAME)
     endif()
 
     set_target_properties(${TARGETNAME} PROPERTIES CXX_STANDARD 14)
-    target_compile_features(${TARGETNAME} cxx_std_14)
+    target_compile_features(${TARGETNAME} PUBLIC cxx_std_14)
     
     target_compile_options(${TARGETNAME} PRIVATE ${CXX_FLAGS} ${CXX_WARNINGS} )
     target_compile_options(${TARGETNAME} PRIVATE $<$<CONFIG:Debug>:${CXX_FLAGS_DEBUG}> )
