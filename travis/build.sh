@@ -48,7 +48,7 @@ else
   echo "Install and test if ApproxMVBB links:"
   mkdir $ROOT_PATH/buildLibUsage
   cd $ROOT_PATH/buildLibUsage
-  INSTALL="$ROOT_PATH/build/../install/share/ApproxMVBB/cmake"
+  INSTALL="$ROOT_PATH/build/install/share/ApproxMVBB/cmake"
   echo "Install dir= $INSTALL"
   cmake $CHECKOUT_PATH/example/libraryUsage -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
                                             -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
