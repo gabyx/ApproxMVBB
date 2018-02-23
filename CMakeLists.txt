@@ -168,7 +168,7 @@ if(UNIX)
 
     set(ApproxMVBB_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/ApproxMVBB/cmake")
     set(ApproxMVBB_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/ApproxMVBB")
-else(WINDOWS)
+elseif(WINDOWS)
     set(ApproxMVBB_INC_INSTALL_DIR "${CMAKE_INSTALL_INCDIR}") 
     set(ApproxMVBB_RUNTIME_INSTALL_DIR "bin") 
     set(ApproxMVBB_LIBRARY_INSTALL_DIR "bin")
@@ -177,6 +177,8 @@ else(WINDOWS)
 
     set(ApproxMVBB_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/cmake")
     set(ApproxMVBB_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}")
+else()
+	message(FATAL_ERROR "Could not set install folders for this platform!")
 endif()
 
 # Define all MVBB Source files
