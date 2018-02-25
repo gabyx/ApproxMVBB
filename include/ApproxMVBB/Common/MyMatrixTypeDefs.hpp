@@ -21,9 +21,9 @@
 namespace ApproxMVBB
 {
     // ================================================================================================
-    /** @brief This
- *	These are some small matrix definitions.
- */
+    /*! @brief This
+     	These are some small matrix definitions.
+    */
 
     namespace MyMatrix
     {

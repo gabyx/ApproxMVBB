@@ -15,25 +15,11 @@
 
 #include "ApproxMVBB/Config/Config.hpp"
 
-#define ApproxMVBB_LOG(message) \
-    {                           \
-        std::cout << message;   \
-    }
+#define ApproxMVBB_LOG(message) std::cout << message;
 #define ApproxMVBB_LOGLEVEL(level, setlevel, message) \
+    if(level <= setlevel)                             \
     {                                                 \
-        if(level <= setlevel)                         \
-        {                                             \
-            ApproxMVBB_LOG(message);                  \
-        }                                             \
-    }
-#define ApproxMVBB_LOGLEVEL_SCOPE(level) \
-    {                                    \
-        if(level <= setlevel)            \
-        {                                \
-        }
-#define ApproxMVBB_LOGLEVEL_SCOPE_END \
-    {                                 \
-    }                                 \
+        ApproxMVBB_LOG(message);                      \
     }
 
 // Message Log
@@ -49,18 +35,9 @@
 #    endif
 #endif
 
-#define ApproxMVBB_MSGLOG_L1(message)                            \
-    {                                                            \
-        ApproxMVBB_LOGLEVEL(1, ApproxMVBB_MSGLOG_LEVEL, message) \
-    }
-#define ApproxMVBB_MSGLOG_L2(message)                            \
-    {                                                            \
-        ApproxMVBB_LOGLEVEL(2, ApproxMVBB_MSGLOG_LEVEL, message) \
-    }
-#define ApproxMVBB_MSGLOG_L3(message)                            \
-    {                                                            \
-        ApproxMVBB_LOGLEVEL(3, ApproxMVBB_MSGLOG_LEVEL, message) \
-    }
-// ==============================================================================================
+#define ApproxMVBB_MSGLOG_L1(message) ApproxMVBB_LOGLEVEL(1, ApproxMVBB_MSGLOG_LEVEL, message)
+#define ApproxMVBB_MSGLOG_L2(message) ApproxMVBB_LOGLEVEL(2, ApproxMVBB_MSGLOG_LEVEL, message)
+#define ApproxMVBB_MSGLOG_L3(message) ApproxMVBB_LOGLEVEL(3, ApproxMVBB_MSGLOG_LEVEL, message)
+// ==================================================================================
 
 #endif
