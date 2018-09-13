@@ -281,6 +281,58 @@ If `Off`, the number of threads is determined at runtime (default).
 If you use clang, make sure you have the [OpenMP enabled clang](https://clang-omp.github.io/)! GCC already supports OpenMP.
 
 --------------------------
+References
+--------------------------
+```
+@Article{malandain2002,
+Author = {Gr'egoire Malandain and Jean-Daniel Boissonnat},
+Journal = {International Journal of Computational Geometry & Applications},
+Month = {December},
+Number = {6},
+Pages = {489 - 510},
+Timestamp = {2015.09.02},
+Title = {Computing the Diameter of a Point Set},
+Volume = {12},
+Year = {2002}}
+```
+and
+```
+@inproceedings{barequet2001,
+Author = {Gill Barequet and Sariel Har-peled},
+Booktitle = {In Proc. 10th ACM-SIAM Sympos. Discrete Algorithms},
+Pages = {38--91},
+Timestamp = {2015.09.02},
+Title = {Efficiently Approximating the Minimum-Volume Bounding Box of a Point Set in Three Dimensions},
+Year = {2001}}
+```
+
+Optimizations:
+```cpp
+@Article{chang2011,
+Acmid = {2019641},
+Address = {New York, NY, USA},
+Articleno = {122},
+Author = {Chang, Chia-Tche and Gorissen, Bastien and Melchior, Samuel},
+Doi = {10.1145/2019627.2019641},
+Issn = {0730-0301},
+Issue_Date = {October 2011},
+Journal = {ACM Trans. Graph.},
+Keywords = {Computational geometry, bounding box, manifolds, optimization},
+Month = oct,
+Number = {5},
+Numpages = {16},
+Pages = {122:1--122:16},
+Publisher = {ACM},
+Timestamp = {2015.09.03},
+Title = {Fast Oriented Bounding Box Optimization on the Rotation Group {$SO(3,\mathbb{R})$}},
+Url = {http://doi.acm.org/10.1145/2019627.2019641},
+Volume = {30},
+Year = {2011},
+Bdsk-Url-1 = {http://doi.acm.org/10.1145/2019627.2019641},
+Bdsk-Url-2 = {http://dx.doi.org/10.1145/2019627.2019641}}
+```
+
+--------------------------
 Licensing
 --------------------------
 
