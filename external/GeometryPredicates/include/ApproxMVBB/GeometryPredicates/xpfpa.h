@@ -81,7 +81,7 @@
 #        define XPFPA_RETURN_SINGLE(val) return (val);
 #        define XPFPA_RETURN_DOUBLE_EXTENDED(val) return (val);
 
-#    elif HAVE__CONTROLFP_S
+#    elif defined(HAVE__CONTROLFP_S)
 
 // float.h defines _controlfp_s
 #        include <float.h>
