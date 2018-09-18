@@ -57,7 +57,7 @@ endif()
 mark_as_advanced(MULTITHREADED_BUILD)
 set(MULTITHREADED_BUILD ON CACHE BOOL "Parallel build with as many threads as possible!")
 if(MULTITHREADED_BUILD)
-	if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
+    if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
             file(COPY ${ApproxMVBB_ROOT_DIR}/cmake/parallelmake.sh DESTINATION ${PROJECT_BINARY_DIR}
                 FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
                 NO_SOURCE_PERMISSIONS
@@ -65,7 +65,7 @@ if(MULTITHREADED_BUILD)
             set(CMAKE_MAKE_PROGRAM "${PROJECT_BINARY_DIR}/parallelmake.sh")
             message(STATUS "Set make program to ${PROJECT_BINARY_DIR}/parallelmake.sh")
     elseif(MSVC)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/MP")
+      add_definitions("/MP")
       message(STATUS "Added parallel build arguments to CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
     endif()
 endif()
