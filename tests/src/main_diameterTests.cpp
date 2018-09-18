@@ -26,13 +26,13 @@ namespace ApproxMVBB
         template<typename TMatrix>
         void diameterTest(std::string name, const TMatrix& v, PREC epsilon = 0.001)
         {
-            using namespace PointFunctions;
-            using namespace TestFunctions;
+            namespace pf = PointFunctions;
+            namespace tf = TestFunctions;
 
             TMatrix in = v;
             std::cout << "\n\nStart diameterTest: " + name + "" << std::endl;
             START_TIMER(start)
-            auto pp = estimateDiameter<3>(v, epsilon);
+            auto pp = pf::estimateDiameter<3>(v, epsilon);
             STOP_TIMER_SEC(count, start)
             std::cout << "Timings: " << count << " sec for " << v.cols() << " points" << std::endl;
             std::cout << "End diameterTest " + name << std::endl;
@@ -40,26 +40,26 @@ namespace ApproxMVBB
             Matrix3Dyn diam(3, 2);
             diam.col(0) = pp.first;
             diam.col(1) = pp.second;
-            dumpPointsMatrixBinary(getFileOutPath(name, ".bin"), diam);  // dumps diameter
-            dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), v);    // dump generated points
+            tf::dumpPointsMatrixBinary(tf::getFileOutPath(name, ".bin"), diam);  // dumps diameter
+            tf::dumpPointsMatrixBinary(tf::getFileOutPath(name, "2.bin"), v);    // dump generated points
 
             // CHECK
             try
             {
                 Matrix3Dyn diamV(3, 2);
-                readPointsMatrixBinary(getFileValidationPath(name, ".bin"), diamV);
+                tf::readPointsMatrixBinary(tf::getFileValidationPath(name, ".bin"), diamV);
                 Matrix3Dyn inputPointsV;
-                readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), inputPointsV);
+                tf::readPointsMatrixBinary(tf::getFileValidationPath(name, "2.bin"), inputPointsV);
 
                 EXPECT_TRUE((in.array() == v.array()).all())
                     << " estimate diameter changed the point cloud! should not happed!";
 
-                EXPECT_TRUE(assertNearArrayColsRows(diam, diamV)) << "Diameter valid: " << std::endl
+                EXPECT_TRUE(tf::assertNearArrayColsRows(diam, diamV)) << "Diameter valid: " << std::endl
                                                                   << diamV << std::endl
                                                                   << "Diameter computed: " << std::endl
                                                                   << diam << std::endl;
 
-                EXPECT_TRUE(assertNearArray(v, inputPointsV)) << "input points not the same as valid ones";
+                EXPECT_TRUE(tf::assertNearArray(v, inputPointsV)) << "input points not the same as valid ones";
             }
             catch(ApproxMVBB::Exception& e)
             {
@@ -70,8 +70,6 @@ namespace ApproxMVBB
 };      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
-using namespace TestFunctions;
-using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterTest;
 
 MY_TEST(DiameterTest, RandomGenerator)
@@ -86,11 +84,11 @@ MY_TEST(DiameterTest, RandomGenerator)
         auto f1 = [&](int) { return specialUni(specialGen); };
         t       = t.unaryExpr(f1);
 
-        dumpPointsMatrixBinary(getFileOutPath(testName), t);
+        tf::dumpPointsMatrixBinary(tf::getFileOutPath(testName), t);
 
         // Check
         decltype(t) tvalid;
-        readPointsMatrixBinary(getFileValidationPath(testName), tvalid);
+        tf::readPointsMatrixBinary(tf::getFileValidationPath(testName), tvalid);
 
         EXPECT_TRUE((t.array() == tvalid.array()).all()) << " vector valid: " << std::endl
                                                          << t.transpose() << "and: " << std::endl
@@ -105,11 +103,11 @@ MY_TEST(DiameterTest, RandomGenerator)
         auto f1 = [&](int) { return specialUni(specialGen); };
         t       = t.unaryExpr(f1);
 
-        dumpPointsMatrixBinary(getFileOutPath(testName, "2.bin"), t);
+        tf::dumpPointsMatrixBinary(tf::getFileOutPath(testName, "2.bin"), t);
 
         // Check
         decltype(t) tvalid;
-        readPointsMatrixBinary(getFileValidationPath(testName, "2.bin"), tvalid);
+        tf::readPointsMatrixBinary(tf::getFileValidationPath(testName, "2.bin"), tvalid);
 
         EXPECT_TRUE((t.array() == tvalid.array()).all()) << " vector valid: " << std::endl
                                                          << t.transpose() << "and: " << std::endl
@@ -124,11 +122,11 @@ MY_TEST(DiameterTest, RandomGenerator)
         auto f1 = [&](T) { return specialGen(); };
         t       = t.unaryExpr(f1);
 
-        dumpPointsMatrixBinary(getFileOutPath(testName, "3.bin"), t);
+        tf::dumpPointsMatrixBinary(tf::getFileOutPath(testName, "3.bin"), t);
         // Check
         // Check
         decltype(t) tvalid;
-        readPointsMatrixBinary(getFileValidationPath(testName, "3.bin"), tvalid);
+        tf::readPointsMatrixBinary(tf::getFileValidationPath(testName, "3.bin"), tvalid);
 
         EXPECT_TRUE((t.array() == tvalid.array()).all()) << " vector valid: " << std::endl
                                                          << t.transpose() << "and: " << std::endl
@@ -181,37 +179,37 @@ MY_TEST(DiameterTest, UnitCube)
 
 // MY_TEST(DiameterTest, PointsSimulation) {
 // MY_TEST_RANDOM_STUFF(PointsSimulation)
-//        auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
+//        auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulation.txt"));
 //
 //        Matrix3Dyn t(3,v.size());
 //        for(unsigned int i = 0; i<v.size(); ++i) {
 //                t.col(i) = v[i];
 //        }
-//        applyRandomRotTrans(t,f);
+//        pf::applyRandomRotTrans(t,f);
 //        std::cout << "Applied Transformation" << std::endl;
 //        diameterTest(testName,t);
 //}
 //
 // MY_TEST(DiameterTest, PointsSimulationFailMVBB) {
 // MY_TEST_RANDOM_STUFF(PointsSimulationFailMVBB)
-//        auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
+//        auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulationFailMVBB.txt"));
 //        Matrix3Dyn t(3,v.size());
 //        for(unsigned int i = 0; i<v.size(); ++i) {
 //        t.col(i) = v[i];
 //        }
-//        applyRandomRotTrans(t,f);
+//        pf::applyRandomRotTrans(t,f);
 //        std::cout << "Applied Transformation" << std::endl;
 //        diameterTest(testName,t);
 //}
 //
 // MY_TEST(DiameterTest, Bunny) {
 // MY_TEST_RANDOM_STUFF(Bunny)
-//        auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
+//        auto v = tf::getPointsFromFile3D(tf::getFileInPath("Bunny.txt"));
 //        Matrix3Dyn t(3,v.size());
 //        for(unsigned int i = 0; i<v.size(); ++i) {
 //                t.col(i) = v[i];
 //        }
-//        applyRandomRotTrans(t,f);
+//        pf::applyRandomRotTrans(t,f);
 //        std::cout << "Applied Transformation" << std::endl;
 //        diameterTest(testName,t);
 //}
@@ -227,12 +225,12 @@ MY_TEST(DiameterTest, UnitCube)
 //
 // MY_TEST(DiameterTest, Lucy) {
 // MY_TEST_RANDOM_STUFF(Lucy)
-//        auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
+//        auto v = tf::getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
 //        Matrix3Dyn t(3,v.size());
 //        for(unsigned int i = 0; i<v.size(); ++i) {
 //            t.col(i) = v[i];
 //        }
-//        applyRandomRotTrans(t,f);
+//        pf::applyRandomRotTrans(t,f);
 //        diameterTest(testName,t);
 //}
 //#endif
@@ -249,13 +247,13 @@ MY_TEST(DiameterTest, Plane)
 // MY_TEST_RANDOM_STUFF(PointClouds)
 //
 //        for(unsigned int k=0; k<51; k++) {
-//            auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) +".txt"));
+//            auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointCloud_" + std::to_string(k) +".txt"));
 //            Matrix3Dyn t(3,v.size());
 //            for(unsigned int i = 0; i<v.size(); ++i) {
 //                t.col(i) = v[i];
 //            }
 //
-//            applyRandomRotTrans(t,f);
+//            pf::applyRandomRotTrans(t,f);
 //            diameterTest("PointClouds-Nr"+std::to_string(k),t);
 //        }
 //}

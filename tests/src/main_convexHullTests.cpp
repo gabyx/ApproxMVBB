@@ -26,13 +26,13 @@ namespace ApproxMVBB
         template<typename TMatrix>
         void convexHullTest(std::string name, const TMatrix& v, bool dumpPoints = true)
         {
-            using namespace TestFunctions;
-            using namespace PointFunctions;
+            namespace tf = TestFunctions;
+            namespace pf = PointFunctions;
 
             if(dumpPoints)
             {
-                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+                tf::dumpPointsMatrixBinary(tf::getPointsDumpPath(name, ".bin"), v);
+                tf::dumpPointsMatrix(tf::getPointsDumpPath(name, ".txt"), v);
             }
             std::cout << "\n\nStart convexHull test " << name << "" << std::endl;
             START_TIMER(start)
@@ -55,13 +55,13 @@ namespace ApproxMVBB
                 qHull.col(j++) = v.col(i);
             }
 
-            dumpPointsMatrixBinary(getFileOutPath(name), qHull);
+            tf::dumpPointsMatrixBinary(tf::getFileOutPath(name), qHull);
 
             // Compare with validation file
             TMatrix valid = qHull;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-            readPointsMatrixBinary(getFileValidationPath(name), valid);
-            EXPECT_TRUE(assertNearArray(qHull, valid));
+            tf::readPointsMatrixBinary(tf::getFileValidationPath(name), valid);
+            EXPECT_TRUE(tf::assertNearArray(qHull, valid));
         }
 
         //    void MY_TEST() {
@@ -69,9 +69,8 @@ namespace ApproxMVBB
 };      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
-using namespace TestFunctions;
-using namespace PointFunctions;
 using namespace ApproxMVBB::ConvexHullTest;
+
 
 MY_TEST(ConvexHullTest, PointsRandom10)
 {
@@ -183,7 +182,7 @@ MY_TEST(ConvexHullTest, Points2DRectFail)
 {
     MY_TEST_RANDOM_STUFF(ConvexHullTest, Points2DRectFail);
 
-    auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
+    auto t = tf::getPointsFromFile2D(tf::getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
     for(unsigned int i = 0; i < t.size(); ++i)
     {
@@ -197,11 +196,11 @@ MY_TEST(ConvexHullTest, PointsBadProjectionFilter)
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjectionFilter);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection.bin"), t, false);
 
     // Filter points
     std::set<unsigned int> i = {0, 29, 180, 212, 213, 192, 193, 175, 176, 162, 163, 146, 147, 129, 130, 112, 113, 96, 97, 79, 80, 58, 59, 36, 37, 7, 8, 1, 226, 196, 154, 137, 30, 4};
-    t                        = filterPoints(t, i);
+    t                        = tf::filterPoints(t, i);
     convexHullTest(testName, t);
 }
 
@@ -210,7 +209,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection)
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection.bin"), t, false);
     convexHullTest(testName, t);
 }
 MY_TEST(ConvexHullTest, PointsBadProjection2)
@@ -218,7 +217,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection2)
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection2);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection2.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection2.bin"), t, false);
     convexHullTest(testName, t);
 }
 MY_TEST(ConvexHullTest, PointsBadProjection3)
@@ -226,7 +225,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection3)
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection3);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection3.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection3.bin"), t, false);
     convexHullTest(testName, t);
 }
 MY_TEST(ConvexHullTest, PointsBadProjection4)
@@ -235,7 +234,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection4)
 
     Matrix2Dyn t(2, 16);
     t.setZero();
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection4.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection4.bin"), t, false);
     convexHullTest(testName, t);
 }
 MY_TEST(ConvexHullTest, PointsBadProjection5)
@@ -244,7 +243,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection5)
 
     Matrix2Dyn t(2, 5);
     t.setZero();
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection5.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection5.bin"), t, false);
     convexHullTest(testName, t);
 }
 MY_TEST(ConvexHullTest, PointsBadProjection6)
@@ -252,7 +251,7 @@ MY_TEST(ConvexHullTest, PointsBadProjection6)
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsBadProjection6);
     Matrix2Dyn t(2, 100);
     t.setZero();
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection6.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection6.bin"), t, false);
     convexHullTest(testName, t);
 }
 

@@ -37,6 +37,7 @@ macro(INCLUDE_ALL_ApproxMVBB_SOURCE
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/RandomGenerators.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ConvexHull2D.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/MinAreaRectangle.cpp
+        ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/ProjectedPointSet.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/OOBB.cpp
         ${ApproxMVBB_ROOT_DIR}/src/ApproxMVBB/AABB.cpp
 

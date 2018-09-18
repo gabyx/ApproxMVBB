@@ -34,13 +34,13 @@ namespace ApproxMVBB
                       unsigned int gridSearchOptLoops = 10,
                       bool checkVolume                = true)
         {
-            using namespace PointFunctions;
-            using namespace TestFunctions;
+            namespace pf = PointFunctions;
+            namespace tf = TestFunctions;
 
             if(dumpPoints)
             {
-                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+                tf::dumpPointsMatrixBinary(tf::getPointsDumpPath(name, ".bin"), v);
+                tf::dumpPointsMatrix(tf::getPointsDumpPath(name, ".txt"), v);
             }
 
             std::cout << "\n\nStart mvbbTest " + name + "" << std::endl;
@@ -60,12 +60,12 @@ namespace ApproxMVBB
                 oobb.unite(A_KI * v.col(i));
             }
 
-            dumpOOBB(getFileOutPath(name, ".txt"), oobb);
+            tf::dumpOOBB(tf::getFileOutPath(name, ".txt"), oobb);
 
             // Check
             try
             {
-                readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
+                tf::readOOBBAndCheck(oobb, tf::getFileValidationPath(name, ".txt"));
                 if(checkVolume)
                 {
                     ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
@@ -80,8 +80,6 @@ namespace ApproxMVBB
 };      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
-using namespace TestFunctions;
-using namespace PointFunctions;
 using namespace ApproxMVBB::MVBBTests;
 
 MY_TEST(MVBBTest, TwoPoints)
@@ -159,7 +157,7 @@ MY_TEST(MVBBTest, Rectangles)
         t.col(1) = ApproxMVBB::Vector3(1, 0, 0);
         t.col(2) = ApproxMVBB::Vector3(1, 1, 0);
         t.col(3) = ApproxMVBB::Vector3(0, 1, 0);
-        applyRandomRotTrans(t, f);
+        pf::applyRandomRotTrans(t, f);
         mvbbTest(testName + "-Nr-" + std::to_string(i), t, true, 0.001, 400, 4, 4, 4, false);
     }
 }
@@ -181,7 +179,7 @@ MY_TEST(MVBBTest, PointsRandom100)
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom100);
     ApproxMVBB::Matrix3Dyn t(3, 100);
     t = t.unaryExpr(f);
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     mvbbTest(testName, t);
 }
 
@@ -190,20 +188,20 @@ MY_TEST(MVBBTest, PointsRandom10000)
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom10000);
     ApproxMVBB::Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     mvbbTest(testName, t);
 }
 
 MY_TEST(MVBBTest, Bunny)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Bunny);
-    auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
+    auto v = tf::getPointsFromFile3D(tf::getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     std::cout << "Applied Transformation" << std::endl;
     mvbbTest(testName, t, true, 0.1);
 }
@@ -220,13 +218,13 @@ MY_TEST(MVBBTest, PointsRandom140M)
 MY_TEST(MVBBTest, Lucy)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Lucy);
-    auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
+    auto v = tf::getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     mvbbTest(testName, t, false, 100, 400, 5, 0, 5);
 }
 #endif
@@ -236,14 +234,14 @@ MY_TEST(MVBBTest, PointClouds)
     MY_TEST_RANDOM_STUFF(MVBBTest, PointClouds);
     for(unsigned int k = 0; k < 10; k++)
     {
-        auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
+        auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
         Matrix3Dyn t(3, v.size());
         for(unsigned int i = 0; i < v.size(); ++i)
         {
             t.col(i) = v[i];
         }
 
-        applyRandomRotTrans(t, f);
+        pf::applyRandomRotTrans(t, f);
         mvbbTest(testName + "-Nr-" + std::to_string(k), t, true, 0.1, 400, 5, 3, 6);
     }
 }

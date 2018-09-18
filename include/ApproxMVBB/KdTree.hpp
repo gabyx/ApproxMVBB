@@ -1607,9 +1607,9 @@ namespace ApproxMVBB
             }
 
             /** Get cell index of the leaf which owns point \p point
-             * \p point is the d-dimensional point in the frame of reference the kd-Tree
+             * \p point is the d-dimensional point in the coordinate system the kd-Tree
              * was built!
-             * Points outside the roots AABB box, are naturally project to the most outer
+             * Points outside the root AABB box, are naturally project to the most outer
              * leaf automatically.
              */
             template<typename Derived>

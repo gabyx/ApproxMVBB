@@ -35,7 +35,7 @@ namespace ApproxMVBB
         if(i == 0)
         {
             // Make new x-Axis the z-Axis
-            // R_NK = Rotate around 90∞ around Y, and 90∞ around X (always in K frame) )
+            // R_NK = Rotate around 90∞ around Y, and 90∞ around X (always in `K` coordinate system) )
             // A_IN = A_IK * A_KN = R_KI * R_NK
             m_q_KI = m_q_KI * Quaternion(0.5, 0.5, 0.5, 0.5);
             // Change points  Coordinates I_[x,y,z] -> K_[y,z,x]
@@ -48,7 +48,7 @@ namespace ApproxMVBB
         else
         {
             // Make new y-Axis the z-Axis
-            // R_NK = Rotate around 90∞ around -X, and 90∞ around -Y (always in K frame)
+            // R_NK = Rotate around 90∞ around -X, and 90∞ around -Y (always in `K` coordinate system)
             // )
             // A_IN = A_IK * A_KN = R_KI * R_NK
             m_q_KI = m_q_KI * Quaternion(0.5, -0.5, -0.5, -0.5);
