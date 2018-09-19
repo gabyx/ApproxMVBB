@@ -158,7 +158,7 @@ namespace ApproxMVBB
 
             {
                 // generate points
-                auto t = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
+                auto t = pf::getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
                 ApproxMVBB::Matrix2Dyn v(2, t.size());
                 for(unsigned int i = 0; i < t.size(); ++i)
                 {
@@ -419,7 +419,7 @@ namespace ApproxMVBB
 
             {
                 // generate points
-                auto v = getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
+                auto v = pf::getPointsFromFile2D("./PointsSimulation2DRectFail.txt");
                 ApproxMVBB::Matrix2Dyn t(2, v.size());
                 for(unsigned int i = 0; i < v.size(); ++i)
                 {

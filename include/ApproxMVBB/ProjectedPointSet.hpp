@@ -30,6 +30,11 @@ namespace ApproxMVBB
         ApproxMVBB_DEFINE_MATRIX_TYPES;
         ApproxMVBB_DEFINE_POINTS_CONFIG_TYPES;
 
+	public:
+		ProjectedPointSet();
+		~ProjectedPointSet();
+
+	public:
         template<typename Derived>
         OOBB computeMVBBApprox(const Vector3& zDir, const MatrixBase<Derived>& points, const PREC epsilon)
         {
@@ -50,7 +55,7 @@ namespace ApproxMVBB
             }
             // std::cout <<"estimated 2d diameter: " << dirX.transpose() << " eps: " <<
             // epsilon << std::endl;
-            // Built Coordinate Trafo from frame K to frame M
+            // Built Coordinate Trafo from coordinate system `K`  to coordinate system `M` 
             Matrix22 A2_MK;
             dirX.normalize();
 
@@ -88,8 +93,8 @@ namespace ApproxMVBB
             M_max.head<2>() = aabb.m_maxPoint;
             M_max(2)        = m_maxZValue;
 
-            // Make coordinate transformation from M frame (Minimum Rectancle)
-            // to K frame (Projection Plane);
+            // Make coordinate transformation from `M` coordinate system (Minimum Rectancle)
+            // to `K` coordinate system (Projection Plane);
             Matrix33 A_KM;
             A_KM.setIdentity();
             A_KM.block<2, 2>(0, 0) = A2_MK.transpose();
@@ -152,8 +157,8 @@ namespace ApproxMVBB
             M_max.head<2>() += M_p;
             M_max(2) = m_maxZValue;
 
-            // Make coordinate transformation from M frame (Minimum Rectancle)
-            // to K frame (Projection Plane);
+            // Make coordinate transformation from `M` coordinate system (Minimum Rectancle)
+            // to `K` coordinate system (Projection Plane);
             Matrix33 A_IM;
             // Make A_KM
             A_IM.setIdentity();
@@ -180,7 +185,7 @@ namespace ApproxMVBB
             // std::cout << "dir: " <<  m_zDir << std::endl;
             makeCoordinateSystem(m_zDir, xDir, yDir);
 
-            // Make coodinate transform from frame I to K!
+            // Make coodinate transform from coordinate system `I`  to K!
             m_A_KI.col(0) = xDir;
             m_A_KI.col(1) = yDir;
             m_A_KI.col(2) = m_zDir;
@@ -205,10 +210,10 @@ namespace ApproxMVBB
             }
         }
 
-        Matrix2Dyn m_p;  ///< Projected points in frame K
+        Matrix2Dyn m_p;  ///< Projected points in coordinate system `K` 
 
         Vector3 m_zDir;
-        Matrix33 m_A_KI;  ///< Transformation from I frame into the projection frame K
+        Matrix33 m_A_KI;  ///< Transformation from coordinate system `I`  into the projection coordinate system `K` 
         PREC m_minZValue, m_maxZValue;
     };
 }  // namespace ApproxMVBB

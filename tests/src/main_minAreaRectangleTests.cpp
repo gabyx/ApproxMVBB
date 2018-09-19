@@ -26,11 +26,11 @@ namespace ApproxMVBB
         template<typename TMatrix>
         void minRectTest(std::string name, const TMatrix& v)
         {
-            using namespace PointFunctions;
-            using namespace TestFunctions;
+            namespace pf = PointFunctions;
+            namespace tf = TestFunctions;
 
-            dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-            dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+            tf::dumpPointsMatrixBinary(tf::getPointsDumpPath(name, ".bin"), v);
+            tf::dumpPointsMatrix(tf::getPointsDumpPath(name, ".txt"), v);
 
             std::cout << "\n\nStart minAreaRectangleTest " + name + "" << std::endl;
             START_TIMER(start)
@@ -51,16 +51,16 @@ namespace ApproxMVBB
             p.col(4) = rect.m_u;
             p.col(5) = rect.m_v;
 
-            dumpPointsMatrixBinary(getFileOutPath(name), p);
-            // dumpPointsMatrix(getFileOutPath(name,".txt"),p);
+            tf::dumpPointsMatrixBinary(tf::getFileOutPath(name), p);
+            // tf::dumpPointsMatrix(tf::getFileOutPath(name,".txt"),p);
 
             // Compare with validation file
             TMatrix valid = p;
             valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-            readPointsMatrixBinary(getFileValidationPath(name), valid);
+            tf::readPointsMatrixBinary(tf::getFileValidationPath(name), valid);
 
             // Assert all cols of p are in valid
-            EXPECT_TRUE(assertNearArrayColsRows<true>(p.leftCols(4), valid.leftCols(4))) << "Valid Points:" << std::endl
+            EXPECT_TRUE(tf::assertNearArrayColsRows<true>(p.leftCols(4), valid.leftCols(4))) << "Valid Points:" << std::endl
                                                                                          << valid.transpose() << std::endl
                                                                                          << " computed:" << std::endl
                                                                                          << p.transpose() << std::endl;
@@ -69,8 +69,6 @@ namespace ApproxMVBB
 }  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
-using namespace TestFunctions;
-using namespace PointFunctions;
 using namespace ApproxMVBB::MinAreaRectangleTest;
 
 MY_TEST(MinAreaRectangleTest, PointsRandom10)
@@ -230,7 +228,7 @@ MY_TEST(MinAreaRectangleTest, Points2DRectFail)
 {
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, Points2DRectFail);
 
-    auto t = getPointsFromFile2D(getFileInPath("PointsSimulation2DRectFail.txt"));
+    auto t = tf::getPointsFromFile2D(tf::getFileInPath("PointsSimulation2DRectFail.txt"));
     ApproxMVBB::Matrix2Dyn v(2, t.size());
     for(unsigned int i = 0; i < t.size(); ++i)
     {
@@ -255,7 +253,7 @@ MY_TEST(MinAreaRectangleTest, PointsBadProjection)
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection.bin"), t, false);
     minRectTest(testName, t);
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection2)
@@ -263,7 +261,7 @@ MY_TEST(MinAreaRectangleTest, PointsBadProjection2)
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection2);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection2.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection2.bin"), t, false);
     minRectTest(testName, t);
 }
 MY_TEST(MinAreaRectangleTest, PointsBadProjection3)
@@ -271,7 +269,7 @@ MY_TEST(MinAreaRectangleTest, PointsBadProjection3)
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsBadProjection3);
 
     Matrix2Dyn t(2, 400);
-    readPointsMatrixBinary(getFileInPath("PointsBadProjection3.bin"), t, false);
+    tf::readPointsMatrixBinary(tf::getFileInPath("PointsBadProjection3.bin"), t, false);
     minRectTest(testName, t);
 }
 

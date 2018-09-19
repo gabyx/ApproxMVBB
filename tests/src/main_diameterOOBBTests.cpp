@@ -32,13 +32,13 @@ namespace ApproxMVBB
                           unsigned int samplePoints = 400,
                           bool checkVolume          = true)
         {
-            using namespace PointFunctions;
-            using namespace TestFunctions;
+            namespace pf = PointFunctions;
+            namespace tf = TestFunctions;
 
             if(dump)
             {
-                dumpPointsMatrixBinary(getPointsDumpPath(name, ".bin"), v);
-                dumpPointsMatrix(getPointsDumpPath(name, ".txt"), v);
+                tf::dumpPointsMatrixBinary(tf::getPointsDumpPath(name, ".bin"), v);
+                tf::dumpPointsMatrix(tf::getPointsDumpPath(name, ".txt"), v);
             }
 
             std::cout << "\n\nStart diameterOOBB test " + name + "" << std::endl;
@@ -49,7 +49,7 @@ namespace ApproxMVBB
             std::cout << "End diameterOOBB test " + name << std::endl;
 
             oobb.expand(1e-10);
-            if(!checkPointsInOOBB(v, oobb))
+            if(!tf::checkPointsInOOBB(v, oobb))
             {
                 std::cout << "WARNING: Not all points in OOBB.expand(1e-10)" << std::endl;
             }
@@ -58,13 +58,13 @@ namespace ApproxMVBB
                 std::cout << "All points in OOBB!" << std::endl;
             }
 
-            dumpOOBB(getFileOutPath(name, ".txt"), oobb);
+            tf::dumpOOBB(tf::getFileOutPath(name, ".txt"), oobb);
 
             // Check OOBB
             OOBB validOOBB;
             try
             {
-                validOOBB = readOOBBAndCheck(oobb, getFileValidationPath(name, ".txt"));
+                validOOBB = tf::readOOBBAndCheck(oobb, tf::getFileValidationPath(name, ".txt"));
                 if(checkVolume)
                 {
                     ASSERT_GT(oobb.volume(), 1e-6) << "Volume too small: " << oobb.volume() << std::endl;
@@ -84,7 +84,7 @@ namespace ApproxMVBB
             std::cout << "Timings: " << count2 << " sec for " << sampled.cols() << " points" << std::endl;
             std::cout << "End Sampling test " + name << std::endl;
 
-            dumpPointsMatrixBinary(getFileOutPath(name, "2.bin"), sampled);
+            tf::dumpPointsMatrixBinary(tf::getFileOutPath(name, "2.bin"), sampled);
 
             Matrix3Dyn valid;
             try
@@ -92,15 +92,15 @@ namespace ApproxMVBB
                 // Check Sampled points
                 Matrix3Dyn valid = sampled;
                 valid.setConstant(std::numeric_limits<PREC>::signaling_NaN());
-                readPointsMatrixBinary(getFileValidationPath(name, "2.bin"), valid);
+                tf::readPointsMatrixBinary(tf::getFileValidationPath(name, "2.bin"), valid);
 
                 if(sampled.cols() > 100)
                 {
-                    EXPECT_TRUE(assertNearArray(sampled, valid));
+                    EXPECT_TRUE(tf::assertNearArray(sampled, valid));
                 }
                 else
                 {
-                    EXPECT_TRUE(assertNearArray(sampled, valid)) << std::endl
+                    EXPECT_TRUE(tf::assertNearArray(sampled, valid)) << std::endl
                                                                  << "valid points:" << valid.transpose() << std::endl
                                                                  << "and:" << std::endl
                                                                  << sampled.transpose();
@@ -115,8 +115,6 @@ namespace ApproxMVBB
 };      // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
-using namespace TestFunctions;
-using namespace PointFunctions;
 using namespace ApproxMVBB::DiameterOOBBTest;
 
 MY_TEST(DiameterOOBBTest, PointsRandom3)
@@ -165,14 +163,14 @@ MY_TEST(DiameterOOBBTest, UnitCube)
 MY_TEST(DiameterOOBBTest, PointsSimulation)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulation);
-    auto v = getPointsFromFile3D(getFileInPath("PointsSimulation.txt"));
+    auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulation.txt"));
 
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     std::cout << "Applied Transformation" << std::endl;
     diameterTest(testName, t);
 }
@@ -180,13 +178,13 @@ MY_TEST(DiameterOOBBTest, PointsSimulation)
 MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulationFailMVBB);
-    auto v = getPointsFromFile3D(getFileInPath("PointsSimulationFailMVBB.txt"));
+    auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulationFailMVBB.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     std::cout << "Applied Transformation" << std::endl;
     diameterTest(testName, t, true, 10);
 }
@@ -194,13 +192,13 @@ MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 MY_TEST(DiameterOOBBTest, Bunny)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Bunny);
-    auto v = getPointsFromFile3D(getFileInPath("Bunny.txt"));
+    auto v = tf::getPointsFromFile3D(tf::getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     std::cout << "Applied Transformation" << std::endl;
     diameterTest(testName, t, false, 10, 1);
 }
@@ -217,13 +215,13 @@ MY_TEST(DiameterOOBBTest, PointsRandom14M)
 MY_TEST(DiameterOOBBTest, Lucy)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Lucy);
-    auto v = getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
+    auto v = tf::getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
     {
         t.col(i) = v[i];
     }
-    applyRandomRotTrans(t, f);
+    pf::applyRandomRotTrans(t, f);
     diameterTest(testName, t, false, 3, 100);
 }
 #endif
@@ -242,14 +240,14 @@ MY_TEST(DiameterOOBBTest, PointClouds)
 
     for(unsigned int k = 0; k < 51; k++)
     {
-        auto v = getPointsFromFile3D(getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
+        auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
         Matrix3Dyn t(3, v.size());
         for(unsigned int i = 0; i < v.size(); ++i)
         {
             t.col(i) = v[i];
         }
 
-        applyRandomRotTrans(t, f);
+        pf::applyRandomRotTrans(t, f);
         diameterTest(testName + "-Nr" + std::to_string(k), t, true, 4, 0.1);
     }
 }

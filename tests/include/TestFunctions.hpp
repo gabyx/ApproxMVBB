@@ -25,8 +25,11 @@
 
 #define MY_TEST(name1, name2) TEST(name1, name2)
 #define MY_TEST_RANDOM_STUFF(name1, name2)                                            \
-    std::string testName = #name1 "-" #name2;                                         \
-    auto seed            = hashString(#name2);                                        \
+    using namespace ApproxMVBB;                                                       \
+	namespace pf = ApproxMVBB::PointFunctions;                                        \
+	namespace tf = ApproxMVBB::TestFunctions;                                         \
+	std::string testName = #name1 "-" #name2;                                         \
+    auto seed            = TestFunctions::hashString(#name2);                         \
     std::cout << "Seed for this test: " << seed << std::endl;                         \
     ApproxMVBB::RandomGenerators::DefaultRandomGen rng(seed);                         \
     ApproxMVBB::RandomGenerators::DefaultUniformRealDistribution<PREC> uni(0.0, 1.0); \

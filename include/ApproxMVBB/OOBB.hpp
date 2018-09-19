@@ -76,7 +76,7 @@ namespace ApproxMVBB
         void reset();
 
         /** Add points to this OOBB. The points `p` are assumed to be
-        represented in this OOBB's coordinate system K. */
+        represented in this OOBB's coordinate system `K` . */
         template<typename Derived>
         OOBB& unite(const MatrixBase<Derived>& p)
         {
@@ -89,13 +89,13 @@ namespace ApproxMVBB
             return *this;
         }
 
-        /** Get the center of the OOBB represented in coordinate system K. */
+        /** Get the center of the OOBB represented in coordinate system `K` . */
         inline Vector3 center()
         {
             return 0.5 * (m_maxPoint + m_minPoint);
         }
 
-        /** Get the extent of the OOBB represented in coordinate system K. */
+        /** Get the extent of the OOBB represented in coordinate system `K` . */
         inline Array3 extent() const
         {
             return (m_maxPoint - m_minPoint).array();
@@ -122,14 +122,14 @@ namespace ApproxMVBB
         /** Checks if a point overlaps the OOBB
         @param p                     Input point.
         @param coordinateSystemIsI   Determines if the the input point is represented in
-                                     the coordinate system I or if false they are represented in
-                                     the coordinate system of the OOBB (coordinate system K). */
+                                     the coordinate system `I`  or if false they are represented in
+                                     the coordinate system of the OOBB (coordinate system `K` ). */
         template<typename Derived, bool coordinateSystemIsI = true>
         inline bool overlaps(const MatrixBase<Derived>& p) const
         {
             if(coordinateSystemIsI)
             {
-                // p is in I frame
+                // p is in coordinate system `I` 
                 Vector3 t = m_q_KI.inverse() * p;  // A_IK^T * I_p
                 return ((t.array() >= m_minPoint.array()) && (t.array() <= m_maxPoint.array())).all();
             }
@@ -164,7 +164,7 @@ namespace ApproxMVBB
             return d(0) * d(1) * d(2);
         }
 
-        /** Get direction vectors in the coordinate system I. */
+        /** Get direction vectors in the coordinate system `I` . */
         inline Vector3 getDirection(unsigned int i) const
         {
             ApproxMVBB_ASSERTMSG(i < 3, "Index wrong: " << i) Vector3 d = Vector3::Zero();
@@ -174,9 +174,9 @@ namespace ApproxMVBB
 
         /** Get all corner points of the OOBB.
         @param coordinateSystemIsI   Determines if the the output points are represented in
-                                     the coordinate system I or if false they are represented in
-                                     the coordinate system of the OOBB (coordinate system K).
-        @return A list of all corner points sorted according to (x,y,z) index in coordinate system K. */
+                                     the coordinate system `I`  or if false they are represented in
+                                     the coordinate system of the OOBB (coordinate system `K` ).
+        @return A list of all corner points sorted according to (x,y,z) index in coordinate system `K` . */
         template<bool coordinateSystemIsI = true>
         inline Vector3List getCornerPoints() const
         {
@@ -203,10 +203,10 @@ namespace ApproxMVBB
             return points;
         }
 
-        Quaternion m_q_KI;   /**< Rotation of coordinate system I to the coordinate system K (OOBB),
+        Quaternion m_q_KI;   /**< Rotation of coordinate system `I`  to the coordinate system `K`  (OOBB),
                               corresponds to a transformation A_IK. */
-        Vector3 m_minPoint;  //!< Minimal Point. Represented in coordinate system K (OOBB).
-        Vector3 m_maxPoint;  //!< Maximal Point. Represented in coordinate system K (OOBB).
+        Vector3 m_minPoint;  //!< Minimal Point. Represented in coordinate system `K`  (OOBB).
+        Vector3 m_maxPoint;  //!< Maximal Point. Represented in coordinate system `K`  (OOBB).
     };
 }  // namespace ApproxMVBB
 

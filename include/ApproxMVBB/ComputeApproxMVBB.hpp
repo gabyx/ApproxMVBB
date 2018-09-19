@@ -298,7 +298,7 @@ namespace ApproxMVBB
         // Define the volume lower bound above we accept a new volume as
         // PREC volumeAcceptTol = oobb.volume() * volumeAcceptFactor;
 
-        // Get the direction of the input OOBB in I frame:
+        // Get the direction of the input OOBB in coordinate system `I` :
         Vector3 dir1 = oobb.getDirection(0);
         Vector3 dir2 = oobb.getDirection(1);
         Vector3 dir3 = oobb.getDirection(2);
