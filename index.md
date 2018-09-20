@@ -1,9 +1,11 @@
 ApproxMVBB 
 ==========
 
-![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg) ![System](https://img.shields.io/badge/system-linux,osx,{windows}-lightgrey.svg)
+![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg)    
+![Deps](https://img.shields.io/badge/dependencies-eigen3,meta,[pugixml,python3]-blue.svg) 
+![System](https://img.shields.io/badge/system-linux,osx,{windows}-lightgrey.svg)
 
-**Status**    
+**Status**
 
 | Build | UnitTests |
 | ------| --------- |
@@ -41,56 +43,64 @@ Installation & Dependencies
 ---------------------------
 To build the library, the tests and the example you need the build tool [cmake](
 http://www.cmake.org).
-This library has these light-weight dependencies:
+This library has these light-weight required dependencies:
 
-- [Eigen](http://eigen.tuxfamily.org) at least version 3, 
-- [meta](https://github.com/ericniebler/meta), 
-- [pugixml](https://github.com/zeux/pugixml) (install with ``#define PUGIXML_HAS_LONG_LONG`` enabled in pugiconfig.hpp),
-- [python3](https://www.python.org/downloads/)(only for visualization)
+- [Eigen](http://eigen.tuxfamily.org) at least version 3.
+- [meta](https://github.com/ericniebler/meta)
+
+and theses optional dependecies:
+
+- [pugixml](https://github.com/zeux/pugixml)
+    - install with ``#define PUGIXML_HAS_LONG_LONG`` enabled in `pugiconfig.hpp`.
+    - only needed if cmake variable `ApproxMVBB_XML_SUPPORT=ON` (default=`OFF`).
+- [python3](https://www.python.org/downloads/) only needed for visualization purposes.
 
 Download these and install it on your system.
 
 Download the latest ApproxMVBB code:
 ```bash
-    $ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
+    git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
 ```
 Make a build directory and navigate to it:
 ```bash
-    $ mkdir Build
-    $ cd Build
+    mkdir Build
+    cd Build
 ```
 Invoke cmake in the Build directory:
 ```bash
-    $ cmake ../ApproxMVBB
+    cmake ../ApproxMVBB
 ```
-The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https://github.com/ericniebler/meta) and [pugixml](https://github.com/zeux/pugixml). If you installed these in a system wide folder (e.g ``/usr/local/``) this should succeed without any problems.
-In the `CMakeCache.txt` file you can specify what you want to build 
-( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
+The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https://github.com/ericniebler/meta) and [pugixml](https://github.com/zeux/pugixml) 
+If you installed these in a system wide folder (e.g ``/usr/local/``) this should succeed without any problems.
+In the `CMakeCache.txt` file (or over the console by `-D<variable>=ON`) you can specify what you want to build, the following options are availabe:
+- ``ApproxMVBB_BUILD_LIBRARY``,
+- ``ApproxMVBB_BUILD_TESTS``
+- ``ApproxMVBB_BUILD_EXAMPLE``
+- ``ApproxMVBB_BUILD_BENCHMARKS``
+- etc. See the marked red options after configuring in cmake-gui.
 
-To install the library and the header files at a specific location `/usr/local/` run cmake with::
+To install the library and the header files at a specific location `/usr/local/` run cmake with:
 ```bash
-    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
+    cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
 ```
 Finally, build and install the project:
 ```bash
-    $ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
-    $ make install
+    make all
+    make install
 ``` 
-By default the multithreading support is enabled if OpenMP is found! (see #Multithreading-Support)
-To build in parallel use the ``-jN`` flag in the `make` command, where ``N``denotes the number of parallel threads to use.
+By default the multithreading support is enabled if OpenMP is found! (see [Multithreading Support](#multithreading-support))
+To build in parallel use the ``-jN`` flag in the `make` command, where ``N``denotes the number of parallel threads to use, or use the Ninja Generator which already uses maximum threads your system offers.
 
-**Cmake Find Scripts**   
+**CMake FindScripts**   
 The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
 ```cmake
     find_package(ApproxMVBB [version] [COMPONENTS [SUPPORT_KDTREE] [SUPPORT_XML] ] [Required] )
 ```
-which defines the following variables if ApproxMVBB has been found successfully:
+which defines the following targets if ApproxMVBB has been found successfully:
 ```cmake
-    ApproxMVBB_CXX_FLAGS    #- extra flags for compilation
-    ApproxMVBB_INCLUDE_DIRS #- include directories
-    ApproxMVBB_LIBRARY_REL  #- Release library
-    ApproxMVBB_LIBRARY_DGB  #- Debug library
-    ApproxMVBB_LIBRARIES    #- libraries to link with
+    ApproxMVBB::Core            # Main target to link with!
+    ApproxMVBB::KdTreeSupport   # Optional target for KdTree support to link with (only available if installed with this supported!) 
+    ApproxMVBB::XMLSupport      # Optional target for XML support to link with (only available if installed with this supported!) 
 ```    
 The components `SUPPORT_KDTREE` additionally loads the dependency [meta](https://github.com/ericniebler/meta) for the `KdTree.hpp` header and `SUPPORT_XML` loads [pugixml](https://github.com/zeux/pugixml) for the `KdTreeXml.hpp` header.
 
@@ -99,12 +109,14 @@ If you installed the library into non-system generic location you can set the cm
     set(ApproxMVBB_DIR "path/to/installation/lib/cmake")
     find_package(ApproxMVBB [version] [Required] )
 ```
+See the example `example/libraryUsage` which should be configured as a separate build, and the example `example/kdTreeFiltering` for more information on how to 
+set up the dependencies!
 
 --------------------------
 Supported Platforms
 --------------------------
 The code has been tested on Linux and OS X with compilers ``clang`` and ``gcc``. 
-It should work for Windows as well, but has not been tested.
+It should work for Windows as well, but has not been tested properly. Under Visual Studio 15 it seems to build.
 
 ---------------------------
 Example Usage: Approximation MVBB
@@ -175,8 +187,6 @@ computes an approximation of the minimal volume bounding box in the following st
    Each found bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points, namely ``RS`` ).
 7. The final approximation for the minimal volume bounding box (minimal volume over all computed candidates) is returned. :poop:
 
-
-
 ---------------------------
 Example Usage: Generating a KdTree and Outlier Filtering
 ---------------------------
@@ -211,13 +221,15 @@ To come
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
-    
-    $ cd ApproxMVBB
-    $ git submodule init    
-    $ git submodule update
-    $ cd ../Build
-    $ make build_and_test
-    
+
+```bash
+    cd ApproxMVBB
+    git submodule init    
+    git submodule update
+    cd ../Build
+    make build_and_test
+```
+
 **Note that if the tests fail, submit a new issue and report which test failed. 
 The results can still be visualized and should be correct. **
 
@@ -227,12 +239,12 @@ To run the test in high-performance mode (needs lots of ram), which tests also p
 140 million points and some polygonal statue ``lucy.txt`` successfully you need 
 to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
 and additionally initialize the submodule ``additional`` and unzip the files:
-
-     $ cd ApproxMVBB
-     $ git submodule init
-     $ git submodule update
-     $ cd additional/tests/files; cat Lucy* | tar xz 
-
+```bash
+     cd ApproxMVBB
+     git submodule init
+     git submodule update
+     cd additional/tests/files; cat Lucy* | tar xz 
+```
 and rebuild the tests. (this will copy the additional files next to the executable)
 
 
@@ -246,10 +258,10 @@ Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the
 4. Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box
 
 The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotTestResults.ipynb``:
-
-    $ cd Build/tests
-    $ ipython noteboook
-
+```bash
+    cd Build/tests
+    ipython noteboook
+```
 <p align="center">
 <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png"/>
 </p>
@@ -279,6 +291,59 @@ The variable `ApproxMVBB_OPENMP_USE_NTHREADS` toogles the number of threads to u
 If `Off`, the number of threads is determined at runtime (default). 
 
 If you use clang, make sure you have the [OpenMP enabled clang](https://clang-omp.github.io/)! GCC already supports OpenMP.
+
+--------------------------
+References
+--------------------------
+The main articles this code is based on:
+```
+@Article{malandain2002,
+Author = {Gr'egoire Malandain and Jean-Daniel Boissonnat},
+Journal = {International Journal of Computational Geometry & Applications},
+Month = {December},
+Number = {6},
+Pages = {489 - 510},
+Timestamp = {2015.09.02},
+Title = {Computing the Diameter of a Point Set},
+Volume = {12},
+Year = {2002}}
+```
+and
+```
+@inproceedings{barequet2001,
+Author = {Gill Barequet and Sariel Har-peled},
+Booktitle = {In Proc. 10th ACM-SIAM Sympos. Discrete Algorithms},
+Pages = {38--91},
+Timestamp = {2015.09.02},
+Title = {Efficiently Approximating the Minimum-Volume Bounding Box of a Point Set in Three Dimensions},
+Year = {2001}}
+```
+
+Optimizations for future work:
+```cpp
+@Article{chang2011,
+Acmid = {2019641},
+Address = {New York, NY, USA},
+Articleno = {122},
+Author = {Chang, Chia-Tche and Gorissen, Bastien and Melchior, Samuel},
+Doi = {10.1145/2019627.2019641},
+Issn = {0730-0301},
+Issue_Date = {October 2011},
+Journal = {ACM Trans. Graph.},
+Keywords = {Computational geometry, bounding box, manifolds, optimization},
+Month = oct,
+Number = {5},
+Numpages = {16},
+Pages = {122:1--122:16},
+Publisher = {ACM},
+Timestamp = {2015.09.03},
+Title = {Fast Oriented Bounding Box Optimization on the Rotation Group {$SO(3,\mathbb{R})$}},
+Url = {http://doi.acm.org/10.1145/2019627.2019641},
+Volume = {30},
+Year = {2011},
+Bdsk-Url-1 = {http://doi.acm.org/10.1145/2019627.2019641},
+Bdsk-Url-2 = {http://dx.doi.org/10.1145/2019627.2019641}}
+```
 
 --------------------------
 Licensing
