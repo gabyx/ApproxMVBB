@@ -99,7 +99,7 @@ set(ApproxMVBB_BUILD_LIBRARY_STATIC OFF CACHE BOOL "Build a static library")
 mark_as_advanced(ApproxMVBB_KDTREE_SUPPORT )
 set(ApproxMVBB_KDTREE_SUPPORT ON CACHE BOOL "Build library with KDTree support.")
 mark_as_advanced(ApproxMVBB_XML_SUPPORT )
-set(ApproxMVBB_XML_SUPPORT ON CACHE BOOL "Build library with XML support.")
+set(ApproxMVBB_XML_SUPPORT OFF CACHE BOOL "Build library with XML support.")
 
 #=======================================================================
 

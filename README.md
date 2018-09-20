@@ -41,45 +41,55 @@ Installation & Dependencies
 ---------------------------
 To build the library, the tests and the example you need the build tool [cmake](
 http://www.cmake.org).
-This library has these light-weight dependencies:
+This library has these light-weight required dependencies:
 
-- [Eigen](http://eigen.tuxfamily.org) at least version 3, 
-- [meta](https://github.com/ericniebler/meta), 
-- [pugixml](https://github.com/zeux/pugixml) (install with ``#define PUGIXML_HAS_LONG_LONG`` enabled in pugiconfig.hpp),
-- [python3](https://www.python.org/downloads/)(only for visualization)
+- [Eigen](http://eigen.tuxfamily.org) at least version 3.
+- [meta](https://github.com/ericniebler/meta)
+
+and theses optional dependecies:
+
+- [pugixml](https://github.com/zeux/pugixml)
+    - install with ``#define PUGIXML_HAS_LONG_LONG`` enabled in `pugiconfig.hpp`.
+    - only needed if cmake variable `ApproxMVBB_XML_SUPPORT=ON` (default=`OFF`).
+- [python3](https://www.python.org/downloads/) only needed for visualization purposes.
 
 Download these and install it on your system.
 
 Download the latest ApproxMVBB code:
 ```bash
-    $ git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
+    git clone https://github.com/gabyx/ApproxMVBB.git ApproxMVBB  
 ```
 Make a build directory and navigate to it:
 ```bash
-    $ mkdir Build
-    $ cd Build
+    mkdir Build
+    cd Build
 ```
 Invoke cmake in the Build directory:
 ```bash
-    $ cmake ../ApproxMVBB
+    cmake ../ApproxMVBB
 ```
-The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https://github.com/ericniebler/meta) and [pugixml](https://github.com/zeux/pugixml). If you installed these in a system wide folder (e.g ``/usr/local/``) this should succeed without any problems.
-In the `CMakeCache.txt` file you can specify what you want to build 
-( ``ApproxMVBB_BUILD_EXAMPLE, ApproxMVBB_BUILD_LIBRARY, ApproxMVBB_BUILD_TESTS`` )
+The cmake script tries to find  [Eigen](http://eigen.tuxfamily.org),[meta](https://github.com/ericniebler/meta) and [pugixml](https://github.com/zeux/pugixml) 
+If you installed these in a system wide folder (e.g ``/usr/local/``) this should succeed without any problems.
+In the `CMakeCache.txt` file (or over the console by `-D<variable>=ON`) you can specify what you want to build, the following options are availabe:
+- ``ApproxMVBB_BUILD_LIBRARY``,
+- ``ApproxMVBB_BUILD_TESTS``
+- ``ApproxMVBB_BUILD_EXAMPLE``
+- ``ApproxMVBB_BUILD_BENCHMARKS``
+- etc. See the marked red options after configuring in cmake-gui.
 
-To install the library and the header files at a specific location `/usr/local/` run cmake with::
+To install the library and the header files at a specific location `/usr/local/` run cmake with:
 ```bash
-    $ cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
+    cmake -DCMAKE_INSTALL_PREFIX="/usr/local/" ../ApproxMVBB
 ```
 Finally, build and install the project:
 ```bash
-    $ make all   /* can be ApproxMVBB for the library or ApproxMVBBExample or ApproxMVBBTests */
-    $ make install
+    make all
+    make install
 ``` 
-By default the multithreading support is enabled if OpenMP is found! (see #Multithreading-Support)
-To build in parallel use the ``-jN`` flag in the `make` command, where ``N``denotes the number of parallel threads to use.
+By default the multithreading support is enabled if OpenMP is found! (see [Multithreading Support](#multithreading-support))
+To build in parallel use the ``-jN`` flag in the `make` command, where ``N``denotes the number of parallel threads to use, or use the Ninja Generator which already uses maximum threads your system offers.
 
-**Cmake Find Scripts**   
+**CMake FindScripts**   
 The installation installs also scripts ``approxmvbb-config.cmake`` and ``approxmvbb-config-version.cmake`` into the ``lib/cmake`` folder. To include the library in another project the only thing you need to add in your cmake script is
 ```cmake
     find_package(ApproxMVBB [version] [COMPONENTS [SUPPORT_KDTREE] [SUPPORT_XML] ] [Required] )
@@ -104,7 +114,7 @@ set up the dependencies!
 Supported Platforms
 --------------------------
 The code has been tested on Linux and OS X with compilers ``clang`` and ``gcc``. 
-It should work for Windows as well, but has not been tested.
+It should work for Windows as well, but has not been tested properly. Under Visual Studio 15 it seems to build.
 
 ---------------------------
 Example Usage: Approximation MVBB
@@ -283,6 +293,7 @@ If you use clang, make sure you have the [OpenMP enabled clang](https://clang-om
 --------------------------
 References
 --------------------------
+The main articles this code is based on:
 ```
 @Article{malandain2002,
 Author = {Gr'egoire Malandain and Jean-Daniel Boissonnat},
@@ -306,7 +317,7 @@ Title = {Efficiently Approximating the Minimum-Volume Bounding Box of a Point Se
 Year = {2001}}
 ```
 
-Optimizations:
+Optimizations for future work:
 ```cpp
 @Article{chang2011,
 Acmid = {2019641},
