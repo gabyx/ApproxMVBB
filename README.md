@@ -1,9 +1,11 @@
 ApproxMVBB 
 ==========
 
-![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg) ![Deps](https://img.shields.io/badge/dependencies-eigen3,pugixml,meta,python3-blue.svg) ![System](https://img.shields.io/badge/system-linux,osx,{windows}-lightgrey.svg)
+![C++](https://img.shields.io/badge/c%2B%2B-11/14-green.svg)    
+![Deps](https://img.shields.io/badge/dependencies-eigen3,meta,[pugixml,python3]-blue.svg) 
+![System](https://img.shields.io/badge/system-linux,osx,{windows}-lightgrey.svg)
 
-**Status**    
+**Status**
 
 | Build | UnitTests |
 | ------| --------- |
@@ -185,8 +187,6 @@ computes an approximation of the minimal volume bounding box in the following st
    Each found bounding box candidate ``G`` and its directions ``(u,v,g)`` can be used as a starting point for a **second optional optimization loop** (parameter ``mvbbGridSearchOptLoops``, same algorithm as in step 5 but with less points, namely ``RS`` ).
 7. The final approximation for the minimal volume bounding box (minimal volume over all computed candidates) is returned. :poop:
 
-
-
 ---------------------------
 Example Usage: Generating a KdTree and Outlier Filtering
 ---------------------------
@@ -221,13 +221,15 @@ To come
 Building and Visualizing the Tests
 ---------------------------
 Building and installing the basic tests is done by:
-    
-    $ cd ApproxMVBB
-    $ git submodule init    
-    $ git submodule update
-    $ cd ../Build
-    $ make build_and_test
-    
+
+```bash
+    cd ApproxMVBB
+    git submodule init    
+    git submodule update
+    cd ../Build
+    make build_and_test
+```
+
 **Note that if the tests fail, submit a new issue and report which test failed. 
 The results can still be visualized and should be correct. **
 
@@ -237,12 +239,12 @@ To run the test in high-performance mode (needs lots of ram), which tests also p
 140 million points and some polygonal statue ``lucy.txt`` successfully you need 
 to set the cmake variable ``ApproxMVBB_TESTS_HIGH_PERFORMANCE`` to ``ON``
 and additionally initialize the submodule ``additional`` and unzip the files:
-
-     $ cd ApproxMVBB
-     $ git submodule init
-     $ git submodule update
-     $ cd additional/tests/files; cat Lucy* | tar xz 
-
+```bash
+     cd ApproxMVBB
+     git submodule init
+     git submodule update
+     cd additional/tests/files; cat Lucy* | tar xz 
+```
 and rebuild the tests. (this will copy the additional files next to the executable)
 
 
@@ -256,10 +258,10 @@ Executing the test application ``cd tests; ./ApproxMVBBTests`` will then run the
 4. Testing the full optimization pipeline to generate an approximation of the minimal volume bounding box
 
 The output can be visualized with the ``ipython notebook`` ``/tests/python/PlotTestResults.ipynb``:
-
-    $ cd Build/tests
-    $ ipython noteboook
-
+```bash
+    cd Build/tests
+    ipython noteboook
+```
 <p align="center">
 <img src="https://github.com/gabyx/ApproxMVBB/wiki/images/ConvexHull.png"/>
 </p>
