@@ -8,7 +8,7 @@ set(INCLUDE_DIRS
 
 add_executable(ApproxMVBBExample-KdTree ${SOURCE_FILES} ${INCLUDE_FILES} )
 # Link with Core, and add KDTreeSupport
-target_link_libraries(ApproxMVBBExample-KdTree  ApproxMVBB::Core ApproxMVBB::KdTreeSupport ApproxMVBB::XMLSupport)
+target_link_libraries(ApproxMVBBExample-KdTree  ApproxMVBB::Core ApproxMVBB::KdTreeSupport)
 
 if(TARGET ApproxMVBB::XMLSupport)
     target_link_libraries(ApproxMVBBExample-KdTree ApproxMVBB::XMLSupport)
