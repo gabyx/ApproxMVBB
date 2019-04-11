@@ -1,7 +1,7 @@
 #!/bin/bash
 # this script is SOURCED!!!!
 
-set -e # exit on errors
+#set -e # exit on errors
 echo "E-"
 # "DEPENDECIES ========================================================================"
 cd ${ROOT_PATH}
