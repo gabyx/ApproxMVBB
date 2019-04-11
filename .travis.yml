@@ -12,6 +12,7 @@ matrix:
   include:
   - env: GCC_VERSION=5 
     os: linux
+    dist: xenial
     addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -19,22 +20,24 @@ matrix:
 
   - env: GCC_VERSION=6
     os: linux
+    dist: xenial
     addons: &gcc6
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
 
-  - env: CLANG_VERSION=5.0
+  - env: CLANG_VERSION=7.0
     os: linux
-    addons: &clang5
+    dist: xenial
+    addons: &clang7
         apt:
           packages:
             - util-linux
-            - clang-5.0
+            - clang-7.0
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise
+            - llvm-toolchain-xenial
 
   - env: APPLE_CLANG="YES"
     os: osx
@@ -45,16 +48,6 @@ matrix:
     os: osx
     osx_image: xcode9.2
     compiler: clang
-
-before_install:
-   # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
-   # See https://github.com/searchivarius/nmslib/pull/259
-   - |
-      if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-         command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
-         rvm get head || true
-      fi
- 
 
 # Install dependencies
 install:
