@@ -32,8 +32,6 @@ matrix:
     addons: &clang7
         apt:
           packages:
-            - util-linux
-            - clang-7.0
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
