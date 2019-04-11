@@ -21,7 +21,10 @@ Computing the minimal volume oriented bounding box for a given point cloud in 3D
 Exact algorithms are known and of cubic order in the number of points in 3D. A faster exact algorithm is currently not know. However, for lots of applications an approximation of the minimum volume oriented bounding box is acceptable and already accurate enough. This project was developed for research in [Granular Rigidbody Dynamics](http://gabyx.github.io/GRSFramework/).
 This small standard compliant C++11 library can either be built into a shared object library 
 or directly be included in an existing C++ project. 
-It includes code for :
+
+I am not especially proud of the underlying code as it was written years ago, nevertheless consider PR for refactoring and clean ups are very welcome!
+
+This library includes code for :
     
 - computing an approximation of an oriented minimal volume box (multithreading support: OpenMP),
 - computing the convex hull of a point cloud in 2d,
