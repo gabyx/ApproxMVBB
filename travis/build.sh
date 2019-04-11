@@ -34,6 +34,7 @@ cmake $CHECKOUT_PATH  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
                       -ApproxMVBB_USE_OPENMP=OFF \
                       -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
 
+echo "ApproxMVBB: cmake cache:"
 cat ./CMakeCache.txt | grep "ApproxMVBB_"
 
 make VERBOSE=1
