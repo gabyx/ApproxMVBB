@@ -2,32 +2,33 @@
 # this script is SOURCED!!!!
 
 set -e # exit on errors
-
+echo "E-"
 # "DEPENDECIES ========================================================================"
 cd ${ROOT_PATH}
-
+echo "C-"
 #install prefix and path
 export INSTALL_PREFIX="${APPROXMVBB_CACHE_DIR}"
 export PATH="${INSTALL_PREFIX}/bin:${PATH}"
 
+echo "A-"
 brew update
 brew tap homebrew/versions
 
 # eigen3 needs gfortran
 brew install gcc
 brew link --overwrite gcc
-
+echo "B-"
 if [[ ${APPLE_CLANG} != "YES" ]]; then
     brew install llvm
     brew link --overwrite llvm
     export PATH="/usr/local/opt/llvm/bin:${PATH}"
 fi
-
+echo "D-"
 # Cmake
 brew install cmake
 brew upgrade cmake
 brew link --overwrite cmake
-
+echo "E-"
 echo "Path set to ${PATH}"
 echo "CXX set to ${CXX}"
 echo "CC set to ${CC}"
