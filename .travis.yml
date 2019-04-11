@@ -37,7 +37,6 @@ matrix:
             - g++-6
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial
 
   - env: APPLE_CLANG="YES"
     os: osx
