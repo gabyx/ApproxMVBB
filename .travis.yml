@@ -59,11 +59,11 @@ install:
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
 
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
-  - . $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
+  - $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh
-  - . $CHECKOUT_PATH/travis/build.sh
+  - $CHECKOUT_PATH/travis/build.sh
 
 after_success:
   - cd $CHECKOUT_PATH
