@@ -4,15 +4,15 @@
 set -e # exit on error
 
 # "DEPENDECIES ========================================================================"
-export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
-export PATH="$INSTALL_PREFIX/bin:/usr/local/bin:$PATH"
+export INSTALL_PREFIX="${APPROXMVBB_CACHE_DIR}"
+export PATH="${INSTALL_PREFIX}/bin:/usr/local/bin:${PATH}"
 
-cd $ROOT_PATH
+cd ${ROOT_PATH}
 
 if [ -n "${GCC_VERSION}" ]; then 
     # https://stackoverflow.com/questions/37603238/fsanitize-not-using-gold-linker-in-gcc-6-1
     export CPPFLAGS="-fuse-ld=gold"
-    export CXXFLAGS="$CPPFLAGS"
+    export CXXFLAGS="${CPPFLAGS}"
     export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
 fi
 if [ -n "${CLANG_VERSION}" ]; then 
@@ -28,9 +28,9 @@ cmake --version
 echo "cmake at $(which cmake)"
 
 
-chmod +x $CHECKOUT_PATH/travis/install_dep.sh
+chmod +x ${CHECKOUT_PATH}/travis/install_dep.sh
 # run the command in this process -> env varibales!
-. $CHECKOUT_PATH/travis/install_dep.sh
+. ${CHECKOUT_PATH}/travis/install_dep.sh
 # "DEPENDECIES COMPLETE ================================================================="
 
 set +e # exit on errors off

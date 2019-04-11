@@ -4,11 +4,11 @@
 set -e # exit on errors
 
 # "DEPENDECIES ========================================================================"
-cd $ROOT_PATH
+cd ${ROOT_PATH}
 
 #install prefix and path
-export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
-export PATH="$INSTALL_PREFIX/bin:$PATH"
+export INSTALL_PREFIX="${APPROXMVBB_CACHE_DIR}"
+export PATH="${INSTALL_PREFIX}/bin:${PATH}"
 
 brew update
 brew tap homebrew/versions
@@ -20,7 +20,7 @@ brew link --overwrite gcc
 if [[ ${APPLE_CLANG} != "YES" ]]; then
     brew install llvm
     brew link --overwrite llvm
-    export PATH="/usr/local/opt/llvm/bin:$PATH"
+    export PATH="/usr/local/opt/llvm/bin:${PATH}"
 fi
 
 # Cmake
@@ -35,8 +35,8 @@ echo "CC set to ${CC}"
 ${CXX} --version
 cmake --version
 
-chmod +x $CHECKOUT_PATH/travis/install_dep.sh
-. $CHECKOUT_PATH/travis/install_dep.sh
+chmod +x ${CHECKOUT_PATH}/travis/install_dep.sh
+. ${CHECKOUT_PATH}/travis/install_dep.sh
 
 # "DEPENDECIES COMPLETE ================================================================="
 
