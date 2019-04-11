@@ -10,21 +10,21 @@ cd $ROOT_PATH
 export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
 export PATH="$INSTALL_PREFIX/bin:$PATH"
 
-brew update || echo "suppress failures in order to ignore warnings"
-brew tap homebrew/versions || echo "suppress failures in order to ignore warnings"
+brew update
+brew tap homebrew/versions
 
 # eigen3 needs gfortran
-brew install gcc || echo "suppress failures in order to ignore warnings"
+brew install gcc
 brew link --overwrite gcc
 
 if [[ ${APPLE_CLANG} != "YES" ]]; then
-    brew install llvm || echo "suppress failures in order to ignore warnings"
+    brew install llvm
     brew link --overwrite llvm
     export PATH="/usr/local/opt/llvm/bin:$PATH"
 fi
 
 # Cmake
-brew install cmake || echo "suppress failures in order to ignore warnings"
+brew install cmake
 brew upgrade cmake
 brew link --overwrite cmake
 
