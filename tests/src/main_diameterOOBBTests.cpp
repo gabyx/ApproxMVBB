@@ -120,6 +120,7 @@ using namespace ApproxMVBB::DiameterOOBBTest;
 MY_TEST(DiameterOOBBTest, PointsRandom3)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom3);
+    auto f = [&](PREC) { return uni(rng); };
     // generate points
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
@@ -129,6 +130,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom3)
 MY_TEST(DiameterOOBBTest, PointsRandom500)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom500);
+    auto f = [&](PREC) { return uni(rng); };
     // generate points
     Matrix3Dyn t(3, 500);
     t = t.unaryExpr(f);
@@ -138,6 +140,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom500)
 MY_TEST(DiameterOOBBTest, PointsRandom10000)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom10000);
+    auto f = [&](PREC) { return uni(rng); };
     // generate points
     Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
@@ -163,6 +166,7 @@ MY_TEST(DiameterOOBBTest, UnitCube)
 MY_TEST(DiameterOOBBTest, PointsSimulation)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulation);
+    auto f = [&](PREC) { return uni(rng); };
     auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulation.txt"));
 
     Matrix3Dyn t(3, v.size());
@@ -178,6 +182,8 @@ MY_TEST(DiameterOOBBTest, PointsSimulation)
 MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsSimulationFailMVBB);
+    auto f = [&](PREC) { return uni(rng); };
+
     auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointsSimulationFailMVBB.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
@@ -192,6 +198,8 @@ MY_TEST(DiameterOOBBTest, PointsSimulationFailMVBB)
 MY_TEST(DiameterOOBBTest, Bunny)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Bunny);
+    auto f = [&](PREC) { return uni(rng); };
+
     auto v = tf::getPointsFromFile3D(tf::getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
@@ -207,6 +215,7 @@ MY_TEST(DiameterOOBBTest, Bunny)
 MY_TEST(DiameterOOBBTest, PointsRandom14M)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointsRandom14M);
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 140000000);
     t = t.unaryExpr(f);
     diameterTest(testName, t, false, 0, 0.01);
@@ -215,6 +224,7 @@ MY_TEST(DiameterOOBBTest, PointsRandom14M)
 MY_TEST(DiameterOOBBTest, Lucy)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Lucy);
+    auto f = [&](PREC) { return uni(rng); };
     auto v = tf::getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
@@ -229,6 +239,7 @@ MY_TEST(DiameterOOBBTest, Lucy)
 MY_TEST(DiameterOOBBTest, Plane)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, Plane);
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
     diameterTest(testName, t, true, 10, 0.001, 2, false);
@@ -237,7 +248,7 @@ MY_TEST(DiameterOOBBTest, Plane)
 MY_TEST(DiameterOOBBTest, PointClouds)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, PointClouds);
-
+    auto f = [&](PREC) { return uni(rng); };
     for(unsigned int k = 0; k < 51; k++)
     {
         auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));
@@ -255,6 +266,8 @@ MY_TEST(DiameterOOBBTest, PointClouds)
 MY_TEST(DiameterOOBBTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, UnitPatches2D);
+    auto f = [&](PREC) { return uni(rng); };
+    
     for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);

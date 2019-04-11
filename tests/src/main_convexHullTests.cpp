@@ -75,7 +75,7 @@ using namespace ApproxMVBB::ConvexHullTest;
 MY_TEST(ConvexHullTest, PointsRandom10)
 {
     MY_TEST_RANDOM_STUFF(ConvexHullTest, PointsRandom10);
-    // generate points
+    auto f = [&](PREC) { return uni(rng); };
     Matrix2Dyn t(2, 10);
     t = t.unaryExpr(f);
     convexHullTest(testName, t);

@@ -137,7 +137,7 @@ MY_TEST(DiameterTest, RandomGenerator)
 MY_TEST(DiameterTest, PointsRandom3)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom3);
-    // generate points
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
     diameterTest(testName, t);
@@ -146,7 +146,7 @@ MY_TEST(DiameterTest, PointsRandom3)
 MY_TEST(DiameterTest, PointsRandom500)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom500);
-    // generate points
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 500);
     t = t.unaryExpr(f);
     diameterTest(testName, t);
@@ -155,7 +155,7 @@ MY_TEST(DiameterTest, PointsRandom500)
 MY_TEST(DiameterTest, PointsRandom10000)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, PointsRandom10000);
-    // generate points
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
     diameterTest(testName, t);
@@ -238,6 +238,7 @@ MY_TEST(DiameterTest, UnitCube)
 MY_TEST(DiameterTest, Plane)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, Plane);
+    auto f = [&](PREC) { return uni(rng); };
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
     diameterTest(testName, t, true);
@@ -261,6 +262,7 @@ MY_TEST(DiameterTest, Plane)
 MY_TEST(DiameterTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(DiameterTest, UnitPatches2D);
+    auto f = [&](PREC) { return uni(rng); };
     for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);

@@ -32,8 +32,7 @@
     auto seed            = TestFunctions::hashString(#name2);                         \
     std::cout << "Seed for this test: " << seed << std::endl;                         \
     ApproxMVBB::RandomGenerators::DefaultRandomGen rng(seed);                         \
-    ApproxMVBB::RandomGenerators::DefaultUniformRealDistribution<PREC> uni(0.0, 1.0); \
-    auto f = [&](PREC) { return uni(rng); };
+    ApproxMVBB::RandomGenerators::DefaultUniformRealDistribution<PREC> uni(0.0, 1.0); 
 
 namespace ApproxMVBB
 {

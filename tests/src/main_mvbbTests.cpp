@@ -96,6 +96,8 @@ MY_TEST(MVBBTest, TwoPoints)
 MY_TEST(MVBBTest, PointsRandom1)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom1);
+    auto f = [&](PREC) { return uni(rng); };
+
     // generate points
     Matrix3Dyn t(3, 1);
     t = t.unaryExpr(f);
@@ -105,6 +107,7 @@ MY_TEST(MVBBTest, PointsRandom1)
 MY_TEST(MVBBTest, PointsRandom2)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom2);
+    auto f = [&](PREC) { return uni(rng); };
     // generate points
     Matrix3Dyn t(3, 2);
     t = t.unaryExpr(f);
@@ -114,6 +117,7 @@ MY_TEST(MVBBTest, PointsRandom2)
 MY_TEST(MVBBTest, PointsRandom3)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom3);
+    auto f = [&](PREC) { return uni(rng); };
     // generate points
     Matrix3Dyn t(3, 3);
     t = t.unaryExpr(f);
@@ -149,6 +153,7 @@ MY_TEST(MVBBTest, UnitRectangle)
 MY_TEST(MVBBTest, Rectangles)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Rectangles);
+    auto f = [&](PREC) { return uni(rng); };
     // Some patches
     for(int i = 0; i < 10; ++i)
     {
@@ -165,6 +170,7 @@ MY_TEST(MVBBTest, Rectangles)
 MY_TEST(MVBBTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, UnitPatches2D);
+    auto f = [&](PREC) { return uni(rng); };
     for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);
@@ -177,6 +183,7 @@ MY_TEST(MVBBTest, UnitPatches2D)
 MY_TEST(MVBBTest, PointsRandom100)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom100);
+    auto f = [&](PREC) { return uni(rng); };
     ApproxMVBB::Matrix3Dyn t(3, 100);
     t = t.unaryExpr(f);
     pf::applyRandomRotTrans(t, f);
@@ -186,6 +193,7 @@ MY_TEST(MVBBTest, PointsRandom100)
 MY_TEST(MVBBTest, PointsRandom10000)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointsRandom10000);
+    auto f = [&](PREC) { return uni(rng); };
     ApproxMVBB::Matrix3Dyn t(3, 10000);
     t = t.unaryExpr(f);
     pf::applyRandomRotTrans(t, f);
@@ -195,6 +203,7 @@ MY_TEST(MVBBTest, PointsRandom10000)
 MY_TEST(MVBBTest, Bunny)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Bunny);
+    auto f = [&](PREC) { return uni(rng); };
     auto v = tf::getPointsFromFile3D(tf::getFileInPath("Bunny.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
@@ -218,6 +227,7 @@ MY_TEST(MVBBTest, PointsRandom140M)
 MY_TEST(MVBBTest, Lucy)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, Lucy);
+    auto f = [&](PREC) { return uni(rng); };
     auto v = tf::getPointsFromFile3D(getFileInAddPath("Lucy.txt"));
     Matrix3Dyn t(3, v.size());
     for(unsigned int i = 0; i < v.size(); ++i)
@@ -232,6 +242,7 @@ MY_TEST(MVBBTest, Lucy)
 MY_TEST(MVBBTest, PointClouds)
 {
     MY_TEST_RANDOM_STUFF(MVBBTest, PointClouds);
+    auto f = [&](PREC) { return uni(rng); };
     for(unsigned int k = 0; k < 10; k++)
     {
         auto v = tf::getPointsFromFile3D(tf::getFileInPath("PointCloud_" + std::to_string(k) + ".txt"));

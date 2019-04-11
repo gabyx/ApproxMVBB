@@ -31,7 +31,11 @@ cd $ROOT_PATH/build
 cmake $CHECKOUT_PATH  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
                       -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
                       -DCMAKE_VERBOSE_MAKEFILE=ON \
+                      -ApproxMVBB_USE_OPENMP=OFF \
                       -DApproxMVBB_FORCE_MSGLOG_LEVEL=2
+
+cat ./CMakeCache.txt | grep "ApproxMVBB_"
+
 make VERBOSE=1
 make install
 cd $ROOT_PATH

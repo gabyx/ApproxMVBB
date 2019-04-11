@@ -75,25 +75,25 @@ endif()
 mark_as_advanced( CMAKE_DEBUG_POSTFIX )
 set(CMAKE_DEBUG_POSTFIX "-dbg" CACHE STRING "Debug postfix for library/executable")
 
-mark_as_advanced( ApproxMVBB_BUILD_LIBRARY )
+mark_as_advanced(ApproxMVBB_BUILD_LIBRARY )
 set(ApproxMVBB_BUILD_LIBRARY ON CACHE BOOL "Build a shared library")
 
-mark_as_advanced( ApproxMVBB_BUILD_TESTS)
+mark_as_advanced(ApproxMVBB_BUILD_TESTS)
 set(ApproxMVBB_BUILD_TESTS ON CACHE BOOL "Build the tests")
 
-mark_as_advanced( ApproxMVBB_BUILD_BENCHMARKS)
+mark_as_advanced(ApproxMVBB_BUILD_BENCHMARKS)
 set(ApproxMVBB_BUILD_BENCHMARKS OFF CACHE BOOL "Build the benchmarks (only meaningful in Release!)")
 
-mark_as_advanced( ApproxMVBB_BUILD_EXAMPLE )
+mark_as_advanced(ApproxMVBB_BUILD_EXAMPLE )
 set(ApproxMVBB_BUILD_EXAMPLE ON CACHE BOOL "Build the example, the library is automatically built if this is true")
 
-mark_as_advanced( ApproxMVBB_FORCE_MSGLOG_LEVEL)
+mark_as_advanced(ApproxMVBB_FORCE_MSGLOG_LEVEL)
 set(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")
 
-mark_as_advanced( ApproxMVBB_USE_OPENMP)
+mark_as_advanced(ApproxMVBB_USE_OPENMP)
 set(ApproxMVBB_USE_OPENMP ON CACHE BOOL "Try to use OpenMp for parallel speedup")
 
-mark_as_advanced( ApproxMVBB_BUILD_LIBRARY_STATIC  )
+mark_as_advanced(ApproxMVBB_BUILD_LIBRARY_STATIC  )
 set(ApproxMVBB_BUILD_LIBRARY_STATIC OFF CACHE BOOL "Build a static library")
 
 mark_as_advanced(ApproxMVBB_KDTREE_SUPPORT )
@@ -131,11 +131,11 @@ if(ApproxMVBB_USE_OPENMP)
         list(APPEND ApproxMVBB_LIBS_DEP_PRIVATE OpenMP::OpenMP_CXX)
         set(ApproxMVBB_OPENMP_SUPPORT ON)
 
-        mark_as_advanced( ApproxMVBB_OPENMP_USE_NTHREADS)
+        mark_as_advanced(ApproxMVBB_OPENMP_USE_NTHREADS)
         set(ApproxMVBB_OPENMP_USE_NTHREADS OFF CACHE BOOL "If the number of threads should be fixed, otherwise determined at runtime!")
         if(ApproxMVBB_OPENMP_USE_NTHREADS)
             set(ApproxMVBB_OPENMP_NTHREADS ${NPROCESSES} CACHE STRING "The number of threads to use.")
-            mark_as_advanced( ApproxMVBB_OPENMP_NTHREADS )
+            mark_as_advanced(ApproxMVBB_OPENMP_NTHREADS )
         endif()
     else()
         set(ApproxMVBB_OPENMP_SUPPORT OFF)

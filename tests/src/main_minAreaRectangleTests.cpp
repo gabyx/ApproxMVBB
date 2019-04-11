@@ -74,7 +74,7 @@ using namespace ApproxMVBB::MinAreaRectangleTest;
 MY_TEST(MinAreaRectangleTest, PointsRandom10)
 {
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, PointsRandom10);
-    // generate points
+    auto f = [&](PREC) { return uni(rng); };
     Matrix2Dyn t(2, 10);
     t = t.unaryExpr(f);
     minRectTest(testName, t);
@@ -183,7 +183,7 @@ MY_TEST(MinAreaRectangleTest, Triangle)
 MY_TEST(MinAreaRectangleTest, RandomTriangle)
 {
     MY_TEST_RANDOM_STUFF(MinAreaRectangleTest, RandomTriangle);
-
+    auto f = [&](PREC) { return uni(rng); };
     Matrix2Dyn v(2, 3);
     v = v.unaryExpr(f);
     minRectTest(testName, v);
