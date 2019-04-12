@@ -10,7 +10,7 @@ cache:
 
 matrix:
   include:
-  - env: GCC_VERSION=5 
+  - env: USE_GCC="YES" GCC_VERSION="5"
     os: linux
     dist: xenial
     addons: &gcc5
@@ -18,7 +18,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
 
-  - env: GCC_VERSION=6
+  - env: USE_GCC="YES" GCC_VERSION="6"
     os: linux
     dist: xenial
     addons: &gcc6
@@ -26,7 +26,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
 
-  - env: CLANG_VERSION=7
+  - env: USE_CLANG="YES" CLANG_VERSION=""
     os: linux
     dist: xenial
     addons: &clang7

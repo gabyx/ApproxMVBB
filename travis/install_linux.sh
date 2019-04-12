@@ -9,14 +9,23 @@ export PATH="${INSTALL_PREFIX}/bin:/usr/local/bin:${PATH}"
 
 cd ${ROOT_PATH}
 
-if [ -n "${GCC_VERSION}" ]; then 
+if [ -n "${USE_GCC}" ]; then 
     # https://stackoverflow.com/questions/37603238/fsanitize-not-using-gold-linker-in-gcc-6-1
     export CPPFLAGS="-fuse-ld=gold"
     export CXXFLAGS="${CPPFLAGS}"
-    export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
+    
+    if [ -n "${GCC_VERSION}" ]; then
+        export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
+    else
+        export CXX="g++" CC="gcc"; 
+    fi
 fi
-if [ -n "${CLANG_VERSION}" ]; then 
-    export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
+if [ -n "${USE_CLANG}" ]; then 
+    if [ -n "${CLANG_VERSION}" ]; then
+        export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
+    else
+        export CXX="clang++" CC="clang"; 
+    fi
 fi
 
 echo "Path set to ${PATH}"
