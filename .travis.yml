@@ -26,7 +26,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
 
-  - env: CLANG_VERSION=7.0.0
+  - env: CLANG_VERSION=
     os: linux
     dist: xenial
     addons: &clang7
