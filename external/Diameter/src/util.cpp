@@ -1209,9 +1209,9 @@ namespace ApproxMVBB
             theSeg->extremity2     = (double*)nullptr;
             theSeg->squareDiameter = std::numeric_limits<double>::lowest();
 
-            if(*first < 0 || *last < 0)
+            if(f < 0 || l < 0)
                 return (-1.0);
-            if(*first > *last)
+            if(f > l)
                 return (0.0);
             if(index < f || index > l)
                 return (-1.0);
