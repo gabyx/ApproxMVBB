@@ -43,7 +43,7 @@ macro(setTargetCompileOptions TARGETNAME)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR 
        CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         # with clang 5.0.1: -fsanitize=address produces weird output in lldb for std::string ...
-	set_property(TARGET ${TARGETNAME} PROPERTY LINK_FLAGS_DEBUG "-fsanitize=leak -fsanitize=address")
+        set_property(TARGET ${TARGETNAME} PROPERTY LINK_FLAGS_DEBUG "-fsanitize=leak -fsanitize=address")
     endif()
 
 endmacro()
