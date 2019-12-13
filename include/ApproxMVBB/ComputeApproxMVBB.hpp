@@ -306,8 +306,15 @@ namespace ApproxMVBB
         ProjectedPointSet proj;
         Vector3 dir;  // clang-format off
         
-        #ifdef ApproxMVBB_OPENMP_SUPPORT
+#ifdef ApproxMVBB_OPENMP_SUPPORT
 
+    #ifdef WIN32
+        #pragma omp parallel shared(points, oobb) private(proj, dir)
+        {
+            OOBB oobb_local = oobb;
+            
+            #pragma omp for
+    #else
         #pragma omp declare reduction(volumeIsSmaller                                              \
                                 : OOBB                                                             \
                                 : omp_in.volume() < omp_out.volume() ? omp_out = omp_in : omp_out) \
@@ -317,7 +324,8 @@ namespace ApproxMVBB
                 reduction(volumeIsSmaller                                                           \
                         : oobb) ApproxMVBB_OPENMP_NUMTHREADS
 
-        #endif
+    #endif
+#endif
         // clang-format on
         for(int x = -int(gridSize); x <= (int)gridSize; ++x)
         {
@@ -348,15 +356,33 @@ namespace ApproxMVBB
                                          << res.volume()
                                          << std::endl);
 
+#if defined(ApproxMVBB_OPENMP_SUPPORT) && defined(WIN32)
+                    if(res.volume() < oobb_local.volume() /*&& res.volume()>volumeAcceptTol */)
+                    {
+                        ApproxMVBB_MSGLOG_L2("gridSearch: new volume: " << res.volume() << std::endl
+                                                                        << "for dir: " << dir.transpose() << std::endl);
+                        oobb_local = res;
+                    }
+#else
                     if(res.volume() < oobb.volume() /*&& res.volume()>volumeAcceptTol */)
                     {
                         ApproxMVBB_MSGLOG_L2("gridSearch: new volume: " << res.volume() << std::endl
                                                                         << "for dir: " << dir.transpose() << std::endl);
                         oobb = res;
                     }
+#endif 
                 }
             }
         }
+        
+#if defined(ApproxMVBB_OPENMP_SUPPORT) && defined(WIN32)
+            #pragma omp critical
+            if (oobb_local.volume() < oobb.volume())
+            {
+                oobb = oobb_local;
+            }
+        }  
+#endif
         return oobb;
     }
 
