@@ -36,15 +36,15 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
 
-  - env: APPLE_CLANG="YES"
-    os: osx
-    osx_image: xcode9.2
-    compiler: clang
+  # - env: APPLE_CLANG="YES"
+  #   os: osx
+  #   osx_image: xcode9.2
+  #   compiler: clang
 
-  - env: APPLE_CLANG="NO"
-    os: osx
-    osx_image: xcode9.2
-    compiler: clang
+  # - env: APPLE_CLANG="NO"
+  #   os: osx
+  #   osx_image: xcode9.2
+  #   compiler: clang
 
 # Install dependencies
 install:
