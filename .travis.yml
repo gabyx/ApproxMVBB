@@ -31,19 +31,25 @@ matrix:
     dist: xenial
     addons: &clang7
         apt:
-          packages:
-            - g++-6
-          sources:
-            - ubuntu-toolchain-r-test
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+  
+  - env: USE_CLANG="YES" CLANG_VERSION=""
+    os: linux
+    dist: bionic
+
+  - env: USE_GCC="YES" GCC_VERSION=""
+    os: linux
+    dist: bionic
 
   # - env: APPLE_CLANG="YES"
   #   os: osx
-  #   osx_image: xcode9.2
+  #   osx_image: xcode11.2
   #   compiler: clang
 
   # - env: APPLE_CLANG="NO"
   #   os: osx
-  #   osx_image: xcode9.2
+  #   osx_image: xcode11.2
   #   compiler: clang
 
 # Install dependencies
@@ -59,7 +65,7 @@ install:
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
 
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
-  - $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
+  - source $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh

@@ -101,9 +101,9 @@ namespace ApproxMVBB
                 else
                 {
                     EXPECT_TRUE(tf::assertNearArray(sampled, valid)) << std::endl
-                                                                 << "valid points:" << valid.transpose() << std::endl
-                                                                 << "and:" << std::endl
-                                                                 << sampled.transpose();
+                                                                     << "valid points:" << valid.transpose() << std::endl
+                                                                     << "and:" << std::endl
+                                                                     << sampled.transpose();
                 }
             }
             catch(ApproxMVBB::Exception& e)
@@ -111,8 +111,8 @@ namespace ApproxMVBB
                 ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
             }
         }
-    };  // namespace DiameterOOBBTest
-};      // namespace ApproxMVBB
+    }  // namespace DiameterOOBBTest
+}  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace ApproxMVBB::DiameterOOBBTest;
@@ -267,7 +267,7 @@ MY_TEST(DiameterOOBBTest, UnitPatches2D)
 {
     MY_TEST_RANDOM_STUFF(DiameterOOBBTest, UnitPatches2D);
     auto f = [&](PREC) { return uni(rng); };
-    
+
     for(int i = 0; i < 10; ++i)
     {
         ApproxMVBB::Matrix3Dyn t(3, 500);

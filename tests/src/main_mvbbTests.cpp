@@ -76,8 +76,8 @@ namespace ApproxMVBB
                 ASSERT_TRUE(false) << "Exception in checking inside test!" << e.what() << std::endl;
             }
         }
-    };  // namespace MVBBTests
-};      // namespace ApproxMVBB
+    }  // namespace MVBBTests
+}  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace ApproxMVBB::MVBBTests;

@@ -7,7 +7,7 @@ set -e # exit on error
 export INSTALL_PREFIX="${APPROXMVBB_CACHE_DIR}"
 export PATH="${INSTALL_PREFIX}/bin:/usr/local/bin:${PATH}"
 
-cd ${ROOT_PATH}
+cd "${ROOT_PATH}"
 
 if [ -n "${USE_GCC}" ]; then 
     # https://stackoverflow.com/questions/37603238/fsanitize-not-using-gold-linker-in-gcc-6-1
@@ -28,18 +28,17 @@ if [ -n "${USE_CLANG}" ]; then
     fi
 fi
 
-echo "Path set to ${PATH}"
-echo "CXX set to ${CXX}"
-echo "CC set to ${CC}"
+echo "ApproxMVBB CI: Path set to ${PATH}"
+echo "ApproxMVBB CI: CXX set to ${CXX}"
+echo "ApproxMVBB CI: CC set to ${CC}"
 
 ${CXX} --version
 cmake --version
-echo "cmake at $(which cmake)"
+echo "ApproxMVBB CI: make at $(which cmake)"
 
 
-chmod +x ${CHECKOUT_PATH}/travis/install_dep.sh
-# run the command in this process -> env varibales!
-. ${CHECKOUT_PATH}/travis/install_dep.sh
+chmod +x "${CHECKOUT_PATH}/travis/install_dep.sh"
+source "${CHECKOUT_PATH}/travis/install_dep.sh"
 # "DEPENDECIES COMPLETE ================================================================="
 
 set +e # exit on errors off

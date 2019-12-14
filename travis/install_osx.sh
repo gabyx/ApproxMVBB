@@ -4,7 +4,7 @@
 set -e # exit on errors
 
 # "DEPENDECIES ========================================================================"
-cd $ROOT_PATH
+cd "$ROOT_PATH"
 
 #install prefix and path
 export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
@@ -16,7 +16,7 @@ brew update || echo "suppress failures in order to ignore warnings"
 brew install gcc || echo "suppress failures in order to ignore warnings"
 brew link --overwrite gcc
 
-if [[ ${APPLE_CLANG} != "YES" ]]; then
+if [[ "${APPLE_CLANG}" != "YES" ]]; then
     brew install llvm || echo "suppress failures in order to ignore warnings"
     brew link --overwrite llvm
     export PATH="/usr/local/opt/llvm/bin:$PATH"
@@ -27,15 +27,15 @@ brew install cmake || echo "suppress failures in order to ignore warnings"
 brew upgrade cmake
 brew link --overwrite cmake
 
-echo "Path set to ${PATH}"
-echo "CXX set to ${CXX}"
-echo "CC set to ${CC}"
+echo "ApproxMVBB CI: Path set to ${PATH}"
+echo "ApproxMVBB CI: CXX set to ${CXX}"
+echo "ApproxMVBB CI: CC set to ${CC}"
 
 ${CXX} --version
 cmake --version
 
-chmod +x $CHECKOUT_PATH/travis/install_dep.sh
-. $CHECKOUT_PATH/travis/install_dep.sh
+chmod +x "$CHECKOUT_PATH/travis/install_dep.sh"
+source "$CHECKOUT_PATH/travis/install_dep.sh"
 
 # "DEPENDECIES COMPLETE ================================================================="
 

@@ -65,12 +65,11 @@ namespace ApproxMVBB
         }
 
         //    void MY_TEST() {
-    };  // namespace ConvexHullTest
-};      // namespace ApproxMVBB
+    }  // namespace ConvexHullTest
+}  // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace ApproxMVBB::ConvexHullTest;
-
 
 MY_TEST(ConvexHullTest, PointsRandom10)
 {
