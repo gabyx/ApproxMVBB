@@ -207,7 +207,7 @@ endif()
 
 if(ApproxMVBB_BUILD_TESTS)
     enable_testing()
-    add_custom_target(build_and_test ${CMAKE_CTEST_COMMAND} -V)
+    add_custom_target(build_and_test ${CMAKE_CTEST_COMMAND} "--output-on-failure")
     add_subdirectory(tests)
 endif()
 
