@@ -3,8 +3,11 @@
 # this script is SOURCED!!!!
 
 set -e
+source "$CHECKOUT_PATH/travis/general.sh"
 
-echo "ApproxMVBB CI: On branch: ${branchName}"
+echo "ApproxMVBB CI: On branch: ${BRANCH_NAME}"
+
+sourceCIConfig
 
 # Check if we build the project
 if [ -z "${BUILD_APPROXMVBB}" ]; then
@@ -44,7 +47,7 @@ make VERBOSE=1
 make install
 cd "${ROOT_PATH}"
 
-if [[ ${branchName} == "unitTests" ]]; then
+if [[ ${BRANCH_NAME} == "unitTests" ]]; then
 
   echo "ApproxMVBB CI: ApproxMVBB: Run unit tests!"
   cd "${ROOT_PATH}/build"

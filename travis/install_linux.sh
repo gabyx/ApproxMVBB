@@ -2,43 +2,45 @@
 # this script is SOURCED!!!!
 
 set -e # exit on error
+source "$CHECKOUT_PATH/travis/general.sh"
 
 # "DEPENDECIES ========================================================================"
-export INSTALL_PREFIX="${APPROXMVBB_CACHE_DIR}"
-export PATH="${INSTALL_PREFIX}/bin:/usr/local/bin:${PATH}"
+updateCIConfig INSTALL_PREFIX "$APPROXMVBB_CACHE_DIR"
+updateCIConfig PATH "$INSTALL_PREFIX/bin:/usr/local/bin:$PATH"
 
 cd "${ROOT_PATH}"
 
-if [ -n "${USE_GCC}" ]; then 
+if [ -n "$USE_GCC" ]; then 
     # https://stackoverflow.com/questions/37603238/fsanitize-not-using-gold-linker-in-gcc-6-1
-    export CPPFLAGS="-fuse-ld=gold"
-    export CXXFLAGS="${CPPFLAGS}"
+    updateCIConfig CPPFLAGS "-fuse-ld=gold"
+    updateCIConfig CXXFLAGS "$CPPFLAGS"
     
-    if [ -n "${GCC_VERSION}" ]; then
-        export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; 
+    if [ -n "$GCC_VERSION" ]; then
+        updateCIConfig CXX "g++-$GCC_VERSION" 
+        updateCIConfig CC "gcc-$GCC_VERSION" 
     else
-        export CXX="g++" CC="gcc"; 
+        updateCIConfig CXX "g++" 
+        updateCIConfig CC "gcc"
     fi
 fi
-if [ -n "${USE_CLANG}" ]; then 
-    if [ -n "${CLANG_VERSION}" ]; then
-        export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; 
+if [ -n "$USE_CLANG" ]; then 
+    if [ -n "$CLANG_VERSION" ]; then
+        updateCIConfig CXX "clang++-$CLANG_VERSION" 
+        updateCIConfig CC "clang-$CLANG_VERSION"
     else
-        export CXX="clang++" CC="clang"; 
+        updateCIConfig CXX "clang++" 
+        updateCIConfig CC "clang"
     fi
 fi
 
-echo "ApproxMVBB CI: Path set to ${PATH}"
-echo "ApproxMVBB CI: CXX set to ${CXX}"
-echo "ApproxMVBB CI: CC set to ${CC}"
+echo "ApproxMVBB CI: Path set to $PATH"
+echo "ApproxMVBB CI: CXX set to $CXX"
+echo "ApproxMVBB CI: CC set to $CC"
 
 ${CXX} --version
 cmake --version
 echo "ApproxMVBB CI: make at $(which cmake)"
 
-
 chmod +x "${CHECKOUT_PATH}/travis/install_dep.sh"
-source "${CHECKOUT_PATH}/travis/install_dep.sh"
+"${CHECKOUT_PATH}/travis/install_dep.sh"
 # "DEPENDECIES COMPLETE ================================================================="
-
-set +e # exit on errors off

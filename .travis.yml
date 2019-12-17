@@ -42,30 +42,27 @@ matrix:
     os: linux
     dist: bionic
 
-  # - env: APPLE_CLANG="YES"
-  #   os: osx
-  #   osx_image: xcode11.2
-  #   compiler: clang
+  - env: APPLE_CLANG="YES" MANUAL_EIGEN="OFF"
+    os: osx
+    osx_image: xcode11.2
+    compiler: clang
 
-  # - env: APPLE_CLANG="NO"
-  #   os: osx
-  #   osx_image: xcode11.2
-  #   compiler: clang
+  - env: APPLE_CLANG="NO" MANUAL_EIGEN="OFF"
+    os: osx
+    osx_image: xcode11.2
+    compiler: clang
 
 # Install dependencies
 install:
   - export ROOT_PATH=`pwd`/../;
   - export CHECKOUT_PATH=`pwd`;
-  - echo "ROOT_PATH= $ROOT_PATH"
-  - echo "CHECKOUT_PATH= $CHECKOUT_PATH"
-
-  - export branchName=$TRAVIS_BRANCH
+  - export BRANCH_NAME=$TRAVIS_BRANCH
 
   - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
 
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
-  - source $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
+  - $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh
 
 script:
   - chmod +x $CHECKOUT_PATH/travis/build.sh

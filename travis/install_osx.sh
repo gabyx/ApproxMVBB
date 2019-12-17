@@ -2,13 +2,19 @@
 # this script is SOURCED!!!!
 
 set -e # exit on errors
+source "$CHECKOUT_PATH/travis/general.sh"
 
 # "DEPENDECIES ========================================================================"
 cd "$ROOT_PATH"
 
+# GNU sed
+brew install gnu-sed || echo "suppress failures in order to ignore warnings"
+PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+updateCIConfig PATH "$PATH"
+
 #install prefix and path
-export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
-export PATH="$INSTALL_PREFIX/bin:$PATH"
+updateCIConfig INSTALL_PREFIX "$APPROXMVBB_CACHE_DIR"
+updateCIConfig PATH "$INSTALL_PREFIX/bin:$PATH"
 
 brew update || echo "suppress failures in order to ignore warnings"
 
@@ -19,13 +25,16 @@ brew link --overwrite gcc
 if [[ "${APPLE_CLANG}" != "YES" ]]; then
     brew install llvm || echo "suppress failures in order to ignore warnings"
     brew link --overwrite llvm
-    export PATH="/usr/local/opt/llvm/bin:$PATH"
+    updateCIConfig PATH "/usr/local/opt/llvm/bin:$PATH"
 fi
 
 # Cmake
 brew install cmake || echo "suppress failures in order to ignore warnings"
 brew upgrade cmake
 brew link --overwrite cmake
+
+# Eigen
+brew install eigen
 
 echo "ApproxMVBB CI: Path set to ${PATH}"
 echo "ApproxMVBB CI: CXX set to ${CXX}"
@@ -35,9 +44,6 @@ ${CXX} --version
 cmake --version
 
 chmod +x "$CHECKOUT_PATH/travis/install_dep.sh"
-source "$CHECKOUT_PATH/travis/install_dep.sh"
+"$CHECKOUT_PATH/travis/install_dep.sh"
 
 # "DEPENDECIES COMPLETE ================================================================="
-
-# Workaround for https://github.com/travis-ci/travis-ci/issues/6522
-set +e # exit on errors off
