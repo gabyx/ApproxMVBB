@@ -12,10 +12,6 @@ brew install gnu-sed || echo "suppress failures in order to ignore warnings"
 PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 updateCIConfig PATH "$PATH"
 
-#install prefix and path
-updateCIConfig INSTALL_PREFIX "$APPROXMVBB_CACHE_DIR"
-updateCIConfig PATH "$INSTALL_PREFIX/bin:$PATH"
-
 brew update || echo "suppress failures in order to ignore warnings"
 
 # eigen3 needs gfortran

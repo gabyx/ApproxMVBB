@@ -2,11 +2,13 @@ sudo: required
 language: cpp
 
 env:
-  global: OMP_NUM_THREADS=2 APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
+  global: 
+    - OMP_NUM_THREADS=2
+    - APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
 
 cache:
   directories:
-  - ${APPROXMVBB_CACHE_DIR}
+  - $APPROXMVBB_CACHE_DIR
 
 matrix:
   include:
@@ -59,6 +61,8 @@ install:
   - export BRANCH_NAME=$TRAVIS_BRANCH
 
   - mkdir -p $APPROXMVBB_CACHE_DIR/{bin,include,lib,share}
+  - export INSTALL_PREFIX="$APPROXMVBB_CACHE_DIR"
+  - export PATH="$INSTALL_PREFIX/bin:/usr/local/bin:$PATH"
   - export CMAKE_PREFIX_PATH="$APPROXMVBB_CACHE_DIR;/usr/local"
 
   - chmod +x $CHECKOUT_PATH/travis/install_${TRAVIS_OS_NAME}.sh

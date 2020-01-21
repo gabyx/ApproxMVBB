@@ -5,9 +5,6 @@ set -e # exit on error
 source "$CHECKOUT_PATH/travis/general.sh"
 
 # "DEPENDECIES ========================================================================"
-updateCIConfig INSTALL_PREFIX "$APPROXMVBB_CACHE_DIR"
-updateCIConfig PATH "$INSTALL_PREFIX/bin:/usr/local/bin:$PATH"
-
 cd "${ROOT_PATH}"
 
 if [ -n "$USE_GCC" ]; then 
@@ -38,8 +35,19 @@ echo "ApproxMVBB CI: CXX set to $CXX"
 echo "ApproxMVBB CI: CC set to $CC"
 
 ${CXX} --version
+
+# Install newer cmake
+version="v3.16"
+name="cmake-3.16.3-Linux-x86_64.sh"
+wget --no-check-certificate http://www.cmake.org/files/$version/$name
+chmod a+x $name
+sudo ./$name --skip-license --prefix=/usr/local/
+
 cmake --version
 echo "ApproxMVBB CI: make at $(which cmake)"
+
+# For eigen3
+sudo apt-get install -yqq ccache libatlas-dev libblas-dev liblapack-dev 
 
 chmod +x "${CHECKOUT_PATH}/travis/install_dep.sh"
 "${CHECKOUT_PATH}/travis/install_dep.sh"

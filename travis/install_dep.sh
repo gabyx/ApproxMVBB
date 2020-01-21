@@ -17,7 +17,7 @@ if [  ! -f "$APPROXMVBB_CACHE_SIGNATURE_FILE" ] ; then
     git clone --single-branch --branch 3.3 https://gitlab.com/libeigen/eigen.git "$ROOT_PATH/eigen3"
     mkdir "$ROOT_PATH/eigen3Build"
     cd "$ROOT_PATH/eigen3Build"
-    cmake ../eigen3 -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH"
+    cmake ../eigen3 -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX"
     sudo make VERBOSE=1 install
     updateCIConfig EIGEN_ROOT_DIR "$INSTALL_PREFIX/include/eigen3" # no idea why this is needed?
   fi
