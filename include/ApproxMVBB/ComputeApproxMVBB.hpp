@@ -306,8 +306,15 @@ namespace ApproxMVBB
         ProjectedPointSet proj;
         Vector3 dir;  // clang-format off
         
-        #ifdef ApproxMVBB_OPENMP_SUPPORT
-
+#ifdef ApproxMVBB_OPENMP_SUPPORT
+    #if _OPENMP <= 200203
+        #pragma omp parallel shared(points, oobb) private(proj, dir)
+        {
+            OOBB oobbLocal = oobb;
+            // Redirect the variable `oobb` to the local one.
+            #define oobb oobbLocal 
+            #pragma omp for
+    #else
         #pragma omp declare reduction(volumeIsSmaller                                              \
                                 : OOBB                                                             \
                                 : omp_in.volume() < omp_out.volume() ? omp_out = omp_in : omp_out) \
@@ -316,8 +323,8 @@ namespace ApproxMVBB
         #pragma omp parallel for schedule(dynamic, 4) collapse(3) shared(points) private(proj, dir) \
                 reduction(volumeIsSmaller                                                           \
                         : oobb) ApproxMVBB_OPENMP_NUMTHREADS
-
-        #endif
+    #endif
+#endif
         // clang-format on
         for(int x = -int(gridSize); x <= (int)gridSize; ++x)
         {
@@ -357,6 +364,17 @@ namespace ApproxMVBB
                 }
             }
         }
+        
+#if defined(ApproxMVBB_OPENMP_SUPPORT) && _OPENMP <= 200203
+            #undef oobb
+            #pragma omp critical
+            if (oobbLocal.volume() < oobb.volume())
+            {
+                oobb = oobbLocal;
+            }
+        }
+#endif
+
         return oobb;
     }
 
