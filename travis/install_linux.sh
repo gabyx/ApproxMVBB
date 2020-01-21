@@ -46,9 +46,6 @@ sudo ./$name --skip-license --prefix=/usr/local/
 cmake --version
 echo "ApproxMVBB CI: make at $(which cmake)"
 
-# For eigen3
-sudo apt-get install -yqq ccache libatlas-dev libblas-dev liblapack-dev 
-
 chmod +x "${CHECKOUT_PATH}/travis/install_dep.sh"
 "${CHECKOUT_PATH}/travis/install_dep.sh"
 # "DEPENDECIES COMPLETE ================================================================="
