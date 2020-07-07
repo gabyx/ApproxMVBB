@@ -2,7 +2,9 @@ macro(defineVersion ApproxMVBB_ROOT_DIR)
     # Get the version of the project ApproxMVBB
     # if there is a git directory otherwise take it from 
     # the version file
-    if(EXISTS "${ApproxMVBB_ROOT_DIR}/.git")
+    find_program(GIT "git")
+
+    if(EXISTS "${ApproxMVBB_ROOT_DIR}/.git" AND DEFINED GIT)
         execute_process(COMMAND "cmake" "-P" "cmake/GetGitRevisionDescriptionExtern.cmake" 
             WORKING_DIRECTORY "${ApproxMVBB_ROOT_DIR}"
             OUTPUT_VARIABLE ApproxMVBB_VERSION ERROR_VARIABLE Error
