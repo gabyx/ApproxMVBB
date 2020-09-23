@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "Updating version"
 rootDir=$(git rev-parse --show-toplevel) || exit 1
-git describe --tags --abbrev=0 >"$rootDir/VERSION" || exit 1
+git describe --tags --abbrev=1 >"$rootDir/VERSION" || exit 1
