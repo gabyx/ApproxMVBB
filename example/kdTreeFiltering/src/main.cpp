@@ -16,7 +16,7 @@
 #include "ApproxMVBB/Common/CPUTimer.hpp"
 #include "ApproxMVBB/KdTree.hpp"
 
-#ifdef ApproxMVBB_XMLSUPPORT
+#ifdef ApproxMVBB_XML_SUPPORT
 #    include "ApproxMVBB/KdTreeXml.hpp"
 #endif
 
@@ -128,7 +128,7 @@ void doKdTree(std::string file)
         // auto list = tree.buildLeafNeighboursAutomatic();
         std::cout << tree.getStatisticsString() << std::endl;
 
-#ifdef ApproxMVBB_XMLSUPPORT
+#ifdef ApproxMVBB_XML_SUPPORT
         std::string file = "KdTreeResults.xml";
         std::cout << "Saving KdTree XML to: " << file << std::endl;
 

@@ -73,7 +73,6 @@ namespace ApproxMVBB
         int i, j, k, n;
         int index1, index2;
 
-        int suspicion_of_convex_hull = 0;  // not used
         int fdn, ldn, idn;
 
         double epsilon = _epsilon_;
@@ -141,7 +140,6 @@ namespace ApproxMVBB
                         // fprintf( stdout, "...processing frth: remove %d points\n", l-newlast );
                         if(newlast == l)
                         {
-                            suspicion_of_convex_hull   = 1;
                             reduction_mode_of_diameter = 0;
                             reduction_mode_of_dbleNorm = 0;
                         }
@@ -260,7 +258,6 @@ namespace ApproxMVBB
                 // fprintf( stdout, "...processing diam: remove %d points\n", l-newlast );
                 if(newlast == l)
                 {
-                    suspicion_of_convex_hull   = 1;
                     reduction_mode_of_dbleNorm = 0;
                 }
             l = newlast;
@@ -474,7 +471,6 @@ namespace ApproxMVBB
                         // fprintf( stdout, "...processing dbNR: remove %d points\n", l-newlast );
                         if(newlast == l)
                         {
-                            suspicion_of_convex_hull = 1;
                             for(k = 0; k < theDoubleNormals.n; k++)
                                 theDoubleNormals.seg[k].reduction_mode = 0;
                         }

@@ -7,10 +7,11 @@ project(libraryUsage)
 get_filename_component( ApproxMVBB_DIR ${ApproxMVBB_DIR} ABSOLUTE )
 message(STATUS "ApproxMVBB_DIR:" ${ApproxMVBB_DIR})
 
-# add ApproxMVBB 
+# add ApproxMVBB
 
 find_package(ApproxMVBB REQUIRED COMPONENTS XML_SUPPORT KDTREE_SUPPORT)
 
 # add simple executable
 add_executable(libraryUsage ./main.cpp)
+setTargetCompileOptions(libraryUsage)
 target_link_libraries(libraryUsage ApproxMVBB::Core)

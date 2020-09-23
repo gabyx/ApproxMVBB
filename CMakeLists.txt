@@ -104,7 +104,7 @@ set(ApproxMVBB_XML_SUPPORT OFF CACHE BOOL "Build library with XML support.")
 #=======================================================================
 
 # Dependencies =========================================================
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
 add_library(eigenLib INTERFACE IMPORTED)
 set_property(TARGET eigenLib PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 list(APPEND ApproxMVBB_LIBS_DEP_PUBLIC eigenLib)
@@ -158,8 +158,8 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 if(${UNIX})
     include(GNUInstallDirs)
-    set(ApproxMVBB_INC_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}") 
-    set(ApproxMVBB_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}") 
+    set(ApproxMVBB_INC_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}")
+    set(ApproxMVBB_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
     set(ApproxMVBB_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
     set(ApproxMVBB_ARCHIVE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
     set(ApproxMVBB_FRAMEWORK_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
@@ -168,10 +168,10 @@ if(${UNIX})
 
     set(ApproxMVBB_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/ApproxMVBB/cmake")
     set(ApproxMVBB_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/ApproxMVBB")
-    
+
 elseif(${WIN32})
     set(ApproxMVBB_INC_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}")
-    set(ApproxMVBB_RUNTIME_INSTALL_DIR "bin") 
+    set(ApproxMVBB_RUNTIME_INSTALL_DIR "bin")
     set(ApproxMVBB_LIBRARY_INSTALL_DIR "bin")
     set(ApproxMVBB_ARCHIVE_INSTALL_DIR "lib")
     set(ApproxMVBB_FRAMEWORK_INSTALL_DIR "bin")
