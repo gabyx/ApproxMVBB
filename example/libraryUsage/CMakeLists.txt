@@ -7,8 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # This include only set compile options: Use it as a reference!
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}../../cmake")
-include(SetTargetCompileOptions)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/SetTargetCompileOptions.cmake)
 
 # only set this variable if ApproxMVBB is not installed system-wide
 # set(ApproxMVBB_DIR "path/to/ApproxMVBB/Build/Directory/install/lib/cmake/ApproxMVBB-1.0.8")
