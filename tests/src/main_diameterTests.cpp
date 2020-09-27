@@ -66,8 +66,8 @@ namespace ApproxMVBB
                 ASSERT_TRUE(false) << "Exception in checking inside test!: " << e.what() << std::endl;
             }
         }
-    };  // namespace DiameterTest
-};      // namespace ApproxMVBB
+    }  // namespace DiameterTest
+}     // namespace ApproxMVBB
 
 using namespace ApproxMVBB;
 using namespace ApproxMVBB::DiameterTest;

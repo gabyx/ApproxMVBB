@@ -12,6 +12,11 @@ if [  ! -f "$APPROXMVBB_CACHE_SIGNATURE_FILE" ] ; then
   echo "ApproxMVBB CI: Build only dependencies! and CACHE them"
   updateCIConfig BUILD_APPROXMVBB "OFF"
 
+
+  if [ "$TRAVIS_DIST" = "focal" ] || [ "$TRAVIS_DIST" = "xenial" ] ; then
+    sudo apt-get install -y libatlas-base-dev libblas-dev liblapack-dev || true
+  fi
+
   # Install eigen3 =======================================================
   if [ "$MANUAL_EIGEN" != "OFF" ]; then
     git clone --single-branch --branch 3.3 https://gitlab.com/libeigen/eigen.git "$ROOT_PATH/eigen3"

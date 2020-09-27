@@ -2,7 +2,7 @@ sudo: required
 language: cpp
 
 env:
-  global: 
+  global:
     - OMP_NUM_THREADS=2
     - APPROXMVBB_CACHE_DIR="$HOME/ApproxMVBBCache"
 
@@ -35,14 +35,14 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
-  
+
   - env: USE_CLANG="YES" CLANG_VERSION=""
     os: linux
-    dist: bionic
+    dist: focal
 
   - env: USE_GCC="YES" GCC_VERSION=""
     os: linux
-    dist: bionic
+    dist: focal
 
   - env: APPLE_CLANG="YES" MANUAL_EIGEN="OFF"
     os: osx
