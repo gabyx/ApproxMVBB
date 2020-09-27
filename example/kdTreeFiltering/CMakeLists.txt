@@ -5,6 +5,7 @@ set(INCLUDE_FILES )
 set(INCLUDE_DIRS
     ${ApproxMVBB_ROOT_DIR}/tests/include)
 
+include(SetTargetCompileOptions)
 
 add_executable(ApproxMVBBExample-KdTree ${SOURCE_FILES} ${INCLUDE_FILES} )
 setTargetCompileOptions(ApproxMVBBExample-KdTree)

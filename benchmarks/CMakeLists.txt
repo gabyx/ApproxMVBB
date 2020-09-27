@@ -31,7 +31,10 @@ set(INCLUDE_DIRS
     ${CMAKE_CURRENT_BINARY_DIR}/include/
     ${ApproxMVBB_ROOT_DIR}/tests/include/)
 
+include(SetTargetCompileOptions)
+
 set(EXEC_NAME1 ApproxMVBB-BenhmarkMVBB)
 add_executable(${EXEC_NAME1}  ${CMAKE_CURRENT_SOURCE_DIR}/src/main_mvbbBenchmarks.cpp ${SOURCE_FILES} ${INCLUDE_FILES})
+target_include_directories(${EXEC_NAME1} PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(${EXEC_NAME1} ApproxMVBB benchmark)
 setTargetCompileOptions(${EXEC_NAME1})
