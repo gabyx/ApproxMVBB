@@ -8,7 +8,7 @@
 # ApproxMVBB_CMAKE_DIR - the cmake dir of ot the ApproxMVBB
 
 #Find Include Headers
-find_path(ApproxMVBB_INC_DIR 
+find_path(ApproxMVBB_INC_DIR
     NAMES "ApproxMVBB/Config/Config.hpp.in.cmake"
     HINTS ${ApproxMVBB_SEARCH_PATH}
     PATH_SUFFIXES
@@ -31,4 +31,4 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args("ApproxMVBBSource" DEFAULT_MSG ApproxMVBB_INC_DIR ApproxMVBB_SRC_DIR ApproxMVBB_CMAKE_DIR)
 
 mark_as_advanced( ApproxMVBB_FORCE_MSGLOG_LEVEL)
-set(ApproxMVBB_FORCE_MSGLOG_LEVEL "0" CACHE STRING "Force the message log level (0-3), 0 = use deubg/release settings in LogDefines.hpp!")
+set(ApproxMVBB_FORCE_MSGLOG_LEVEL "-1" CACHE STRING "Force the message log level (0-3), -1 = use debug/release settings in LogDefines.hpp!")
