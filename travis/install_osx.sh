@@ -30,7 +30,7 @@ brew upgrade cmake
 brew link --overwrite cmake
 
 # Eigen
-brew install eigen
+brew install eigen || brew upgrade eigen
 
 echo "ApproxMVBB CI: Path set to ${PATH}"
 echo "ApproxMVBB CI: CXX set to ${CXX}"
